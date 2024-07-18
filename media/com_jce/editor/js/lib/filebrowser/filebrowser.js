@@ -2992,6 +2992,11 @@
                 $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-modified">' + tinyMCEPopup.getLang('dlg.modified', 'Modified') + ': ' + Wf.String.formatDate($(item).data('modified'), self.options.date_format) + '</div>');
             }
 
+            // Permissions
+            if ($(item).data('permissions')) {
+                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-permissions">' + tinyMCEPopup.getLang('dlg.permissions', 'Permissions') + ': ' + $(item).data('permissions') + '</div>');
+            }
+
             if (comments) {
                 $('#browser-details-comment').empty().append('<ul>' + comments + '</ul>');
             }
