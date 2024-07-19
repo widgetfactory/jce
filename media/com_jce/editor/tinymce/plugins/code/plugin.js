@@ -636,6 +636,10 @@
         while (i--) {
           var node = nodes[i];
 
+          if (node.name == 'noscript') {
+            node.value = tinymce.html.Entities.decode(node.value ? node.value : '');
+          }
+
           // remove any code spans that are added to json-like syntax in code blocks
           if (node.firstChild) {
             node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
@@ -956,10 +960,10 @@
       }
 
       // test for PHP, Script or Style
-      if (/<(\?|script|style)/.test(o.content)) {
+      if (/<(\?|script|noscript|style)/.test(o.content)) {
         // Remove javascript if not enabled
         if (!ed.settings.code_allow_script) {
-          o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
+          o.content = o.content.replace(/<(script|noscript)[^>]*>([\s\S]*?)<\/(script|noscript)>/gi, '');
         }
 
         if (!ed.settings.code_allow_style) {
