@@ -45593,11 +45593,7 @@
 
           while (i--) {
             var node = nodes[i];
-
-            if (node.name == 'noscript') {
-              node.value = tinymce.html.Entities.decode(node.value ? node.value : '');
-            }
-
+            
             // remove any code spans that are added to json-like syntax in code blocks
             if (node.firstChild) {
               node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
