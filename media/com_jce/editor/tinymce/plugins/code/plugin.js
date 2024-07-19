@@ -629,7 +629,7 @@
       });
 
       // Convert script elements to span placeholder
-      ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
+      ed.parser.addNodeFilter('script,style', function (nodes) {
         var i = nodes.length,
           node;
 
@@ -960,10 +960,10 @@
       }
 
       // test for PHP, Script or Style
-      if (/<(\?|script|noscript|style)/.test(o.content)) {
+      if (/<(\?|script|style)/.test(o.content)) {
         // Remove javascript if not enabled
         if (!ed.settings.code_allow_script) {
-          o.content = o.content.replace(/<(script|noscript)[^>]*>([\s\S]*?)<\/(script|noscript)>/gi, '');
+          o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
         }
 
         if (!ed.settings.code_allow_style) {
@@ -1025,11 +1025,11 @@
           // trim content
           content = tinymce.trim(content);
 
-          // decode content
-          content = ed.dom.decode(content);
-
           // get element from match
           var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
+
+          // decode content
+          content = ed.dom.decode(content);
 
           // replace linebreaks with newline in some blocks
           if (type != 'script') {
