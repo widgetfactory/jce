@@ -38247,12 +38247,12 @@
           if (f.content) {
             // HTML string
             if (typeof f.content === "string") {
-              DOM.setHTML(id + '_content', '<form>' + f.content.replace('\n', '') + '</form>');
+              DOM.setHTML(id + '_content', '<div>' + f.content.replace('\n', '') + '</div>');
             }
 
             // HTML node collection
             if (f.content.nodeType) {
-              DOM.add(id + '_content', DOM.create('form', {}, f.content));
+              DOM.add(id + '_content', DOM.create('div', {}, f.content));
             }
           }
 
@@ -38263,7 +38263,7 @@
             }
 
             each(f.items, function (ctrl) {
-              var form = DOM.add(id + '_content', 'form');
+              var form = DOM.add(id + '_content', 'div');
 
               ctrl.renderTo(form);
 
