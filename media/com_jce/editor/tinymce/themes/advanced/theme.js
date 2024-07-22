@@ -171,7 +171,7 @@
                 }
             });
 
-            if (!ed.settings.compress.css && ed.settings.content_css !== false) {
+            if (ed.settings.content_css !== false) {
                 ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
             }
         },
