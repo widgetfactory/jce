@@ -206,28 +206,34 @@ class WFApplication extends CMSObject
      */
     public function getActiveProfile($options = array())
     {
+        // in future this might return an array of profiles by key
         $profiles = $this->getProfiles($options);
 
-        return $profiles['default'];
+        return $profiles;
     }
+
+    /**
+     * Legacy getProfile function for backwards compatibility.
+     *
+     * @param array $options
+     * @return void
+     */
+    public function getProfile($options = array())
+    {
+        if (is_string($options)) {
+            $options = array('plugin' => $options);
+        }
+
+        return $this->getActiveProfile($options);
+    }
+
     /**
      * Get an array of editor profiles.
      *
      * @param array $options Array of options to pass to the getProfile method
      * @return array Array of editor profiles by key, with "default" being the default profile
      */
-    public function getProfiles($options = array())
-    {
-        $profiles = array();
-        $profiles['default'] = $this->getProfile($options);
-
-        return $profiles;
-    }
-
-    /**
-     * Get an appropriate editor profile.
-     */
-    protected function getProfile($options = array())
+    protected function getProfiles($options = array())
     {
         static $cache = array();
 
@@ -275,17 +281,16 @@ class WFApplication extends CMSObject
         }
 
         $db->setQuery($query);
-        $profiles = $db->loadObjectList();
+        $items = $db->loadObjectList();
 
         // nothing found...
-        if (empty($profiles)) {
+        if (empty($items)) {
             return null;
         }
 
         // select and return a specific profile by id
         if ($id) {
-            // return
-            return (object) $profiles[0];
+            return $items[0];
         }
 
         $app->triggerEvent('onWfEditorProfileOptions', array(&$vars));
@@ -295,7 +300,7 @@ class WFApplication extends CMSObject
 
         if (!isset($cache[$signature])) {
 
-            foreach ($profiles as $item) {
+            foreach ($items as $item) {
                 // at least one user group or user must be set
                 if (empty($item->types) && empty($item->users)) {
                     continue;
