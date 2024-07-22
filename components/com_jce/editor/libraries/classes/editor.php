@@ -151,11 +151,8 @@ class WFEditor
         // trigger event
         $app->triggerEvent('onBeforeWfEditorLoad', array(&$config));
 
-        // get all profiles
-        $profiles = $wf->getProfiles($config);
-
         // set profile from "default"
-        $this->profile = $profiles['default'];
+        $this->profile = $wf->getActiveProfile($config);
 
         // set context
         $this->context = $wf->getContext();
