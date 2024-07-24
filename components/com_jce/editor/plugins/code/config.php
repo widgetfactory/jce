@@ -19,6 +19,8 @@ class WFCodePluginConfig
             $settings['plugins'][] = 'code';
         }
 
+        $settings['code_use_blocks'] = $wf->getParam('editor.code_blocks', 1, 1, 'boolean');
+
         $settings['code_allow_php'] = $wf->getParam('editor.allow_php', 0, 0, 'boolean');
         $settings['code_allow_script'] = $wf->getParam('editor.allow_javascript', 0, 0, 'boolean');
         $settings['code_allow_style'] = $wf->getParam('editor.allow_css', 0, 0, 'boolean');
