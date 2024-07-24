@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
 
 JLoader::register('WFApplication', JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
@@ -44,6 +45,9 @@ abstract class WfBrowserHelper
     {
         $app = Factory::getApplication();
         $token = Factory::getSession()->getFormToken();
+
+        // get component params to check for media field conversion
+        $componentParams = ComponentHelper::getParams('com_jce');
 
         if (!isset($options['element'])) {
             $options['element'] = null;
@@ -85,16 +89,18 @@ abstract class WfBrowserHelper
         // check the current user is in a profile
         if ($profile) {            
             // is conversion enabled?
-            if ($options['converted']) {
-                $data['converted'] = (bool) $wf->getParam('browser.mediafield_conversion', 1);
-            }
+            $data['converted'] = (int) $componentParams->get('replace_media_manager', 1) && (int) $wf->getParam('browser.mediafield_conversion', 1);
 
+            // set base url
             $data['url'] = 'index.php?option=com_jce&task=plugin.display';
 
             // add default context
-            if (!isset($options['context'])) {
+            if (empty($options['context'])) {
                 $options['context'] = $wf->getContext();
             }
+
+            // update context value for external use
+            $data['context'] = $options['context'];
 
             // append "caller" plugin
             if (!empty($options['plugin'])) {
@@ -130,7 +136,7 @@ abstract class WfBrowserHelper
             }, explode(',', $accept));
 
             $data['accept'] = implode(',', array_filter($data['accept']));
-            $data['upload'] = (bool) $wf->getParam('browser.mediafield_upload', 1);
+            $data['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
 
             $app->triggerEvent('onWfMediaFieldGetOptions', array(&$data, $profile));
         }
