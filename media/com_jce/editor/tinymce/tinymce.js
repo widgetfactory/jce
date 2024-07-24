@@ -45336,9 +45336,9 @@
        */
       function createCodePre(data, type, tag) {
         // "protect" code if we are not using code blocks
-        if (code_blocks === false) {
+        if (!code_blocks) {
           // convert linebreaks to newlines
-          data = data.replace(/<br[^>]*?>/gi, '\n');
+          data = data.replace(/<br[^>]*?>/gi, '\n');        
 
           // create placeholder span
           return ed.dom.createHTML('img', {
@@ -45827,6 +45827,11 @@
                     // eslint-disable-next-line no-loop-func
                     each(item.attributes, function (attr) {
                       if (!attr) {
+                        return true;
+                      }
+
+                      // allow data-* attributes
+                      if (attr.name.indexOf('data-') === 0 && attr.name.indexOf('data-mce-') === -1) {
                         return true;
                       }
 
