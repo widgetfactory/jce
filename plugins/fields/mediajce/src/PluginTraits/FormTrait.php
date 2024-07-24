@@ -12,6 +12,7 @@ namespace Joomla\Plugin\Fields\MediaJce\PluginTraits;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
@@ -54,9 +55,8 @@ trait FormTrait
 
         $form->addFieldPath(JPATH_PLUGINS . '/fields/mediajce/fields');
 
-        // find a better way to do this....
+        // is there a better way to do this?
         if (PluginHelper::isEnabled('system', 'jcepro')) {
-
             $form->addFieldPath(JPATH_PLUGINS . '/system/jcepro/fields');
             // Joomla 3 requires the fieldtype to be loaded
             FormHelper::loadFieldType('extendedmedia', false);
@@ -76,10 +76,19 @@ trait FormTrait
             return $fieldNode;
         }
 
-        // load scripts and styles for media field
+        // load scripts and styles for core JCE Media field
         HTMLHelper::_('jquery.framework');
 
+        $app = Factory::getApplication();
         $document = Factory::getDocument();
+
+        $option = $app->input->getCmd('option');
+        $component = ComponentHelper::getComponent($option);
+
+        $document->addScriptOptions('plg_system_jce', array(
+            'context' => (int) $component->id,
+        ), true);
+
         $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
         $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
 
