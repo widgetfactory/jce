@@ -7311,7 +7311,7 @@
             }
 
             // Treat script, noscript and style a bit different since they may include code that looks like elements
-            if ((endRegExp = specialElements[value])) {
+            if ((endRegExp = specialElements[value]) && value != 'title' && value != 'textarea') {
               endRegExp.lastIndex = index = matches.index + matches[0].length;
 
               if ((matches = endRegExp.exec(html))) {
