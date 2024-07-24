@@ -515,17 +515,17 @@ img.mce-object.mce-object-img {
 }
 .mceContentBody img[data-mce-code="php"] {
   display: inline-block;
-  background-image: url('../img/code/php.svg');
+  background-image: url('img/code/php.svg');
   background-color: #E2E4EF;
 }
 .mceContentBody img[data-mce-code="style"] {
-  background-image: url('../img/code/style.svg');
+  background-image: url('img/code/style.svg');
 }
 .mceContentBody img[data-mce-code="script"] {
-  background-image: url('../img/code/script.svg');
+  background-image: url('img/code/script.svg');
 }
 .mceContentBody img[data-mce-code="xml"] {
-  background-image: url('../img/code/xml.svg');
+  background-image: url('img/code/xml.svg');
 }
 .mceContentBody span[data-mce-code="php"],
 .mceContentBody span[data-mce-code="shortcode"] {
