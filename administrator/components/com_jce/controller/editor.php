@@ -2,7 +2,7 @@
 
 /**
  * @copyright     Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 3 - http://www.gnu.org/copyleft/gpl.html
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/copyleft/gpl.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
