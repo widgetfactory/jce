@@ -66,7 +66,7 @@ class pkg_jceInstallerScript
         $plugin = Table::getInstance('extension');
 
         $plugins = array(
-            'jce' => array('system', 'quickicon', 'extension', 'installer'),
+            'jce' => array('content', 'system', 'quickicon', 'extension', 'installer'),
             'jcepro' => array('system'),
             'mediajce' => array('fields')
         );
