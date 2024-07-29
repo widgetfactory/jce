@@ -98,3 +98,5 @@ tinyMCE.onAddEditor.add(function (mgr, editor) {
 
 // expose for detection
 window.JceDecorator = JceDecorator;
+// expose for use
+window.JoomlaEditor = JoomlaEditor;
