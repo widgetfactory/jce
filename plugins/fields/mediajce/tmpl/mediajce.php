@@ -202,7 +202,7 @@ if ($path) {
 
         // set target as download
         if ($data->media_target == 'download') {
-            $attribs['download'] = $path;
+            $attribs['download'] = pathinfo($path, PATHINFO_FILENAME);
         }
     }
 
