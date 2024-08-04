@@ -48,6 +48,26 @@
         return filter;
     }
 
+    // Function to parse the value
+    function parseCustomValue(value) {
+        // Remove leading period if any
+        value = value.replace(/^\./, '');
+
+        // Split the value into element and class name
+        var parts = value.split('.');
+        var element, className;
+
+        if (parts.length > 1) {
+            element = parts[0] || '*'; // Use the specified element or * if it's empty
+            className = parts.slice(1).join('.'); // Join the rest as class name
+        } else {
+            element = '*';
+            className = parts[0]; // Only class name provided
+        }
+
+        return { element, className };
+    }
+
     tinymce.PluginManager.add('styleselect', function (ed, url) {
         this.createControl = function (n, cf) {
 
@@ -332,7 +352,7 @@
                                     name: name,
                                     node: node
                                 });
-                                // custom class
+                            // custom class
                             } else {
                                 node = selection.getNode();
 
@@ -477,7 +497,7 @@
                     removeFilterTags();
 
                     each(ctrl.items, function (item) {
-                        if (ed.formatter.matchNode(node, item.value)) {
+                        if (ed.formatter.matchNode(node, item.value)) {                            
                             matches.push(item.value);
 
                             // add new tag
@@ -597,20 +617,22 @@
                 // custom styles
                 if (styles) {
                     each(styles, function (val, key) {
-                        var name, fmt;
+                        if (val) {                            
+                            var fmt, name;
 
-                        if (val) {
-                            // remove leading period if any
-                            val = val.replace(/^\./, '');
+                            var parsed = parseCustomValue(val);
 
                             name = 'style_' + (counter++);
 
                             fmt = {
-                                inline: 'span',
-                                classes: val,
-                                selector: '*',
+                                classes : parsed.className,
+                                selector: parsed.element,
                                 ceFalseOverride: true
                             };
+
+                            if (parsed.element == '*') {
+                                fmt.inline = 'span';
+                            }
 
                             ed.formatter.register(name, fmt);
 
