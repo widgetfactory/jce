@@ -13,6 +13,8 @@ namespace Joomla\Plugin\Editors\Jce\Extension;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Plugin\Editors\Jce\PluginTraits\DisplayTrait;
 use Joomla\Plugin\Editors\Jce\PluginTraits\XTDButtonsTrait;
+use Joomla\CMS\Event\Editor\EditorSetupEvent;
+use Joomla\CMS\Uri\Uri;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -34,4 +36,32 @@ final class Jce extends CMSPlugin
      * @var    boolean
      */
     protected $autoloadLanguage = true;
+
+     /**
+     * Returns an array of events this subscriber will listen to.
+     *
+     * @return array
+     *
+     * @since   5.0.0
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'onEditorSetup' => 'onEditorSetup'
+        ];
+    }
+
+    /**
+     * Register Editor instance
+     *
+     * @param EditorSetupEvent $event
+     *
+     * @return void
+     *
+     * @since   5.0.0
+     */
+    public function onEditorSetup(EditorSetupEvent $event)
+    {
+        $this->getApplication()->getDocument()->addScript(Uri::root(true) . '/media/com_jce/editor/js/editor.module.js', [], ['type' => 'module']);
+    }
 }

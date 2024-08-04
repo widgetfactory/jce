@@ -519,18 +519,10 @@ class WFEditor
         // set javascript compression script
         if ($settings['compress']['javascript']) {
             $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
-
-            if (version_compare(JVERSION, '5', 'ge')) {
-                $this->addScript($this->getURL(true) . '/js/editor.module.js', 'module');
-            }
         } else {
             // Tinymce
             $this->addScript($this->getURL(true) . '/tinymce/tinymce.js');
 
-            if (version_compare(JVERSION, '5', 'ge')) {
-                $this->addScript($this->getURL(true) . '/js/editor.module.js', 'module');
-            }
-            
             // Editor
             $this->addScript($this->getURL(true) . '/js/editor.min.js');
         }
