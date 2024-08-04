@@ -67,13 +67,8 @@ tinyMCE.onAddEditor.add(function (mgr, editor) {
 
     // Create a decorator
     const JceEditor = new JceDecorator(editor, 'jce', elm.id);
-    JoomlaEditor.register(JceEditor);
-
-    // set first editor as active
-    if (mgr.editors[0] === editor) {
-        JoomlaEditor.setActive(JceEditor);
-    }
-
+    
+    // register buttons
     const editorButtons = container.parentNode.querySelector('.editor-xtd-buttons');
 
     if (editorButtons) {
@@ -94,6 +89,14 @@ tinyMCE.onAddEditor.add(function (mgr, editor) {
     editor.editorXtdButtons = function (button) {
         JceEditor.editorButton(button);
     };
+
+    // backwards compatibility
+    JoomlaEditor.register(JceEditor);
+
+    // set first editor as active
+    if (mgr.editors[0] === editor) {
+        JoomlaEditor.setActive(JceEditor);
+    }
 });
 
 // expose for detection
