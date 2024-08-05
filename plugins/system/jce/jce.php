@@ -26,6 +26,8 @@ use Joomla\CMS\Uri\Uri;
  */
 class PlgSystemJce extends CMSPlugin
 {
+    protected $mediaLoaded = false;
+    
     private function getDummyDispatcher()
     {
         $app = Factory::getApplication();
@@ -103,6 +105,14 @@ class PlgSystemJce extends CMSPlugin
         }
     }
 
+    public function onAfterRoute()
+    {
+        // JCE Pro will load media
+        if (PluginHelper::isEnabled('system', 'jcepro')) {
+            $this->mediaLoaded = true;
+        }
+    }
+
     public function onAfterDispatch()
     {
         $app = Factory::getApplication();
@@ -122,5 +132,46 @@ class PlgSystemJce extends CMSPlugin
         $this->bootEditorPlugins();
 
         $app->triggerEvent('onWfPluginAfterDispatch');
+    }
+
+    /**
+     * Transforms the field into a DOM XML element and appends it as a child on the given parent.
+     *
+     * @param   stdClass    $field   The field.
+     * @param   DOMElement  $parent  The field node parent.
+     * @param   Form        $form    The form.
+     *
+     * @return  DOMElement
+     *
+     * @since   3.7.0
+     */
+    public function onCustomFieldsPrepareDom($field, \DOMElement $parent, Form $form)
+    {
+        if ($field->type !== 'mediajce') {
+            return;
+        }
+        
+        // check if field media have been loaded
+        if ($this->mediaLoaded) {
+            return;
+        }
+
+        $document = Factory::getDocument();
+
+        // load scripts and styles for core JCE Media field
+        HTMLHelper::_('jquery.framework');
+
+        $option = Factory::getApplication()->input->getCmd('option');
+        $component = ComponentHelper::getComponent($option);
+
+        $document->addScriptOptions('plg_system_jce', array(
+            'context' => (int) $component->id,
+        ), true);
+
+        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
+
+        // update the mediaLoaded flag
+        $this->mediaLoaded = true;
     }
 }
