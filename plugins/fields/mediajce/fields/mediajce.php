@@ -94,9 +94,12 @@ class JFormFieldMediaJce extends MediaField
      */
     public function getLayoutData()
     {
+        // Get the basic field data
+        $data = parent::getLayoutData();
+
         // component must be installed and enabled
         if (!ComponentHelper::isEnabled('com_jce')) {
-            return parent::getLayoutData();
+            $data;
         }
 
         $config = array(
@@ -110,8 +113,7 @@ class JFormFieldMediaJce extends MediaField
 
         $this->link = $options['url'];
 
-        // Get the basic field data
-        $data = parent::getLayoutData();
+        $data['class'] .= ' input-medium wf-media-input';
 
         // not a valid file browser link
         if (!$this->link) {
@@ -119,8 +121,8 @@ class JFormFieldMediaJce extends MediaField
         }
 
         $extraData = array(
-            'link' => $this->link,
-            'class' => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active',
+            'link'  => $this->link,
+            'class' => $data['class'] .= ' wf-media-input-active',
         );
 
         if ($options['upload']) {
