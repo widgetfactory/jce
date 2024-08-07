@@ -516,6 +516,11 @@ class WFEditor
         
         $app->triggerEvent('onBeforeWfEditorSettings', array(&$settings));
 
+        // add module in Joomla 5
+        if (version_compare(JVERSION, '5', 'ge')) {
+            $this->addScript($this->getURL(true) . '/js/editor.module.js', 'module');
+        }
+
         // set javascript compression script
         if ($settings['compress']['javascript']) {
             $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));

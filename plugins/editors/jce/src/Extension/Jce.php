@@ -36,32 +36,4 @@ final class Jce extends CMSPlugin
      * @var    boolean
      */
     protected $autoloadLanguage = true;
-
-     /**
-     * Returns an array of events this subscriber will listen to.
-     *
-     * @return array
-     *
-     * @since   5.0.0
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'onEditorSetup' => 'onEditorSetup'
-        ];
-    }
-
-    /**
-     * Register Editor instance
-     *
-     * @param EditorSetupEvent $event
-     *
-     * @return void
-     *
-     * @since   5.0.0
-     */
-    public function onEditorSetup(EditorSetupEvent $event)
-    {
-        $this->getApplication()->getDocument()->addScript(Uri::root(true) . '/media/com_jce/editor/js/editor.module.js', [], ['type' => 'module']);
-    }
 }
