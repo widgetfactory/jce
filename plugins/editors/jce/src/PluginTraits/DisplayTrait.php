@@ -187,8 +187,8 @@ trait DisplayTrait
 
         $editor = $this->getEditorInstance();
 
-        // Remove any non-alphanumeric characters from the id
-        $id = preg_replace('/(\s|[^A-Za-z0-9_])+/', '_', $id);
+        // Remove inavlid characters from the ID
+        $id = preg_replace('/[^A-Za-z0-9\-_:.]/', '_', $id);
 
         $buttonsStr = '';
 
