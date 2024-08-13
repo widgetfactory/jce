@@ -117,6 +117,7 @@ class JFormFieldMediaJce extends MediaField
 
         // not a valid file browser link
         if (!$this->link) {
+            $data['readonly'] = true;
             return $data;
         }
 
