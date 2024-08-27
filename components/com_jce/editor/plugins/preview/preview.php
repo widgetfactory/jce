@@ -51,6 +51,9 @@ class WFPreviewPlugin extends WFEditorPlugin
         // cleanup data
         $data = preg_replace(array('#<!DOCTYPE([^>]+)>#i', '#<(head|title|meta)([^>]*)>([\w\W]+)<\/1>#i', '#<\/?(html|body)([^>]*)>#i'), '', rawurldecode($data));
 
+        // prevent processing by responsify
+        $data = '{responsive=off}' . $data;
+
         // create params registry object
         $params = new Registry();
         $params->loadString("");
