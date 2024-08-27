@@ -88,6 +88,11 @@ abstract class WfBrowserHelper
         
         // check the current user is in a profile
         if ($profile) {            
+            
+            if ((int) $wf->getParam('browser.mediafield_enable', 1) == 0) {
+                return $data;
+            }
+            
             // is conversion enabled?
             $data['converted'] = (int) $componentParams->get('replace_media_manager', 1) && (int) $wf->getParam('browser.mediafield_conversion', 1);
 

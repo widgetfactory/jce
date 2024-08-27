@@ -59,34 +59,6 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-
-            <field type="container" pro="true">
-                <field name="image_editor" type="yesno" default="1" label="WF_MANAGER_IMAGE_EDITOR" description="WF_MANAGER_IMAGE_EDITOR_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
-
-                <field name="thumbnail_editor" type="yesno" default="1" label="WF_MANAGER_THUMBNAIL_EDITOR" description="WF_MANAGER_THUMBNAIL_EDITOR_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
-
-                <field name="text_editor" type="yesno" default="0" label="WF_MANAGER_TEXT_EDITOR" description="WF_MANAGER_TEXT_EDITOR_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
-            </field>
-
-            <field type="heading" label="WF_BROWSER_MEDIAFIELD_OPTIONS" />
-
-            <field name="mediafield_conversion" type="yesno" default="1" label="WF_BROWSER_MEDIAFIELD_CONVERSION" description="WF_BROWSER_MEDIAFIELD_CONVERSION_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-            <field name="mediafield_upload" type="yesno" default="1" label="WF_BROWSER_MEDIAFIELD_UPLOAD" description="WF_BROWSER_MEDIAFIELD_UPLOAD_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
         </fieldset>
     </fields>
     <languages></languages>
