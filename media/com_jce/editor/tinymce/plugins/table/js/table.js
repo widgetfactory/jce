@@ -1001,6 +1001,7 @@
                 var theTable = dom.getParent(tr, "table");
                 var dest = rowtype;
                 var newParent = null;
+                
                 for (var i = 0; i < theTable.childNodes.length; i++) {
                     if (theTable.childNodes[i].nodeName.toLowerCase() == dest) {
                         newParent = theTable.childNodes[i];
@@ -1029,6 +1030,13 @@
 
                 // set tr to the new node
                 tr = newRow;
+
+                // update all td cells in the header to th
+                var cells = ed.dom.select('td', tr);
+
+                tinymce.each(cells, function (cell) {
+                    ed.dom.rename(cell, 'th');
+                });
             }
         },
 
