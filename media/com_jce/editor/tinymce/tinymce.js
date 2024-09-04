@@ -45021,7 +45021,7 @@
 
     tinymce.PluginManager.add('code', function (ed, url) {
 
-      var blockElements = [],
+      var blockElements = [], inlineElements = [],
         htmlSchema = new tinymce.html.Schema({
           schema: 'mixed',
           invalid_elements: ed.settings.invalid_elements
@@ -45552,6 +45552,10 @@
           blockElements.push(blockName);
         });
 
+        each(ed.schema.getTextInlineElements(), function (inline, name) {
+            inlineElements.push(name);
+        });
+
         if (ed.settings.code_protect_shortcode) {
           ed.textpattern.addPattern({
             start: '{',
@@ -45646,6 +45650,7 @@
             value = tinymce.trim(value);
 
             var pre = new Node('pre', 1);
+
             pre.attr({
               'data-mce-code': node.name
             });
@@ -45673,6 +45678,10 @@
             return tinymce.inArray(blockElements, node.name) != -1;
           }
 
+          function isInlineTextNode(node) {
+            return tinymce.inArray(inlineElements, node.name) != -1;
+          }
+
           function isInlineNode(node) {
             if (node.name != 'span') {
               return false;
@@ -45683,6 +45692,10 @@
             }
 
             if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
+              return true;
+            }
+
+            if (node.parent && !isBlockNode(node.parent)) {
               return true;
             }
 
@@ -45718,12 +45731,17 @@
               // rename shortcode blocks to <pre>
               if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
                 node.name = 'pre';
-              } else {
-                // add whitespace after the span so a cursor can be set
-                if (node.name == 'span' && node === parent.lastChild) {
-                  var nbsp = createTextNode('\u00a0');
-                  parent.append(nbsp);
+
+                // reset if node parent is inline and not a block node, eg: <strong>{var}</strong>
+                if (node.parent && isInlineTextNode(node.parent)) {
+                  node.name = 'span';
                 }
+              }
+
+              // add whitespace after the span so a cursor can be set
+              if (node.name == 'span' && node === parent.lastChild) {
+                var nbsp = createTextNode('\u00a0');
+                parent.append(nbsp);
               }
             }
           }
@@ -45905,7 +45923,6 @@
 
       ed.onBeforeSetContent.addToTop(function (ed, o) {
         if (ed.settings.code_protect_shortcode) {
-
           if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
             o.content = processShortcode(o.content);
           }
