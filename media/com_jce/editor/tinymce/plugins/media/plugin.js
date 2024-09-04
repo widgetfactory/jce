@@ -100,7 +100,17 @@
         'codepen.io',
         'maps.google.com',
         'google.com/maps',
-        'docs.google.com'
+        'docs.google.com',
+        'google.com/docs',
+        'sheets.google.com',
+        'google.com/sheets',
+        'slides.google.com',
+        'google.com/slides',
+        'forms.google.com',
+        'google.com/forms',
+        'canva.com',
+        'slideshare.net',
+        'slides.com'
     ];
 
     var mediaProviders = {
