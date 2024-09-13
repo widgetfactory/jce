@@ -15,8 +15,26 @@ if (function_exists('mb_internal_encoding')) {
     mb_internal_encoding("UTF-8");
 }
 
+use Joomla\CMS\Uri\Uri;
+
 abstract class WFUtility
 {
+    private static function safe_substr($string, $start, $length = null) {
+        if (function_exists('mb_substr')) {
+            return mb_substr($string, $start, $length);
+        } else {
+            return substr($string, $start, $length);
+        }
+    }
+    
+    private static function safe_strlen($string) {
+        if (function_exists('mb_strlen')) {
+            return mb_strlen($string);
+        } else {
+            return strlen($string);
+        }
+    }
+    
     /**
      * Multi-byte-safe pathinfo replacement.
      * Drop-in replacement for pathinfo(), but multibyte- and cross-platform-safe.
@@ -79,14 +97,36 @@ abstract class WFUtility
 
     /**
      * Get the file extension from a path
+     * 
+     * From libraries/vendor/joomla/filesystem/src/File.php
+     * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
      *
      * @param  string $path The file path
+     * @param  bool   $lowercase Convert the extension to lowercase
      * @return string The file extension
      */
-    public static function getExtension($path)
+    public static function getExtension($file, $lowercase = false)
     {
-        $dot = strrpos($path, '.') + 1;
-        return substr($path, $dot);
+        // String manipulation should be faster than pathinfo() on newer PHP versions.
+        $dot = strrpos($file, '.');
+
+        // If no dot is found or it's at the start, return an empty string (no extension)
+        if ($dot === false || $dot === 0) {
+            return '';
+        }
+
+        $ext = substr($file, $dot + 1);
+
+        // Ensure the extension does not contain any slashes or directory separators
+        if (strpos($ext, '/') !== false || strpos($ext, DIRECTORY_SEPARATOR) !== false) {
+            return '';
+        }
+
+        if ($lowercase) {
+            $ext = strtolower($ext);
+        }
+
+        return $ext;
     }
 
     /**
@@ -114,6 +154,7 @@ abstract class WFUtility
                 return pathinfo($path, PATHINFO_FILENAME);
             }
         }
+
         // get basename
         $path = self::mb_basename($path);
 
@@ -137,6 +178,26 @@ abstract class WFUtility
 
         // return path with prefix if any
         return $prefix . $path;
+    }
+
+    public static function uriToAbsolutePath($url) {
+        // Get the relative root URL
+        $root = Uri::root(true);
+        
+        // Make sure JPATH_SITE has a trailing slash
+        $base = rtrim(JPATH_SITE, '/');
+        
+        // If $url starts with the root URL, replace it with JPATH_SITE
+        $path = self::safe_substr($url, 0, self::safe_strlen($root));
+
+        if ($path === $root) {
+            $relativePath = self::safe_substr($url, self::safe_strlen($root));
+            
+            return self::makePath($base, $relativePath);
+        }
+        
+        // If no match, return the original URL as it is (or handle accordingly)
+        return $url;
     }
 
     /**
@@ -183,6 +244,8 @@ abstract class WFUtility
         if (self::checkCharValue($path) === false || strpos($path, '..') !== false) {
             throw new InvalidArgumentException('Invalid path');
         }
+
+        return true;
     }
 
     /**
@@ -641,20 +704,18 @@ abstract class WFUtility
      * Checks an upload for suspicious naming, potential PHP contents, valid image and HTML tags.
      */
     public static function isSafeFile($file)
-    {
+    {        
         // null byte check
         if (strstr($file['name'], "\x00")) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('The file name contains a null byte.');
+            throw new InvalidArgumentException('Invalid file: The file name contains a null byte.');
         }
 
         // check name for invalid extensions
-        if (self::validateFileName($file['name']) !== true) {
+        if (self::validateFileName($file['name']) === false) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('The file name contains an invalid extension.');
+            throw new InvalidArgumentException('Invalid file: The file name contains an invalid extension.');
         }
-
-        $isImage = preg_match('#\.(jpeg|jpg|jpe|png|gif|wbmp|bmp|tiff|tif|webp|psd|swc|iff|jpc|jp2|jpx|jb2|xbm|ico|xcf|odg)$#i', $file['name']);
 
         // check file for <?php tags
         $fp = @fopen($file['tmp_name'], 'r');
@@ -667,13 +728,13 @@ abstract class WFUtility
                 // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
                 if (stripos($data, '<?php') !== false) {
                     @unlink($file['tmp_name']);
-                    throw new InvalidArgumentException('The file contains PHP code.');
+                    throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
                 // check for `__HALT_COMPILER()` phar stub
                 if (stripos($data, '__HALT_COMPILER()') !== false) {
                     @unlink($file['tmp_name']);
-                    throw new InvalidArgumentException('The file contains PHP code.');
+                    throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
                 $data = substr($data, -10);
@@ -682,10 +743,16 @@ abstract class WFUtility
             fclose($fp);
         }
 
+        // Get the file extension
+        $extension = self::getExtension($file['name'], true);
+
+        // Check if the file extension is a common image
+        $isImage = in_array($extension, ['jpeg', 'jpg', 'jpe', 'png', 'apng', 'gif', 'bmp', 'tiff', 'tif', 'webp', 'psd', 'ico', 'xcf', 'odg'], true);
+
         // validate image
         if ($isImage && @getimagesize($file['tmp_name']) === false) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException('The file is not a valid image.');
+            throw new InvalidArgumentException('Invalid file: The file is not a valid image.');
         }
 
         return true;
@@ -704,6 +771,17 @@ abstract class WFUtility
             return false;
         }
 
+        // first character is a dot
+        if ($name[0] === '.') {
+            return false;
+        }
+
+        // lowercase it
+        $name = strtolower($name);
+
+        // remove multiple . characters
+        $name = preg_replace('#(\.){2,}#', '.', $name);
+
         // list of invalid extensions
         $executable = array(
             'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'phar', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
@@ -719,13 +797,13 @@ abstract class WFUtility
         // remove name
         array_shift($parts);
 
+        // trim each $parts
+        $parts = array_map('trim', $parts);
+
         // no extensions in file name
         if (empty($parts)) {
             return true;
         }
-
-        // lowercase it
-        array_map('strtolower', $parts);
 
         // check for extension in file name, eg: image.php.jpg
         foreach ($executable as $extension) {
