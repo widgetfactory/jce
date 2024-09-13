@@ -1420,9 +1420,8 @@ class WFEditor
                 foreach ($plugins['external'] as $plugin => $path) {
                     // get base path from plugin path
                     $basepath = dirname($path);
-                        
-                    // trim slashes
-                    $basepath = trim($basepath, '/');
+
+                    $basepath = WFUtility::uriToAbsolutePath($basepath);
                     
                     $file = Path::find(
                         array(
@@ -1471,12 +1470,11 @@ class WFEditor
                         // get base path from plugin path
                         $basepath = dirname($path);
 
-                        // trim slashes
-                        $basepath = trim($basepath, '/');
+                        $basepath = WFUtility::uriToAbsolutePath($basepath);
                         
                         $content = Path::find(
                             array(
-                                JPATH_SITE . '/' . $basepath . '/css'
+                                $basepath . '/css'
                             ),
                             'content.css'
                         );
@@ -1488,8 +1486,10 @@ class WFEditor
                 } elseif ($slot == 'preview') {
                     $files = array();
                     $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/preview/css/preview.css';
+                    
                     // get template stylesheets
                     $styles = self::getTemplateStyleSheetsList(true);
+
                     foreach ($styles as $style) {
                         if (File::exists($style)) {
                             $files[] = $style;
