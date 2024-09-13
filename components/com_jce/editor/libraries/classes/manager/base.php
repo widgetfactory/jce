@@ -148,15 +148,16 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $data = array();
 
-        // images and flash
-        if (preg_match('#\.(jpg|jpeg|png|apng|gif|bmp|wbmp|tif|tiff|psd|ico|webp|swf)$#i', $file)) {
-            list($data['width'], $data['height']) = getimagesize($path);
+        $extension = WFUtility::getExtension($path, true);
 
+        // images and flash
+        if (in_array($extension, array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp', 'swf'))) {
+            list($data['width'], $data['height']) = getimagesize($path);
             return $data;
         }
 
         // svg
-        if (preg_match('#\.svg$#i', $file)) {
+        if ($extension == 'svg') {
             $svg = @simplexml_load_file($path);
 
             if ($svg && isset($svg['viewBox'])) {
