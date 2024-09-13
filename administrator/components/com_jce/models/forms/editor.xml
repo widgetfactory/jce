@@ -83,6 +83,7 @@
                 <option value="forced_root_block:0|force_block_newlines:1">WF_OPTION_PARAGRAPH_MIXED</option>
                 <option value="0">WF_OPTION_LINEBREAK</option>
             </field>
+
             <field name="profile_content_css" type="list" default="2" label="WF_PARAM_EDITOR_PROFILE_CSS" description="WF_PARAM_EDITOR_PROFILE_CSS_DESC">
                 <option value="0">WF_PARAM_CSS_ADD</option>
                 <option value="1">WF_PARAM_CSS_OVERWRITE</option>
@@ -93,6 +94,10 @@
                 <field type="text" size="50" hiddenLabel="true" hint="eg: templates/$template/css/content.css" />
             </field>
 
+            <field name="custom_css" type="repeatable" default="" label="WF_PARAM_EDITOR_CUSTOM_CSS" description="WF_PARAM_EDITOR_CUSTOM_CSS_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+            
             <field name="custom_colors" type="textarea" rows="3" cols="50" default="" label="WF_PARAM_CUSTOM_COLORS" description="WF_PARAM_CUSTOM_COLORS_DESC" placeholder="eg: #CC0000,#FF0000" />
         </fieldset>
         <fieldset name="editor.filesystem">

@@ -46387,6 +46387,26 @@
           inline: 'i',
           remove: 'all'
         });
+
+        var custom_css = ed.getParam('custom_css', '');
+
+        // load custom css if any
+        if (custom_css) {
+          var doc = ed.getDoc(), head = doc.getElementsByTagName('head')[0];
+
+          var style = ed.dom.create('style', { type: 'text/css', id: 'mceCustomStyles' });
+
+          var values = [];
+
+          each(custom_css.split(';'), function (value) {
+            values.push('.mceContentBody ' + value);
+          });
+
+          style.appendChild(doc.createTextNode(values.join(';')));
+
+          head.appendChild(style);
+        }
+
       });
 
       // update with HMTL5 tags
