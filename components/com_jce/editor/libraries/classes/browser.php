@@ -1127,12 +1127,12 @@ class WFFileBrowser extends CMSObject
         }
 
         // get extension
-        $ext = WFUtility::getExtension($file['name']);
+        $ext = WFUtility::getExtension($file['name'], true);
 
         // check extension is allowed
         $allowed = (array) $this->getFileTypes('array');
 
-        if (is_array($allowed) && !empty($allowed) && in_array(strtolower($ext), $allowed) === false) {
+        if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
         }
@@ -1197,7 +1197,7 @@ class WFFileBrowser extends CMSObject
 
         // check name
         if (WFUtility::validateFileName($name) === false) {
-            throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
+            throw new InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
         // check file name
@@ -1225,7 +1225,7 @@ class WFFileBrowser extends CMSObject
 
         // check name
         if (WFUtility::validateFileName($name) === false) {
-            throw new InvalidArgumentException('Upload Failed: The file name contains an invalid extension.');
+            throw new InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
         // target directory
@@ -1415,14 +1415,14 @@ class WFFileBrowser extends CMSObject
         WFUtility::checkPath($source);
         WFUtility::checkPath($destination);
 
+        // check for extension in destination name
+        if (WFUtility::validateFileName($destination) === false) {
+            throw new InvalidArgumentException('Rename Failed: The file name is invalid.');
+        }
+
         // check access
         if (!$this->checkPathAccess($destination)) {
             throw new InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
-        }
-
-        // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
-            throw new InvalidArgumentException('INVALID FILE NAME');
         }
 
         $filesystem = $this->getFileSystem();
@@ -1503,6 +1503,11 @@ class WFFileBrowser extends CMSObject
         // check destination path
         WFUtility::checkPath($destination);
 
+        // check for extension in destination name
+        if (WFUtility::validateFileName($destination) === false) {
+            throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
+        }
+
         // check path exists
         if (!$filesystem->is_dir($destination)) {
             throw new InvalidArgumentException('Copy Failed: The target directory does not exist');
@@ -1513,17 +1518,16 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Copy Failed: Access to the target directory is restricted');
         }
 
-        // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
-            throw new InvalidArgumentException('INVALID PATH NAME');
-        }
-
         foreach ($items as $item) {
             // decode and cast as string
             $item = (string) rawurldecode($item);
 
             // check source path
             WFUtility::checkPath($item);
+
+            if (WFUtility::validateFileName($item) === false) {
+                throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
+            }
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
@@ -1616,6 +1620,11 @@ class WFFileBrowser extends CMSObject
         // check destination path
         WFUtility::checkPath($destination);
 
+        // check for extension in destination name
+        if (WFUtility::validateFileName($destination) === false) {
+            throw new InvalidArgumentException('Move Failed: The file name is invalid.');
+        }
+
         // check path exists
         if (!$filesystem->is_dir($destination)) {
             throw new InvalidArgumentException('Move Failed: The target directory does not exist');
@@ -1626,16 +1635,15 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Move Failed: Access to the target directory is restricted');
         }
 
-        // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
-            throw new InvalidArgumentException('INVALID PATH NAME');
-        }
-
         foreach ($items as $item) {
             // decode and cast as string
             $item = (string) rawurldecode($item);
             // check source path
             WFUtility::checkPath($item);
+
+            if (WFUtility::validateFileName($item) === false) {
+                throw new InvalidArgumentException('Move Failed: The file name is invalid.');
+            }
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
@@ -1714,7 +1722,7 @@ class WFFileBrowser extends CMSObject
 
         // check for extension in destination name
         if (WFUtility::validateFileName($name) === false) {
-            throw new InvalidArgumentException('INVALID FOLDER NAME');
+            throw new InvalidArgumentException('Action Failed: The file name is invalid.');
         }
 
         $result = $filesystem->createFolder($dir, $name, $args);
