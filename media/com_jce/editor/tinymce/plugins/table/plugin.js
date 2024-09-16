@@ -987,6 +987,10 @@
                 ed.onPasteBeforeInsert.add(function (ed, o) {
                     var dom = ed.dom, elm = o.node;
 
+                    if (o.internal && !elm) {
+                        elm = ed.dom.create('div', {}, o.content);
+                    } 
+
                     if (!elm) {
                         return;
                     }
