@@ -110,7 +110,9 @@
         'google.com/forms',
         'canva.com',
         'slideshare.net',
-        'slides.com'
+        'slides.com',
+        'facebook.com',
+        'instagram.com'
     ];
 
     var mediaProviders = {
@@ -122,10 +124,12 @@
         'soundcloud': /soundcloud\.com\/(.+)/,
         'spotify': /spotify\.com\/(.+)/,
         'ted': /ted\.com\/talks\/(.+)/,
-        'twitch': /twitch\.tv\/(.+)/
+        'twitch': /twitch\.tv\/(.+)/,
+        'facebook': /facebook\.com\/(.+)/,
+        'instagram': /instagram\.com\/(.+)/
     };
 
-    function objectRquiresEmbed(type) {
+    function objectRequiresEmbed(type) {
         // flash
         if (type == 'application/x-shockwave-flash') {
             return false;
@@ -156,7 +160,8 @@
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'allow': "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'vimeo': {
                 'src': value,
@@ -165,7 +170,8 @@
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'allow': "autoplay; fullscreen",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'dailymotion': {
                 'src': value,
@@ -174,7 +180,8 @@
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'allow': "autoplay; fullscreen",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'video': {
                 'src': value,
@@ -190,7 +197,8 @@
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'allow': "fullscreen",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'soundcloud': {
                 'src': '',
@@ -199,7 +207,8 @@
                 'frameborder': 0,
                 'scrolling': 'no',
                 'allow': "autoplay; fullscreen",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'spotify': {
                 'src': value,
@@ -208,7 +217,8 @@
                 'frameborder': 0,
                 'allowtransparency': true,
                 'allow': "encrypted-media",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'ted': {
                 'src': '',
@@ -217,7 +227,8 @@
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'allow': "fullscreen",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
             },
             'twitch': {
                 'src': '',
@@ -226,7 +237,29 @@
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'allow': "autoplay; fullscreen",
-                'sandbox': false
+                'sandbox': false,
+                'oembed': true
+            },
+            'instagram': {
+                'src': '',
+                'width': 658,
+                'height': 877,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen",
+                'sandbox': false,
+                'oembed': false
+            },
+            'facebook': {
+                'src': '',
+                'frameborder': 0,
+                'width': 500,
+                'height': 280,
+                'allowtransparency': 'allowtransparency',
+                'allowfullscreen': "allowfullscreen",
+                'scrolling': 'no',
+                'allow': 'encrypted-media;fullscreen',
+                'sandbox': false,
+                'oembed': false
             }
         };
 
@@ -298,6 +331,31 @@
 
         if (provider === 'ted') {
             defaultValues[provider].src = value.replace(/www\.ted.com\/talks\//, 'embed.ted.com/talks/');
+        }
+
+        if (provider === 'twitch') {
+            defaultValues[provider].src = value.replace(/twitch\.tv\//, 'player.twitch.tv/?channel=');
+        }
+
+        if (provider === 'instagram') {
+            value = value.replace(/\/\?.+$/gi, '');
+            value = value.replace(/\/$/, '');
+
+            defaultValues[provider].src = value + '/embed/captioned';
+        }
+        
+        if (provider === 'facebook') {
+            var url = 'https://www.facebook.com/plugins/';
+
+            if (value.indexOf('/videos/') !== -1) {
+                url += 'video.php?href=';
+            }
+
+            if (value.indexOf('/posts/') !== -1) {
+                url += 'post.php?href=';
+            }
+
+            defaultValues[provider].src = url + encodeURIComponent(value) + '&width=' + defaultValues[provider].width + '&height=' + defaultValues[provider].height;
         }
 
         return defaultValues[provider];
@@ -1174,7 +1232,7 @@
         elm.attr('data-mce-html', null);
 
         // add embed for some object media
-        if (tag === 'object' && elm.getAll('embed').length === 0 && objectRquiresEmbed(elm.attr('type'))) {
+        if (tag === 'object' && elm.getAll('embed').length === 0 && objectRequiresEmbed(elm.attr('type'))) {
             var embed = new Node('embed', 1);
 
             embed.shortEnded = true;
@@ -1754,6 +1812,11 @@
                 ed.dom.setStyles(node, ed.dom.parseStyle(value));
                 return true;
             }
+            
+            // set value to null to remove
+            if (name == 'sandbox' && value === false) {
+                value = null;
+            }
 
             attribs[name] = value;
         });
@@ -2216,6 +2279,10 @@
         extend(this, {
             getMediaData: function () {
                 return getMediaData(ed);
+            },
+
+            getMediaProps: function (data, provider) {
+                return getMediaProps(ed, data, provider);
             },
 
             updateMedia: function (data) {
