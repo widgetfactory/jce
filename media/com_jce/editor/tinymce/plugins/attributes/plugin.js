@@ -185,6 +185,10 @@
         function openDialog() {
             var cm = ed.controlManager, node = ed.selection.getNode(), mediaApi;
 
+            node = ed.dom.getParent(node, function (n) {
+                return n.getAttribute('contenteditable') != 'false';
+            }, ed.getBody());
+
             if (isRootNode(node)) {
                 node = null;
             }
@@ -202,9 +206,19 @@
 
             each(nodeAttribs, function (value, name) {
                 if (name in attribsMap) {
+                    if (name == 'class') {
+                        // remove any class values that start with "mce-"
+                        value = value.replace(/\bmce-\S+\s*/g, '').replace(/\s+$/, ' ').trim();
+                    }
+                    
                     attribsMap[name] = value;
                 } else {
                     var attr = {};
+
+                    // skip internal, eg: _moz_resizing or data-mce-style
+                    if (name.charAt(0) === "_" || name.indexOf('-mce-') !== -1) {
+                        return true;
+                    }
 
                     if (value) {
 
