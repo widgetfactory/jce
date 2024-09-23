@@ -353,6 +353,12 @@
 
             if (value.indexOf('/posts/') !== -1) {
                 url += 'post.php?href=';
+
+                // update height for posts
+                defaultValues[provider].height = 247;
+
+                // remove query string from url
+                value = value.replace(/\?.+$/, '');
             }
 
             defaultValues[provider].src = url + encodeURIComponent(value);
