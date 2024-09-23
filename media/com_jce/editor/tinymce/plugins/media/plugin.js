@@ -355,7 +355,7 @@
                 url += 'post.php?href=';
             }
 
-            defaultValues[provider].src = url + encodeURIComponent(value) + '&width=' + defaultValues[provider].width + '&height=' + defaultValues[provider].height;
+            defaultValues[provider].src = url + encodeURIComponent(value);
         }
 
         return defaultValues[provider];
