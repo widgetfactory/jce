@@ -242,8 +242,8 @@
             },
             'instagram': {
                 'src': '',
-                'width': 658,
-                'height': 877,
+                'width': 400,
+                'height': 480,
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
                 'sandbox': false,
