@@ -123,8 +123,8 @@ trait EventsTrait
         }
 
         // update limit exceeded
-        if (429 == $response->code || 499 === $response->code) {
-            $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
+        if (498 === $response->code) {
+            $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_LIMIT'), 'notice');
         }
 
         return true;
