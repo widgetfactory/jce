@@ -820,6 +820,14 @@
     tinymce.caret = {};
 
     /**
+     * Contains various tools for the clipboard.
+     *
+     * @namespace tinymce.clipboard
+     */
+
+    tinymce.clipboard = {};
+
+    /**
      * Contains html parser and serializer logic.
      *
      * @namespace tinymce.html
@@ -14170,6 +14178,48 @@
     return internalMimeType;
   };
 
+  const internalHtmlMimeType = internalHtmlMime();
+
+  var clipboardData = {
+      'text/html': '',
+      'text/plain': ''
+  };
+
+  clipboardData[internalHtmlMimeType] = '';
+
+  function hasData() {
+      return !!clipboardData['text/html'] || !!clipboardData['text/plain'] || !!clipboardData[internalHtmlMimeType];
+  }
+
+  function getData$1(mimetype) {
+      if (mimetype) {
+          return clipboardData[mimetype] || '';
+      }
+      
+      return clipboardData;
+  }
+
+  function setData(mimetype, content) {
+      clipboardData[mimetype] = content;
+  }
+
+  function clearData() {
+      clipboardData = {
+          'text/html': '',
+          'text/plain': ''
+      };
+
+      clipboardData[internalHtmlMimeType] = '';
+  }
+
+  var FakeClipboard = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    clearData: clearData,
+    getData: getData$1,
+    hasData: hasData,
+    setData: setData
+  });
+
   var noop = function () { };
 
   var hasWorkingClipboardApi = function (clipboardData) {
@@ -14178,12 +14228,19 @@
   };
 
   var setHtml5Clipboard = function (clipboardData, html, text) {
+      // set FakeClipboard data for all instances
+      clearData();
+      setData('text/html', html);
+      setData('text/plain', text);
+      setData(internalHtmlMime(), html);
+      
       if (hasWorkingClipboardApi(clipboardData)) {
           try {
               clipboardData.clearData();
               clipboardData.setData('text/html', html);
               clipboardData.setData('text/plain', text);
               clipboardData.setData(internalHtmlMime(), html);
+
               return true;
           } catch (e) {
               return false;
@@ -16342,6 +16399,14 @@
    * @return {Object} Object with mime types and data for those mime types.
    */
   function getClipboardContent(editor, clipboardEvent) {
+      if (hasData()) {
+          content = getData$1();
+
+          clearData();
+
+          return content;
+      }
+      
       var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
       //var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
 
@@ -16768,7 +16833,7 @@
 
       // Grab contents on paste event
       editor.onPaste.add(function (editor, e) {
-          if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
+          if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e) && !hasData()) {
               pasteBin.remove();
               return false;
           }
@@ -16808,7 +16873,17 @@
               });
           }
       });
+
+      editor.addCommand('mcePasteFakeClipboard', function (ui, e) {
+          var content = getData$1();
+
+          insertClipboardContent(editor, content, true, e.isPlainText === true);
+
+          clearData();
+      });
   };
+
+  tinymce.clipboard.FakeClipboard = FakeClipboard;
 
   var RangeUtils = tinymce.dom.RangeUtils, Delay = tinymce.util.Delay;
 
@@ -42694,7 +42769,7 @@
     };
 
     var drop = function (state, editor) {
-      return function (e) {
+      return function (e) {      
         if (state.dragging) {
           if (isValidDropTarget(editor, getRawTarget(editor.selection), state.element)) {
             var targetClone = cloneElement(state.element);

@@ -61,30 +61,33 @@ tinymce.PluginManager.add('clipboard', function (ed, url) {
         }
     });
 
+    var FakeClipboard = tinymce.clipboard.FakeClipboard;
+
     // Add commands
     each(['mcePasteText', 'mcePaste'], function (cmd) {
-        ed.addCommand(cmd, function () {
+        ed.addCommand(cmd, function (ui) {
             var doc = ed.getDoc(),
                 failed = false;
 
-            // just open the window
-            if (ed.getParam('clipboard_paste_use_dialog')) {
+            // use fake clipboard if data is available and the paste action is from a button
+            if (ui && FakeClipboard.hasData()) {
+                ed.execCommand('mcePasteFakeClipboard', false, { isPlainText: cmd === 'mcePasteText' });
+                return;
+            }
+
+            try {
+                doc.execCommand('Paste', false, null);
+            } catch (e) {
+                failed = true;
+            }
+
+            // Chrome reports the paste command as supported however older IE:s will return false for cut/paste
+            if (!doc.queryCommandEnabled('Paste')) {
+                failed = true;
+            }
+
+            if (failed) {
                 return Dialog.openWin(ed, cmd);
-            } else {
-                try {
-                    doc.execCommand('Paste', false, null);
-                } catch (e) {
-                    failed = true;
-                }
-
-                // Chrome reports the paste command as supported however older IE:s will return false for cut/paste
-                if (!doc.queryCommandEnabled('Paste')) {
-                    failed = true;
-                }
-
-                if (failed) {
-                    return Dialog.openWin(ed, cmd);
-                }
             }
         });
     });
