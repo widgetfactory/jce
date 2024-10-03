@@ -28531,7 +28531,12 @@
        */
       setDisabled: function (state) {
         this._super(state);
-        DOM.get(this.id).disabled = state;
+
+        var elm = DOM.get(this.id);
+
+        if (elm) {
+          elm.disabled = state;
+        }
       },
 
       /**
@@ -42769,7 +42774,7 @@
     };
 
     var drop = function (state, editor) {
-      return function (e) {      
+      return function (e) {
         if (state.dragging) {
           if (isValidDropTarget(editor, getRawTarget(editor.selection), state.element)) {
             var targetClone = cloneElement(state.element);
@@ -45413,7 +45418,7 @@
         // "protect" code if we are not using code blocks
         if (!code_blocks) {
           // convert linebreaks to newlines
-          data = data.replace(/<br[^>]*?>/gi, '\n');        
+          data = data.replace(/<br[^>]*?>/gi, '\n');
 
           // create placeholder span
           return ed.dom.createHTML('img', {
@@ -45628,7 +45633,7 @@
         });
 
         each(ed.schema.getTextInlineElements(), function (inline, name) {
-            inlineElements.push(name);
+          inlineElements.push(name);
         });
 
         if (ed.settings.code_protect_shortcode) {
@@ -45672,7 +45677,7 @@
 
           while (i--) {
             var node = nodes[i];
-            
+
             // remove any code spans that are added to json-like syntax in code blocks
             if (node.firstChild) {
               node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
@@ -45957,9 +45962,15 @@
           }
         });
 
-        ed.onGetClipboardContent.add(function (ed, content) {
-          var text = content['text/plain'] || '',
-            value;
+        ed.onPaste.addToTop(function (ed, e) {
+          var clipboardData = e.clipboardData || window.clipboardData || null;
+
+          if (!clipboardData) {
+            return;
+          }
+
+          var text = clipboardData.getData('text/plain') || clipboardData.getData('Text') || clipboardData.getData('text') || '';
+          var value = '';
 
           // trim text
           text = tinymce.trim(text);
@@ -45976,11 +45987,31 @@
 
             // update with processed text
             if (value !== text) {
-              content['text/plain'] = '';
-              content['text/html'] = content['x-tinymce/html'] = value;
+              e.preventDefault();
+              ed.execCommand('mceInsertContent', false, value);
             }
           }
         });
+
+        /*ed.onNodeChange.add(function (ed, cm, node) {
+          var toolbar = DOM.get(ed.id + '_toolbar');
+          
+          if (node && node.hasAttribute('data-mce-code')) {
+            if (toolbar) {
+              DOM.addClass(toolbar, 'mceDisabled');
+            }
+          } else {
+            DOM.removeClass(toolbar, 'mceDisabled');
+          }
+        });*/
+
+        ed.onContextMenu.addToTop(function (ed, e) {
+          var node = ed.selection.getNode();
+
+          if (node && node.hasAttribute('data-mce-code')) {
+            return false;
+          }
+      });
       });
 
       ed.onInit.add(function () {
