@@ -2,6 +2,9 @@
 .mceModernSkin .mceToolbar {
   background: #fafafa;
 }
+.mceModernSkin .mceToolbar.mceDisabled {
+  background: rgba(255, 255, 255, 0.5);
+}
 .mceModernSkin .mceToolbarRow .mceToolbarItem {
   background-color: transparent;
   margin: 2px;

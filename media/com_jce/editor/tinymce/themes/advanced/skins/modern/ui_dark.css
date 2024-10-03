@@ -29,6 +29,9 @@
   background: var(--wfe-bg);
   border-color: var(--wfe-border-color);
 }
+.mceModernSkin .mceToolbar.mceDisabled {
+  background: rgba(0, 0, 0, 0.5);
+}
 .mceModernSkin .mceStatusbar {
   background: var(--wfe-bg);
   border-color: var(--wfe-border-color);

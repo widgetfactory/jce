@@ -423,7 +423,8 @@
 
             n = DOM.add(c, 'div', {
                 'class': cf.classPrefix + 'Toolbar ' + a,
-                "role": "toolbar"
+                "role": "toolbar",
+                id: ed.id + '_toolbar'
             });
 
             // Create toolbar and add the controls
