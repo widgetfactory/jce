@@ -438,7 +438,8 @@ img.mce-object.mce-object-img {
   background-color: #E2E4EF;
   color: #4F5B93;
 }
-.mceContentBody pre[data-mce-code] {
+.mceContentBody pre[data-mce-code],
+.mceContentBody div[data-mce-code] {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
@@ -471,6 +472,23 @@ img.mce-object.mce-object-img {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   font-size: 14px;
   color: #444;
+}
+.mceContentBody pre[data-mce-code] textarea,
+.mceContentBody div[data-mce-code] textarea {
+  resize: none;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: none;
+  padding: 0.5rem;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-size: 14px;
+  color: #444;
+  line-height: 1;
+}
+.mceContentBody pre[data-mce-code] textarea:focus,
+.mceContentBody div[data-mce-code] textarea:focus {
+  outline: none;
 }
 .mceContentBody.mceVisualBlocks pre[data-mce-code] {
   border: 1px solid #787679;
@@ -805,7 +823,7 @@ img.mce-object.mce-object-video {
 .mceVisualBlocks h5,
 .mceVisualBlocks h6,
 .mceVisualBlocks aside,
-.mceVisualBlocks div:not([class*="mce-"]):not([class*="wf-"]),
+.mceVisualBlocks div:not([class*="mce-"]):not([class*="wf-"]):not([data-mce-type]),
 .mceVisualBlocks section,
 .mceVisualBlocks article,
 .mceVisualBlocks header,
@@ -857,7 +875,7 @@ img.mce-object.mce-object-video {
 .mceVisualBlocks h5:before,
 .mceVisualBlocks h6:before,
 .mceVisualBlocks aside:before,
-.mceVisualBlocks div:not([class*="mce-"]):not([class*="wf-"]):before,
+.mceVisualBlocks div:not([class*="mce-"]):not([class*="wf-"]):not([data-mce-type]):before,
 .mceVisualBlocks section:before,
 .mceVisualBlocks article:before,
 .mceVisualBlocks header:before,
@@ -929,7 +947,7 @@ img.mce-object.mce-object-video {
 .mceVisualBlocks aside:before {
   content: "ASIDE";
 }
-.mceVisualBlocks div:not([class*="mce-"]):not([class*="wf-"]):before {
+.mceVisualBlocks div:not([class*="mce-"]):not([class*="wf-"]):not([data-mce-type]):before {
   content: "DIV";
 }
 .mceVisualBlocks section:before {

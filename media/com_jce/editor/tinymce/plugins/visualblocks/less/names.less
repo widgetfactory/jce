@@ -6,7 +6,7 @@ h4:before,
 h5:before,
 h6:before,
 aside:before,
-div:not([class*="mce-"]):not([class*="wf-"]):before,
+div:not([class*="mce-"]):not([class*="wf-"]):not([data-mce-type]):before,
 section:before,
 article:before,
 header:before,
@@ -88,7 +88,7 @@ aside:before {
     content: "ASIDE";
 }
 
-div:not([class*="mce-"]):not([class*="wf-"]):before {
+div:not([class*="mce-"]):not([class*="wf-"]):not([data-mce-type]):before {
     content: "DIV";
 }
 
