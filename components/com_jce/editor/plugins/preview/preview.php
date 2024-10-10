@@ -99,6 +99,9 @@ class WFPreviewPlugin extends WFEditorPlugin
 
         $this->processURLS($article);
 
+        // remove {responsive=off} from the beginning of the text
+        $article->text = preg_replace('#^\{responsive=off\}#', '', $article->text);
+
         return $article->text;
     }
 
