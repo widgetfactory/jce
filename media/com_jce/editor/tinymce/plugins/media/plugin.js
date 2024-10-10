@@ -507,6 +507,9 @@
     }
 
     function isSupportedMedia(editor, url) {
+        // remove query string from url
+        url = stripQuery(url);
+        
         // Video
         if (/\.(mp4|ogv|ogg|webm)$/.test(url) && isValidElement(editor, 'video')) {
 
