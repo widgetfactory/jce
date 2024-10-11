@@ -328,10 +328,7 @@ class WFApplication extends CMSObject
                 if (!empty($item->components)) {
                     $components = explode(',', $item->components);
 
-                    // add com_jce
-                    array_push($components, 'com_jce');
-
-                    // ensure com_jce is included
+                    // remove duplicates
                     $components = array_unique($components);
 
                     if (in_array($vars['option'], $components) === false) {
