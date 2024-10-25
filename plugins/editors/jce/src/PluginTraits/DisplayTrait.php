@@ -157,7 +157,7 @@ trait DisplayTrait
      *
      * @return  string
      */
-    public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
+    public function onDisplay($name, $content, $width = '100%', $height = '500', $col = 20, $row = 4, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
     {
         if ($this->isEditorEnabled() === false) {
 
