@@ -94,6 +94,9 @@ class WFPreviewPlugin extends WFEditorPlugin
             // set error reporting off to produce empty string on Fatal error
             error_reporting(0);
 
+            // set params flag for responsify
+            $params->set('wf_responsify', 0);
+
             $app->triggerEvent('onContentPrepare', array($context, &$article, &$params, $page));
         }
 
