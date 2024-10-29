@@ -82,8 +82,6 @@ class WFPreviewPlugin extends WFEditorPlugin
         // load system plugins
         PluginHelper::importPlugin('system');
 
-        $app->triggerEvent('onWfContentPreview', array($context, &$article, &$params, 0));
-
         // allow this to be skipped as some plugins can cause FATAL errors.
         if ((bool) $this->getParam('process_content', 1)) {
             $page = 0;
@@ -104,6 +102,8 @@ class WFPreviewPlugin extends WFEditorPlugin
 
         // remove {responsive=off} from the beginning of the text
         $article->text = preg_replace('#^\{responsive=off\}#', '', $article->text);
+
+        $app->triggerEvent('onWfContentPreview', array($context, &$article, &$params, 0));
 
         return $article->text;
     }
