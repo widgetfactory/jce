@@ -940,6 +940,18 @@
     content: "\e91a";
 }
 
+.mceModernSkin span.mce_columns_layout_2_2_1:before {
+    content: "\e91d";
+}
+
+.mceModernSkin span.mce_columns_layout_2_1_2:before {
+    content: "\e91e";
+}
+
+.mceModernSkin span.mce_columns_layout_1_2_2:before {
+    content: "\e91f";
+}
+
 .mceModernSkin span[class*="mce_columns_layout_"]:before {
     padding: 2px;
     line-height: 1.25;
