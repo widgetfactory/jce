@@ -2726,7 +2726,7 @@
             return new Promise(function (resolve, reject) {
                 var props = {};
 
-                $.each(['url', 'preview', 'width', 'height', 'description'], function (i, key) {
+                $.each(['url', 'preview', 'width', 'height', 'description', 'modified', 'size'], function (i, key) {
                     props[key] = $(item).attr('data-' + key) || '';
                 });
 
