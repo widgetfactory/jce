@@ -114,16 +114,15 @@ class WFJoomlaFileSystem extends WFFileSystem
             // cast to bool
             self::$allowroot = (bool) $allowroot;
 
-            // set $root to empty if it is allowed
-            if (self::$allowroot) {
-                $root = '';
-            } else {
-                // Revert to default if empty
-                if (empty($root)) {
-                    $root = 'images';
-                }
+            if (empty($root)) {
+                $root = 'images';
 
-                self::$restricted = array();
+                // set $root to empty if it is allowed
+                if (self::$allowroot) {
+                    $root = '';
+                } else {
+                    self::$restricted = array();
+                }
             }
 
             if (!empty($root)) {
