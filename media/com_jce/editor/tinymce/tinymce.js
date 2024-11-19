@@ -45408,8 +45408,7 @@
         data = data.replace(/[\n\r]/gi, '<br />');
 
         return ed.dom.createHTML(tag || 'pre', {
-          'data-mce-code': 'shortcode',
-          'data-mce-type': 'code'
+          'data-mce-code': 'shortcode'
         }, ed.dom.encode(data));
       }
 
@@ -45436,8 +45435,7 @@
         }
 
         return ed.dom.createHTML(tag || 'pre', {
-          'data-mce-code': type || 'script',
-          'data-mce-type': 'code'
+          'data-mce-code': type || 'script'
         }, ed.dom.encode(data));
       }
 
@@ -46115,13 +46113,13 @@
             // get element from match
             var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
 
-            // decode content
-            content = ed.dom.decode(content);
-
             // replace linebreaks with newline in some blocks
             if (type != 'script') {
               content = content.replace(/<br[^>]*?>/gi, '\n');
             }
+
+            // decode content
+            content = ed.dom.decode(content);
 
             // remove and replace <?php?> tags
             if (type == 'php') {
