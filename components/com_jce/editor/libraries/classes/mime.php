@@ -336,6 +336,7 @@ abstract class WFMimeType
         'application/vnd.openxmlformats-officedocument.presentationml.template' => 'potx',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.template' => 'xltx',
+        'application/vnd.ms-excel.sheet.macroEnabled.12' => 'xlsm',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx dotx',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.template' => 'dotx',
         'application/vnd.osgi.dp' => 'dp',
