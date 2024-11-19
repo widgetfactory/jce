@@ -56,13 +56,9 @@ trait FormTrait
         $fieldNode->setAttribute('disabled', 'false');
 
         $fieldParams = clone $this->params;
+        $fieldParams->merge($field->fieldparams);
 
-        // merge parameters not set in the field
-        foreach($fieldParams->toArray() as $key => $value) {
-            if ($field->fieldparams->get($key) === null) {
-                $field->fieldparams->set($key, $value);
-            }
-        }
+        $field->fieldparams = clone $fieldParams;
 
         $form->addFieldPath(JPATH_PLUGINS . '/fields/mediajce/fields');
 
@@ -95,13 +91,9 @@ trait FormTrait
         }
 
         $fieldParams = clone $this->params;
+        $fieldParams->merge($field->fieldparams);
 
-        // merge parameters not set in the field
-        foreach($fieldParams->toArray() as $key => $value) {
-            if ($field->fieldparams->get($key) === null) {
-                $field->fieldparams->set($key, $value);
-            }
-        }
+        $field->fieldparams = clone $fieldParams;
 
         // if extendedmedia is disabled, use restricted media support
         if ((int) $fieldParams->get('extendedmedia', 0) == 0 && is_array($field->value)) {
