@@ -40,7 +40,7 @@ trait EventsTrait
 
         // jce core does not require a key
         if (strpos($file, 'pkg_jce_') !== false) {
-            return true;
+            return false;
         }
 
         // jce plugins require a key
