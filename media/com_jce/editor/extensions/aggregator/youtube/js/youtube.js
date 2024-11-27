@@ -178,39 +178,41 @@ WFAggregator.add('youtube', {
     },
     /**
      * Parse the Youtube URI into component parts
-     * https://github.com/tinymce/tinymce/blob/master/js/tinymce/classes/util/URI.js
      */
     parseURL: function (url) {
         var o = {};
 
-        url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
-        $.each(["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"], function (i, v) {
-            var s = url[i];
-            if (s) {
-                o[v] = s;
-            }
-        });
+        try {
+            var urlObj = new URL(url);
+    
+            o.host = urlObj.hostname;
+            o.path = urlObj.pathname;
+            
+            // Parse query into a key-value map
+            o.query = {};
+            
+            urlObj.searchParams.forEach(function (value, key) {
+                o.query[key] = value;
+            });
+    
+            o.anchor = urlObj.hash ? urlObj.hash.substring(1) : null;
 
+        } catch (e) {
+            console.error("Invalid URL:", url);
+        }
+    
         return o;
     },
     setValues: function (data) {
         var self = this, id = '',
-            src = data.src || data.data || '',
-            query = {};
+            src = data.src || data.data || '';
 
         if (!src) {
             return data;
         }
 
-        //Wf.JSON.request('oEmbedWrapper', ['youtube', encodeURIComponent(src)], function(o) {});
-
         // parse URI
         var u = this.parseURL(src);
-
-        if (u.query) {
-            // split query
-            query = Wf.String.query(u.query);
-        }
 
         // rebuild src
         src = 'https://' + u.host + '' + u.path;
@@ -219,9 +221,8 @@ WFAggregator.add('youtube', {
             data.youtube_privacy = 1;
         }
 
-        if (query.v) {
-            id = query.v;
-            delete query.v;
+        if (u.query.v) {
+            id = u.query.v;
         } else {
             var s = /\/?(embed|live|v)?\/([\w-]+)\b/.exec(u.path);
 
@@ -231,7 +232,12 @@ WFAggregator.add('youtube', {
         }
 
         // process values
-        $.each(query, function (key, val) {
+        $.each(u.query, function (key, val) {
+            // skip "v" key
+            if (key == 'v') {
+                return true;
+            }
+            
             try {
                 val = decodeURIComponent(val);
             } catch (e) { 
