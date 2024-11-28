@@ -868,52 +868,90 @@
     function mergeTableCells(ed, startCell, table) {
         var dom = ed.dom;
         var existingTable = dom.getParent(startCell, 'table');
-
+    
         var startRowIndex = startCell.parentNode.rowIndex;
         var startColIndex = Array.prototype.indexOf.call(startCell.parentNode.cells, startCell);
-
+    
         var maxCellsInNewContent = 0;
-
+    
+        // Determine the maximum number of cells in the pasted content
         for (var i = 0; i < table.rows.length; i++) {
             maxCellsInNewContent = Math.max(maxCellsInNewContent, table.rows[i].cells.length);
         }
-
-        // Expand existing rows up to the insertion point to ensure they have enough cells
-        for (var i = 0; i <= startRowIndex; i++) {
+    
+        // Calculate the required number of cells for the target row
+        var requiredCellCount = startColIndex + maxCellsInNewContent;
+    
+        // Determine how many extra cells the target row needs
+        var extraCellsNeeded = 0;
+        var targetRow = existingTable.rows[startRowIndex];
+        if (targetRow) {
+            extraCellsNeeded = Math.max(0, requiredCellCount - targetRow.cells.length);
+        }
+    
+        // Adjust rows in the table (before, including, and after the target row)
+        for (var i = 0; i < existingTable.rows.length; i++) {
             var currentRow = existingTable.rows[i];
-            var requiredCellCount = startColIndex + maxCellsInNewContent;
-
-            while (currentRow.cells.length < requiredCellCount) {
-                currentRow.insertCell(-1); // Add cells to the end of the row as needed
+    
+            // Skip header rows (rows in <thead> or containing <th>)
+            if (currentRow.parentNode.tagName === 'THEAD' || currentRow.cells[0].tagName === 'TH') {
+                continue;
+            }
+    
+            // Expand the current row by the same number of extra cells as added to the target row
+            for (var j = 0; j < extraCellsNeeded; j++) {
+                currentRow.insertCell(-1).innerHTML = '<br data-mce-bogus="1" />';
             }
         }
-
-        // Now proceed with merging the tables, knowing all rows up to the insertion point can accommodate the new content
+    
+        // Expand header rows in the <thead> section
+        if (extraCellsNeeded > 0) {
+            var headerRows = existingTable.querySelectorAll('thead > tr');
+            headerRows.forEach(function (headerRow) {
+                for (var i = 0; i < extraCellsNeeded; i++) {
+                    var newCell = dom.create('th'); // Create <th> for header rows
+                    newCell.innerHTML = '<br data-mce-bogus="1" />';
+                    headerRow.appendChild(newCell);
+                }
+            });
+        }
+    
+        // Add new rows if the pasted content exceeds the table's current size
+        var totalRowsNeeded = startRowIndex + table.rows.length;
+        while (existingTable.rows.length < totalRowsNeeded) {
+            var newRow = existingTable.insertRow(-1);
+            // Add the same number of extra cells to newly created rows
+            for (var i = 0; i < requiredCellCount; i++) {
+                newRow.insertCell(-1).innerHTML = '<br data-mce-bogus="1" />';
+            }
+        }
+    
+        // Merge the pasted table content into the target table
         for (var i = 0; i < table.rows.length; i++) {
             var currentRow = existingTable.rows[startRowIndex + i] || existingTable.insertRow(startRowIndex + i);
-
+    
             for (var j = 0; j < table.rows[i].cells.length; j++) {
                 var targetCellIndex = startColIndex + j;
-
+    
                 // Ensure targetCellIndex is within the currentRow's cell length
                 while (currentRow.cells.length <= targetCellIndex) {
-                    currentRow.insertCell(-1); // This might not be necessary if the previous loop has already adjusted the row length
+                    currentRow.insertCell(-1).innerHTML = '<br data-mce-bogus="1" />';
                 }
-
+    
                 // Ensure the cell has content
                 var cell = table.rows[i].cells[j];
-
+    
                 if (cell.innerHTML.trim() === '') {
                     cell.innerHTML = '<br data-mce-bogus="1" />';
                 }
-
+    
                 var currentCell = currentRow.cells[targetCellIndex];
                 currentCell.innerHTML = cell.innerHTML;
             }
         }
-
+    
         return true;
-    }
+    }               
 
     tinymce.PluginManager.add('table', function (ed, url) {
         var winMan, clipboardRows, hasCellSelection = true; // Might be selected cells on reload
