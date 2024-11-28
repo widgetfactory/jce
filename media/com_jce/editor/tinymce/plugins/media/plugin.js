@@ -286,7 +286,7 @@
                     return $1;
                 });
 
-                return 'youtube' + c + '/embed/' + d;
+                return 'youtube' + c + '/embed/' + id;
             });
 
             defaultValues[provider].src = src;
