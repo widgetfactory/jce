@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/* global $, WFAggregator, Wf */
+/* global $, WFAggregator, */
 
 WFAggregator.add('youtube', {
     /**
@@ -71,18 +71,13 @@ WFAggregator.add('youtube', {
             data = {},
             args = {},
             type = this.getType(),
-            id, query = {};
+            id;
 
         // parse URI
         var u = this.parseURL(src);
 
-        if (u.query) {
-            // split query
-            query = Wf.String.query(u.query);
-        }
-
         // extend args with query data
-        $.extend(args, query);
+        $.extend(args, u.query);
 
         // ssl url
         src = src.replace(/^(http:)?\/\//, 'https://');
@@ -284,9 +279,7 @@ WFAggregator.add('youtube', {
                 args += c;
             }
 
-            args += '/embed';
-
-            args += '/' + id;
+            args += '/embed/' + id;
 
             // add time
             if (u.anchor) {
