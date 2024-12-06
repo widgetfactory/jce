@@ -14,7 +14,10 @@ WFAggregator.add('video', {
     /**
      * Parameter Object
      */
-    params: {},
+    params: {
+        width: '',
+        height: ''
+    },
 
     props: {
         autoplay: 0,
@@ -44,6 +47,16 @@ WFAggregator.add('video', {
      * Check whether a media type is supported
      */
     isSupported: function (v) {
-        return false;
+        // remove any query string
+        v = v.split('?')[0];
+        
+        return /\.(mp4|m4v|ogv|ogg|webm)$/.test(v);
+    },
+
+    getAttributes: function (src) {
+        return {
+            'width': this.params.width,
+            'height': this.params.height
+        };
     }
 });
