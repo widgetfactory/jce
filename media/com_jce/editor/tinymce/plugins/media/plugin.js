@@ -185,8 +185,6 @@
             },
             'video': {
                 'src': value,
-                'width': 560,
-                'height': 315,
                 'controls': true,
                 'type': 'video/mpeg'
             },
