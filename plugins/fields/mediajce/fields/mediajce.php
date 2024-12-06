@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Form\Field\MediaField;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Helper\MediaHelper;
@@ -99,7 +100,12 @@ class JFormFieldMediaJce extends MediaField
 
         // component must be installed and enabled
         if (!ComponentHelper::isEnabled('com_jce')) {
-            $data;
+            return $data;
+        }
+        
+        // plugin must be enabled
+        if (!PluginHelper::isEnabled('system', 'jce')) {
+            return $data;
         }
 
         $config = array(
