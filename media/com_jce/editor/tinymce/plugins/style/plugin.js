@@ -12,53 +12,60 @@
 
 (function () {
     tinymce.PluginManager.add('style', function (ed, url) {
-            
-            function isRootNode(node) {
-                return node == ed.dom.getRoot();
-            }
-            
-            // Register commands
-            ed.addCommand('mceStyleProps', function () {
-                var applyStyleToBlocks = false;
-                var blocks = ed.selection.getSelectedBlocks();
-                var styles = [];
 
-                if (blocks.length === 1) {
-                    styles.push(ed.selection.getNode().style.cssText);
-                } else {
-                    tinymce.each(blocks, function (block) {
-                        styles.push(ed.dom.getAttrib(block, 'style'));
-                    });
-                    applyStyleToBlocks = true;
-                }
+        var isMobile = window.matchMedia("(max-width: 600px)").matches;
 
-                ed.windowManager.open({
-                    file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
-                    size: 'mce-modal-landscape-xxlarge'
-                }, {
-                    applyStyleToBlocks: applyStyleToBlocks,
-                    plugin_url: url,
-                    styles: styles
+        // not currently supported on mobile
+        if (isMobile) {
+            return;
+        }
+
+        function isRootNode(node) {
+            return node == ed.dom.getRoot();
+        }
+
+        // Register commands
+        ed.addCommand('mceStyleProps', function () {
+            var applyStyleToBlocks = false;
+            var blocks = ed.selection.getSelectedBlocks();
+            var styles = [];
+
+            if (blocks.length === 1) {
+                styles.push(ed.selection.getNode().style.cssText);
+            } else {
+                tinymce.each(blocks, function (block) {
+                    styles.push(ed.dom.getAttrib(block, 'style'));
                 });
-            });
+                applyStyleToBlocks = true;
+            }
 
-            ed.addCommand('mceSetElementStyle', function (ui, v) {
-                var node = ed.selection.getNode();
-
-                if (node) {
-                    ed.dom.setAttrib(node, 'style', v);
-                    ed.execCommand('mceRepaint');
-                }
+            ed.windowManager.open({
+                file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
+                size: 'mce-modal-landscape-xxlarge'
+            }, {
+                applyStyleToBlocks: applyStyleToBlocks,
+                plugin_url: url,
+                styles: styles
             });
+        });
 
-            ed.onNodeChange.add(function (ed, cm, n) {
-                cm.setDisabled('style', isRootNode(n) || n.hasAttribute('data-mce-bogus'));
-            });
+        ed.addCommand('mceSetElementStyle', function (ui, v) {
+            var node = ed.selection.getNode();
 
-            // Register buttons
-            ed.addButton('style', {
-                title: 'style.desc',
-                cmd: 'mceStyleProps'
-            });
+            if (node) {
+                ed.dom.setAttrib(node, 'style', v);
+                ed.execCommand('mceRepaint');
+            }
+        });
+
+        ed.onNodeChange.add(function (ed, cm, n) {
+            cm.setDisabled('style', isRootNode(n) || n.hasAttribute('data-mce-bogus'));
+        });
+
+        // Register buttons
+        ed.addButton('style', {
+            title: 'style.desc',
+            cmd: 'mceStyleProps'
+        });
     });
 })();
