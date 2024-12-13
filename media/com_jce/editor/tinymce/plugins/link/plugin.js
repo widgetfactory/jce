@@ -181,7 +181,12 @@
                 attributes: {}
             }, params);
 
-            if (params.basic_dialog !== true) {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+
+            // use basic dialog if set in param or device screen size < 768px
+            var isBasicDialog = params.basic_dialog === true || isMobile;
+
+            if (!isBasicDialog) {
                 return;
             }
 
