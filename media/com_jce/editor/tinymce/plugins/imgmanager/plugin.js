@@ -133,11 +133,24 @@
         ed.onPreInit.add(function () {
             var params = ed.getParam('imgmanager', {});
 
-            if (params.basic_dialog !== true) {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+
+			function hasFileBrowser() {
+				if (params.basic_dialog_filebrowser === false) {
+					return false;
+				}
+
+				return params.basic_dialog_filebrowser || isMobile;
+			}
+
+            // use basic dialog if set in param or device screen size < 768px
+            var isBasicDialog = params.basic_dialog === true || isMobile;
+
+            if (isBasicDialog !== true) {
                 return;
             }
 
-            var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, captionCtrl, descriptionCtrl;
+            var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, descriptionCtrl;
 
             var args = {
                 label: ed.getLang('dlg.url', 'URL'),
@@ -145,8 +158,8 @@
                 clear: true
             };
 
-            if (params.basic_dialog_filebrowser) {
-                tinymce.extend(args, {
+            if (hasFileBrowser()) {
+                extend(args, {
                     picker: true,
                     picker_label: 'browse',
                     picker_icon: 'image',
@@ -175,57 +188,6 @@
                 });
             }
 
-            if (params.upload) {
-                extend(args, {
-                    upload_label: 'upload.label',
-                    upload_accept: params.upload.filetypes,
-                    upload: function (e, file) {
-                        if (file && file.name) {
-                            var url = self.getUploadURL(file);
-
-                            if (!url) {
-                                ed.windowManager.alert({
-                                    text: ed.getLang('upload.file_extension_error', 'File type not supported'),
-                                    title: ed.getLang('upload.error', 'Upload Error')
-                                });
-                                return false;
-                            }
-
-                            // set disabled
-                            urlCtrl.setLoading(true);
-
-                            extend(file, {
-                                filename: file.name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, ''),
-                                upload_url: url
-                            });
-
-                            ed.plugins.upload.upload(file, function (response) {
-                                urlCtrl.setLoading(false);
-
-                                var files = response.files || [], item = files.length ? files[0] : {};
-
-                                if (item.file) {
-                                    urlCtrl.value(item.file);
-                                    return true;
-                                }
-
-                                ed.windowManager.alert({
-                                    text: 'Unable to upload file!',
-                                    title: ed.getLang('upload.error', 'Upload Error')
-                                });
-
-                            }, function (message) {
-                                ed.windowManager.alert({
-                                    text: message,
-                                    title: ed.getLang('upload.error', 'Upload Error')
-                                });
-                                urlCtrl.setLoading(false);
-                            });
-                        }
-                    }
-                });
-            }
-
             urlCtrl = cm.createUrlBox('image_url', args);
 
             form.add(urlCtrl);
@@ -246,13 +208,6 @@
 
             form.add(stylesListCtrl);
 
-            /*captionCtrl = cm.createCheckBox('image_caption', {
-                label: ed.getLang('image.caption', 'Caption'),
-                name: 'caption'
-            });
-
-            form.add(captionCtrl);*/
-
             // Register commands
             ed.addCommand('mceImage', function () {
                 var node = ed.selection.getNode();
@@ -266,7 +221,7 @@
                     items: [form],
                     size: 'mce-modal-landscape-small',
                     open: function () {
-                        var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', alt = '', caption = false;
+                        var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', alt = '';
 
                         if (isImage(node)) {
                             var src = ed.dom.getAttrib(node, 'src');
@@ -277,12 +232,6 @@
 
                             var alt = ed.dom.getAttrib(node, 'alt');
 
-                            var figcaption = ed.dom.getNext(node, 'figcaption');
-
-                            if (figcaption) {
-                                caption = true;
-                            }
-
                             var classes = ed.dom.getAttrib(node, 'class');
 
                             stylesListCtrl.value(classes);
@@ -290,10 +239,6 @@
 
                         urlCtrl.value(src);
                         descriptionCtrl.value(alt);
-
-                        if (captionCtrl) {
-                            captionCtrl.checked(caption);
-                        }
 
                         window.setTimeout(function () {
                             urlCtrl.focus();
@@ -331,30 +276,7 @@
 
                                 args = extend(args, self.getAttributes(params));
 
-                                getDataAndInsert(args).then(function () {
-                                    node = ed.selection.getNode();
-
-                                    if (captionCtrl) {
-                                        var figcaption = ed.dom.getNext(node, 'figcaption');
-
-                                        if (data.caption && data.alt) {
-                                            if (!figcaption) {
-                                                ed.selection.select(node);
-
-                                                ed.formatter.apply('figure', {
-                                                    'caption': data.alt
-                                                });
-                                            } else {
-                                                figcaption.textContent = data.alt;
-                                            }
-                                        } else {
-                                            if (figcaption) {
-                                                ed.dom.remove(figcaption.parentNode, 1);
-                                                ed.dom.remove(figcaption);
-                                            }
-                                        }
-                                    }
-                                });
+                                getDataAndInsert(args).then();
                             },
                             classes: 'primary',
                             scope: self
