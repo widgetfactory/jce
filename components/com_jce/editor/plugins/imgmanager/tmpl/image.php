@@ -13,7 +13,7 @@ use Joomla\CMS\Language\Text;
 
 ?>
 <div class="uk-grid uk-grid-small">
-    <div class="uk-width-4-5 uk-flex-item-auto">
+    <div class="uk-width-1-1 uk-width-medium-4-5 uk-flex-item-auto">
         <div class="uk-form-row uk-grid uk-grid-small">
             <label for="src" class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5" title="<?php echo Text::_('WF_LABEL_URL_DESC'); ?>">
                 <?php echo Text::_('WF_LABEL_URL'); ?>
