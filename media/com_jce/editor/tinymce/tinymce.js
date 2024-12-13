@@ -14414,7 +14414,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {}, css = '';
+    var div = DOM.create('div', {}, content), styles = {};
 
     styles = tinymce.extend(styles, parseCSS(content));
 
@@ -14434,16 +14434,10 @@
         return true;
       }
       
-      if (!embed_stylesheet) {
+      {
         DOM.setStyles(DOM.select(selector, div), value.styles);
-      } else {
-        css += value.text;
       }
     });
-
-    if (css) {
-      div.prepend(DOM.create('style', { type: 'text/css' }, css));
-    }
 
     content = div.innerHTML;
 
@@ -16315,7 +16309,7 @@
   function convertURLs(editor, content) {
 
       var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
-      var ux = '((?:news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
+      var ux = '((?:news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&@\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
 
       var attribRe = '(?:(?:[a-z0-9_-]+)=["\'])'; // match attribute before url, eg: href="url"
       var bracketRe = '(?:\}|\].?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
@@ -17371,9 +17365,6 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-        if (predicate && predicate(node)) {
-          break;
-        }
 
         parents.push(node);
       }
@@ -22009,7 +22000,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, time || 0);
+        }, 0);
       };
 
       func.stop = function () {
@@ -29762,6 +29753,16 @@
           'class': 'mceFlexLayout ' + (settings['class'] ? ' ' + settings['class'] : ''),
           role: 'group'
         }, html);
+      },
+
+      postRender: function () {
+        var i;
+    
+        this._super();
+    
+        for (i = 0; i < this.controls.length; i++) {
+          this.controls[i].postRender();
+        }
       }
     });
   })(tinymce);
@@ -33899,6 +33900,9 @@
         args.format = args.format || 'html';
         args.get = true;
         args.getInner = true;
+
+        self._selectionOverrides.hideFakeCaret();
+        self._selectionOverrides.destroy();
 
         // Do preprocessing
         if (!args.no_events) {
@@ -38824,6 +38828,8 @@
         var top = Math.round(Math.max(vp.y + 10, vp.y + (vp.h / 2.0) - (p.h / 2.0)));
         var left = Math.round(Math.max(vp.x + 10, vp.x + (vp.w / 2.0) - (p.w / 2.0)));
 
+        left = Math.max(0, left - 10);
+
         DOM.setStyles(id, { 'left': left, 'top': top });
       },
 
@@ -40035,7 +40041,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if (split && (!format.mixed || !isBlock(formatRoot))) {
+            if ((!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -40050,7 +40056,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container, true);
+          return wrapAndSplit(findFormatRoot(container), container, container);
         }
 
         function unwrap(start) {
@@ -43882,8 +43888,17 @@
       }
 
       function destroy() {
+        var dom = editor.dom,
+          $realSelectionContainer;
+        
         fakeCaret.destroy();
         selectedContentEditableNode = null;
+
+        $realSelectionContainer = dom.get(realSelectionId);
+
+        if ($realSelectionContainer) {
+          dom.remove($realSelectionContainer);
+        }
       }
 
       function hideFakeCaret() {
@@ -44515,7 +44530,7 @@
       Node = tinymce.html.Node;
 
     function split(str, delim) {
-      return str.split(delim || ',');
+      return str.split(',');
     }
 
     // list of HTML tags
@@ -48462,7 +48477,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return (prefix || 'blobid') + (count++);
+          return ('blobid') + (count++);
       };
 
       function isSupportedImage(value) {
