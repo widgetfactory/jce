@@ -3094,6 +3094,27 @@ select.mceNativeListBox {
     flex-wrap: wrap;
 }
 
+.mceGridLayout {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+
+.mceSizes .mceSeparator {
+    margin: 0;
+    width: 64px;
+    height: 32px;
+    background: none;
+}
+
+.mceSizes .mceSeparator::after {
+    content: "x";
+    display: block;
+    text-align: center;
+    line-height: 32px;
+    font-size: 1em;
+}
+
 @media (max-height: 640px) {
     .mceModalBody .mceModalHeader {
         padding: 4px 8px;
