@@ -14,6 +14,7 @@
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
         each = tinymce.each,
+        extend = tinymce.extend,
         VK = tinymce.VK,
         TreeWalker = tinymce.dom.TreeWalker,
         Delay = tinymce.util.Delay;
@@ -868,42 +869,42 @@
     function mergeTableCells(ed, startCell, table) {
         var dom = ed.dom;
         var existingTable = dom.getParent(startCell, 'table');
-    
+
         var startRowIndex = startCell.parentNode.rowIndex;
         var startColIndex = Array.prototype.indexOf.call(startCell.parentNode.cells, startCell);
-    
+
         var maxCellsInNewContent = 0;
-    
+
         // Determine the maximum number of cells in the pasted content
         for (var i = 0; i < table.rows.length; i++) {
             maxCellsInNewContent = Math.max(maxCellsInNewContent, table.rows[i].cells.length);
         }
-    
+
         // Calculate the required number of cells for the target row
         var requiredCellCount = startColIndex + maxCellsInNewContent;
-    
+
         // Determine how many extra cells the target row needs
         var extraCellsNeeded = 0;
         var targetRow = existingTable.rows[startRowIndex];
         if (targetRow) {
             extraCellsNeeded = Math.max(0, requiredCellCount - targetRow.cells.length);
         }
-    
+
         // Adjust rows in the table (before, including, and after the target row)
         for (var i = 0; i < existingTable.rows.length; i++) {
             var currentRow = existingTable.rows[i];
-    
+
             // Skip header rows (rows in <thead> or containing <th>)
             if (currentRow.parentNode.tagName === 'THEAD' || currentRow.cells[0].tagName === 'TH') {
                 continue;
             }
-    
+
             // Expand the current row by the same number of extra cells as added to the target row
             for (var j = 0; j < extraCellsNeeded; j++) {
                 currentRow.insertCell(-1).innerHTML = '<br data-mce-bogus="1" />';
             }
         }
-    
+
         // Expand header rows in the <thead> section
         if (extraCellsNeeded > 0) {
             var headerRows = existingTable.querySelectorAll('thead > tr');
@@ -915,7 +916,7 @@
                 }
             });
         }
-    
+
         // Add new rows if the pasted content exceeds the table's current size
         var totalRowsNeeded = startRowIndex + table.rows.length;
         while (existingTable.rows.length < totalRowsNeeded) {
@@ -925,33 +926,203 @@
                 newRow.insertCell(-1).innerHTML = '<br data-mce-bogus="1" />';
             }
         }
-    
+
         // Merge the pasted table content into the target table
         for (var i = 0; i < table.rows.length; i++) {
             var currentRow = existingTable.rows[startRowIndex + i] || existingTable.insertRow(startRowIndex + i);
-    
+
             for (var j = 0; j < table.rows[i].cells.length; j++) {
                 var targetCellIndex = startColIndex + j;
-    
+
                 // Ensure targetCellIndex is within the currentRow's cell length
                 while (currentRow.cells.length <= targetCellIndex) {
                     currentRow.insertCell(-1).innerHTML = '<br data-mce-bogus="1" />';
                 }
-    
+
                 // Ensure the cell has content
                 var cell = table.rows[i].cells[j];
-    
+
                 if (cell.innerHTML.trim() === '') {
                     cell.innerHTML = '<br data-mce-bogus="1" />';
                 }
-    
+
                 var currentCell = currentRow.cells[targetCellIndex];
                 currentCell.innerHTML = cell.innerHTML;
             }
         }
-    
+
         return true;
-    }               
+    }
+
+    function updateCell(ed, td, data) {
+        var doc = ed.getDoc();
+
+        var curCellType = td.nodeName.toLowerCase();
+
+        ed.dom.setAttrib(td, 'style', data.style);
+
+        if (curCellType != data.celltype) {
+            // changing to a different node type
+            var newCell = doc.createElement(data.celltype);
+
+            for (var c = 0; c < td.childNodes.length; c++) {
+                newCell.appendChild(td.childNodes[c].cloneNode(1));
+            }
+
+            for (var a = 0; a < td.attributes.length; a++) {
+                ed.dom.setAttrib(newCell, td.attributes[a].name, ed.dom.getAttrib(td, td.attributes[a].name));
+            }
+
+            td.parentNode.replaceChild(newCell, td);
+            td = newCell;
+        }
+
+        return td;
+    }
+
+    function updateCells(ed, data) {
+        var elm = ed.selection.getStart(), tdElm = ed.dom.getParent(elm, "td,th"), tableElm = ed.dom.getParent(elm, "table");
+
+        var cells = ed.dom.select('td.mceSelected,th.mceSelected', tableElm);
+
+        if (!cells.length) {
+            cells.push(tdElm);
+        }
+
+        // Update all selected sells
+        each(cells, function (td) {
+            updateCell(ed, td, data);
+        });
+
+        ed.addVisual();
+        ed.nodeChanged();
+        ed.undoManager.add();
+    }
+
+    function updateRow(ed, tr, data) {
+        var dom = ed.dom,
+            doc = ed.getDoc();
+
+        var curRowType = tr.parentNode.nodeName.toLowerCase();
+        var rowtype = data.rowtype;
+
+        var tableElm = dom.getParent(ed.selection.getStart(), "table");
+        var rows = tableElm.rows;
+
+        if (!rows.length) {
+            rows.push(tr);
+        }
+
+        dom.setAttrib(tr, 'style', data.style);
+
+        // Setup new rowtype
+        if (curRowType != rowtype && !data.skip_parent) {
+            // first, clone the node we are working on
+            var newRow = tr.cloneNode(1);
+
+            // next, find the parent of its new destination (creating it if necessary)
+            var theTable = dom.getParent(tr, "table");
+            var dest = rowtype;
+            var newParent = null;
+
+            for (var i = 0; i < theTable.childNodes.length; i++) {
+                if (theTable.childNodes[i].nodeName.toLowerCase() == dest) {
+                    newParent = theTable.childNodes[i];
+                }
+            }
+
+            if (newParent == null) {
+                newParent = doc.createElement(dest);
+
+                if (dest == "thead") {
+                    if (theTable.firstChild.nodeName == 'CAPTION') {
+                        ed.dom.insertAfter(newParent, theTable.firstChild);
+                    } else {
+                        theTable.insertBefore(newParent, theTable.firstChild);
+                    }
+                } else {
+                    theTable.appendChild(newParent);
+                }
+            }
+
+            // append the row to the new parent
+            newParent.appendChild(newRow);
+
+            // remove the original
+            tr.parentNode.removeChild(tr);
+
+            // set tr to the new node
+            tr = newRow;
+
+            // update all td cells in the header to th
+            var cells = ed.dom.select('td', tr);
+
+            each(cells, function (cell) {
+                ed.dom.rename(cell, 'th');
+            });
+        }
+    }
+
+    function updateRows(ed, data) {
+        var dom = ed.dom, trElm, tableElm;
+
+        trElm = dom.getParent(ed.selection.getStart(), "tr");
+        tableElm = dom.getParent(ed.selection.getStart(), "table");
+
+        var rows = [], selectedCells = dom.select('td.mceSelected,th.mceSelected', trElm);
+
+        // only the current row
+        if (!selectedCells.length) {
+            rows.push(trElm);
+        } else {
+            data.skip_parent = true;
+            
+            // all rows
+            each(tableElm.rows, function (tr) {
+                var i;
+
+                for (i = 0; i < tr.cells.length; i++) {
+                    if (dom.hasClass(tr.cells[i], 'mceSelected')) {
+                        rows.push(tr);
+                        return;
+                    }
+                }
+            });
+        }
+
+        each(rows, function (tr) {
+            updateRow(ed, tr, data);
+        });
+
+        ed.addVisual();
+        ed.nodeChanged();
+        ed.undoManager.add();
+    }
+
+    function insertTableHtml(ed, tableHtml) {
+        // Move table
+        if (ed.settings.fix_table_elements) {
+            var patt = '';
+
+            ed.focus();
+            ed.selection.setContent('<br class="_mce_marker" />');
+
+            tinymce.each('h1,h2,h3,h4,h5,h6,p'.split(','), function (n) {
+                if (patt) {
+                    patt += ',';
+                }
+                patt += n + ' ._mce_marker';
+            });
+
+            each(ed.dom.select(patt), function (n) {
+                ed.dom.split(ed.dom.getParent(n, 'h1,h2,h3,h4,h5,h6,p'), n);
+            });
+
+            ed.dom.setOuterHTML(ed.dom.select('br._mce_marker')[0], tableHtml);
+        } else {
+            ed.execCommand('mceInsertContent', false, tableHtml);
+        }
+    }
 
     tinymce.PluginManager.add('table', function (ed, url) {
         var winMan, clipboardRows, hasCellSelection = true; // Might be selected cells on reload
@@ -1027,7 +1198,7 @@
 
                     if (o.internal && !elm) {
                         elm = ed.dom.create('div', {}, o.content);
-                    } 
+                    }
 
                     if (!elm) {
                         return;
@@ -1070,12 +1241,12 @@
                                     cells.push(cell);
                                 }
                             });
-                            
+
                             if (cells.length) {
                                 // If the number of selected table cells is equal to the total number of table cells, then return the whole row
                                 if (cells.length === row.cells.length) {
                                     rows.push(row);
-                                // Otherwise, return only the selected cells
+                                    // Otherwise, return only the selected cells
                                 } else {
                                     rows.push(cells);
                                 }
@@ -1087,27 +1258,29 @@
                             if (rows.length === table.rows.length) {
                                 var tmp = table.cloneNode(true);
                                 ed.dom.removeClass(ed.dom.select('td.mceSelected,th.mceSelected', tmp), 'mceSelected');
-                                
+
                                 o.content = tmp.outerHTML;
                                 return;
                             }
-                            
+
                             var content = rows.map(function (row) {
                                 var cells = row.map(function (cell) {
                                     var tmp = cell.cloneNode(true);
                                     ed.dom.removeClass(tmp, 'mceSelected');
-                                    
+
                                     return tmp.outerHTML;
                                 });
 
                                 return '<tr>' + cells.join('') + '</tr>';
                             });
-    
+
                             o.content = '<table>' + content.join('') + '</table>';
                         }
                     }
                 }
             });
+
+            basicDialog();
         });
 
         ed.onPreProcess.add(function (ed, args) {
@@ -2170,6 +2343,450 @@
             });
         }
 
+        function showTableDialog(ed, params) {
+            var cm = ed.controlManager, form = cm.createForm('table_form');
+
+            var colsCtrl = cm.createTextBox('table_cols', {
+                label: ed.getLang('table.cols', 'Columns'),
+                name: 'cols',
+                subtype: 'number',
+                attributes: {
+                    step: 1,
+                    min: 1
+                }
+            });
+
+            form.add(colsCtrl);
+
+            var rowCtrl = cm.createTextBox('table_rows', {
+                label: ed.getLang('table.rows', 'Rows'),
+                name: 'rows',
+                subtype: 'number',
+                attributes: {
+                    step: 1,
+                    min: 1
+                }
+            });
+
+            form.add(rowCtrl);
+
+            var cellSpacingCtrl = cm.createTextBox('table_cellspacing', {
+                label: ed.getLang('table.cellspacing', 'Cell Spacing'),
+                name: 'cellspacing',
+                subtype: 'number',
+                attributes: {
+                    step: 1,
+                    min: 1
+                }
+            });
+
+            form.add(cellSpacingCtrl);
+
+            var cellPaddingCtrl = cm.createTextBox('table_cellpadding', {
+                label: ed.getLang('table.cellpadding', 'Cell Padding'),
+                name: 'cellpadding',
+                subtype: 'number',
+                attributes: {
+                    step: 1,
+                    min: 1
+                }
+            });
+
+            form.add(cellPaddingCtrl);
+
+            var widthCtrl = cm.createTextBox('table_width', {
+                label: ed.getLang('table.width', 'Width'),
+                name: 'width'
+            });
+
+            form.add(widthCtrl);
+
+            var heightCtrl = cm.createTextBox('table_height', {
+                label: ed.getLang('table.height', 'Height'),
+                name: 'height'
+            });
+
+            form.add(heightCtrl);
+
+            var captionCtrl = cm.createCheckBox('table_caption', {
+                label: ed.getLang('table.caption', 'Caption'),
+                name: 'caption'
+            });
+
+            form.add(captionCtrl);
+
+            // Register commands
+            ed.addCommand('mceInsertTable', function () {
+                ed.windowManager.open({
+                    title: ed.getLang('table.desc', 'Table'),
+                    items: [form],
+                    size: 'mce-modal-landscape-small',
+                    open: function () {
+                        var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getNode(), "table");
+
+                        var width = '', height = '', rows = 2, cols = 2, caption = false, cellspacing = '', cellpadding = '';
+
+                        if (elm) {
+                            label = ed.getLang('update', 'Update');
+
+                            var rowsAr = elm.rows, rows = rowsAr.length;
+                            var cols = 0;
+
+                            for (var i = 0; i < rows; i++) {
+                                if (rowsAr[i].cells.length > cols) {
+                                    cols = rowsAr[i].cells.length;
+                                }
+                            }
+
+                            caption = elm.getElementsByTagName('caption').length > 0;
+
+                            rowCtrl.setDisabled(true);
+                            colsCtrl.setDisabled(true);
+
+                            width = elm.width || '';
+                            height = elm.height || '';
+                            cellspacing = elm.cellSpacing || '';
+                            cellpadding = elm.cellPadding || '';
+
+                            var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                            width = styles.width || '';
+                            height = styles.height || '';
+
+                            // remove px value from width and height
+                            width = width.replace('px', '');
+                            height = height.replace('px', '');
+                        }
+
+                        widthCtrl.value(width);
+                        heightCtrl.value(height);
+                        rowCtrl.value(rows);
+                        colsCtrl.value(cols);
+
+                        cellSpacingCtrl.value(cellspacing);
+                        cellPaddingCtrl.value(cellpadding);
+
+                        captionCtrl.checked(caption);
+
+                        DOM.setHTML(this.id + '_insert', label);
+                    },
+                    buttons: [
+                        {
+                            title: ed.getLang('common.cancel', 'Cancel'),
+                            id: 'cancel'
+                        },
+                        {
+                            title: ed.getLang('insert', 'Insert'),
+                            id: 'insert',
+                            onsubmit: function (e) {
+                                var data = form.submit();
+
+                                // add px to width if it is an integer
+                                if (data.width && !isNaN(data.width)) {
+                                    data.width += 'px';
+                                }
+
+                                // add px to height if it is an integer
+                                if (data.height && !isNaN(data.height)) {
+                                    data.height += 'px';
+                                }
+
+                                var args = {
+                                    cellspacing: data.cellspacing,
+                                    cellpadding: data.cellpadding,
+                                    style: {
+                                        width: data.width,
+                                        height: data.height
+                                    }
+                                };
+
+                                var elm = ed.dom.getParent(ed.selection.getNode(), "table");
+
+                                if (elm) {
+                                    var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                                    extend(styles, args.style);
+
+                                    args.style = ed.dom.serializeStyle(styles);
+
+                                    ed.dom.setAttribs(elm, args);
+
+                                    if (data.caption) {
+                                        if (!elm.getElementsByTagName('caption').length) {
+                                            var capEl = elm.ownerDocument.createElement('caption');
+                                            capEl.innerHTML = '<br data-mce-bogus="1"/>';
+
+                                            elm.insertBefore(capEl, elm.firstChild);
+                                        }
+                                    } else {
+                                        var caption = elm.getElementsByTagName('caption');
+
+                                        if (caption.length) {
+                                            elm.removeChild(caption[0]);
+                                        }
+                                    }
+
+                                } else {
+                                    var html = '';
+
+                                    if (data.caption) {
+                                        html += '<caption><br data-mce-bogus="1" /></caption>';
+                                    }
+
+                                    for (var y = 0; y < data.rows; y++) {
+                                        html += "<tr>";
+
+                                        for (var x = 0; x < data.cols; x++) {
+                                            html += '<td>&nbsp;</td>';
+                                        }
+                                        html += "</tr>";
+                                    }
+
+                                    args.style = ed.dom.serializeStyle(args.style);
+
+                                    var tableHTML = ed.dom.createHTML('table', args, html);
+
+                                    insertTableHtml(ed, tableHTML);
+                                }
+
+                                ed.addVisual();
+
+                                Event.cancel(e);
+                            },
+                            classes: 'primary',
+                            scope: self
+                        }
+                    ]
+                });
+            });
+        }
+
+        function showRowDialog(ed, params) {
+            var cm = ed.controlManager, form = cm.createForm('table_row_form');
+
+            var rowtypeCtrl = cm.createListBox('table_row_type', {
+                label: ed.getLang('table.rowtype', 'Row Type'),
+                name: 'rowtype',
+                onselect: function () { }
+            });
+
+            var items = [
+                { title: ed.getLang('table.row_type_header', 'Header'), value: 'thead' },
+                { title: ed.getLang('table.row_type_body', 'Body'), value: 'tbody' },
+                { title: ed.getLang('table.row_type_footer', 'Footer'), value: 'tfoot' }
+            ];
+
+            each(items, function (item) {
+                rowtypeCtrl.add(item.title, item.value);
+            });
+
+            form.add(rowtypeCtrl);
+
+            var heightCtrl = cm.createTextBox('table_row_height', {
+                label: ed.getLang('table.height', 'Height'),
+                name: 'height'
+            });
+
+            form.add(heightCtrl);
+
+            // Register commands
+            ed.addCommand('mceTableRowProps', function () {
+                ed.windowManager.open({
+                    title: ed.getLang('table.row_desc', 'Table Rows'),
+                    items: [form],
+                    size: 'mce-modal-landscape-small',
+                    open: function () {
+                        var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getStart(), "tr");
+
+                        // Get table row data
+                        var rowtype = elm.parentNode.nodeName.toLowerCase(), height = '';
+
+                        if (elm) {
+                            label = ed.getLang('update', 'Update');
+                            height = elm.style.height || elm.height || '';
+                        }
+
+                        // remove px from height
+                        if (height.indexOf('px') !== -1) {
+                            height = height.replace('px', '');
+                        }
+
+                        heightCtrl.value(height);
+                        rowtypeCtrl.value(rowtype);
+
+                        DOM.setHTML(this.id + '_insert', label);
+                    },
+                    buttons: [
+                        {
+                            title: ed.getLang('common.cancel', 'Cancel'),
+                            id: 'cancel'
+                        },
+                        {
+                            title: ed.getLang('insert', 'Insert'),
+                            id: 'insert',
+                            onsubmit: function (e) {
+                                var data = form.submit();
+
+                                var elm = ed.dom.getParent(ed.selection.getStart(), "tr");
+                                var selected = ed.dom.select('td.mceSelected,th.mceSelected', elm);
+
+                                data.action = selected.length ? 'all' : 'insert';
+
+                                data.style = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                                // add px to height if it is an integer
+                                if (data.height && !isNaN(data.height)) {
+                                    data.height += 'px';
+                                }
+
+                                data.style.height = data.height;
+
+                                var args = {
+                                    style: ed.dom.serializeStyle(data.style),
+                                    rowtype: data.rowtype,
+                                    action: data.action
+                                };
+
+                                updateRows(ed, args);
+
+                                Event.cancel(e);
+                            },
+                            classes: 'primary',
+                            scope: self
+                        }
+                    ]
+                });
+            });
+        }
+
+        function showCellDialog(ed, params) {
+            var cm = ed.controlManager, form = cm.createForm('table_cell_form');
+
+            var celltypeCtrl = cm.createListBox('table_cell_type', {
+                label: ed.getLang('table.celltype', 'Cell Type'),
+                name: 'celltype',
+                onselect: function () { }
+            });
+
+            var items = [
+                { title: ed.getLang('table.cell_type_header', 'Header'), value: 'th' },
+                { title: ed.getLang('table.cell_type_data', 'Data'), value: 'td' }
+            ];
+
+            each(items, function (item) {
+                celltypeCtrl.add(item.title, item.value);
+            });
+
+            form.add(celltypeCtrl);
+
+            var widthCtrl = cm.createTextBox('table_cell_width', {
+                label: ed.getLang('table.width', 'Width'),
+                name: 'width'
+            });
+
+            form.add(widthCtrl);
+
+            var heightCtrl = cm.createTextBox('table_cell_height', {
+                label: ed.getLang('table.height', 'Height'),
+                name: 'height'
+            });
+
+            form.add(heightCtrl);
+
+            // Register commands
+            ed.addCommand('mceTableCellProps', function () {
+                ed.windowManager.open({
+                    title: ed.getLang('table.row_desc', 'Table Cells'),
+                    items: [form],
+                    size: 'mce-modal-landscape-small',
+                    open: function () {
+                        var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getStart(), "td,th");
+
+                        // Get table row data
+                        var celltype = elm.nodeName.toLowerCase(), width = '', height = '';
+
+                        if (elm) {
+                            label = ed.getLang('update', 'Update');
+                            width = elm.width || '';
+                            height = elm.height || '';
+
+                            var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                            width = styles.width || '';
+                            height = styles.height || '';
+                        }
+
+                        // remove px from width
+                        width = width.replace('px', '');
+
+                        // remove px from height
+                        height = height.replace('px', '');
+
+                        widthCtrl.value(width);
+                        heightCtrl.value(height);
+                        celltypeCtrl.value(celltype);
+
+                        DOM.setHTML(this.id + '_insert', label);
+                    },
+                    buttons: [
+                        {
+                            title: ed.getLang('common.cancel', 'Cancel'),
+                            id: 'cancel'
+                        },
+                        {
+                            title: ed.getLang('insert', 'Insert'),
+                            id: 'insert',
+                            onsubmit: function (e) {
+                                var data = form.submit();
+
+                                var elm = ed.dom.getParent(ed.selection.getStart(), "tr");
+
+                                data.style = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                                // add px to width if it is an integer
+                                if (data.width && !isNaN(data.width)) {
+                                    data.width += 'px';
+                                }
+
+                                // add px to height if it is an integer
+                                if (data.height && !isNaN(data.height)) {
+                                    data.height += 'px';
+                                }
+
+                                data.style.width = data.width;
+                                data.style.height = data.height;
+
+                                var args = {
+                                    style: ed.dom.serializeStyle(data.style),
+                                    celltype: data.celltype
+                                };
+
+                                updateCells(ed, args);
+
+                                Event.cancel(e);
+                            },
+                            classes: 'primary',
+                            scope: self
+                        }
+                    ]
+                });
+            });
+        }
+
+        function basicDialog() {
+            var params = ed.getParam('table', {});
+
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+
+            if (!isMobile) {
+                return;
+            }
+
+            showTableDialog(ed, params);
+            showRowDialog(ed, params);
+            showCellDialog(ed, params);
+        }
+
         /**
          * Create Grid Control
          */
@@ -2334,7 +2951,9 @@
                     bookmark = 0;
                 }
 
-                ed.execCommand('mceInsertContent', false, html);
+                insertTableHtml(ed, html);
+
+                ed.addVisual();
 
                 return Event.cancel(e); // Prevent IE auto save warning
             }
