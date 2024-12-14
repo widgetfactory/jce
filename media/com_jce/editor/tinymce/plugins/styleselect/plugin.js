@@ -302,7 +302,7 @@
                         }*/
 
                         // Toggle off the current format(s)
-                        each(ctrl.items, function (item) {
+                        each(ctrl.items, function (item) {                            
                             if ((fmt = ed.formatter.matchNode(node, item.value))) {
                                 matches.push(fmt);
                             }
@@ -457,7 +457,7 @@
                 var preview_styles = ed.getParam('styleselect_preview_styles', true);
 
                 each(ed.settings.importcss_classes, function (item, idx) {
-                    var name = 'style_' + (counter + idx);
+                    var name = 'style_import_' + (counter + idx);
 
                     if (typeof item === 'string') {
                         item = {
@@ -550,6 +550,7 @@
                             formats = [];
                         }
                     }
+                    
                     each(formats, function (fmt) {
                         var name, keys = 0;
 
@@ -558,7 +559,7 @@
                         });
 
                         if (keys > 1) {
-                            name = fmt.name = fmt.name || 'style_' + (counter++);
+                            name = fmt.name = fmt.name || 'style_format_' + (counter++);
 
                             // make sure all attribute values are strings and decoded
                             if (tinymce.is(fmt.attributes, 'string')) {
@@ -622,7 +623,7 @@
 
                             var parsed = parseCustomValue(val);
 
-                            name = 'style_' + (counter++);
+                            name = 'style_custom_' + (counter++);
 
                             fmt = {
                                 classes : parsed.className,
