@@ -2353,7 +2353,8 @@
                 attributes: {
                     step: 1,
                     min: 1
-                }
+                },
+                value: ed.getParam('table_default_cols', 2)
             });
 
             form.add(colsCtrl);
@@ -2365,45 +2366,50 @@
                 attributes: {
                     step: 1,
                     min: 1
-                }
+                },
+                value: ed.getParam('table_default_rows', 2)
             });
 
             form.add(rowCtrl);
 
-            var cellSpacingCtrl = cm.createTextBox('table_cellspacing', {
+            var cellspacingCtrl = cm.createTextBox('table_cellspacing', {
                 label: ed.getLang('table.cellspacing', 'Cell Spacing'),
                 name: 'cellspacing',
                 subtype: 'number',
                 attributes: {
                     step: 1,
                     min: 1
-                }
+                },
+                value: ed.getParam('table_default_cellspacing', '')
             });
 
-            form.add(cellSpacingCtrl);
+            form.add(cellspacingCtrl);
 
-            var cellPaddingCtrl = cm.createTextBox('table_cellpadding', {
+            var cellpaddingCtrl = cm.createTextBox('table_cellpadding', {
                 label: ed.getLang('table.cellpadding', 'Cell Padding'),
                 name: 'cellpadding',
                 subtype: 'number',
                 attributes: {
                     step: 1,
                     min: 1
-                }
+                },
+                value: ed.getParam('table_default_cellpadding', '')
             });
 
-            form.add(cellPaddingCtrl);
+            form.add(cellpaddingCtrl);
 
             var widthCtrl = cm.createTextBox('table_width', {
                 label: ed.getLang('table.width', 'Width'),
-                name: 'width'
+                name: 'width',
+                value: ed.getParam('table_default_width', '')
             });
 
             form.add(widthCtrl);
 
             var heightCtrl = cm.createTextBox('table_height', {
                 label: ed.getLang('table.height', 'Height'),
-                name: 'height'
+                name: 'height',
+                value: ed.getParam('table_default_height', '')
             });
 
             form.add(heightCtrl);
@@ -2415,6 +2421,14 @@
 
             form.add(captionCtrl);
 
+            function setValue(key, value) {
+                var ctrl = cm.get(ed.id + '_table_' + key);
+
+                if (ctrl) {
+                    ctrl.value(value);
+                }
+            }
+
             // Register commands
             ed.addCommand('mceInsertTable', function () {
                 ed.windowManager.open({
@@ -2424,7 +2438,7 @@
                     open: function () {
                         var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getNode(), "table");
 
-                        var width = '', height = '', rows = 2, cols = 2, caption = false, cellspacing = '', cellpadding = '';
+                        var width, height, rows, cols, caption;
 
                         if (elm) {
                             label = ed.getLang('update', 'Update');
@@ -2440,33 +2454,27 @@
 
                             caption = elm.getElementsByTagName('caption').length > 0;
 
+                            setValue('caption', caption);
+
                             rowCtrl.setDisabled(true);
                             colsCtrl.setDisabled(true);
 
-                            width = elm.width || '';
-                            height = elm.height || '';
-                            cellspacing = elm.cellSpacing || '';
-                            cellpadding = elm.cellPadding || '';
+                            setValue('cellspacing', elm.cellSpacing || '');
+                            setValue('cellpadding', elm.cellPadding || '');
 
                             var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
 
-                            width = styles.width || '';
-                            height = styles.height || '';
+                            width = styles.width || elm.width || '';
+                            height = styles.height || elm.height || '';
 
                             // remove px value from width and height
                             width = width.replace('px', '');
                             height = height.replace('px', '');
+
+                            setValue('width', width);
+                            setValue('height', height);
+
                         }
-
-                        widthCtrl.value(width);
-                        heightCtrl.value(height);
-                        rowCtrl.value(rows);
-                        colsCtrl.value(cols);
-
-                        cellSpacingCtrl.value(cellspacing);
-                        cellPaddingCtrl.value(cellpadding);
-
-                        captionCtrl.checked(caption);
 
                         DOM.setHTML(this.id + '_insert', label);
                     },
