@@ -3255,6 +3255,14 @@ select.mceNativeListBox {
     flex-direction: row;
 }
 
+.mceRepeatable .mceRepeatableItem .mceFormRow {
+    gap: 5px;
+}
+
+.mceRepeatable .mceRepeatableItem .mceFormRow label {
+    min-width: inherit;
+}
+
 .mceRepeatableItem .mce_plus {
     display: none !important;
 }
