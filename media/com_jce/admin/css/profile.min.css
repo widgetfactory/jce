@@ -200,22 +200,16 @@
   margin: 9px;
 }
 .ui-jce .filetype .filetype-list .filetype-item .filetype-remove {
-  display: none;
-}
-.ui-jce .filetype .filetype-list .filetype-item .filetype-remove + .filetype-custom .filetype-remove {
-  display: inline-block;
-}
-.ui-jce .filetype .filetype-list .filetype-item .filetype-remove.filetype-custom input + .filetype-remove {
   display: inline-block;
 }
 .ui-jce .filetype .filetype-list .filetype-item.filetype-custom .filetype-remove {
-  display: none;
+  display: inline-block;
+}
+.ui-jce .filetype .filetype-list .filetype-item.filetype-custom .filetype-add {
+  display: inline-block;
 }
 .ui-jce .filetype .filetype-list .filetype-item.filetype-custom + .filetype-custom .filetype-add {
   display: none;
-}
-.ui-jce .filetype .filetype-list .filetype-item.filetype-custom + .filetype-custom .filetype-remove {
-  display: inline-block;
 }
 .ui-jce .filetype .filetype-list .btn {
   color: #ccc;
@@ -237,6 +231,9 @@
   margin: 5px 15px 5px 7px;
 }
 .ui-jce .filetype .ui-sortable-handle {
+  cursor: move;
+}
+.ui-jce .filetype .ui-sortable-handle label {
   cursor: move;
 }
 .ui-jce .styleformat .icon-chevron-up {

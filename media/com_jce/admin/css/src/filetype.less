@@ -8,113 +8,111 @@
  * other free or open source software ddcenses.
  */
 
- .ui-jce {
-    .filetype {
-      display: inline-block;
-  
-      .filetype-list {
-        display: none;
-        list-style: none;
-        padding: 0;
-        margin: 5px 0 10px 0;
-        width: 300px;
-        box-sizing: border-box;
-        position: relative;
-  
-        .filetype-item {
-          padding: 5px;
-          margin: 2px 0;
-          box-sizing: border-box;
-          display: flex;
-          flex-wrap: nowrap;
-          align-items: center;
-  
-          .file {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            vertical-align: middle;
-            margin: 0 5px;
-  
-            &.filetype-custom {
-              margin: 5px;
-              min-height: 20px;
-            }
-          }
-  
-          label {
-            padding: 0;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            line-height: 28px;
-            max-width: inherit;
-          }
-  
-          input[type="text"] {
-            margin: 0;
-            flex: 1;
-          }
-  
-          input[type="checkbox"] {
-            margin: 9px;
-          }
-  
-          .filetype-remove {
-            display: none;
-  
-            + .filetype-custom .filetype-remove {
-              display: inline-block;
-            }
-  
-            &.filetype-custom input + .filetype-remove {
-              display: inline-block;
-            }
-          }
-  
-          &.filetype-custom {
-            .filetype-remove {
-              display: none;
-            }
-  
-            + .filetype-custom .filetype-add {
-              display: none;
-            }
-  
-            + .filetype-custom .filetype-remove {
-              display: inline-block;
-            }
-          }
-        }
-  
-        .btn {
-          color: #ccc;
-          max-width: 40px;
-  
-          span {
-            vertical-align: middle;
-          }
-        }
-      }
-  
-      .filetype-edit span {
-        visibility: hidden;
-        width: 0;
-        display: inline-block;
-      }
-  
-      .filetype-group {
-        font-size: 14px;
+.ui-jce {
+  .filetype {
+    display: inline-block;
+
+    .filetype-list {
+      display: none;
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 10px 0;
+      width: 300px;
+      box-sizing: border-box;
+      position: relative;
+
+      .filetype-item {
         padding: 5px;
-  
+        margin: 2px 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        .file {
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          vertical-align: middle;
+          margin: 0 5px;
+
+          &.filetype-custom {
+            margin: 5px;
+            min-height: 20px;
+          }
+        }
+
+        label {
+          padding: 0;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          width: 100%;
+          line-height: 28px;
+          max-width: inherit;
+        }
+
+        input[type="text"] {
+          margin: 0;
+          flex: 1;
+        }
+
         input[type="checkbox"] {
-          margin: 5px 15px 5px 7px;
+          margin: 9px;
+        }
+
+        .filetype-remove {
+          display: inline-block;
+        }
+
+        &.filetype-custom {
+          .filetype-remove {
+            display: inline-block;
+          }
+
+          .filetype-add {
+            display: inline-block;
+          }
+
+          +.filetype-custom {
+            .filetype-add {
+              display: none;
+            }
+          }
         }
       }
-  
-      .ui-sortable-handle {
+
+      .btn {
+        color: #ccc;
+        max-width: 40px;
+
+        span {
+          vertical-align: middle;
+        }
+      }
+    }
+
+    .filetype-edit span {
+      visibility: hidden;
+      width: 0;
+      display: inline-block;
+    }
+
+    .filetype-group {
+      font-size: 14px;
+      padding: 5px;
+
+      input[type="checkbox"] {
+        margin: 5px 15px 5px 7px;
+      }
+    }
+
+    .ui-sortable-handle {
+      cursor: move;
+
+      label {
         cursor: move;
       }
     }
-  }  
+  }
+}
