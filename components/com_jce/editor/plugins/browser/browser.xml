@@ -15,13 +15,62 @@
         <fieldset name="config">
             <field name="dir" type="text" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
             <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" placeholder="" />
-            <field name="extensions" type="filetype" default="doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,apng,webp,avif,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC" />
+            <field name="extensions" type="filetype" default="doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,apng,webp,avif,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC">
+                <option value="doc">doc</option>
+                <option value="docx">docx</option>
+                <option value="dot">dot</option>
+                <option value="dotx">dotx</option>
+                <option value="ppt">ppt</option>
+                <option value="pps">pps</option>
+                <option value="pptx">pptx</option>
+                <option value="ppsx">ppsx</option>
+                <option value="xls">xls</option>
+                <option value="xlsx">xlsx</option>
+                <option value="gif">gif</option>
+                <option value="jpeg">jpeg</option>
+                <option value="jpg">jpg</option>
+                <option value="png">png</option>
+                <option value="apng">apng</option>
+                <option value="webp">webp</option>
+                <option value="avif">avif</option>
+                <option value="pdf">pdf</option>
+                <option value="zip">zip</option>
+                <option value="tar">tar</option>
+                <option value="gz">gz</option>
+                <option value="swf">swf</option>
+                <option value="rar">rar</option>
+                <option value="mov">mov</option>
+                <option value="mp4">mp4</option>
+                <option value="m4a">m4a</option>
+                <option value="flv">flv</option>
+                <option value="mkv">mkv</option>
+                <option value="webm">webm</option>
+                <option value="ogg">ogg</option>
+                <option value="ogv">ogv</option>
+                <option value="qt">qt</option>
+                <option value="wmv">wmv</option>
+                <option value="asx">asx</option>
+                <option value="asf">asf</option>
+                <option value="avi">avi</option>
+                <option value="wav">wav</option>
+                <option value="mp3">mp3</option>
+                <option value="aiff">aiff</option>
+                <option value="oga">oga</option>
+                <option value="odt">odt</option>
+                <option value="odg">odg</option>
+                <option value="odp">odp</option>
+                <option value="ods">ods</option>
+                <option value="odf">odf</option>
+                <option value="rtf">rtf</option>
+                <option value="txt">txt</option>
+                <option value="csv">csv</option>
+            </field>
             <field name="filesystem" type="filesystem" default="" label="WF_PARAM_FILESYSTEM" description="WF_PARAM_FILESYSTEM_DESC">
                 <option value="">WF_OPTION_INHERIT</option>
             </field>
 
             <field type="heading" label="WF_PROFILES_PLUGINS_ACCESS" />
-            
+
             <field name="upload" type="yesno" default="1" label="WF_PARAM_UPLOAD" description="WF_PARAM_UPLOAD_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
