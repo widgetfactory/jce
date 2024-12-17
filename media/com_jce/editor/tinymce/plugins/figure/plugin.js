@@ -188,8 +188,6 @@
           return;
         }
 
-        console.log(ed.selection.getNode());
-
         // get selected node
         var node = ed.dom.getParent(ed.selection.getNode(), 'figure');
 
