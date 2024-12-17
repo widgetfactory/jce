@@ -16346,14 +16346,13 @@
           return content;
       }
 
+      var urlProcessed = false;
+
       if (editor.settings.autolink_url !== false) {        
           if (new RegExp('^' + ux + '$').test(content)) {
               content = createLink(content);
               return content;
           }
-
-          // wrap content - this seems to be required to prevent repeats of link conversion
-          content = wrapContent(content);
 
           // Replace URLs with links if not already linked
           content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
@@ -16364,24 +16363,30 @@
               // Create a link for the detected URL
               return createLink(url);
           });
+
+          urlProcessed = true;
       }
 
       if (editor.settings.autolink_email !== false) {
-
           if (new RegExp('^' + ex + '$').test(content)) {
               return '<a href="mailto:' + content + '">' + content + '</a>';
           }
 
-          // wrap content - this seems to be required to prevent repeats of link conversion
-          content = wrapContent(content);
-
-          content = content.replace(new RegExp('(?:href=["\'][^"\']*["\']|mailto:[^ ]*)?(' + ex + ')', 'g'), function (match, attrib, email) {
-              // Only process if the match is not already part of a link
-              if (!attrib) {
+          content = content.replace(new RegExp('(href="[^"]+?)?(' + ex + ')', 'g'), function (match, attrib, email) {            
+              // Only process if the match is not already part of an href
+              if (!attrib && email && !email.includes('//')) {
                   return '<a href="mailto:' + email + '">' + email + '</a>';
               }
-              return match; // Return the original match if it's part of a link
-          });
+              
+              return match; // Return the original match if it's already part of an href or not a valid email
+          });        
+          
+          urlProcessed = true;
+      }
+
+      if (urlProcessed) {
+          // wrap content - this seems to be required to prevent repeats of link conversion
+          content = wrapContent(content);
       }
 
       return content;
