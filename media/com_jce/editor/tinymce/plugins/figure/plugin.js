@@ -164,6 +164,63 @@
         }
       });
 
+      ed.onClick.add(function (ed, e) {
+        if (e.target.nodeName === 'IMG' && VK.metaKeyPressed(e)) {
+          var figure = ed.dom.getParent(e.target, 'figure');
+
+          if (figure) {
+            ed.selection.select(figure);
+            ed.nodeChanged();
+          }
+        }
+      });
+
+      ed.onNodeChange.add(function (ed, cm, n) {
+        if (n.nodeName !== 'FIGURE') {
+          ed.dom.removeAttrib(ed.dom.select('figure'), 'data-mce-selected');
+        }
+      });
+
+      function setClipboardData(ed, e) {
+        var clipboardData = e.clipboardData;
+
+        if (!clipboardData) {
+          return;
+        }
+
+        console.log(ed.selection.getNode());
+
+        // get selected node
+        var node = ed.dom.getParent(ed.selection.getNode(), 'figure');
+
+        if (!node) {
+          return;
+        }
+
+        ed.selection.select(node);
+
+        var content = ed.selection.getContent({
+          contextual: true
+        });
+
+        var data = {
+          html: content,
+          text: content.toString()
+        };
+
+        clipboardData.clearData();
+        clipboardData.setData('text/html', data.html);
+        clipboardData.setData('text/plain', data.text);
+
+        if (e.type == 'cut') {
+          ed.dom.remove(node);
+        }
+      }
+
+      // update clipboardData 
+      ed.onCopy.add(setClipboardData);
+      ed.onCut.add(setClipboardData);
+
       ed.onKeyDown.add(function (ed, e) {
         var isDelete, rng, container, offset, collapsed;
 
