@@ -140,13 +140,24 @@
         // no selection, so create a link from the url
         if (ed.selection.isCollapsed()) {
             ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, data.text));
-            // apply link to selection
+        // apply link to selection
         } else {
+            args['data-mce-tmp'] = '1';
+
             ed.execCommand('mceInsertLink', false, args);
 
             if (isAnchor(anchor)) {
                 updateTextContent(node, data.text);
             }
+
+            var elms = ed.dom.select('[data-mce-tmp="1"]');
+
+            each(elms, function (elm) {
+                // remove tmp attribute
+                elm.removeAttribute('data-mce-tmp');
+
+                updateTextContent(elm, data.text);
+            });
         }
 
         ed.undoManager.add();
