@@ -380,8 +380,8 @@ WFPopups.addPopup('jcemediabox', {
 
         // process remaining data values as params
         $.each(data, function (k, v) {
-            // skip "src"
-            if (k == 'src') {
+            // skip "src", "width" and "height" attributes
+            if (k == 'src' || k == 'width' || k == 'height') {
                 return true;
             }
 
@@ -440,7 +440,7 @@ WFPopups.addPopup('jcemediabox', {
             ed.dom.addClass(n, auto);
         }
 
-        var data = {};
+        var data = args.data || {};
 
         // pass title to link
         if (args.title) {
@@ -470,9 +470,6 @@ WFPopups.addPopup('jcemediabox', {
                 data[k] = v;
             }
         });
-
-        // combine args
-        data = $.extend(data, args.data || {});
 
         // set type
         var mt = $('#jcemediabox_popup_mediatype').val() || n.type || args.type || '';
