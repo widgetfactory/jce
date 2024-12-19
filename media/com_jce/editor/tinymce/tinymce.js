@@ -21459,6 +21459,7 @@
       y = dom.getPos(elm).y + offsetY;
       viewPortY = viewPort.y;
       viewPortH = viewPort.h;
+
       if (y < viewPort.y || y + 25 > viewPortY + viewPortH) {
         editor.getWin().scrollTo(0, y < viewPortY ? y : y - viewPortH + 25);
       }
