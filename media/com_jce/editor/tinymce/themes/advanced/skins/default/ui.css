@@ -3100,6 +3100,14 @@ select.mceNativeListBox {
     gap: 5px;
 }
 
+.mceSizes {
+    gap: 20px;
+}
+
+.mceSizes input {
+    text-align: center;
+}
+
 .mceSizes .mceSeparator {
     margin: 0;
     width: 64px;
