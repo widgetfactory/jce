@@ -1734,6 +1734,12 @@
                 continue;
             }
 
+            // clean class value
+            if (name === 'class') {
+                // clean and trim value
+				value = value.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
+            }
+
             // set the value true for boolean attributes for easier processing
             if (boolAttrs[name]) {
                 value = true;
@@ -1741,6 +1747,15 @@
 
             data[name] = value;
         }
+
+        // get integer width and height values
+        each(['width', 'height'], function (key) {
+            var val = ed.dom.getStyle(node, key) || ed.dom.getAttrib(node, key);
+
+            if (val) {
+                data[key] = parseInt(val, 10);
+            }
+        });
 
         data.mediatype = mediatype;
 
@@ -1808,13 +1823,13 @@
                 value = value.replace('autoplay=1', 'autoplay=1');
             }
 
-            // update classes
+            // update classes then continue
             if (name == 'class' && value) {
                 ed.dom.addClass(node, value);
                 return true;
             }
 
-            // update styles
+            // update styles then continue
             if (name == 'style' && value) {
                 ed.dom.setStyles(node, ed.dom.parseStyle(value));
                 return true;
