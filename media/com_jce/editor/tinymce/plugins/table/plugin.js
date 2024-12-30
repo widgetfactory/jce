@@ -960,6 +960,7 @@
         var curCellType = td.nodeName.toLowerCase();
 
         ed.dom.setAttrib(td, 'style', data.style);
+        ed.dom.setAttrib(td, 'class', data['class']);
 
         if (curCellType != data.celltype) {
             // changing to a different node type
@@ -1014,6 +1015,7 @@
         }
 
         dom.setAttrib(tr, 'style', data.style);
+        dom.setAttrib(tr, 'class', data['class']);
 
         // Setup new rowtype
         if (curRowType != rowtype && !data.skip_parent) {
@@ -1076,7 +1078,7 @@
             rows.push(trElm);
         } else {
             data.skip_parent = true;
-            
+
             // all rows
             each(tableElm.rows, function (tr) {
                 var i;
@@ -1281,6 +1283,7 @@
             });
 
             basicDialog();
+            mergeDialog(ed);
         });
 
         ed.onPreProcess.add(function (ed, args) {
@@ -2204,36 +2207,6 @@
             mceTableSplitCells: function (grid) {
                 grid.split();
             },
-            mceTableMergeCells: function (grid) {
-                var rowSpan, colSpan, cell;
-
-                cell = ed.dom.getParent(ed.selection.getNode(), 'th,td');
-                if (cell) {
-                    rowSpan = cell.rowSpan;
-                    colSpan = cell.colSpan;
-                }
-
-                if (!ed.dom.select('td.mceSelected,th.mceSelected').length) {
-                    winMan.open({
-                        url: url + '&slot=merge',
-                        width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0), 10),
-                        height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0), 10),
-                        inline: 1,
-                        size: 'mce-modal-landscape-small'
-                    }, {
-                        rows: rowSpan,
-                        cols: colSpan,
-                        onaction: function (data) {
-                            grid.merge(cell, data.cols, data.rows);
-                        },
-                        plugin_url: url,
-                        layout: "merge",
-                        size: 'mce-modal-landscape-small'
-                    });
-                } else {
-                    grid.merge();
-                }
-            },
             mceTableInsertRowBefore: function (grid) {
                 grid.insertRow(true);
             },
@@ -2343,7 +2316,7 @@
             });
         }
 
-        function showTableDialog(ed, params) {
+        function showTableDialog(ed) {
             var cm = ed.controlManager, form = cm.createForm('table_form');
 
             var colsCtrl = cm.createTextBox('table_cols', {
@@ -2414,6 +2387,14 @@
 
             form.add(heightCtrl);
 
+            var stylesList = cm.createStylesBox('table_classes', {
+                label: ed.getLang('table.classes', 'Classes'),
+                onselect: function (v) { },
+                name: 'classes'
+            });
+
+            form.add(stylesList);
+
             var captionCtrl = cm.createCheckBox('table_caption', {
                 label: ed.getLang('table.caption', 'Caption'),
                 name: 'caption'
@@ -2474,6 +2455,15 @@
                             setValue('width', width);
                             setValue('height', height);
 
+                            var classes = ed.dom.getAttrib(elm, 'class');
+
+                            // remove mce- and mceItem- classes
+                            classes = classes.replace(/mce-[\w\-]+/g, '');
+
+                            // trim
+                            classes = classes.replace(/^\s+|\s+$/g, '');
+
+                            setValue('classes', classes);
                         }
 
                         DOM.setHTML(this.id + '_insert', label);
@@ -2505,7 +2495,8 @@
                                     style: {
                                         width: data.width,
                                         height: data.height
-                                    }
+                                    },
+                                    class: data.classes
                                 };
 
                                 var elm = ed.dom.getParent(ed.selection.getNode(), "table");
@@ -2569,7 +2560,7 @@
             });
         }
 
-        function showRowDialog(ed, params) {
+        function showRowDialog(ed) {
             var cm = ed.controlManager, form = cm.createForm('table_row_form');
 
             var rowtypeCtrl = cm.createListBox('table_row_type', {
@@ -2579,9 +2570,9 @@
             });
 
             var items = [
-                { title: ed.getLang('table.row_type_header', 'Header'), value: 'thead' },
-                { title: ed.getLang('table.row_type_body', 'Body'), value: 'tbody' },
-                { title: ed.getLang('table.row_type_footer', 'Footer'), value: 'tfoot' }
+                { title: ed.getLang('table.thead', 'Header'), value: 'thead' },
+                { title: ed.getLang('table.tbody', 'Body'), value: 'tbody' },
+                { title: ed.getLang('table.tfoot', 'Footer'), value: 'tfoot' }
             ];
 
             each(items, function (item) {
@@ -2596,6 +2587,14 @@
             });
 
             form.add(heightCtrl);
+
+            var stylesList = cm.createStylesBox('table_row_classes', {
+                label: ed.getLang('table.classes', 'Classes'),
+                onselect: function (v) { },
+                name: 'classes'
+            });
+
+            form.add(stylesList);
 
             // Register commands
             ed.addCommand('mceTableRowProps', function () {
@@ -2621,6 +2620,16 @@
 
                         heightCtrl.value(height);
                         rowtypeCtrl.value(rowtype);
+
+                        var classes = ed.dom.getAttrib(elm, 'class');
+
+                        // remove mce- and mceItem- classes
+                        classes = classes.replace(/mce-[\w\-]+/g, '');
+
+                        // trim
+                        classes = classes.replace(/^\s+|\s+$/g, '');
+
+                        stylesList.value(classes);
 
                         DOM.setHTML(this.id + '_insert', label);
                     },
@@ -2652,7 +2661,8 @@
                                 var args = {
                                     style: ed.dom.serializeStyle(data.style),
                                     rowtype: data.rowtype,
-                                    action: data.action
+                                    action: data.action,
+                                    class: data.classes
                                 };
 
                                 updateRows(ed, args);
@@ -2667,7 +2677,7 @@
             });
         }
 
-        function showCellDialog(ed, params) {
+        function showCellDialog(ed) {
             var cm = ed.controlManager, form = cm.createForm('table_cell_form');
 
             var celltypeCtrl = cm.createListBox('table_cell_type', {
@@ -2677,8 +2687,8 @@
             });
 
             var items = [
-                { title: ed.getLang('table.cell_type_header', 'Header'), value: 'th' },
-                { title: ed.getLang('table.cell_type_data', 'Data'), value: 'td' }
+                { title: ed.getLang('table.th', 'Header'), value: 'th' },
+                { title: ed.getLang('table.td', 'Data'), value: 'td' }
             ];
 
             each(items, function (item) {
@@ -2700,6 +2710,14 @@
             });
 
             form.add(heightCtrl);
+
+            var stylesList = cm.createStylesBox('table_cell_classes', {
+                label: ed.getLang('table.classes', 'Classes'),
+                onselect: function (v) { },
+                name: 'classes'
+            });
+
+            form.add(stylesList);
 
             // Register commands
             ed.addCommand('mceTableCellProps', function () {
@@ -2734,6 +2752,16 @@
                         heightCtrl.value(height);
                         celltypeCtrl.value(celltype);
 
+                        var classes = ed.dom.getAttrib(elm, 'class');
+
+                        // remove mce- and mceItem- classes
+                        classes = classes.replace(/mce-[\w\-]+/g, '');
+
+                        // trim
+                        classes = classes.replace(/^\s+|\s+$/g, '');
+
+                        stylesList.value(classes);
+
                         DOM.setHTML(this.id + '_insert', label);
                     },
                     buttons: [
@@ -2766,7 +2794,8 @@
 
                                 var args = {
                                     style: ed.dom.serializeStyle(data.style),
-                                    celltype: data.celltype
+                                    celltype: data.celltype,
+                                    class: data.classes
                                 };
 
                                 updateCells(ed, args);
@@ -2781,18 +2810,95 @@
             });
         }
 
+        function mergeDialog(ed) {
+            var cm = ed.controlManager, form = cm.createForm('table_merge_form');
+
+            var colsCtrl = cm.createTextBox('table_merge_cols', {
+                label: ed.getLang('table.cols', 'Columns'),
+                name: 'cols',
+                subtype: 'number',
+                value: 1
+            });
+
+            form.add(colsCtrl);
+
+            var rowsCtrl = cm.createTextBox('table_merge_rows', {
+                label: ed.getLang('table.rows', 'Rows'),
+                name: 'rows',
+                subtype: 'number',
+                value: 1
+            });
+
+            form.add(rowsCtrl);
+
+            // Register commands
+            ed.addCommand('mceTableMergeCells', function () {
+                var grid = createTableGrid();
+
+                if (ed.dom.select('td.mceSelected,th.mceSelected').length) {
+                    grid.merge();
+
+                    ed.execCommand('mceRepaint');
+                    cleanup();
+                    return;
+                }
+
+                ed.windowManager.open({
+                    title: ed.getLang('table.merge_cells_desc', 'Merge Cells'),
+                    items: [form],
+                    size: 'mce-modal-landscape-small',
+                    open: function () {
+                        var cell = ed.dom.getParent(ed.selection.getNode(), 'th,td'), rowSpan = 1, colSpan = 1;
+
+                        if (cell) {
+                            rowSpan = cell.rowSpan;
+                            colSpan = cell.colSpan;
+                        }
+
+                        colsCtrl.value(colSpan);
+                        rowsCtrl.value(rowSpan);
+                    },
+                    buttons: [
+                        {
+                            title: ed.getLang('common.cancel', 'Cancel'),
+                            id: 'cancel'
+                        },
+                        {
+                            title: ed.getLang('update', 'Update'),
+                            id: 'insert',
+                            onsubmit: function (e) {
+                                var data = form.submit(), grid = createTableGrid(), node = ed.selection.getNode(), cell = ed.dom.getParent(node, 'th,td');
+
+                                grid.merge(cell, data.cols, data.rows);
+
+                                ed.execCommand('mceRepaint');
+                                cleanup();
+
+                                Event.cancel(e);
+                            },
+                            classes: 'primary',
+                            scope: self
+                        }
+                    ]
+                });
+            });
+        }
+
         function basicDialog() {
-            var params = ed.getParam('table', {});
+            var basic_dialog = ed.getParam('table_basic_dialog');
 
             var isMobile = window.matchMedia("(max-width: 600px)").matches;
 
-            if (!isMobile) {
+            // use basic dialog if set in param or device screen size < 768px
+            var isBasicDialog = basic_dialog || isMobile;
+
+            if (!isBasicDialog) {
                 return;
             }
 
-            showTableDialog(ed, params);
-            showRowDialog(ed, params);
-            showCellDialog(ed, params);
+            showTableDialog(ed);
+            showRowDialog(ed);
+            showCellDialog(ed);
         }
 
         /**
