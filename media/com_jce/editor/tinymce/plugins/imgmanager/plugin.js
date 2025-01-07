@@ -61,10 +61,11 @@
             var node = ed.selection.getNode();
 
             if (isImage(node)) {
-                // only update src and alt
+                // only update src and alt and class
                 ed.dom.setAttribs(node, {
                     'src': args.src,
-                    'alt': args.alt || ''
+                    'alt': args.alt || '',
+                    'class': args['class'] || ''
                 });
             } else {
                 ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
