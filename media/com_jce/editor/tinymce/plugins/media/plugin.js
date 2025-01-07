@@ -1735,7 +1735,7 @@
             }
 
             // clean class value
-            if (name === 'class') {
+            if (name == 'class') {
                 // clean and trim value
 				value = value.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
             }
