@@ -97,40 +97,86 @@
                 }
 
                 function openDialog() {
-                    var form = cm.createForm('numlist_form');
+                    var form = cm.createForm(name + '_form');
 
                     form.empty();
 
-                    var start_ctrl = cm.createTextBox('numlist_start_ctrl', {
-                        label: editor.getLang('advlist.start', 'Start'),
-                        name: 'start',
-                        subtype: 'number',
-                        attributes: {
-                            min: '1'
+                    var type_ctrl = cm.createListBox(name + '_type_ctrl', {
+                        label: editor.getLang('advlist.type', 'Type'),
+                        name: 'type',
+                        onselect: function () { }
+                    });
+
+                    form.add(type_ctrl);
+
+                    each(self[name], function (item) {
+                        var style = item.styles.listStyleType, icon = style.replace(/-/g, '_');
+
+                        if (!style) {
+                            style = 'default';
                         }
+
+                        type_ctrl.add(
+                            editor.getLang(item.title),
+                            style,
+                            {
+                                icon: icon ? 'list_' + icon : ''
+                            }
+                        );
                     });
 
-                    form.add(start_ctrl);
+                    if (name == 'numlist') {
+                        var start_ctrl = cm.createTextBox('numlist_start_ctrl', {
+                            label: editor.getLang('advlist.start', 'Start'),
+                            name: 'start',
+                            subtype: 'number',
+                            attributes: {
+                                min: '1'
+                            }
+                        });
+    
+                        form.add(start_ctrl);
+    
+                        var reversed_ctrl = cm.createCheckBox('numlist_reversed_ctrl', {
+                            label: editor.getLang('advlist.reversed', 'Reversed'),
+                            name: 'reversed'
+                        });
+    
+                        form.add(reversed_ctrl);
+                    }
 
-                    var reversed_ctrl = cm.createCheckBox('numlist_reversed_ctrl', {
-                        label: editor.getLang('advlist.reversed', 'Reversed'),
-                        name: 'reversed'
+                    var styles_ctrl = cm.createStylesBox(name + '_class', {
+                        label: editor.getLang('adlist.class', 'Classes'),
+                        onselect: function () { },
+                        name: 'classes'
                     });
 
-                    form.add(reversed_ctrl);
+                    form.add(styles_ctrl);
 
                     editor.windowManager.open({
-                        title: editor.getLang('advanced.numlist_desc', 'Ordered List'),
+                        title: editor.getLang('advanced.' + name + '_desc', 'List'),
                         items: [form],
                         size: 'mce-modal-landscape-small',
                         open: function () {
-                            var label = editor.getLang('update', 'Update'), node = editor.selection.getNode();
+                            var label = editor.getLang('update', 'Update'), node = editor.selection.getNode(), listStyleType = 'default';
 
-                            var list = editor.dom.getParent(node, 'ol');
+                            var list = editor.dom.getParent(node, name == 'bullist' ? 'ul' : 'ol');
 
                             if (list) {
-                                start_ctrl.value(editor.dom.getAttrib(list, 'start') || 1);
-                                reversed_ctrl.checked(!!editor.dom.getAttrib(list, 'reversed'));
+                                if (name == 'numlist') {
+                                    start_ctrl.value(editor.dom.getAttrib(list, 'start') || 1);
+                                    reversed_ctrl.checked(!!editor.dom.getAttrib(list, 'reversed'));
+                                }
+
+                                var classes = editor.dom.getAttrib(list, 'class');
+
+                                // clean
+                                classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
+
+                                styles_ctrl.value(classes);
+
+                                listStyleType = editor.dom.getStyle(list, 'list-style-type') || 'default';
+                                type_ctrl.value(listStyleType);
                             }
 
                             DOM.setHTML(this.id + '_insert', label);
@@ -155,10 +201,18 @@
                                     var data = form.submit();
                                     Event.cancel(e);
 
-                                    var list = editor.dom.getParent(editor.selection.getNode(), 'ol');
+                                    var list = editor.dom.getParent(editor.selection.getNode(), name == 'bullist' ? 'ul' : 'ol');
 
                                     if (!list) {
                                         return;
+                                    }
+
+                                    if (data.type == 'default') {
+                                        editor.dom.setStyles(list, { 'list-style-type': '' });
+                                        list.removeAttribute('data-mce-style');
+                                    } else {
+                                        editor.dom.setStyles(list, { 'list-style-type': data.type });
+                                        list.removeAttribute('data-mce-style');
                                     }
 
                                     each(data, function (value, key) {
@@ -168,6 +222,14 @@
 
                                         if (key == 'start' && value == '1') {
                                             value = null;
+                                        }
+
+                                        if (key == 'type') {
+                                            value = null;
+                                        }
+
+                                        if (key == 'classes') {
+                                            key = 'class';
                                         }
 
                                         editor.dom.setAttrib(list, key, value);
@@ -197,12 +259,10 @@
                     title: 'advanced.' + name + '_desc',
                     'class': 'mce_' + name,
                     onclick: function () {
-                        if (name === 'numlist') {
-                            var list = editor.dom.getParent(editor.selection.getNode(), 'ol');
+                        var list = editor.dom.getParent(editor.selection.getNode(), name == 'bullist' ? 'ul' : 'ol');
 
-                            if (list) {
-                                return openDialog();
-                            }
+                        if (list) {
+                            return openDialog();
                         }
 
                         applyListFormat();
