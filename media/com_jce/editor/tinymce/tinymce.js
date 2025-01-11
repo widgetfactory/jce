@@ -29090,10 +29090,10 @@
 
         this._super();
 
-        Event.add(self.id, 'click', function () {
+        Event.add(self.id, 'click', function (evt) {
           if (!self.isDisabled()) {
             if (s.onclick) {
-              s.onclick(self.value);
+              s.onclick(evt, self.value);
             }
 
             self.showMenu();
@@ -29240,7 +29240,7 @@
         if (s.onclick) {
           activate = function (evt) {
             if (!self.isDisabled()) {
-              s.onclick(self.value);
+              s.onclick(evt, self.value);
               Event.cancel(evt);
 
               self.hideMenu();
@@ -29253,7 +29253,7 @@
             var DOM_VK_DOWN = 40;
 
             if ((evt.keyCode === 32 || evt.keyCode === 13 || evt.keyCode === 14) && !evt.altKey && !evt.ctrlKey && !evt.metaKey) {
-              activate();
+              activate(evt);
               Event.cancel(evt);
             } else if (evt.type === 'click' || evt.keyCode === DOM_VK_DOWN) {
               self.showMenu();
