@@ -258,10 +258,10 @@
                 btn = cm.createSplitButton(name, {
                     title: 'advanced.' + name + '_desc',
                     'class': 'mce_' + name,
-                    onclick: function () {
+                    onclick: function (e) {
                         var list = editor.dom.getParent(editor.selection.getNode(), name == 'bullist' ? 'ul' : 'ol');
 
-                        if (list) {
+                        if (list && !e.altKey) {
                             return openDialog();
                         }
 
