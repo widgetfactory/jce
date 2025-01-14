@@ -601,7 +601,7 @@ class JceModelProfile extends AdminModel
         $data['plugins'] = $filter->clean($plugins, 'STRING');
 
         // add back config data
-        $data['params'] = $filter->clean($config, 'ARRAY');
+        $data['params'] = json_encode($filter->clean($config, 'ARRAY'));
 
         if (empty($data['components']) || empty($data['components_select'])) {
             $data['components'] = '';
