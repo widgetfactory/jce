@@ -706,6 +706,10 @@ class JceModelProfile extends AdminModel
             // add "setup" for setup parameters (via plugins, eg: jcepro)
             $items[] = 'setup';
 
+            if (is_string($data['params'])) {
+                $data['params'] = json_decode($data['params'], true);
+            }
+
             // make sure we have a value
             if (empty($data['params'])) {
                 $data['params'] = array();
