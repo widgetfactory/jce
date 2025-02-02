@@ -44248,10 +44248,14 @@
 
           each(ed.dom.select('img,poster'), function (elm) {
             var src = elm.getAttribute('src');
-            var val = src.substring(0, src.indexOf('?'));
 
-            if (val == o.before) {
-              var after = o.after, stamp = '?' + new Date().getTime();
+            if (src && src.indexOf('?') !== -1) {
+              src = src.substring(0, src.indexOf('?'));
+            }
+
+            if (src == o.before) {
+              var after = o.after;
+              var stamp = '?' + new Date().getTime();
 
               if (src.indexOf('?') !== -1 && after.indexOf('?') === -1) {
                 after += stamp;
