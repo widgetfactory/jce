@@ -561,7 +561,7 @@
         var value = isSupportedIframe(editor, url);
 
         if (value) {
-            return typeof value == 'string' ? value : 'iframe';
+            return 'iframe';
         }
 
         return false;
@@ -1543,12 +1543,36 @@
                 if (node.name !== 'iframe') {
                     var src = node.attr('src') || node.attr('data') || '';
 
-                    //get the source from the first source tag
-                    if (!src && (node.name === 'video' || node.name === 'audio')) {
-                        var sources = node.getAll('source');
+                    if (!src) {
+                        // get the source from the first source tag
+                        if (node.name === 'video' || node.name === 'audio') {
+                            var sources = node.getAll('source');
 
-                        if (sources.length) {
-                            src = sources[0].attr('src');
+                            if (sources.length) {
+                                src = sources[0].attr('src');
+                            }
+                        }
+                        // get the source from the param tag
+                        if (node.name === 'object') {
+                            var params = node.getAll('param');
+
+                            if (params.length) {
+                                // eslint-disable-next-line no-loop-func
+                                each(params, function (param) {
+                                    if (param.attr('movie')) {
+                                        src = param.attr('value');
+                                    }
+                                });
+                            }
+
+                            // try embed
+                            if (!src) {
+                                var embed = node.getAll('embed');
+
+                                if (embed.length) {
+                                    src = embed[0].attr('src');
+                                }
+                            }
                         }
                     }
 
@@ -1563,13 +1587,29 @@
                     }
 
                     if (editor.settings.strict_media_embeds !== false) {
-                        node.name = isSupportedMedia(editor, src);
+                        var newName = isSupportedMedia(editor, src);
 
-                        if (!node.name) {
+                        // not supported
+                        if (!newName) {
                             node.remove();
                             continue;
                         }
+                        
+                        // node has been renamed, so validate child nodes
+                        if (newName !== node.name) {
+                            // clean up child nodes after conversion
+                            // eslint-disable-next-line no-loop-func
+                            each(node.children(), function (elm) {
+                                if (!editor.schema.isValidChild(newName, elm.name)) {
+                                    elm.remove();
+                                }
+                            });
+                        }
 
+                        // rename node
+                        node.name = newName;
+
+                        // update src attribute
                         node.attr('src', src);
                     }
                 }
