@@ -446,6 +446,10 @@ final class WFFileSystemResult
      * @var File / Folder url
      */
     public $url = null;
+    /*
+     * @var Original Source path 
+     */
+    public $source = null;
 
     public function __construct()
     {
