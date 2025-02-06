@@ -76,6 +76,11 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+
+            <field name="strict_media_embeds" type="yesno" default="1" label="WF_MEDIA_STRICT_MEDIA_EMBEDS" description="WF_MEDIA_STRICT_MEDIA_EMBEDS_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
         </fieldset>
     </fields>
     <languages></languages>

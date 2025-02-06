@@ -97,6 +97,8 @@ class WFMediaPluginConfig
             }
         }
 
+        $settings['strict_media_embeds'] = (bool) $wf->getParam('media.strict_media_embeds', 1);
+
         // allow all elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));
     }
