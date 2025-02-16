@@ -234,6 +234,8 @@
 
                                         editor.dom.setAttrib(list, key, value);
                                     });
+
+                                    editor.undoManager.add();
                                 },
                                 classes: 'primary',
                                 scope: self
