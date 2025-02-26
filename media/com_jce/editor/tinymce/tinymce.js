@@ -33821,6 +33821,9 @@
           e.value = h;
         }
 
+        // trigger change event on the input element
+        //e.dispatchEvent(new CustomEvent('change'));
+
         o.element = e = null;
 
         return h;
