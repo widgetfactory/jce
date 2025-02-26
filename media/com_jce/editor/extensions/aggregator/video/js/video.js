@@ -46,11 +46,23 @@ WFAggregator.add('video', {
     /**
      * Check whether a media type is supported
      */
-    isSupported: function (v) {
+    isSupported: function (v) {        
+        if (!v) {
+            return false;
+        }
+
         // remove any query string
         v = v.split('?')[0];
         
-        return /\.(mp4|m4v|ogv|ogg|webm)$/.test(v);
+        if (/\.(mp4|m4v|ogv|ogg|webm)$/.test(v)) {
+            return 'video';
+        }
+
+        return false;
+    },
+
+    setValues: function (attr, type) {
+        return attr;
     },
 
     getAttributes: function (src) {

@@ -56,8 +56,8 @@ WFAggregator.add('youtube', {
      * Check whether a media type is supported
      */
     isSupported: function (v) {
-        if (typeof v == 'object') {
-            v = v.src || v.data || '';
+        if (!v) {
+            return false;
         }
 
         if (/youtu(\.)?be(.+)?\/(.+)/.test(v)) {

@@ -44,10 +44,22 @@ WFAggregator.add('audio', {
      * Check whether a media type is supported
      */
     isSupported: function (v) {
+        if (!v) {
+            return false;
+        }
+
         // remove any query string
         v = v.split('?')[0];
         
-        return /\.(mp3|oga|webm|wav|m4a|aiff)$/.test(v);
+        if (/\.(mp3|oga|webm|wav|m4a|aiff)$/.test(v)) {
+            return 'audio';
+        }
+
+        return false;
+    },
+
+    setValues: function (attr, type) {
+        return attr;
     },
 
     getAttributes: function (src) {
