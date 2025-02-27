@@ -89,6 +89,7 @@
 
     var sandbox_iframes_exclusions = [
         'youtube.com',
+        'youtube-nocookie.com',
         'youtu.be',
         'vimeo.com',
         'player.vimeo.com',
