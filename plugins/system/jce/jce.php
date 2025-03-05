@@ -27,6 +27,8 @@ use Joomla\CMS\Uri\Uri;
 class PlgSystemJce extends CMSPlugin
 {
     protected $mediaLoaded = false;
+
+    protected $booted = false;
     
     private function getDummyDispatcher()
     {
@@ -43,6 +45,10 @@ class PlgSystemJce extends CMSPlugin
 
     private function bootEditorPlugins()
     {
+        if ($this->booted) {
+            return;
+        }
+        
         $app = Factory::getApplication();
 
         // only in "site"
@@ -74,6 +80,8 @@ class PlgSystemJce extends CMSPlugin
 
             $plugin->registerListeners();
         }
+
+        $this->booted = true;
     }
 
     private function bootCustomPlugin($className, $config = array())
