@@ -365,7 +365,8 @@
       data = data.replace(/[\n\r]/gi, '<br />');
 
       return ed.dom.createHTML(tag || 'pre', {
-        'data-mce-code': 'shortcode'
+        'data-mce-code': 'shortcode',
+        'data-mce-type': 'shortcode'
       }, ed.dom.encode(data));
     }
 
@@ -440,28 +441,15 @@
       if (e.keyCode == VK.ENTER) {
         node = ed.selection.getNode();
 
-        // Handled by EnterKey perhaps?
-        /*if (node.nodeName === 'PRE') {
-          var type = node.getAttribute('data-mce-code') || '';
-
-          if (type) {
-            if (type == 'shortcode') {
-              if (e.shiftKey) {
-                ed.execCommand("InsertLineBreak", false, e);
-              } else {
-                handleEnterInPre(ed, node);
-              }
-
-              e.preventDefault();
-              return;
-            }
-
-            if (e.altKey || e.shiftKey) {
-              handleEnterInPre(ed, node);
-              e.preventDefault();
-            }
+        // override enter key behaviour in shortcode pre blocks
+        if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code') === 'shortcode') {
+          if (!e.shiftKey) {
+            ed.execCommand("InsertLineBreak", false, e);
+            e.preventDefault();
           }
-        }*/
+
+          return;
+        }
 
         if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
           handleEnterInPre(ed, node);
@@ -971,7 +959,7 @@
         if (node && node.hasAttribute('data-mce-code')) {
           return false;
         }
-    });
+      });
     });
 
     ed.onInit.add(function () {
