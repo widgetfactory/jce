@@ -175,7 +175,7 @@ class JFormFieldFiletype extends TextField
 
             $html[] = '<dl class="filetype-list list-group">';
 
-            if (is_string($group)) {
+            if (is_string($group) && $group !== 'default') {
                 $checked = '';
 
                 $is_default = isset($defaultValues[$group]);
