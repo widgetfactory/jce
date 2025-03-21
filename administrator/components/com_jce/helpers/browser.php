@@ -73,6 +73,7 @@ abstract class WfBrowserHelper
         $data = array(
             'url' => '',
             'upload' => 0,
+            'select_button' => 1,
             'converted' => false,
         );
 
@@ -142,6 +143,7 @@ abstract class WfBrowserHelper
 
             $data['accept'] = implode(',', array_filter($data['accept']));
             $data['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
+            $data['select_button'] = (int) $wf->getParam('browser.mediafield_select_button', 1);
 
             $app->triggerEvent('onWfMediaFieldGetOptions', array(&$data, $profile));
         }
