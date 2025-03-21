@@ -64,7 +64,7 @@ class JFormFieldFiletype extends TextField
         return $return;
     }
 
-    private function mapValue($value)
+    private function mapValue($value, $isGrouped = false)
     {
         $data = array();
 
@@ -84,7 +84,20 @@ class JFormFieldFiletype extends TextField
                 }
             });
 
-            $data[$name] = $values;
+            if ($isGrouped) {
+                $data[$name] = $values;
+            } else {
+                // remove empty values
+                $values = array_filter($values, function ($value) {
+                    return !empty($value);
+                });
+
+                $data = array_merge($data, $values);
+            }
+        }
+
+        if (!$isGrouped) {
+            $data = array($data);
         }
 
         return $data;
@@ -134,6 +147,48 @@ class JFormFieldFiletype extends TextField
         return $defaultValues;
     }
 
+    private function isGrouped($values)
+    {
+        $keys = array_keys($values);
+
+        if (count($keys) == 1) {
+            $firstKey = $keys[0];
+
+            if (is_string($firstKey) && $firstKey !== 'default') {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function reorderItems($items, $values)
+    {
+        // re-order the items so the non-default items are at the end
+        usort($items, function ($a, $b) use ($values) {
+            $a = strtolower($a);
+            $b = strtolower($b);
+
+            $is_default_a = !empty($values) && in_array($a, $values);
+            $is_default_b = !empty($values) && in_array($b, $values);
+
+            if ($is_default_a && !$is_default_b) {
+                return -1;
+            }
+
+            if (!$is_default_a && $is_default_b) {
+                return 1;
+            }
+
+            return 0;
+        });
+
+        return $items;
+    }
+
     /**
      * Method to get the field input markup.
      *
@@ -146,15 +201,24 @@ class JFormFieldFiletype extends TextField
         // cleanup string
         $value = htmlspecialchars_decode($this->value);
 
+        // get default values from the manifest
         $defaultValues = $this->getDefaultValues();
 
-        // remove leading = if any
+        // remove leading = if any (legacy clean up)
         if ($value && $value[0] === '=') {
             $value = substr($value, 1);
         }
 
-        // map values to groups
-        $data = $this->mapValue($value);
+        // check if these values are grouped by type
+        $grouped = $this->isGrouped($defaultValues);
+
+        // map value to groups or single array
+        $data = $this->mapValue($value, $grouped);
+
+        // reset value from $data for non-grouped values
+        if (!$grouped) {
+            $value = implode(',', $data[0]);
+        }
 
         $html = array();
 
@@ -173,9 +237,13 @@ class JFormFieldFiletype extends TextField
         foreach ($data as $group => $items) {
             $custom = array();
 
+            if (empty($items)) {
+                continue;
+            }
+
             $html[] = '<dl class="filetype-list list-group">';
 
-            if (is_string($group) && $group !== 'default') {
+            if (is_string($group)) {
                 $checked = '';
 
                 $is_default = isset($defaultValues[$group]);
@@ -202,19 +270,18 @@ class JFormFieldFiletype extends TextField
                 $group = 'default';
             }
 
+            $items = $this->reorderItems($items, $defaultValues[$group]);
+
             foreach ($items as $item) {
                 $checked = '';
 
                 $item = strtolower($item);
 
-                // clear minus sign
+                // clear minus sign from beginning of item
                 $mod = str_replace('-', '', $item);
 
-                $is_default = !empty($defaultValues[$group]) && in_array($item, $defaultValues[$group]);
-
-                if (empty($value) || $is_default || (!$is_default && $mod === $item)) {
-                    $checked = ' checked="checked"';
-                }
+                // check if this is a default value or a custom value
+                $is_default = !empty($defaultValues[$group]) && in_array($mod, $defaultValues[$group]);
 
                 $class = '';
 
@@ -224,6 +291,10 @@ class JFormFieldFiletype extends TextField
                     $html[] = '<dd class="filetype-item row form-row list-group-item"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="' . $mod . '" />';
                     $html[] = '<button class="btn btn-link filetype-remove"><span class="icon-trash"></span></button>';
                 } else {
+                    if (empty($value) || $mod === $item) {
+                        $checked = ' checked="checked"';
+                    }
+                    
                     $html[] = '<dd class="filetype-item list-group-item"><label><input type="checkbox" value="' . $mod . '"' . $checked . ' /><span class="file ' . $mod . '"></span>&nbsp;' . $mod . '</label>';
                 }
             }
