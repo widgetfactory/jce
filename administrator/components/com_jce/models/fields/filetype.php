@@ -288,7 +288,7 @@ class JFormFieldFiletype extends TextField
                 if (!$is_default) {
                     $customCount++;
 
-                    $html[] = '<dd class="filetype-item row form-row list-group-item"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="' . $mod . '" />';
+                    $html[] = '<dd class="filetype-item filetype-custom row form-row list-group-item"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="' . $mod . '" />';
                     $html[] = '<button class="btn btn-link filetype-remove"><span class="icon-trash"></span></button>';
                 } else {
                     if (empty($value) || $mod === $item) {

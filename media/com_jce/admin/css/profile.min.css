@@ -206,10 +206,10 @@
   display: inline-block;
 }
 .ui-jce .filetype .filetype-list .filetype-item.filetype-custom .filetype-add {
-  display: inline-block;
-}
-.ui-jce .filetype .filetype-list .filetype-item.filetype-custom + .filetype-custom .filetype-add {
   display: none;
+}
+.ui-jce .filetype .filetype-list .filetype-item.filetype-custom:last-child .filetype-add {
+  display: inline-block;
 }
 .ui-jce .filetype .filetype-list .btn {
   color: #ccc;

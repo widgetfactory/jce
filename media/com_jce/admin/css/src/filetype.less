@@ -71,12 +71,12 @@
           }
 
           .filetype-add {
-            display: inline-block;
+            display: none;
           }
 
-          +.filetype-custom {
+          &:last-child {
             .filetype-add {
-              display: none;
+              display: inline-block;
             }
           }
         }
