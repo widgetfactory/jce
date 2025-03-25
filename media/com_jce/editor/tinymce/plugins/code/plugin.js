@@ -190,7 +190,7 @@
       // PHP code within an attribute
       content = content.replace(/\="([^"]+?)"/g, function (a, b) {
         b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-          return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+          return '__php_start__' + ed.dom.encode(z) + '__php_end__';
         });
 
         return '="' + b + '"';
@@ -200,7 +200,7 @@
       if (/<textarea/.test(content)) {
         content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
           c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-            return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+            return '__php_start__' + ed.dom.encode(z) + '__php_end__';
           });
           return '<textarea' + b + '>' + c + '</textarea>';
         });
@@ -1007,9 +1007,9 @@
     ed.onPostProcess.add(function (ed, o) {
       if (o.get) {
         // Process converted php
-        if (/(data-mce-php|\[php:start\])/.test(o.content)) {
+        if (/(data-mce-php|__php_start__)/.test(o.content)) {
           // attribute value
-          o.content = o.content.replace(/({source})?\[php:\s?start\](.*?)\[php:\s?end\]/g, function (match, pre, code) {
+          o.content = o.content.replace(/({source})?__php_start__(.*?)__php_end__/g, function (match, pre, code) {
             return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
           });
 
