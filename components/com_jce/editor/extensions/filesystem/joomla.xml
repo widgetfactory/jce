@@ -17,8 +17,9 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="restrict_dir" type="checkboxes" class="flex-row" default="administrator,bin,cache,components,cli,includes,language,layouts,libraries,logs,media,modules,plugins,templates,tmp,xmlrpc" multiple="true" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" showon="allow_root:1">
+            <field name="restrict_dir" type="checkboxes" class="flex-row" default="administrator,api,bin,cache,components,cli,includes,language,layouts,libraries,logs,media,modules,plugins,templates,tmp,xmlrpc" multiple="true" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" showon="allow_root:1">
                 <option value="administrator">administrator</option>
+                <option value="api">api</option>
                 <option value="bin">bin</option>
                 <option value="cache">cache</option>
                 <option value="components">components</option>
