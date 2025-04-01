@@ -16,11 +16,12 @@ use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Registry\Registry;
 
 class WFJoomlaFileSystem extends WFFileSystem
 {
     private static $restricted = array(
-        'administrator', 'bin', 'cache', 'components', 'cli', 'includes', 'language', 'layouts', 'libraries', 'logs', 'media', 'modules', 'plugins', 'templates', 'tmp', 'xmlrpc',
+        'administrator', 'api', 'bin', 'cache', 'components', 'cli', 'includes', 'language', 'layouts', 'libraries', 'logs', 'media', 'modules', 'plugins', 'templates', 'tmp', 'xmlrpc',
     );
 
     private static $allowroot = false;
@@ -86,43 +87,46 @@ class WFJoomlaFileSystem extends WFFileSystem
             $root = $this->getBaseRoot();
             $wf = WFEditorPlugin::getInstance();
 
-            // list of restricted directories
-            $restricted = $wf->getParam('filesystem.joomla.restrict_dir', self::$restricted);
-
-            // is root allowed?
-            $allowroot = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
-
-            $plg = $wf->getName();
-            $fs = $wf->getParam($plg . '.filesystem', '');
-
-            // if a filesystem is set, use allow root options
-            if ($fs) {
-                $restricted = $wf->getParam($plg . '.filesystem.joomla.restrict_dir');
-                $allowroot = $wf->getParam($plg . '.filesystem.joomla.allow_root', 0);
-            }
-
-            // explode to array
-            if (is_string($restricted)) {
-                self::$restricted = explode(',', $restricted);
-            } else {
-                self::$restricted = $restricted;
-            }
-
-            // clean array
-            self::$restricted = array_filter(self::$restricted);
-
-            // cast to bool
-            self::$allowroot = (bool) $allowroot;
-
+            // Default to 'images' if no root is set
             if (empty($root)) {
                 $root = 'images';
+            }
 
-                // set $root to empty if it is allowed
-                if (self::$allowroot) {
-                    $root = '';
-                } else {
-                    self::$restricted = array();
-                }
+            // Get default restricted directories and root access setting
+            $restricted = $wf->getParam('filesystem.joomla.restrict_dir', self::$restricted);
+            $allowroot = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
+
+            // Get the Joomla filesystem config object
+            $fsConfig = $wf->getParam($wf->getName() . '.filesystem.joomla', '');
+
+            // Override defaults if config is an object
+            if (is_object($fsConfig)) {
+                $fs = new Registry($fsConfig);
+
+                $restricted = $fs->get('restrict_dir', $restricted);
+                $allowroot = (int) $fs->get('allow_root', $allowroot);
+            }
+
+            // Normalize $restricted to array
+            if (is_string($restricted)) {
+                self::$restricted = array_map('trim', explode(',', $restricted));
+            } elseif (is_array($restricted)) {
+                self::$restricted = $restricted;
+            } else {
+                self::$restricted = [];
+            }
+
+            // Clean empty values
+            self::$restricted = array_filter(self::$restricted);
+
+            // Cast to bool
+            self::$allowroot = (bool) $allowroot;
+
+            // Adjust root and restricted based on allowroot setting
+            if (self::$allowroot) {
+                $root = '';
+            } else {
+                self::$restricted = [];
             }
 
             if (!empty($root)) {
