@@ -490,7 +490,7 @@
                 }
 
                 // action is inside the menu
-                if (menu.find(elm).length) {
+                if (menu.find(elm).length || $(elm).parents(menu).length) {                
                     return;
                 }
 
