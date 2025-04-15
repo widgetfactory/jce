@@ -24,8 +24,33 @@ WFAggregator.add('audio', {
     },
 
     setup: function () {
+       var x = 0;
+
         $.each(this.params, function (k, v) {
-            $('#audio_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
+            if (k == 'custom') {
+                
+                $.each(v, function (key, value) {
+                    var $repeatable = $('.media_option.audio .uk-repeatable');
+
+                    if (x > 0) {
+                        $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                        // Refresh the $repeatable selection after appending a clone
+                        $repeatable = $('.media_option.audio .uk-repeatable');
+                    }
+
+                    var $elements = $repeatable.eq(x).find('input, select');
+
+                    $elements.eq(0).val(key);
+                    $elements.eq(1).val(value);
+
+                    x++;
+                });
+                
+                
+            } else {
+                $('#audio_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
+            }
         });
     },
 
