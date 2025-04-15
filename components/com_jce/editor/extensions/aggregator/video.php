@@ -37,15 +37,23 @@ class WFAggregatorExtension_Video extends WFAggregatorExtension
     {
         $plugin = WFEditorPlugin::getInstance();
 
-        return array(
+        $defaults = array(
             'width' => $plugin->getParam('aggregator.video.width', ''),
             'height' => $plugin->getParam('aggregator.video.height', ''),
 
             'controls' => (int) $plugin->getParam('aggregator.video.controls', 1),
             'loop' => (int) $plugin->getParam('aggregator.video.loop', 0),
             'autoplay' => (int) $plugin->getParam('aggregator.video.autoplay', 0),
-            'muted' => (int) $plugin->getParam('aggregator.video.mute', 0),
+            'muted' => (int) $plugin->getParam('aggregator.video.mute', 0)
         );
+
+        $custom = $plugin->getParam('aggregator.video.custom', '');
+
+        if ($custom) {            
+            $defaults['custom'] = $this->getCustomDefaultAttributes($custom);
+        }
+
+        return $defaults;
     }
 
     public function getEmbedData($data, $url)
