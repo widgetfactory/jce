@@ -365,6 +365,9 @@ class WFEditorPlugin extends CMSObject
             $form_id .= '.' . basename($manifest, '.xml');
         }
 
+        // exclude custom attributes
+        $exclude[] = 'custom_attributes';
+
         // get parameter defaults
         if (is_file($manifest)) {
             $form = Form::getInstance('com_jce.plugin.' . $form_id, $manifest, array('load_data' => false), true, '//extension');
@@ -389,6 +392,39 @@ class WFEditorPlugin extends CMSObject
                 // only use non-empty values
                 if ($value !== '') {
                     $defaults[$key] = $value;
+                }
+            }
+        }
+
+        $customAttributes = $this->getParam($name . '.attributes', '');
+
+        if ($customAttributes) {
+            if (is_string($customAttributes)) {
+                $customAttributes = json_decode($customAttributes, true);
+            }
+            
+            // Remove values with invalid key, must be indexed array
+            $customAttributes = array_filter($customAttributes, function ($value, $key) {
+                return is_numeric($key) && $value != "";
+            }, ARRAY_FILTER_USE_BOTH);
+
+            foreach ($customAttributes as $attribute) {
+                if (empty($attribute)) {
+                    continue;
+                }
+
+                $name = '';
+                $value = '';
+
+                // json associative array
+                if (is_array($attribute) && array_key_exists('name', $attribute)) {
+                    extract($attribute);
+                }
+
+                if ($name && $value !== '') {
+                    $value = trim($value, " \t\n\r\0\x0B'\"");
+                    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                    $defaults[$name] = $value;
                 }
             }
         }
