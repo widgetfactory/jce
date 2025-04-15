@@ -368,6 +368,8 @@
         setDefaults: function (s) {
             var n, v;
 
+            var x = 0;
+
             for (n in s) {
                 if (!n) {
                     continue;
@@ -383,15 +385,32 @@
                     v = '';
                 }
 
-                if ($('#' + n).is(':checkbox')) {
-                    $('#' + n).prop('checked', parseFloat(v)); //.trigger('change');
-                } else {
-                    $('#' + n).val(v); //.trigger('change');
+                var $elm = $('#' + n);
 
-                    // update colour
-                    if (typeof v === "string" && v.charAt(0) === "#") {
-                        $('#' + n).trigger('change');
+                if ($elm.length) {
+                    if ($elm.is(':checkbox')) {
+                        $('#' + n).prop('checked', parseFloat(v)); //.trigger('change');
+                    } else {
+                        $('#' + n).val(v); //.trigger('change');
+
+                        // update colour
+                        if (typeof v === "string" && v.charAt(0) === "#") {
+                            $('#' + n).trigger('change');
+                        }
                     }
+                } else {
+                    var $repeatable = $('.uk-repeatable', '#custom_attributes');
+
+                    if (x > 0) {
+                        $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+                    }
+
+                    var $elements = $repeatable.eq(x).find('input, select');
+
+                    $elements.eq(0).val(n);
+                    $elements.eq(1).val(v);
+
+                    x++;
                 }
             }
         }
