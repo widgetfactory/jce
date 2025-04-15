@@ -75,6 +75,8 @@
                 </field>
                 <field type="text" name="tabindex" default="" size="50" label="WF_LABEL_TABINDEX" description="WF_LABEL_TABINDEX_DESC" />
                 <field type="text" name="accesskey" default="" size="50" label="WF_LABEL_ACCESSKEY" description="WF_LABEL_ACCESSKEY_DESC" />
+
+                <field name="attributes" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" />
             </fieldset>
 
             <field name="file_browser" type="yesno" default="1" label="WF_URL_FILE_BROWSER" description="WF_URL_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
