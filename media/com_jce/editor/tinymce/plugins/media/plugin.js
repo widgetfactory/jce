@@ -734,12 +734,15 @@
     }
 
     function stripQuery(value) {
-        // remove query to check file type (eg: S3 Private URL)
-        if (value && value.indexOf('?') !== -1) {
-            value = value.substring(0, value.indexOf('?'));
+        if (value) {
+            // Match until the last file extension and strip everything after, eg: ?v=1, #hash, &param=value etc.
+            const match = value.match(/^(.*?\.[a-z0-9]{2,10})(?:[?#&].*|$)/i);
+            
+            return match ? match[1] : value;
+
         }
 
-        return value;
+        return false;
     }
 
     /**
@@ -824,7 +827,10 @@
         "audio": {
             type: 'audio/mpeg'
         },
-        "iframe": {}
+        "iframe": {},
+        "pdf": {
+            type: "application/pdf"
+        }
     };
 
     var lookup = {};
@@ -1595,6 +1601,12 @@
                             node.remove();
                             continue;
                         }
+
+                        // iframe, but not a supported provider, eg: Youtube etc.
+                        if (newName == 'iframe' && !isSupportedProvider(editor, src)) {
+                            node.remove();
+                            continue;
+                        }
                         
                         // node has been renamed, so validate child nodes
                         if (newName !== node.name) {
@@ -1612,6 +1624,23 @@
 
                         // update src attribute
                         node.attr('src', src);
+
+                        // update data and type attributes for object
+                        if (newName == 'object') {
+                            // set data attribute
+                            node.attr('data', src);
+
+                            // remove src attribute
+                            node.attr('src', null);
+
+                            // clean the src value
+                            var cleanSrc = stripQuery(src);
+
+                            // get the extension
+                            var ext = cleanSrc.split('.').pop();
+
+                            node.attr('type', mimes[ext] || 'application/octet-stream');
+                        }
                     }
                 }
 
