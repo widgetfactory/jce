@@ -277,4 +277,52 @@ class WFExtension extends CMSObject
     {
         return new WFView($options);
     }
+
+    protected function getCustomDefaultAttributes($data)
+    {
+        $custom = array();
+        
+        if (is_string($data)) {                
+            $data = html_entity_decode($data);
+            $data = json_decode($data, true);
+        }
+
+        // Remove values with invalid key, must be indexed array
+        $data = array_filter($data, function ($value, $key) {
+            return is_numeric($key) && $value != "";
+        }, ARRAY_FILTER_USE_BOTH);
+
+        foreach ($data as $attribute) {
+            if (empty($attribute)) {
+                continue;
+            }
+
+            $name = '';
+            $value = '';
+
+            // json associative array
+            if (is_array($attribute) && array_key_exists('name', $attribute)) {
+                extract($attribute);
+            }
+
+            if ($name && $value !== '') {
+                $value = trim($value, " \t\n\r\0\x0B'\"");
+                $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+
+                $custom[$name] = $value;
+            }
+        }
+
+        // remove empty values
+        $custom = array_filter($custom, function ($value) {
+            return $value !== '';
+        });
+
+        // remove invalid keys
+        $custom = array_filter($custom, function ($key) {
+            return preg_match('/^[a-zA-Z0-9\-_]+$/', $key);
+        }, ARRAY_FILTER_USE_KEY);
+
+        return $custom;
+    }
 }
