@@ -5648,7 +5648,7 @@
     function compileSchema(type) {
       var schema = {},
         globalAttributes, blockContent;
-      var phrasingContent, flowContent, html4BlockContent, html4PhrasingContent, eventAttributes;
+      var phrasingContent, flowContent, html4BlockContent, html4PhrasingContent, eventAttributes, microdataAttributes;
 
       function add(name, attributes, children) {
         var ni, i, attributesOrder, args = arguments;
@@ -5721,6 +5721,11 @@
 
       // Attributes present on all elements
       globalAttributes = split("id accesskey class dir lang style tabindex title");
+
+      microdataAttributes = split("itemprop itemscope itemtype itemid itemref");
+
+      // microdata attributes
+      globalAttributes.push.apply(globalAttributes, microdataAttributes);
 
       // global event attributes
       eventAttributes = split("onclick ondblclick onmousedown " +
@@ -33821,9 +33826,6 @@
           e.value = h;
         }
 
-        // trigger change event on the input element
-        //e.dispatchEvent(new CustomEvent('change'));
-
         o.element = e = null;
 
         return h;
@@ -45309,7 +45311,7 @@
         // PHP code within an attribute
         content = content.replace(/\="([^"]+?)"/g, function (a, b) {
           b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-            return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+            return '__php_start__' + ed.dom.encode(z) + '__php_end__';
           });
 
           return '="' + b + '"';
@@ -45319,7 +45321,7 @@
         if (/<textarea/.test(content)) {
           content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
             c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-              return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+              return '__php_start__' + ed.dom.encode(z) + '__php_end__';
             });
             return '<textarea' + b + '>' + c + '</textarea>';
           });
@@ -46126,9 +46128,9 @@
       ed.onPostProcess.add(function (ed, o) {
         if (o.get) {
           // Process converted php
-          if (/(data-mce-php|\[php:start\])/.test(o.content)) {
+          if (/(data-mce-php|__php_start__)/.test(o.content)) {
             // attribute value
-            o.content = o.content.replace(/({source})?\[php:\s?start\](.*?)\[php:\s?end\]/g, function (match, pre, code) {
+            o.content = o.content.replace(/({source})?__php_start__(.*?)__php_end__/g, function (match, pre, code) {
               return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
             });
 
