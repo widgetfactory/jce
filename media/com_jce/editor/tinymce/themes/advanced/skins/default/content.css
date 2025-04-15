@@ -490,12 +490,14 @@ img.mce-object.mce-object-img {
 .mceContentBody div[data-mce-code] textarea:focus {
   outline: none;
 }
-.mceContentBody.mceVisualBlocks pre[data-mce-code] {
+.mceContentBody.mceVisualBlocks pre[data-mce-code],
+.mceContentBody.mceVisualBlocks div[data-mce-code] {
   border: 1px solid #787679;
   border-color: var(--mce-guidelines);
   padding: 8px;
 }
-.mceContentBody pre[data-mce-code]:before {
+.mceContentBody pre[data-mce-code]:before,
+.mceContentBody div[data-mce-code]:before {
   display: block;
   position: inherit;
   line-height: 0;
@@ -586,7 +588,7 @@ img.mce-object {
   background-repeat: no-repeat;
   background-color: #fafafa;
   background-color: var(--mce-placeholder);
-  background-size: 256px;
+  background-size: 16px;
 }
 img.mce-object.mce-object-generic {
   min-width: 50px;
@@ -630,7 +632,7 @@ img.mce-object.mce-object-iframe {
 }
 img.mce-object.mce-object-audio {
   background-image: url(img/media/audio.svg);
-  background-size: 128px;
+  background-size: 16px;
   /* default for Chrome */
   min-width: 300px;
   height: 54px;
@@ -645,7 +647,7 @@ img.mce-object.mce-object-audio.mce-object-agent-safari {
 }
 img.mce-object.mce-object-video {
   background-image: url(img/media/video.svg);
-  background-size: 128px;
+  background-size: 16px;
 }
 .mce-object-preview {
   background-color: #fafafa;
