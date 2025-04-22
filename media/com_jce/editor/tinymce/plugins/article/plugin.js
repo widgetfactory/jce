@@ -144,7 +144,7 @@
 
         ed.onPreInit.add(function () {
             ed.selection.onBeforeSetContent.addToTop(function (ed, o) {
-                o.content = o.content.replace(/<hr(.*?) alt="([^"]+)"([^>]*?)>/gi, '<hr$1 data-alt="$2"$3>');
+                o.content = o.content.replace(/<hr\b([^>]*?)\balt="([^"]+)"([^>]*?)>/gi, '<hr$1 data-alt="$2"$3>');
             });
 
             ed.parser.addNodeFilter('hr', function (nodes) {
