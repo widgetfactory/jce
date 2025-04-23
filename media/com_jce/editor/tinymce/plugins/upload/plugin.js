@@ -157,11 +157,6 @@
         });
       }
 
-      // update events when content is inserted
-      ed.selection.onSetContent.add(function () {
-        bindUploadEvents(ed);
-      });
-
       // update events when content is set
       ed.onSetContent.add(function () {
         bindUploadEvents(ed);

@@ -608,7 +608,7 @@
       });
 
       // remove paragraph parent of a pre block
-      ed.selection.onSetContent.add(function (sel, o) {
+      ed.onSetContent.add(function (ed, o) {
         each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
           var p = ed.dom.getParent(elm, 'p');
 

@@ -1227,57 +1227,62 @@
                 });
             }
 
-            ed.selection.onGetContent.add(function (sel, o) {
-                if (o.contextual) {
-                    var table = ed.dom.getParent(sel.getStart(), 'table');
+            //ed.selection.onGetContent.add(function (sel, o) {
+            ed.onGetContent.add(function (ed, o) {
+                if (!o.selection && !o.contextual) {
+                    return;
+                }
 
-                    if (table) {
-                        var rows = [];
+                var sel = ed.selection;
 
-                        // get all table cells that are selected.
-                        each(table.rows, function (row) {
-                            var cells = [];
+                var table = ed.dom.getParent(sel.getStart(), 'table');
 
-                            each(row.cells, function (cell) {
-                                if (ed.dom.hasClass(cell, 'mceSelected')) {
-                                    cells.push(cell);
-                                }
-                            });
+                if (table) {
+                    var rows = [];
 
-                            if (cells.length) {
-                                // If the number of selected table cells is equal to the total number of table cells, then return the whole row
-                                if (cells.length === row.cells.length) {
-                                    rows.push(row);
-                                    // Otherwise, return only the selected cells
-                                } else {
-                                    rows.push(cells);
-                                }
+                    // get all table cells that are selected.
+                    each(table.rows, function (row) {
+                        var cells = [];
+
+                        each(row.cells, function (cell) {
+                            if (ed.dom.hasClass(cell, 'mceSelected')) {
+                                cells.push(cell);
                             }
                         });
 
-                        if (rows.length) {
-                            // if the entire table is selected, return the whole table
-                            if (rows.length === table.rows.length) {
-                                var tmp = table.cloneNode(true);
-                                ed.dom.removeClass(ed.dom.select('td.mceSelected,th.mceSelected', tmp), 'mceSelected');
-
-                                o.content = tmp.outerHTML;
-                                return;
+                        if (cells.length) {
+                            // If the number of selected table cells is equal to the total number of table cells, then return the whole row
+                            if (cells.length === row.cells.length) {
+                                rows.push(row);
+                                // Otherwise, return only the selected cells
+                            } else {
+                                rows.push(cells);
                             }
+                        }
+                    });
 
-                            var content = rows.map(function (row) {
-                                var cells = row.map(function (cell) {
-                                    var tmp = cell.cloneNode(true);
-                                    ed.dom.removeClass(tmp, 'mceSelected');
+                    if (rows.length) {
+                        // if the entire table is selected, return the whole table
+                        if (rows.length === table.rows.length) {
+                            var tmp = table.cloneNode(true);
+                            ed.dom.removeClass(ed.dom.select('td.mceSelected,th.mceSelected', tmp), 'mceSelected');
 
-                                    return tmp.outerHTML;
-                                });
+                            o.content = tmp.outerHTML;
+                            return;
+                        }
 
-                                return '<tr>' + cells.join('') + '</tr>';
+                        var content = rows.map(function (row) {
+                            var cells = row.map(function (cell) {
+                                var tmp = cell.cloneNode(true);
+                                ed.dom.removeClass(tmp, 'mceSelected');
+
+                                return tmp.outerHTML;
                             });
 
-                            o.content = '<table>' + content.join('') + '</table>';
-                        }
+                            return '<tr>' + cells.join('') + '</tr>';
+                        });
+
+                        o.content = '<table>' + content.join('') + '</table>';
                     }
                 }
             });
