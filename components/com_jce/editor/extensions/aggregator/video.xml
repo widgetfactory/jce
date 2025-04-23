@@ -38,7 +38,7 @@
 				<option value="0">JNO</option>
 			</field>
 
-			<field name="custom" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" />
+			<field name="custom" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" boolean="true" />
 
 		</fieldset>
 	</fields>
