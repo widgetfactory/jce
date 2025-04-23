@@ -1,0 +1,47 @@
+/* global jQuery */
+(function ($) {
+    $(document).ready(function () {
+
+        $('.controls').on('change', '.wf-keyvalue :input', function (e) {
+            var $parent = $(this).parents('.wf-keyvalue'), $ctrl = $parent.parent();
+
+            var items = [];
+
+            if ($(e.target).is(':checkbox')) {
+                if (e.target.checked) {
+                    var key = $parent.find(':input[name="name"]').val();
+
+                    if (key) {
+                        $parent.find(':input[name="value"]').val(key).attr('disabled', 'disabled');
+                    } else {
+                        this.checked = false;
+                    }
+
+                } else {
+                    $parent.find(':input[name="value"]').removeAttr('disabled');
+                }
+            }
+
+            $('.wf-keyvalue', $ctrl).each(function () {
+                var data = {};
+
+                $(':input[name]', this).each(function () {
+                    var name = $(this).attr('name'), val = $(this).val();
+
+                    // must have "key"
+                    if (name == '') {
+                        return true;
+                    }
+
+                    // encode and set value
+                    data[name] = $('<textarea/>').text(val).html();
+                });
+
+                items.push(data);
+            });
+
+            // update hidden input
+            $ctrl.find('input[name*="jform"][type="hidden"]').val(JSON.stringify(items)).trigger('change');
+        });
+    });
+})(jQuery);
