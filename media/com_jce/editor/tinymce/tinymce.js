@@ -3688,7 +3688,6 @@
         }
       });
 
-      //editor.onSetContent.add(selection.onSetContent.add(fixLinks));
       editor.onSetContent.add(fixLinks);
     }
 
@@ -13518,7 +13517,7 @@
   		return null;
   	};
 
-  	tinymce.dom.RangeUtils.getNode = function (container, offset) {		
+  	tinymce.dom.RangeUtils.getNode = function (container, offset) {
   		if (container.nodeType == 1 && container.hasChildNodes()) {
   			if (offset >= container.childNodes.length) {
   				offset = container.childNodes.length - 1;
@@ -18075,7 +18074,7 @@
      * @param {Number} offset Offset within that container node.
      * @param {Array} clientRects Optional client rects array for the position.
      */
-    function CaretPosition(container, offset, clientRects) {    
+    function CaretPosition(container, offset, clientRects) {
       function isAtStart() {
         if (isText(container)) {
           return offset === 0;
@@ -21465,7 +21464,6 @@
       y = dom.getPos(elm).y + offsetY;
       viewPortY = viewPort.y;
       viewPortH = viewPort.h;
-
       if (y < viewPort.y || y + 25 > viewPortY + viewPortH) {
         editor.getWin().scrollTo(0, y < viewPortY ? y : y - viewPortH + 25);
       }
@@ -24736,7 +24734,7 @@
           // We can't mark it as done if there is a load error since
           // A) We don't want to produce 404 errors on the server and
           // B) the onerror event won't fire on all browsers.
-          //done();
+          // done();
         }
 
         id = dom.uniqueId();
@@ -35940,7 +35938,6 @@
         selection: true
       };
 
-      //selection.onBeforeSetContent.dispatch(selection, args);
       editor.onBeforeSetContent.dispatch(editor, args);
       value = args.content;
 
@@ -36063,8 +36060,6 @@
 
       args.selection = true;
       editor.onSetContent.dispatch(editor, args);
-
-      //selection.onSetContent.dispatch(selection, args);
 
       editor.addVisual();
     };
@@ -41927,8 +41922,6 @@
           });
 
           // Remove bogus state if they got filled by contents using editor.selection.setContent
-          //selection.onSetContent.add(unmarkBogusCaretParents);
-
           ed.onSetContent.add(function (ed, e) {
             if (e.selection) {
               unmarkBogusCaretParents();
@@ -42055,10 +42048,6 @@
 
       ed.onPreProcess.add(convert);
       ed.onSetContent.add(convert);
-
-      /*ed.onInit.add(function () {
-        ed.selection.onSetContent.add(convert);
-      });*/
     }
   });
 
