@@ -598,7 +598,7 @@ abstract class WFMimeType
         'text/css' => 'css',
         'text/csv' => 'csv',
         'text/html' => 'html htm',
-        'text/plain' => 'txt text conf def list log in',
+        'text/plain' => 'txt text conf def list log in csv',
         'text/prs.lines.tag' => 'dsc',
         'text/richtext' => 'rtx',
         'text/sgml' => 'sgml sgm',
