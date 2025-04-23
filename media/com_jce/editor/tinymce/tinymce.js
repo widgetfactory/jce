@@ -3688,7 +3688,8 @@
         }
       });
 
-      editor.onSetContent.add(selection.onSetContent.add(fixLinks));
+      //editor.onSetContent.add(selection.onSetContent.add(fixLinks));
+      editor.onSetContent.add(fixLinks);
     }
 
     /**
@@ -13517,7 +13518,7 @@
   		return null;
   	};
 
-  	tinymce.dom.RangeUtils.getNode = function (container, offset) {
+  	tinymce.dom.RangeUtils.getNode = function (container, offset) {		
   		if (container.nodeType == 1 && container.hasChildNodes()) {
   			if (offset >= container.childNodes.length) {
   				offset = container.childNodes.length - 1;
@@ -18074,7 +18075,7 @@
      * @param {Number} offset Offset within that container node.
      * @param {Array} clientRects Optional client rects array for the position.
      */
-    function CaretPosition(container, offset, clientRects) {
+    function CaretPosition(container, offset, clientRects) {    
       function isAtStart() {
         if (isText(container)) {
           return offset === 0;
@@ -22939,6 +22940,7 @@
        */
       getContent: function (s) {
         var self = this,
+        ed = self.editor,
           r = self.getRng(),
           e = self.dom.create("body"),
           se = self.getSel(),
@@ -22950,6 +22952,10 @@
         s.format = s.format || 'html';
         s.forced_root_block = '';
         self.onBeforeGetContent.dispatch(self, s);
+
+        s.selection = true;
+
+        ed.onBeforeGetContent.dispatch(ed, s);
 
         if (s.format == 'text') {
           return self.isCollapsed() ? '' : (r.text || (se.toString ? se.toString() : ''));
@@ -22992,6 +22998,8 @@
 
         self.onGetContent.dispatch(self, s);
 
+        ed.onGetContent.dispatch(ed, s);
+
         return s.content;
       },
 
@@ -23009,6 +23017,7 @@
        */
       setContent: function (content, args) {
         var self = this,
+        ed = self.editor,
           rng = self.getRng(),
           caretNode, doc = self.win.document;
 
@@ -23018,9 +23027,13 @@
         args.set = true;
         args.content = content;
 
+        args.selection = true;
+
         // Dispatch before set content event
         if (!args.no_events) {
-          self.onBeforeSetContent.dispatch(self, args);
+          //self.onBeforeSetContent.dispatch(self, args);
+
+          ed.onBeforeSetContent.dispatch(ed, args);
         }
 
         content = args.content;
@@ -23078,7 +23091,9 @@
 
         // Dispatch set content event
         if (!args.no_events) {
-          self.onSetContent.dispatch(self, args);
+          //self.onSetContent.dispatch(self, args);
+
+          ed.onSetContent.dispatch(ed, args);
         }
       },
 
@@ -24721,7 +24736,7 @@
           // We can't mark it as done if there is a load error since
           // A) We don't want to produce 404 errors on the server and
           // B) the onerror event won't fire on all browsers.
-          // done();
+          //done();
         }
 
         id = dom.uniqueId();
@@ -31380,6 +31395,22 @@
   	 */
     tinymce.onRemoveEditor = new Dispatcher(tinymce);
 
+    tinymce.on = function (name, handler) {
+      name = name.toLowerCase();
+
+      var wrapped = function (ed, arg) {
+        handler({ editor: tinymce.activeEditor });
+      };
+      
+      if (name == 'addeditor') {
+        tinymce.onAddEditor.add(wrapped);
+      }
+
+      if (name == 'removeeditor') {
+        tinymce.onRemoveEditor.add(wrapped);
+      }
+    };
+
     tinymce.EditorManager = extend(tinymce, {
       /**
   		 * Collection of editor instances.
@@ -32121,6 +32152,7 @@
    */
 
   (function (tinymce) {
+    
     // Shorten these names
     var DOM = tinymce.DOM,
       Event = tinymce.dom.Event,
@@ -32527,7 +32559,8 @@
           }
         }
 
-        function initPlugin(p) {
+
+        function initPlugin(p) {                
           var c = PluginManager.get(p),
             u = PluginManager.urls[p] || tinymce.documentBaseURL.replace(/\/$/, ''),
             po;
@@ -32550,6 +32583,10 @@
         }
 
         // Create all plugins
+        if (Array.isArray(s.plugins)) {
+          s.plugins = s.plugins.join(',');
+        }
+
         each(explode(s.plugins.replace(/\-/g, '')), initPlugin);
 
         /**
@@ -34325,6 +34362,56 @@
   (function (tinymce) {
   	var each = tinymce.each;
 
+  	var legacyEventMap = {
+  		preinit: 'onPreInit',
+  		beforerenderui: 'onBeforeRenderUI',
+  		postrender: 'onPostRender',
+  		load: 'onLoad',
+  		init: 'onInit',
+  		remove: 'onRemove',
+  		activate: 'onActivate',
+  		deactivate: 'onDeactivate',
+  		show: 'onShow',
+  		hide: 'onHide',
+  		click: 'onClick',
+  		event: 'onEvent',
+  		mouseup: 'onMouseUp',
+  		mousedown: 'onMouseDown',
+  		dblclick: 'onDblClick',
+  		keydown: 'onKeyDown',
+  		keyup: 'onKeyUp',
+  		keypress: 'onKeyPress',
+  		contextmenu: 'onContextMenu',
+  		submit: 'onSubmit',
+  		reset: 'onReset',
+  		paste: 'onPaste',
+  		cut: 'onCut',
+  		copy: 'onCopy',
+  		preprocess: 'onPreProcess',
+  		postprocess: 'onPostProcess',
+  		beforesetcontent: 'onBeforeSetContent',
+  		beforegetcontent: 'onBeforeGetContent',
+  		setcontent: 'onSetContent',
+  		getcontent: 'onGetContent',
+  		loadcontent: 'onLoadContent',
+  		savecontent: 'onSaveContent',
+  		nodechange: 'onNodeChange',
+  		change: 'onChange',
+  		beforeexeccmd: 'onBeforeExecCommand',
+  		execcmd: 'onExecCommand',
+  		undo: 'onUndo',
+  		redo: 'onRedo',
+  		visualaid: 'onVisualAid',
+  		setprogressstate: 'onSetProgressState',
+  		setattrib: 'onSetAttrib',
+  		selectionchange: 'onSelectionChange',
+  		blur: 'onBlur',
+  		focus: 'onFocus',
+  		focusin: 'onFocusIn',
+  		focusout: 'onFocusOut',
+  		input: 'onInput'
+  	};
+
   	/**
   	 * Creates all event dispatcher instances for the editor instance and also adds
   	 * passthoughs for legacy callback handlers.
@@ -35160,7 +35247,15 @@
   			 * @event onFocusOut
   			 * @param {tinymce.Editor} sender Editor instance.
   			 */
-  			'onFocusOut'
+  			'onFocusOut',
+
+  			/**
+  			 * Fires when the editor input is changed.
+  			 *
+  			 * @event onInput
+  			 * @param {tinymce.Editor} sender Editor instance.
+  			 */
+  			'onInput'
 
   		], function (name) {
   			self[name] = new tinymce.util.Dispatcher(self);
@@ -35192,6 +35287,56 @@
   				}
   			});
   		}
+
+  		// proxy "on" function for legacy code
+  		self.on = function (name, handler, prepend) {
+  			// split into an array by space
+  			var names = name.split(' ');
+
+  			var names = name.toLowerCase().split(' ');
+  			var i = names.length;
+
+  			while (i--) {
+  				name = names[i];
+
+  				var evt = legacyEventMap[name] || name;
+
+  				// Wrap the handler so it receives a modern-style event object
+  				var wrapped = function (ed, arg) {
+  					var eventObj = (typeof arg === 'object' && arg !== null) ? tinymce.extend({ editor: ed }, arg) : { editor: ed, data: arg };
+  					handler(eventObj);
+  				};
+
+  				if (prepend) {
+  					self[evt].addToTop(wrapped);
+  				} else {
+  					self[evt].add(wrapped);
+  				}
+  			}
+  		};
+
+  		self.fire = function (name, arg) {
+  			name = name.toLocaleLowerCase();
+
+  			var evt = legacyEventMap[name] || name;
+
+  			// Wrap the arg to simulate modern signature
+  			var eventObj = (typeof arg === 'object' && arg !== null) ? tinymce.extend({ editor: self }, arg) : { editor: self, data: arg };
+
+  			self[evt].dispatch(self, eventObj);
+  		};
+
+  		self.off = function (name, handler) {
+  			name = name.toLocaleLowerCase();
+
+  			var evt = legacyEventMap[name] || name;
+
+  			if (handler) {
+  				self[evt].remove(handler);
+  			} else {
+  				self[evt].removeAll();
+  			}
+  		};
   	};
 
   	/**
@@ -35220,7 +35365,8 @@
   			copy: 'onCopy',
   			selectionchange: 'onSelectionChange',
   			focusin: 'onFocusIn',
-  			focusout: 'onFocusOut'
+  			focusout: 'onFocusOut',
+  			input: 'onInput'
   		};
 
   		// Handler that takes a native event and sends it out to a dispatcher like onKeyDown
@@ -35794,7 +35940,8 @@
         selection: true
       };
 
-      selection.onBeforeSetContent.dispatch(selection, args);
+      //selection.onBeforeSetContent.dispatch(selection, args);
+      editor.onBeforeSetContent.dispatch(editor, args);
       value = args.content;
 
       // Add caret at end of contents if it's missing
@@ -35914,7 +36061,10 @@
       moveSelectionToMarker(dom.get('mce_marker'));
       umarkFragmentElements(editor.getBody());
 
-      selection.onSetContent.dispatch(selection, args);
+      args.selection = true;
+      editor.onSetContent.dispatch(editor, args);
+
+      //selection.onSetContent.dispatch(selection, args);
 
       editor.addVisual();
     };
@@ -37249,7 +37399,6 @@
 
       // Get current selection
       rng = selection.getRng();
-
       if (rng.setStart) {
         startContainer = rng.startContainer;
         startOffset = rng.startOffset;
@@ -37284,8 +37433,7 @@
       // Wrap non block elements and text nodes
       node = rootNode.firstChild;
       rootNodeName = rootNode.nodeName.toLowerCase();
-
-      while (node) {      
+      while (node) {
         // TODO: Break this up, too complex
         if (((node.nodeType === 3 || (node.nodeType == 1 && !blockElements[node.nodeName]))) &&
                   schema.isValidChild(rootNodeName, forcedRootBlock.toLowerCase())) {
@@ -40313,6 +40461,7 @@
             // Non indexed object
             if (items.length === undef) {
               for (key in items) {
+                // eslint-disable-next-line no-prototype-builtins
                 if (items.hasOwnProperty(key)) {
                   if (item_name === 'attributes') {
                     value = dom.getAttrib(node, key);
@@ -41366,6 +41515,7 @@
 
             for (name in obj1) {
               // Obj1 has item obj2 doesn't have
+              // eslint-disable-next-line no-prototype-builtins
               if (obj1.hasOwnProperty(name)) {
                 value = obj2[name];
 
@@ -41387,6 +41537,7 @@
             // Check if obj 2 has something obj 1 doesn't have
             for (name in obj2) {
               // Obj2 has item obj1 doesn't have
+              // eslint-disable-next-line no-prototype-builtins
               if (obj2.hasOwnProperty(name)) {
                 return FALSE;
               }
@@ -41776,7 +41927,13 @@
           });
 
           // Remove bogus state if they got filled by contents using editor.selection.setContent
-          selection.onSetContent.add(unmarkBogusCaretParents);
+          //selection.onSetContent.add(unmarkBogusCaretParents);
+
+          ed.onSetContent.add(function (ed, e) {
+            if (e.selection) {
+              unmarkBogusCaretParents();
+            }
+          });
 
           ed._hasCaretEvents = true;
         }
@@ -41899,9 +42056,9 @@
       ed.onPreProcess.add(convert);
       ed.onSetContent.add(convert);
 
-      ed.onInit.add(function () {
+      /*ed.onInit.add(function () {
         ed.selection.onSetContent.add(convert);
-      });
+      });*/
     }
   });
 
@@ -45729,7 +45886,7 @@
         });
 
         // remove paragraph parent of a pre block
-        ed.selection.onSetContent.add(function (sel, o) {
+        ed.onSetContent.add(function (ed, o) {
           each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
             var p = ed.dom.getParent(elm, 'p');
 
@@ -46336,9 +46493,9 @@
               });
 
               // update events when content is inserted
-              ed.selection.onSetContent.add(function () {
+              /*ed.selection.onSetContent.add(function () {
                   bindMouseoverEvent(ed);
-              });
+              });*/
 
               // update events when content is set
               ed.onSetContent.add(function () {
@@ -47519,11 +47676,6 @@
             }
           });
         }
-
-        // update events when content is inserted
-        ed.selection.onSetContent.add(function () {
-          bindUploadEvents(ed);
-        });
 
         // update events when content is set
         ed.onSetContent.add(function () {
