@@ -131,6 +131,10 @@ class JFormFieldKeyValue extends FormField
 
             $xml .= '<field name="' . $valueName . '" type="text" label="' . $valueLabel . '" description="" />';
 
+            if ($this->element['boolean']) {
+                $xml .= '<field name="boolean" type="checkbox" class="wf-keyvalue-boolean" label="' . Text::_('WF_LABEL_BOOLEAN') . '" description="" />';
+            }
+
             $xml .= '</fields></form>';
         
             $subForm->load($xml);
