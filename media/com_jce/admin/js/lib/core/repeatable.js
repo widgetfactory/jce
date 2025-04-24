@@ -123,7 +123,7 @@
 
             // clear or remove
             if ($parent.children('.form-field-repeatable-item').length === 1) {
-                $repeatable.find(':input').val('');
+                $repeatable.find(':input').val('').prop('disabled', false);
             } else {
                 $repeatable.remove();
             }
