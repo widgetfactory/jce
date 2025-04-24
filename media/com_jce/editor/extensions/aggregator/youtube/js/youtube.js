@@ -19,6 +19,7 @@ WFAggregator.add('youtube', {
         height: 315,
         embed: true
     },
+
     props: {
         rel: 1,
         autoplay: 0,
@@ -32,8 +33,33 @@ WFAggregator.add('youtube', {
         end: '',
         privacy: 0
     },
+
     setup: function () {
         $.each(this.params, function (k, v) {
+            if (k == 'attributes') {
+                var x = 0;
+
+                $.each(v, function (key, value) {
+                    var $repeatable = $('.uk-repeatable', '#youtube_attributes');
+
+                    if (x > 0) {
+                        $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                        // Refresh the $repeatable selection after appending a clone
+                        $repeatable = $('.uk-repeatable', '#youtube_attributes');
+                    }
+
+                    var $elements = $repeatable.eq(x).find('input, select');
+
+                    $elements.eq(0).val(key);
+                    $elements.eq(1).val(value);
+
+                    x++;
+                });
+
+                return true;
+            }
+
             $('#youtube_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
         });
 
@@ -66,12 +92,14 @@ WFAggregator.add('youtube', {
 
         return false;
     },
-    getValues: function (src) {
+
+    getValues: function (data) {
         var self = this,
-            data = {},
             args = {},
             type = this.getType(),
             id;
+
+        var src = data.src;
 
         // parse URI
         var u = this.parseURL(src);
@@ -138,13 +166,13 @@ WFAggregator.add('youtube', {
 
         if (type == 'iframe') {
             $.extend(data, {
-                allowfullscreen: true,
+                allowfullscreen: 'allowfullscreen',
                 frameborder: 0
             });
         } else {
             $.extend(true, data, {
                 param: {
-                    allowfullscreen: true,
+                    allowfullscreen: 'allowfullscreen',
                     wmode: 'opaque'
                 }
             });
@@ -169,6 +197,18 @@ WFAggregator.add('youtube', {
 
         data.src = src;
 
+        // get custom mediatype values
+        $('.uk-repeatable', '#youtube_attributes').each(function () {
+            var elements = $('input, select', this);
+
+            var key = $(elements).eq(0).val(),
+                value = $(elements).eq(1).val();
+
+            if (key) {
+                data['youtube_' + key] = value;
+            }
+        });
+
         return data;
     },
     /**
@@ -179,23 +219,23 @@ WFAggregator.add('youtube', {
 
         try {
             var urlObj = new URL(url);
-    
+
             o.host = urlObj.hostname;
             o.path = urlObj.pathname;
-            
+
             // Parse query into a key-value map
             o.query = {};
-            
+
             urlObj.searchParams.forEach(function (value, key) {
                 o.query[key] = value;
             });
-    
+
             o.anchor = urlObj.hash ? urlObj.hash.substring(1) : null;
 
         } catch (e) {
             console.error("Invalid URL:", url);
         }
-    
+
         return o;
     },
     setValues: function (data) {
@@ -206,11 +246,28 @@ WFAggregator.add('youtube', {
             return data;
         }
 
+        var attribs = {}, params = {};
+
         // parse URI
         var u = this.parseURL(src);
 
         // rebuild src
         src = 'https://' + u.host + '' + u.path;
+
+        $.each(data, function (key, val) {
+            if (key.indexOf('youtube_') === 0) {
+                key = key.substr(key.indexOf('_') + 1);
+
+                // boolean
+                if (val === '' || val === true) {
+                    val = key;
+                }
+
+                attribs[key] = val;
+
+                delete data[key];
+            }
+        });
 
         if (src.indexOf('youtube-nocookie') !== -1) {
             data.youtube_privacy = 1;
@@ -232,10 +289,10 @@ WFAggregator.add('youtube', {
             if (key == 'v') {
                 return true;
             }
-            
+
             try {
                 val = decodeURIComponent(val);
-            } catch (e) { 
+            } catch (e) {
                 // error
             }
 
@@ -262,7 +319,15 @@ WFAggregator.add('youtube', {
                 return true;
             }
 
-            data['youtube_' + key] = val;
+            // if the key is specified in the props, set it
+            if (self.props[key] !== undefined) {
+                data['youtube_' + key] = val;
+
+                return true;
+            }
+
+            // otherwise set as a custom param
+            params[key] = val;
 
             delete data[key];
         });
@@ -299,6 +364,52 @@ WFAggregator.add('youtube', {
             if (/^iframe_(allow|frameborder|allowfullscreen)/.test(key)) {
                 delete data[key];
             }
+        });
+
+        // update params
+        var x = 0;
+
+        $.each(params, function (key, val) {
+            var $repeatable = $('.uk-repeatable', '#youtube_params');
+
+            // skip oembed flag
+            if (key == 'feature' && val == 'oembed') {
+                return true;
+            }
+
+            if (x > 0) {
+                $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                // Refresh the $repeatable selection after appending a clone
+                $repeatable = $('.uk-repeatable', '#youtube_params');
+            }
+
+            var $elements = $repeatable.eq(x).find('input, select');
+
+            $elements.eq(0).val(key);
+            $elements.eq(1).val(val);
+
+            x++;
+        });
+
+        x = 0;
+
+        $.each(attribs, function (key, val) {
+            var $repeatable = $('.uk-repeatable', '#youtube_attributes');
+
+            if (x > 0) {
+                $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                // Refresh the $repeatable selection after appending a clone
+                $repeatable = $('.uk-repeatable', '#youtube_attributes');
+            }
+
+            var $elements = $repeatable.eq(x).find('input, select');
+
+            $elements.eq(0).val(key);
+            $elements.eq(1).val(val);
+
+            x++;
         });
 
         data.src = src;

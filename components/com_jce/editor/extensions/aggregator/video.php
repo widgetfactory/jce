@@ -47,10 +47,10 @@ class WFAggregatorExtension_Video extends WFAggregatorExtension
             'muted' => (int) $plugin->getParam('aggregator.video.mute', 0)
         );
 
-        $custom = $plugin->getParam('aggregator.video.custom', '');
+        $attributes = $plugin->getParam('aggregator.video.attributes', '');
 
-        if ($custom) {            
-            $defaults['custom'] = $this->getCustomDefaultAttributes($custom);
+        if ($attributes) {            
+            $defaults['attributes'] = $this->getCustomDefaultAttributes($attributes);
         }
 
         return $defaults;
@@ -69,6 +69,11 @@ class WFAggregatorExtension_Video extends WFAggregatorExtension
 
         foreach ($params as $name => $value) {
             if ($default[$name] === $value) {
+                continue;
+            }
+
+            if ($name == 'attributes') {
+                $data[$name] = $value;
                 continue;
             }
 

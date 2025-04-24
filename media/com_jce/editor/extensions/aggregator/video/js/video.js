@@ -23,15 +23,15 @@ WFAggregator.add('video', {
         autoplay: 0,
         loop: 0,
         controls: 1,
-        mute: 0
+        muted: 0
     },
 
     setup: function () {
         var x = 0;
 
         $.each(this.params, function (k, v) {
-            if (k == 'custom') {
-                
+            if (k == 'attributes') {
+
                 $.each(v, function (key, value) {
                     var $repeatable = $('.media_option.video .uk-repeatable');
 
@@ -49,8 +49,8 @@ WFAggregator.add('video', {
 
                     x++;
                 });
-                
-                
+
+
             } else {
                 $('#video_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
             }
@@ -86,8 +86,79 @@ WFAggregator.add('video', {
         return false;
     },
 
-    setValues: function (attr, type) {
-        return attr;
+    getValues: function (data) {
+        var sources = [];
+
+        $('input[name="video_source[]"]').each(function () {
+            var val = $(this).val();
+
+            // pass in unique source value only
+            if (val !== data.src) {
+                sources.push(val);
+            }
+        });
+
+        if (sources.length) {
+            // eslint-disable-next-line dot-notation
+            data['video_source'] = sources;
+        }
+
+        // get custom mediatype values
+        $('.uk-repeatable', '#video_attributes').each(function () {
+            var elements = $('input, select', this);
+
+            var key = $(elements).eq(0).val(),
+                value = $(elements).eq(1).val();
+
+            if (key) {
+                data['video_' + key] = value;
+            }
+        });
+
+        return data;
+    },
+
+    setValues: function (data) {
+        var x = 0, self = this;
+        
+        $.each(data, function (key, val) {
+            if (key.indexOf('video_') === -1) {
+                return true;
+            }
+
+            // remove from data object
+            delete data[key];
+
+            // remove video_ prefix
+            key = key.substr(key.indexOf('_') + 1);
+
+            // skip default props
+            if (key in self.props) {
+                return true;
+            }
+
+            if (val == '' || val == true) {
+                val = key;
+            }
+            
+            var $repeatable = $('.uk-repeatable', '#video_attributes');
+
+            if (x > 0) {
+                $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                // Refresh the $repeatable selection after appending a clone
+                $repeatable = $('.uk-repeatable', '#video_attributes');
+            }
+
+            var $elements = $repeatable.eq(x).find('input, select');
+
+            $elements.eq(0).val(key);
+            $elements.eq(1).val(val);
+
+            x++;
+        });
+        
+        return data;
     },
 
     getAttributes: function (src) {

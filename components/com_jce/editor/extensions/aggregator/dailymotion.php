@@ -40,10 +40,18 @@ class WFAggregatorExtension_Dailymotion extends WFAggregatorExtension
     {
         $plugin = WFEditorPlugin::getInstance();
 
-        return array(
+        $defaults = array(
             'width' => $plugin->getParam('aggregator.dailymotion.width', 480),
             'height' => $plugin->getParam('aggregator.dailymotion.height', 270),
         );
+
+        $attributes = $plugin->getParam('aggregator.dailymotion.attributes', '');
+
+        if ($attributes) {            
+            $defaults['attributes'] = $this->getCustomDefaultAttributes($attributes);
+        }
+
+        return $defaults;
     }
 
     public function getEmbedData($data, $url)
@@ -60,7 +68,7 @@ class WFAggregatorExtension_Dailymotion extends WFAggregatorExtension
                 continue;
             }
 
-            if ($name === 'width' || $name == 'height') {
+            if ($name == 'width' || $name == 'height' || $name == 'attributes') {
                 $data[$name] = $value;
                 continue;
             }

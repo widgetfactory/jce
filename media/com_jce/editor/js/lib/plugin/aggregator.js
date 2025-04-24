@@ -55,11 +55,11 @@ var WFAggregator = WFExtensions.add('Aggregator', {
         return '';
     },
 
-    getValues: function (name, src) {
+    getValues: function (name, data) {
         var f = this.get(name);
 
         if (f) {
-            return this._call(f, 'getValues', src);
+            return this._call(f, 'getValues', data);
         }
     },
 

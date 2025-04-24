@@ -22,7 +22,7 @@
 			<field name="width" type="number" default="400" class="input-small" label="WF_LABEL_WIDTH" />
 			<field name="height" type="number" default="225" class="input-small" label="WF_LABEL_HEIGHT" />
 
-			<field name="custom" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" boolean="true" />
+			<field name="attributes" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" boolean="true" />
 		</fieldset>
 	</fields>
 	<plugins></plugins>

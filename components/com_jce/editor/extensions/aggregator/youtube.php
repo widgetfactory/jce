@@ -39,7 +39,7 @@ class WFAggregatorExtension_Youtube extends WFAggregatorExtension
     {
         $plugin = WFEditorPlugin::getInstance();
 
-        return array(
+        $defaults = array(
             'width' => $plugin->getParam('aggregator.youtube.width', 560),
             'height' => $plugin->getParam('aggregator.youtube.height', 315),
 
@@ -50,6 +50,14 @@ class WFAggregatorExtension_Youtube extends WFAggregatorExtension
             'modestbranding' => (int) $plugin->getParam('aggregator.youtube.modestbranding', 0),
             'privacy' => (int) $plugin->getParam('aggregator.youtube.privacy', 0),
         );
+
+        $attributes = $plugin->getParam('aggregator.youtube.attributes', '');
+
+        if ($attributes) {            
+            $defaults['attributes'] = $this->getCustomDefaultAttributes($attributes);
+        }
+
+        return $defaults;
     }
 
     public function getEmbedData($data)
@@ -74,7 +82,7 @@ class WFAggregatorExtension_Youtube extends WFAggregatorExtension
                 continue;
             }
 
-            if ($name === 'width' || $name == 'height') {
+            if ($name == 'width' || $name == 'height' || $name == 'attributes') {
                 $data[$name] = $value;
                 continue;
             }

@@ -32,6 +32,30 @@ WFAggregator.add('vimeo', {
         $('#vimeo_embed').toggle(this.params.embed);
 
         $.each(this.params, function (k, v) {
+            if (k == 'attributes') {
+                var x = 0;
+
+                $.each(v, function (key, value) {
+                    var $repeatable = $('.media_option.vimeo .uk-repeatable');
+
+                    if (x > 0) {
+                        $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                        // Refresh the $repeatable selection after appending a clone
+                        $repeatable = $('.media_option.vimeo .uk-repeatable');
+                    }
+
+                    var $elements = $repeatable.eq(x).find('input, select');
+
+                    $elements.eq(0).val(key);
+                    $elements.eq(1).val(value);
+
+                    x++;
+                });
+
+                return true;
+            }
+            
             $('#vimeo_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
         });
     },
@@ -133,6 +157,18 @@ WFAggregator.add('vimeo', {
                 allowfullscreen: true
             });
         }
+
+        // get custom mediatype values
+        $('.uk-repeatable', '#vimeo_attributes').each(function () {
+            var elements = $('input, select', this);
+
+            var key = $(elements).eq(0).val(),
+                value = $(elements).eq(1).val();
+
+            if (key) {
+                data['vimeo_' + key] = value;
+            }
+        });
 
         return data;
     },

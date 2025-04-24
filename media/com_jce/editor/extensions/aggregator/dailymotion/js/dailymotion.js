@@ -45,6 +45,28 @@ WFAggregator.add('dailymotion', {
                 $('#height').val(Math.round(v * 16 / 9));
             }
         });
+
+        var attributes = this.params.attributes || {};
+
+        var x = 0;
+
+        $.each(attributes, function (key, value) {
+            var $repeatable = $('.media_option.dailymotion .uk-repeatable');
+
+            if (x > 0) {
+                $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                // Refresh the $repeatable selection after appending a clone
+                $repeatable = $('.media_option.dailymotion .uk-repeatable');
+            }
+
+            var $elements = $repeatable.eq(x).find('input, select');
+
+            $elements.eq(0).val(key);
+            $elements.eq(1).val(value);
+
+            x++;
+        });
     },
     getTitle: function () {
         return this.title || this.name;
@@ -124,6 +146,18 @@ WFAggregator.add('dailymotion', {
         $.extend(data, {
             frameborder: 0,
             allowfullscreen: "allowfullscreen"
+        });
+
+        // get custom mediatype values
+        $('.uk-repeatable', '#dailymotion_attributes').each(function () {
+            var elements = $('input, select', this);
+
+            var key = $(elements).eq(0).val(),
+                value = $(elements).eq(1).val();
+
+            if (key) {
+                data['dailymotion_' + key] = value;
+            }
         });
 
         return data;

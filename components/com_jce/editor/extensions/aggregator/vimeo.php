@@ -39,7 +39,7 @@ class WFAggregatorExtension_Vimeo extends WFAggregatorExtension
     {
         $plugin = WFEditorPlugin::getInstance();
 
-        return array(
+        $defaults = array(
             'width' => $plugin->getParam('aggregator.vimeo.width', 400),
             'height' => $plugin->getParam('aggregator.vimeo.height', 225),
 
@@ -53,6 +53,14 @@ class WFAggregatorExtension_Vimeo extends WFAggregatorExtension
             'fullscreen' => (int) $plugin->getParam('aggregator.vimeo.fullscreen', 1),
             'dnt' => (int) $plugin->getParam('aggregator.vimeo.dnt', 0),
         );
+
+        $attributes = $plugin->getParam('aggregator.vimeo.attributes', '');
+
+        if ($attributes) {            
+            $defaults['attributes'] = $this->getCustomDefaultAttributes($attributes);
+        }
+
+        return $defaults;
     }
 
     public function getEmbedData($data, $url)
@@ -75,7 +83,7 @@ class WFAggregatorExtension_Vimeo extends WFAggregatorExtension
                 continue;
             }
 
-            if ($name === 'width' || $name == 'height') {
+            if ($name == 'width' || $name == 'height' || $name == 'attributes') {
                 $data[$name] = $value;
                 continue;
             }

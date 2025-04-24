@@ -44,10 +44,10 @@ class WFAggregatorExtension_Audio extends WFAggregatorExtension
             'muted' => (int) $plugin->getParam('aggregator.audio.mute', 0),
         );
 
-        $custom = $plugin->getParam('aggregator.audio.custom', '');
+        $attributes = $plugin->getParam('aggregator.audio.attributes', '');
 
-        if ($custom) {            
-            $defaults['custom'] = $this->getCustomDefaultAttributes($custom);
+        if ($attributes) {            
+            $defaults['attributes'] = $this->getCustomDefaultAttributes($attributes);
         }
 
         return $defaults;
@@ -66,6 +66,11 @@ class WFAggregatorExtension_Audio extends WFAggregatorExtension
 
         foreach ($params as $name => $value) {
             if ($default[$name] === $value) {
+                continue;
+            }
+
+            if ($name == 'attributes') {
+                $data[$name] = $value;
                 continue;
             }
 
