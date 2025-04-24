@@ -1,6 +1,7 @@
 /* global jQuery */
 (function ($) {
     $(document).ready(function () {
+        var init = true;
 
         $('.controls').on('change', '.wf-keyvalue :input', function (e) {
             var $parent = $(this).parents('.wf-keyvalue'), $ctrl = $parent.parent();
@@ -40,8 +41,17 @@
                 items.push(data);
             });
 
+            // don't update on init
+            if (init) {
+                init = false;
+                return;
+            }
+
             // update hidden input
             $ctrl.find('input[name*="jform"][type="hidden"]').val(JSON.stringify(items)).trigger('change');
+
         });
+
+        $('.controls .wf-keyvalue :input:checkbox').trigger('change');
     });
 })(jQuery);
