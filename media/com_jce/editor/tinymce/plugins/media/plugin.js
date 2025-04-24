@@ -1867,7 +1867,7 @@
             }
 
             // clean up iframe, video and audio attributes
-            if (nodeName !== 'img' && !htmlSchema.isValid(nodeName, name)) {
+            if (nodeName !== 'img' && (!htmlSchema.isValid(nodeName, name) && name.indexOf('-') == -1)) {
                 return true;
             }
 
