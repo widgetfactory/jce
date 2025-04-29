@@ -336,6 +336,9 @@
   flex-direction: row;
   gap: 1em;
 }
+.form-field-repeatable .form-field-repeatable-item.ui-sortable-handle {
+  cursor: move;
+}
 .form-field-repeatable .form-field-repeatable-item > button {
   max-height: 28px;
 }
@@ -351,16 +354,20 @@
   align-items: start;
 }
 .form-field-repeatable .form-field-repeatable-item .form-field-repeatable-add {
-  display: none;
+  visibility: hidden;
+  display: inline-block;
   order: 99;
 }
 .form-field-repeatable .form-field-repeatable-item .form-field-repeatable-remove {
+  visibility: visible;
   display: inline-block;
 }
 .form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-add {
+  visibility: visible;
   display: inline-block;
 }
 .form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-remove {
+  visibility: visible;
   display: inline-block;
 }
 .form-horizontal .form-field-repeatable-item textarea {
