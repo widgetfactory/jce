@@ -79,7 +79,9 @@ class JFormFieldRepeatable extends FormField
                 $tmpField->element['multiple'] = true;
 
                 // substitute for repeatable element
-                $tmpField->element['name'] = (string) $this->element['name'];
+                if (!isset($tmpField->element['name'])) {
+                    $tmpField->element['name'] = (string) $this->element['name'];
+                }
 
                 if (is_array($value)) {
                     $value = isset($value[$n]) ? $value[$n] : $value[0];
