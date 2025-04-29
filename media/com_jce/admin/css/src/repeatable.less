@@ -33,6 +33,10 @@
     flex-direction: row;
     gap: 1em;
 
+    &.ui-sortable-handle {
+      cursor: move;
+    }
+
     >button {
       max-height: 28px;
     }
@@ -52,20 +56,24 @@
     }
 
     .form-field-repeatable-add {
-      display: none;
+      visibility: hidden;
+      display: inline-block;
       order: 99;
     }
 
     .form-field-repeatable-remove {
+      visibility: visible;
       display: inline-block;
     }
 
     &:first-child {
       .form-field-repeatable-add {
+        visibility: visible;
         display: inline-block;
       }
 
       .form-field-repeatable-remove {
+        visibility: visible;
         display: inline-block;
       }
     }

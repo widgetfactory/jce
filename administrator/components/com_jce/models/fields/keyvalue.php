@@ -108,8 +108,8 @@ class JFormFieldKeyValue extends FormField
             $keyName = 'name';
             $keyLabel = 'WF_LABEL_NAME';
 
-            if (isset($this->element['keyValue'])) {
-                $keyValue = $this->element['keyValue'];
+            if (isset($this->element['keyName'])) {
+                $keyName = $this->element['keyName'];
             }
 
             if (isset($this->element['keyLabel'])) {
@@ -145,7 +145,13 @@ class JFormFieldKeyValue extends FormField
         // And finaly build a main container
         $str = array();
 
-        $str[] = '<div class="form-field-repeatable">';
+        $sortable = '';
+
+        if (isset($this->element['sortable'])) {
+            $sortable = ' data-sortable="' . $this->element['sortable'] . '"';
+        }
+
+        $str[] = '<div class="form-field-repeatable"' . $sortable . '>';
 
         foreach ($values as $value) {
             $str[] = '<div class="form-field-repeatable-item wf-keyvalue">';

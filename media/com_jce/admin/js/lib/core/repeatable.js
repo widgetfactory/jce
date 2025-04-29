@@ -131,5 +131,16 @@
             // update
             $parent.find(':input').trigger('change');
         });
+
+        $('.controls .form-field-repeatable[data-sortable]').sortable({
+            axis: 'y',
+            update: function (event, ui) {
+                $(ui.item).parent().find(':input').trigger('change');
+            },
+            placeholder: "blockformat-item-highlight sortable-placeholder",
+            start: function (event, ui) {
+                $(ui.placeholder).height($(ui.item).height()).width($(ui.item).width());
+            }
+        });
     });
 })(jQuery);
