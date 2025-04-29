@@ -223,7 +223,7 @@ abstract class WFUtility
         // permitted characters below 127, eg: () Although reserved characters (sub-delims https://www.rfc-editor.org/rfc/rfc3986#section-2), probably OK in file paths
         $permitted = array(40, 41);
 
-        if (preg_match('#([^\w\.\-\/\\\\\s ])#i', $string, $matches)) {
+        if (preg_match('#([^\w\.\:\-\/\\\\\s ])#i', $string, $matches)) {
             foreach ($matches as $match) {
                 $ord = ord($match);
 
