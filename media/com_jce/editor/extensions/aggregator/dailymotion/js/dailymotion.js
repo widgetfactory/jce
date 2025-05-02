@@ -91,11 +91,13 @@ WFAggregator.add('dailymotion', {
 
         return false;
     },
-    getValues: function (src) {
+    getValues: function (data) {
         var self = this,
             data = {},
             args = {},
             id = '';
+
+        var src = data.src;
 
         // get variables from query string
         if (src.indexOf('=') !== -1) {

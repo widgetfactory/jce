@@ -55,7 +55,7 @@ WFAggregator.add('vimeo', {
 
                 return true;
             }
-            
+
             $('#vimeo_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
         });
     },
@@ -86,11 +86,13 @@ WFAggregator.add('vimeo', {
 
         return false;
     },
-    getValues: function (src) {
+    getValues: function (data) {
         var self = this,
             data = {},
             args = {},
             id = '';
+
+        var src = data.src;
 
         // get variables from query string
         if (src.indexOf('=') !== -1) {
