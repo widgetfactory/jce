@@ -920,10 +920,15 @@
                         classes.push(e.classes);
                     }
 
+                    // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
+                    var name = e.name.replace(/([^\s\/]+)(\/)/g, function (m) {
+                        return '<strong>' + m + '</strong>';
+                    });
+
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i>';
-                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a>';
+                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + name + '</a>';
                     h += '  <span class="uk-width-6-10 uk-item-date uk-hidden-mini">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
                     h += '</li>';
                 });
@@ -978,6 +983,11 @@
                     if (self.options.allow_download && e.properties.preview) {
                         download = ' download="' + filename + '"';
                     }
+
+                    // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
+                    name = e.name.replace(/([^\s\/]+)(\/)/g, function (m) {
+                        return '<strong>' + m + '</strong>';
+                    });
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
@@ -1339,6 +1349,11 @@
             Wf.JSON.request(method, [path, this._limit, this._limitcount, filter || '', sort], this._loadList, this);
         },
 
+        clearQuery: function () {
+            $('#search').val('');
+            this._searchQuery = '';
+        },
+
         /**
          * Refresh the file list
          */
@@ -1352,11 +1367,7 @@
 
             // event triggered refresh
             if (typeof e !== 'undefined') {
-                // clear search input
-                $('#search').val('');
-
-                // clear stored search query
-                this._searchQuery = '';
+                this.clearQuery();
 
                 $('form').append('<input type="hidden" name="refresh" value="1" />');
                 this._refreshTree();
@@ -1613,6 +1624,9 @@
                     }
                     break;
                 case 'upload':
+                     // clear query
+                    this.clearQuery();
+                
                     var uploadModal = Wf.Modal.upload($.extend({
                         elements: elements,
                         open: function () {
@@ -1811,6 +1825,9 @@
 
                 // Paste the file
                 case 'paste':
+                     // clear query
+                    this.clearQuery();
+                
                     var fn = (this._pasteaction == 'copy') ? 'copyItem' : 'moveItem';
                     this._setLoader();
 

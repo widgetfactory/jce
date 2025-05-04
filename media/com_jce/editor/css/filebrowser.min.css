@@ -857,6 +857,10 @@ div#info-comment {
   float: left;
 }
 
+.item-list li strong {
+  font-weight: 600;
+}
+
 .item-list li input[type="checkbox"] {
   width: 16px;
   height: 16px;
