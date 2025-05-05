@@ -19,6 +19,24 @@
         SaxParser = tinymce.html.SaxParser,
         DOM = tinymce.DOM;
 
+    // Polyfill for String.prototype.startsWith
+    if (!String.prototype.startsWith) {
+        String.prototype.startsWith = function (search, pos) {
+            pos = pos || 0;
+            return this.substring(pos, pos + search.length) === search;
+        };
+    }
+
+    // ES5-compatible indexOf helper
+    function indexOf(array, item) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i] === item) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
 
     var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -342,7 +360,7 @@
 
             defaultValues[provider].src = value + '/embed/captioned';
         }
-        
+
         if (provider === 'facebook') {
             var url = 'https://www.facebook.com/plugins/';
 
@@ -505,60 +523,51 @@
         return true;
     }
 
-    function isSupportedMedia(editor, url) {
-        // remove query string from url
+    function isSupportedMedia(editor, url, type) {
+
+        // Remove query string from URL
         url = stripQuery(url);
-        
-        // Video
-        if (/\.(mp4|ogv|ogg|webm)$/.test(url) && isValidElement(editor, 'video')) {
+        var ext = url.split('.').pop().toLowerCase();
+        type = (type || '').toLowerCase();
 
-            // check for valid url
-            if (isSupportedUrl(editor, 'video', url)) {
-                return 'video';
+        // Extension-based type groups
+        var audioExts = ['mp3', 'ogg', 'webm', 'wav', 'm4a', 'aiff'];
+        var videoExts = ['mp4', 'ogv', 'ogg', 'webm', 'mov', 'qt', 'mpg', 'mpeg', 'divx'];
+        var objectExts = ['swf', 'pdf'];
+
+        // Strict MIME-type match if provided
+        if (type.startsWith('audio/')) {            
+            if (indexOf(audioExts, ext) === -1) {
+                return false;
             }
-        }
-
-        // Audio
-        if (/\.(mp3|ogg|webm|wav|m4a|aiff)$/.test(url) && isValidElement(editor, 'audio')) {
-            // check for valid url
-            if (isSupportedUrl(editor, 'audio', url)) {
+            if (isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
                 return 'audio';
             }
         }
 
-        // Quicktime
-        if (/\.(mov|qt|mpg|mpeg)$/.test(url) && isValidElement(editor, 'video')) {
-            // check for valid url
-            if (isSupportedUrl(editor, 'video', url)) {
+        if (type.startsWith('video/')) {
+            if (indexOf(videoExts, ext) === -1) {
+                return false;
+            }
+            if (isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
                 return 'video';
             }
         }
 
-        // DivX
-        if (/\.(divx)$/.test(url) && isValidElement(editor, 'video')) {
-            // check for valid url
-            if (isSupportedUrl(editor, 'video', url)) {
-                return 'video';
-            }
+        // Fallback to extension if no usable MIME type
+        if (indexOf(videoExts, ext) !== -1 && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
+            return 'video';
         }
 
-        // Flash
-        if (/\.swf$/.test(url) && isValidElement(editor, 'object')) {
-            // check for valid url
-            if (isSupportedUrl(editor, 'object', url)) {
-                return 'object';
-            }
+        if (indexOf(audioExts, ext) !== -1 && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
+            return 'audio';
         }
 
-        // Pdf
-        if (/\.pdf$/.test(url) && isValidElement(editor, 'object')) {
-            // check for valid url
-            if (isSupportedUrl(editor, 'object', url)) {
-                return 'object';
-            }
+        if (indexOf(objectExts, ext) !== -1 && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
+            return 'object';
         }
 
-        // check for provider (youtube, Vimeo etc.) or iframe support
+        // Check for supported iframe providers (e.g. YouTube, Vimeo)
         var value = isSupportedIframe(editor, url);
 
         if (value) {
@@ -737,7 +746,7 @@
         if (value) {
             // Match until the last file extension and strip everything after, eg: ?v=1, #hash, &param=value etc.
             const match = value.match(/^(.*?\.[a-z0-9]{2,10})(?:[?#&].*|$)/i);
-            
+
             return match ? match[1] : value;
 
         }
@@ -1517,6 +1526,7 @@
             var node;
 
             var media_live_embed = editor.settings.media_live_embed;
+            var strict_embed = editor.settings.media_strict_embed !== false; // strict embed is enabled by default
 
             while (i--) {
                 node = nodes[i];
@@ -1550,26 +1560,49 @@
                 if (node.name !== 'iframe') {
                     var src = node.attr('src') || node.attr('data') || '';
 
+                    // get the mime type from the type attribute
+                    var type = node.attr('type') || node.attr('data-mce-p-type') || '';
+
                     if (!src) {
                         // get the source from the first source tag
                         if (node.name === 'video' || node.name === 'audio') {
                             var sources = node.getAll('source');
 
+                            for (var j = 0; j < sources.length; j++) {
+                                var source = sources[j];
+
+                                // skip empty source
+                                if (!source.attr('src')) {
+                                    continue;
+                                }
+
+                                // remove unsupported source
+                                if (!isSupportedUrl(editor, node.name, source.attr('src'))) {
+                                    source.remove();
+                                    // adjust index
+                                    sources.splice(j, 1);
+                                }
+                            }
+
+                            // get src value from any remaining source
                             if (sources.length) {
                                 src = sources[0].attr('src');
+                                type = sources[0].attr('type') || type;
                             }
                         }
+                        
                         // get the source from the param tag
                         if (node.name === 'object') {
                             var params = node.getAll('param');
 
                             if (params.length) {
-                                // eslint-disable-next-line no-loop-func
-                                each(params, function (param) {
+                                for (var j = 0; j < params.length; j++) {
+                                    var param = params[j];
+
                                     if (param.attr('movie')) {
                                         src = param.attr('value');
                                     }
-                                });
+                                }
                             }
 
                             // try embed
@@ -1578,23 +1611,25 @@
 
                                 if (embed.length) {
                                     src = embed[0].attr('src');
+                                    type = embed[0].attr('type') || type;
                                 }
                             }
                         }
                     }
 
-                    // validate 
-                    if (src && !isSupportedUrl(editor, node.name, src)) {
-                        node.remove();
+                    if (src) {
+                        // validate 
+                        if (!isSupportedUrl(editor, node.name, src)) {
+                            node.remove();
+                            continue;
+                        }
+                    } else {
+                        media_live_embed = false;
                         continue;
                     }
 
-                    if (!src) {
-                        media_live_embed = false;
-                    }
-
-                    if (editor.settings.strict_media_embeds !== false) {
-                        var newName = isSupportedMedia(editor, src);
+                    if (strict_embed) {
+                        var newName = isSupportedMedia(editor, src, type);
 
                         // not supported
                         if (!newName) {
@@ -1607,7 +1642,7 @@
                             node.remove();
                             continue;
                         }
-                        
+
                         // node has been renamed, so validate child nodes
                         if (newName !== node.name) {
                             // clean up child nodes after conversion
@@ -1807,7 +1842,7 @@
             // clean class value
             if (name == 'class') {
                 // clean and trim value
-				value = value.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
+                value = value.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
             }
 
             // set the value true for boolean attributes for easier processing
@@ -1904,7 +1939,7 @@
                 ed.dom.setStyles(node, ed.dom.parseStyle(value));
                 return true;
             }
-            
+
             // set value to null to remove
             if (name == 'sandbox' && value === false) {
                 value = null;
