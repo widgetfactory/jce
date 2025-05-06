@@ -904,7 +904,31 @@ div#info-comment {
 }
 
 .root .folder-up {
+  visibility: hidden;
+}
+
+.grid-size {
   display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.view-mode-grid .grid-size {
+  display: flex;
+}
+
+.grid-size button {
+  color: inherit;
+  text-decoration: none;
+  line-height: 2em;
+  width: 2em;
+  text-align: center;
+}
+
+.grid-size button:hover {
+  color: inherit;
+  text-decoration: none;
 }
 
 .item-list li .uk-icon {

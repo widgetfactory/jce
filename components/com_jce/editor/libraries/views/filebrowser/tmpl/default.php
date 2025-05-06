@@ -97,9 +97,15 @@ use Joomla\CMS\Session\Session;
           </div>
         </div>
 
-        <div class="folder-up" title="Up">
-          <button class="uk-button uk-button-link uk-width-1-1 uk-text-left uk-padding-remove" aria-label="Up"><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i>...</button>
-        </div>
+        <div class="uk-flex uk-flex-nowrap">
+          <div class="folder-up uk-flex-1 uk-width-1-1 uk-margin-right" title="<?php echo Text::_('WF_LABEL_FOLDER_UP'); ?>">
+            <button class="uk-button uk-button-link uk-width-1-1 uk-text-left uk-padding-remove" aria-label="Up"><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i>...</button>
+          </div>
+          <div class="grid-size uk-flex" title="<?php echo Text::_('WF_LABEL_GRID_SIZE'); ?>">
+            <button class="grid-size-plus uk-button uk-button-link uk-width-1-1 uk-text-left uk-padding-remove" aria-label="<?php echo Text::_('WF_LABEL_GRID_SIZE_INCREASE'); ?>"><i class="uk-width-1-10 uk-icon uk-icon-plus-circle"></i></button>
+            <button class="grid-size-minus uk-button uk-button-link uk-width-1-1 uk-text-left uk-padding-remove" aria-label="<?php echo Text::_('WF_LABEL_GRID_SIZE_DECREASE'); ?>"><i class="uk-width-1-10 uk-icon uk-icon-minus-circle"></i></button>
+          </div>
+        </div>  
 
         <div id="browser-list"></div>
 
