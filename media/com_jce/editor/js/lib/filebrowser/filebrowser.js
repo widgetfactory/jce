@@ -338,7 +338,20 @@
                     $(btn).parent().find('.grid-size-minus').prop('disabled', false);
                 }
 
+                window.setTimeout(function () {
+                    // scroll to first selected item
+                    var $selected = $('#item-list').find('li.selected:first');
 
+                    if (!$selected.length) {
+                        return;
+                    }
+
+                    var top = $selected.get(0).offsetTop - $selected.outerHeight() + $('.folder-up').outerHeight();
+
+                    $('#browser-list').scrollTop(Math.round(top));
+                }, 10);
+
+                
             }).data('size', parseInt(grid_size, 10)).find('.grid-size-minus').prop('disabled', true);
 
             // set the stored grid size
