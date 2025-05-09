@@ -27,9 +27,7 @@ trait XTDButtonsTrait
     {
         $app = Factory::getApplication();
         
-        $list = array(
-            $name => array(),
-        );
+        $list = array();
 
         $excluded = array('readmore', 'pagebreak');
 
@@ -43,6 +41,8 @@ trait XTDButtonsTrait
         $buttons = Editor::getInstance('jce')->getButtons($name, $buttons);
 
         if (!empty($buttons)) {
+            $list[$name] = array();
+            
             foreach ($buttons as $i => $button) {
                 if ($button->get('name')) {
                     $id = $name . '_' . $button->name;
