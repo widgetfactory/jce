@@ -181,27 +181,28 @@
 
                             var list = editor.dom.getParent(node, name == 'bullist' ? 'ul' : 'ol');
 
+                            var classes = editor.getParam('advlist_' + name + '_classes', '').trim().split(' ').filter(function (cls) {
+                                return cls.trim() !== '';
+                            });
+
                             if (list) {
                                 if (name == 'numlist') {
                                     start_ctrl.value(editor.dom.getAttrib(list, 'start') || 1);
                                     reversed_ctrl.checked(!!editor.dom.getAttrib(list, 'reversed'));
                                 }
 
-                                var classes = editor.dom.getAttrib(list, 'class');
+                                classes = editor.dom.getAttrib(list, 'class');
 
                                 // clean
-                                classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
-
-                                // set default if any
-                                if (!classes) {
-                                    classes = editor.getParam('advlist_' + name + '_classes', '');
-                                }
-
-                                styles_ctrl.value(classes);
+                                classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                                    return cls.trim() !== '';
+                                });
 
                                 listStyleType = editor.dom.getStyle(list, 'list-style-type') || 'default';
                                 type_ctrl.value(listStyleType);
                             }
+
+                            styles_ctrl.value(classes);
 
                             DOM.setHTML(this.id + '_insert', label);
                         },
