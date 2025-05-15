@@ -37812,10 +37812,82 @@
           combobox: true,
           multiple: true,
           seperator: ' ',
-          menu_class: 'mceStylesBoxMenu'
+          menu_class: 'mceStylesBoxMenu',
+          allow_element_selector: false
         }, s || {});
 
+        /**
+         * Compile a filter regex or string into a function
+         * From - https://github.com/tinymce/tinymce/blob/4.5.x/js/tinymce/plugins/importcss/plugin.js
+         * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+         * @param {*} filter 
+         * @returns
+         */
+        function compileFilter(filter) {
+          if (Array.isArray(filter)) {
+            var filters = filter.map(compileFilter);
+
+            return function (value) {
+              return filters.every(function (filterFunc) {
+                return filterFunc(value);
+              });
+            };
+          }
+
+          if (typeof filter == "string" && filter) {
+            return function (value) {
+              return value.indexOf(filter) !== -1;
+            };
+          } else if (typeof filter == "function") {
+            return function (value) {
+              return filter(value);
+            };
+          } else if (filter instanceof RegExp) {
+            return function (value) {
+              return filter.test(value);
+            };
+          }
+
+          return filter;
+        }
+
         function loadClasses(ctrl) {
+          if (Array.isArray(s.styles) && s.styles.length) {
+            each(s.styles, function (item) {
+              var title, value;
+
+              if (typeof item === "string") {
+                title = value = item;
+              } else if (typeof item === "object" && item !== null) {
+                if (item.title && item.value) {
+                  title = item.title;
+                  value = item.value;
+                } else {
+                  for (var key in item) {
+                    // eslint-disable-next-line no-prototype-builtins
+                    if (item.hasOwnProperty(key)) {
+                      title = key;
+                      value = item[key];
+                      break;
+                    }
+                  }
+                }
+              }
+
+              if (title && value) {
+                ctrl.add(title, value, {
+                  style: function () {
+                    return PreviewCss.getCssText(ed, { classes: value });
+                  }
+                });
+              }
+            });
+
+            ctrl.hasClasses = true;
+
+            return;
+          }
+
           if (!Array.isArray(ed.settings.importcss_classes)) {
             return;
           }
@@ -37825,20 +37897,38 @@
           }
 
           each(ed.settings.importcss_classes, function (item) {
+            var selectorText = item.selectorText || item.selector || item;
+
+            if (!selectorText) {
+              return true;
+            }
+
+            // process filters
+            if (s.selector_filter) {
+              var selectorFilter = compileFilter(s.selector_filter);
+
+              if (selectorFilter(selectorText)) {
+                return true;
+              }
+            }
+
             // Parse simple element.class1, .class1
-            var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(item.selector || item);
+            var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(selectorText);
 
             // no match
             if (!selector) {
-              return;
+              return true;
             }
+
+            var element = selector[1] || null;
+            var className = selector[2].substr(1);
 
             // skip element assignments
-            if (selector[1]) {
-              return;
+            if (element && !s.allow_element_selector) {
+              return true;
             }
 
-            var classes = selector[2].substr(1).split('.');
+            var classes = className.split('.');
 
             each(classes, function (cls) {
               ctrl.add(cls, cls, {
