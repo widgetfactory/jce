@@ -12,7 +12,9 @@
     <icon>numlist,bullist</icon>
     <fields name="lists">
         <fieldset name="config">
-            <field name="number_styles" type="sortablecheckboxes" default="default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman" label="WF_NUMLIST_STYLES" description="WF_NUMLIST_STYLES_DESC">
+            <field type="heading" label="WF_NUMLIST_TITLE" description="" />
+
+            <field name="number_styles" type="sortablecheckboxes" default="default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman" label="WF_LISTS_STYLES" description="WF_LISTS_STYLES_DESC">
                 <option value="default">WF_OPTION_DEFAULT</option>
                 <option value="lower-alpha">WF_LISTS_LOWER_ALPHA</option>
                 <option value="lower-greek">WF_LISTS_LOWER_GREEK</option>
@@ -20,12 +22,29 @@
                 <option value="upper-alpha">WF_LISTS_UPPER_ALPHA</option>
                 <option value="upper-roman">WF_LISTS_UPPER_ROMAN</option>
             </field>
-            <field name="bullet_styles" type="sortablecheckboxes" default="default,circle,disc,square" label="WF_BULLIST_STYLES" description="WF_BULLIST_STYLES_DESC">
+
+            <field name="numlist_classes" type="text" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
+
+			<field name="numlist_custom_classes" type="repeatable" default="" label="WF_LISTS_CUSTOM_CLASSES" description="WF_LISTS_CUSTOM_CLASSES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field type="heading" label="WF_BULLIST_TITLE" description="" />
+
+            <field name="bullet_styles" type="sortablecheckboxes" default="default,circle,disc,square" label="WF_LISTS_STYLES" description="WF_LISTS_STYLES_DESC">
                 <option value="default">WF_OPTION_DEFAULT</option>
                 <option value="circle">WF_LISTS_CIRCLE</option>
                 <option value="disc">WF_LISTS_DISC</option>
                 <option value="square">WF_LISTS_SQUARE</option>
             </field>
+
+            <field name="bullet_classes" type="text" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
+
+			<field name="bullet_custom_classes" type="repeatable" default="" label="WF_LISTS_CUSTOM_CLASSES" description="WF_LISTS_CUSTOM_CLASSES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field type="heading" label="WF_PARAM_BUTTONS" description="" />
 
             <field name="buttons" type="buttons" multiple="multiple" default="numlist,bullist" label="WF_PARAM_BUTTONS" description="WF_PARAM_BUTTONS_DESC">
                 <option value="numlist">WF_NUMLIST_TITLE</option>

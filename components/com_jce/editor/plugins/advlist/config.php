@@ -13,11 +13,19 @@ class WFAdvlistPluginConfig
 {
     public static function getConfig(&$settings)
     {
+        $wf = WFApplication::getInstance();
+        
         $bullet = self::getBulletList();
-        $settings['advlist_bullet_styles'] = $bullet !== false ? implode(',', $bullet) : false;
+        $settings['advlist_bullist_styles'] = $bullet !== false ? implode(',', $bullet) : false;
 
         $number = self::getNumberList();
         $settings['advlist_number_styles'] = $number !== false ? implode(',', $number) : false;
+
+        $settings['advlist_bullist_classes'] = $wf->getParam('lists.bullet_classes', '');
+        $settings['advlist_numlist_classes'] = $wf->getParam('lists.numlist_classes', '');
+
+        $settings['advlist_bullist_custom_classes'] = $wf->getParam('lists.bullet_custom_classes', []);
+        $settings['advlist_numlist_custom_classes'] = $wf->getParam('lists.numlist_custom_classes', []);
     }
 
     private static function getNumberList()
