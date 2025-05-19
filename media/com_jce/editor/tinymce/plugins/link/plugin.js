@@ -291,6 +291,17 @@
                 form.add(targetCtrl);
             }
 
+            if (params.classes_ctrl !== false) {
+                var stylesListCtrl = cm.createStylesBox('link_class', {
+                    label: ed.getLang('link.class', 'Classes'),
+                    onselect: function () { },
+                    name: 'classes',
+                    styles: params.custom_classes || []
+                });
+    
+                form.add(stylesListCtrl);
+            }
+
             // Register commands
             ed.addCommand('mceLink', function () {
                 ed.windowManager.open({
@@ -302,6 +313,11 @@
                         var state = isOnlyTextSelected(ed);
 
                         var anchorNode = ed.dom.getParent(node, 'a[href]');
+
+                        var classes = params.attributes.classes || '';
+                        classes.trim().split(' ').filter(function (cls) {
+                            return cls.trim() !== '';
+                        });
 
                         if (anchorNode) {
                             ed.selection.select(anchorNode);
@@ -329,6 +345,13 @@
 
                             title = ed.dom.getAttrib(anchorNode, 'title');
                             target = ed.dom.getAttrib(anchorNode, 'target');
+
+                            classes = ed.dom.getAttrib(node, 'class');
+
+                            // clean
+                            classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                                return cls.trim() !== '';
+                            });
                         }
 
                         // get anchor or selected element text
@@ -351,6 +374,10 @@
 
                         if (targetCtrl) {
                             targetCtrl.value(target);
+                        }
+
+                        if (stylesListCtrl) {
+                            stylesListCtrl.value(classes);
                         }
 
                         window.setTimeout(function () {

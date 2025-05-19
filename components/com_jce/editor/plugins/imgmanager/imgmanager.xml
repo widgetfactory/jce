@@ -35,6 +35,10 @@
                 <option value="0">JNO</option>
             </field>
 
+            <field name="custom_classes" type="repeatable" default="" label="WF_LABEL_CUSTOM_CLASSES" description="WF_LABEL_CUSTOM_CLASSES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
             <field name="basic_dialog" type="yesno" default="0" label="WF_PARAM_BASIC_DIALOG" description="WF_PARAM_BASIC_DIALOG_DESC" class="btn-group btn-group-yesno">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

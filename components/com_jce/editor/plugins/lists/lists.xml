@@ -25,7 +25,7 @@
 
             <field name="numlist_classes" type="text" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
 
-			<field name="numlist_custom_classes" type="repeatable" default="" label="WF_LISTS_CUSTOM_CLASSES" description="WF_LISTS_CUSTOM_CLASSES_DESC">
+			<field name="numlist_custom_classes" type="repeatable" default="" label="WF_LABEL_CUSTOM_CLASSES" description="WF_LABEL_CUSTOM_CLASSES_DESC">
                 <field type="text" size="50" hiddenLabel="true" />
             </field>
 
@@ -40,7 +40,7 @@
 
             <field name="bullet_classes" type="text" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
 
-			<field name="bullet_custom_classes" type="repeatable" default="" label="WF_LISTS_CUSTOM_CLASSES" description="WF_LISTS_CUSTOM_CLASSES_DESC">
+			<field name="bullet_custom_classes" type="repeatable" default="" label="WF_LABEL_CUSTOM_CLASSES" description="WF_LABEL_CUSTOM_CLASSES_DESC">
                 <field type="text" size="50" hiddenLabel="true" />
             </field>
 

@@ -14,71 +14,36 @@
     <files></files>
     <fields name="link">
         <fieldset name="config">
-            <fieldset name="defaults">
-                <field name="target" type="list" default="" label="WF_LABEL_TARGET" description="WF_LINK_PARAM_DEFAULT_TARGET_DESC">
-                    <option value="">WF_OPTION_NOT_SET</option>
-                    <option value="_self">WF_OPTION_TARGET_SELF</option>
-                    <option value="_blank">WF_OPTION_TARGET_BLANK</option>
-                    <option value="_parent">WF_OPTION_TARGET_PARENT</option>
-                    <option value="_top">WF_OPTION_TARGET_TOP</option>
-                </field>
 
-                <field type="text" name="id" default="" size="50" label="WF_LABEL_ID" description="WF_LABEL_ID_DESC" />
-                <field type="text" name="style" default="" size="50" label="WF_LABEL_STYLE" description="WF_LABEL_STYLE_DESC" />
-                <field type="text" name="classes" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
-                <field type="list" name="direction" default="" label="WF_LABEL_DIR" description="WF_LABEL_DIR_DESC">
-                    <option value="">WF_OPTION_NOT_SET</option>
-                    <option value="ltr">WF_OPTION_LTR</option>
-                    <option value="rtl">WF_OPTION_RTL</option>
-                </field>
+            <field name="autolink_email" type="yesno" default="1" label="WF_LINK_AUTOLINK_EMAIL" description="WF_LINK_AUTOLINK_EMAIL_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
 
-                <field type="text" name="hreflang" default="" size="50" label="WF_LABEL_HREFLANG" description="WF_LABEL_HREFLANG_DESC" />
-                <field type="text" name="lang" default="" size="50" label="WF_LABEL_LANG" description="WF_LABEL_LANG_DESC" />
-                <field type="text" name="charset" default="" size="50" label="WF_LABEL_CHARSET" description="WF_LABEL_CHARSET_DESC" />
-                <field type="text" name="type" default="" size="50" label="WF_LABEL_MIME_TYPE" description="WF_LABEL_MIME_TYPE_DESC" />
-                <field type="list" name="rel" default="" class="editable" label="WF_LABEL_REL" description="WF_LABEL_REL_DESC">
-                    <option value="">WF_OPTION_NOT_SET</option>
-                    <option value="nofollow">No Follow</option>
-                    <option value="alternate">Alternate</option>
-                    <option value="designates">Designates</option>
-                    <option value="stylesheet">Stylesheet</option>
-                    <option value="start">Start</option>
-                    <option value="next">Next</option>
-                    <option value="prev">Prev</option>
-                    <option value="contents">Contents</option>
-                    <option value="index">Index</option>
-                    <option value="glossary">Glossary</option>
-                    <option value="copyright">Copyright</option>
-                    <option value="chapter">Chapter</option>
-                    <option value="subsection">Subsection</option>
-                    <option value="appendix">Appendix</option>
-                    <option value="help">Help</option>
-                    <option value="bookmark">Bookmark</option>
-                </field>
-                <field type="list" name="rev" default="" label="WF_LABEL_REV" description="WF_LABEL_REV_DESC">
-                    <option value="">WF_OPTION_NOT_SET</option>
-                    <option value="alternate">Alternate</option>
-                    <option value="designates">Designates</option>
-                    <option value="stylesheet">Stylesheet</option>
-                    <option value="start">Start</option>
-                    <option value="next">Next</option>
-                    <option value="prev">Prev</option>
-                    <option value="contents">Contents</option>
-                    <option value="index">Index</option>
-                    <option value="glossary">Glossary</option>
-                    <option value="copyright">Copyright</option>
-                    <option value="chapter">Chapter</option>
-                    <option value="subsection">Subsection</option>
-                    <option value="appendix">Appendix</option>
-                    <option value="help">Help</option>
-                    <option value="bookmark">Bookmark</option>
-                </field>
-                <field type="text" name="tabindex" default="" size="50" label="WF_LABEL_TABINDEX" description="WF_LABEL_TABINDEX_DESC" />
-                <field type="text" name="accesskey" default="" size="50" label="WF_LABEL_ACCESSKEY" description="WF_LABEL_ACCESSKEY_DESC" />
+            <field name="autolink_url" type="yesno" default="1" label="WF_LINK_AUTOLINK_URL" description="WF_LINK_AUTOLINK_URL_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
 
-                <field name="attributes" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" />
-            </fieldset>
+            <field name="attributes_target" type="yesno" default="1" label="WF_LINK_SHOW_TARGET" description="WF_LINK_SHOW_TARGET_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
 
+            <field name="attributes_title" type="yesno" default="1" label="WF_LINK_SHOW_TITLE" description="WF_LINK_SHOW_TITLE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="custom_classes" type="repeatable" default="" label="WF_LABEL_CUSTOM_CLASSES" description="WF_LABEL_CUSTOM_CLASSES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field name="quicklink" type="yesno" default="1" label="WF_LINK_QUICKLINK" description="WF_LINK_QUICKLINK_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            
             <field name="file_browser" type="yesno" default="1" label="WF_URL_FILE_BROWSER" description="WF_URL_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
@@ -182,31 +147,6 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="quicklink" type="yesno" default="1" label="WF_LINK_QUICKLINK" description="WF_LINK_QUICKLINK_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="autolink_email" type="yesno" default="1" label="WF_LINK_AUTOLINK_EMAIL" description="WF_LINK_AUTOLINK_EMAIL_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="autolink_url" type="yesno" default="1" label="WF_LINK_AUTOLINK_URL" description="WF_LINK_AUTOLINK_URL_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="attributes_target" type="yesno" default="1" label="WF_LINK_SHOW_TARGET" description="WF_LINK_SHOW_TARGET_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="attributes_title" type="yesno" default="1" label="WF_LINK_SHOW_TITLE" description="WF_LINK_SHOW_TITLE_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
             <field type="container" label="" showon="basic_dialog:0">
                 <field name="tabs_advanced" type="yesno" default="1" label="WF_LINK_PARAM_TAB_ADVANCED" description="WF_LINK_PARAM_TAB_ADVANCED_DESC">
                     <option value="1">JYES</option>
@@ -218,6 +158,75 @@
                     <option value="0">JNO</option>
                 </field>
             </field>
+
+            <fieldset name="defaults">
+                <field type="heading" label="WF_PROFILES_PLUGINS_DEFAULTS" />
+                
+                <field name="target" type="list" default="" label="WF_LABEL_TARGET" description="WF_LINK_PARAM_DEFAULT_TARGET_DESC">
+                    <option value="">WF_OPTION_NOT_SET</option>
+                    <option value="_self">WF_OPTION_TARGET_SELF</option>
+                    <option value="_blank">WF_OPTION_TARGET_BLANK</option>
+                    <option value="_parent">WF_OPTION_TARGET_PARENT</option>
+                    <option value="_top">WF_OPTION_TARGET_TOP</option>
+                </field>
+
+                <field type="text" name="id" default="" size="50" label="WF_LABEL_ID" description="WF_LABEL_ID_DESC" />
+                <field type="text" name="style" default="" size="50" label="WF_LABEL_STYLE" description="WF_LABEL_STYLE_DESC" />
+                <field type="text" name="classes" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
+
+                <field type="list" name="direction" default="" label="WF_LABEL_DIR" description="WF_LABEL_DIR_DESC">
+                    <option value="">WF_OPTION_NOT_SET</option>
+                    <option value="ltr">WF_OPTION_LTR</option>
+                    <option value="rtl">WF_OPTION_RTL</option>
+                </field>
+
+                <field type="text" name="hreflang" default="" size="50" label="WF_LABEL_HREFLANG" description="WF_LABEL_HREFLANG_DESC" />
+                <field type="text" name="lang" default="" size="50" label="WF_LABEL_LANG" description="WF_LABEL_LANG_DESC" />
+                <field type="text" name="charset" default="" size="50" label="WF_LABEL_CHARSET" description="WF_LABEL_CHARSET_DESC" />
+                <field type="text" name="type" default="" size="50" label="WF_LABEL_MIME_TYPE" description="WF_LABEL_MIME_TYPE_DESC" />
+                <field type="list" name="rel" default="" class="editable" label="WF_LABEL_REL" description="WF_LABEL_REL_DESC">
+                    <option value="">WF_OPTION_NOT_SET</option>
+                    <option value="nofollow">No Follow</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="designates">Designates</option>
+                    <option value="stylesheet">Stylesheet</option>
+                    <option value="start">Start</option>
+                    <option value="next">Next</option>
+                    <option value="prev">Prev</option>
+                    <option value="contents">Contents</option>
+                    <option value="index">Index</option>
+                    <option value="glossary">Glossary</option>
+                    <option value="copyright">Copyright</option>
+                    <option value="chapter">Chapter</option>
+                    <option value="subsection">Subsection</option>
+                    <option value="appendix">Appendix</option>
+                    <option value="help">Help</option>
+                    <option value="bookmark">Bookmark</option>
+                </field>
+                <field type="list" name="rev" default="" label="WF_LABEL_REV" description="WF_LABEL_REV_DESC">
+                    <option value="">WF_OPTION_NOT_SET</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="designates">Designates</option>
+                    <option value="stylesheet">Stylesheet</option>
+                    <option value="start">Start</option>
+                    <option value="next">Next</option>
+                    <option value="prev">Prev</option>
+                    <option value="contents">Contents</option>
+                    <option value="index">Index</option>
+                    <option value="glossary">Glossary</option>
+                    <option value="copyright">Copyright</option>
+                    <option value="chapter">Chapter</option>
+                    <option value="subsection">Subsection</option>
+                    <option value="appendix">Appendix</option>
+                    <option value="help">Help</option>
+                    <option value="bookmark">Bookmark</option>
+                </field>
+                <field type="text" name="tabindex" default="" size="50" label="WF_LABEL_TABINDEX" description="WF_LABEL_TABINDEX_DESC" />
+                <field type="text" name="accesskey" default="" size="50" label="WF_LABEL_ACCESSKEY" description="WF_LABEL_ACCESSKEY_DESC" />
+
+                <field name="attributes" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" boolean="true" />
+
+            </fieldset>
         </fieldset>
 
         <fieldset name="plugin.links" />

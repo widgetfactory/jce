@@ -21,6 +21,8 @@
                 self = this,
                 br;
 
+            var params = ed.getParam('imgmanager', {});
+
             // add insert button action
             $('#insert').on('click', function (e) {
                 self.insert();
@@ -56,7 +58,9 @@
                 $('.uk-persistent-focus').removeClass('uk-active');
             });
 
-            Wf.init();
+            Wf.init({
+                classes : params.custom_classes || []
+            });
 
             // add change event to record editing
             $('#alt').on('change', function () {

@@ -402,6 +402,10 @@ class WFEditorPlugin extends CMSObject
             if (is_string($customAttributes)) {
                 $customAttributes = json_decode($customAttributes, true);
             }
+
+            if (!is_array($customAttributes)) {
+                $customAttributes = array();
+            }
             
             // Remove values with invalid key, must be indexed array
             $customAttributes = array_filter($customAttributes, function ($value, $key) {

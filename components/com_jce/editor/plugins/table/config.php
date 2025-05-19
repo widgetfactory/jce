@@ -40,6 +40,7 @@ class WFTablePluginConfig
         $settings['table_pad_empty_cells'] = $wf->getParam('table.pad_empty_cells', 1, 1);
 
         $settings['table_classes'] = $wf->getParam('table.classes', '', '');
+        $settings['table_classes_custom'] = $wf->getParam('table.custom_classes', [], []);
 
         $settings['table_buttons'] = $wf->getParam('table.show_buttons', 1, 1);
 

@@ -28,11 +28,17 @@
                     <option value="right">WF_TABLE_ALIGN_RIGHT</option>
                 </field>
                 <field name="classes" type="text" size="50" default="" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
-                <field name="pad_empty_cells" type="list" default="1" label="WF_TABLE_PAD_EMPTY_CELLS" description="WF_TABLE_PAD_EMPTY_CELLS_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+
             </fieldset>
+
+            <field name="pad_empty_cells" type="list" default="1" label="WF_TABLE_PAD_EMPTY_CELLS" description="WF_TABLE_PAD_EMPTY_CELLS_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="custom_classes" type="repeatable" default="" label="WF_LABEL_CUSTOM_CLASSES" description="WF_LABEL_CUSTOM_CLASSES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
 
             <field name="basic_dialog" type="yesno" default="0" label="WF_PARAM_BASIC_DIALOG" description="WF_PARAM_BASIC_DIALOG_DESC" class="btn-group btn-group-yesno">
                 <option value="1">JYES</option>

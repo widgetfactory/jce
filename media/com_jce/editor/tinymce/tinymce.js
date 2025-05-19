@@ -37852,6 +37852,11 @@
         }
 
         function loadClasses(ctrl) {
+          if (s.styles && typeof s.styles === "string") {
+            // split by comma or space
+            s.styles = s.styles.split(/[\s,]+/);
+          }
+
           if (Array.isArray(s.styles) && s.styles.length) {
             each(s.styles, function (item) {
               var title, value;
