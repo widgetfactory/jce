@@ -172,6 +172,8 @@
                     <option value="eager">WF_OPTION_LOADING_EAGER</option>
                 </field>
 
+                <field name="attributes" type="keyvalue" default="" label="WF_PARAM_CUSTOM_ATTRIBUTES" description="WF_PARAM_CUSTOM_ATTRIBUTES_DESC" boolean="true" />
+
             </fieldset>
 
             <field type="heading" label="WF_PROFILES_PLUGINS_ACCESS" />

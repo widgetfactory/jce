@@ -11,6 +11,24 @@
 /* global Wf, jQuery, tinyMCEPopup */
 
 (function ($) {
+    function getAttributes(ed, node) {
+        var i, attrs = node.attributes, attribs = {};
+
+        // map all attributes
+        for (i = attrs.length - 1; i >= 0; i--) {
+            var name = attrs[i].name, value = ed.dom.getAttrib(node, name);
+
+            // skip internal, eg: _moz_resizing or data-mce-style
+            if (name.charAt(0) === "_" || name.indexOf('-mce-') !== -1) {
+                continue;
+            }
+
+            attribs[name] = value;
+        }
+
+        return attribs;
+    }
+    
     var ImageManagerDialog = {
         settings: {},
         init: function () {
@@ -58,6 +76,7 @@
                 $('.uk-persistent-focus').removeClass('uk-active');
             });
 
+            // setup plugin
             Wf.init({
                 classes : params.custom_classes || []
             });
@@ -194,6 +213,38 @@
                 if (br && br.nodeName == 'BR' && br.style.clear) {
                     $('#clear').val(br.style.clear);
                 }
+
+                var x = 0, attribs = getAttributes(ed, n);
+
+                // process remaining attributes
+                $.each(attribs, function (key, val) {
+                    if (key === 'data-mouseover' || key === 'data-mouseout' || key.indexOf('on') === 0) {
+                        return true;
+                    }
+
+                    if (document.getElementById(key) || key == 'class') {
+                        return true;
+                    }
+
+                    try {
+                        val = decodeURIComponent(val);
+                    } catch (e) {
+                        // error
+                    }
+
+                    var repeatable = $('.uk-repeatable').eq(0);
+
+                    if (x > 0) {
+                        $(repeatable).clone(true).appendTo($(repeatable).parent());
+                    }
+
+                    var elements = $('.uk-repeatable').eq(x).find('input, select');
+
+                    $(elements).eq(0).val(key);
+                    $(elements).eq(1).val(val);
+
+                    x++;
+                });
             } else {
                 Wf.setDefaults(this.settings.defaults);
             }
@@ -326,6 +377,17 @@
 
             el = ed.selection.getNode();
             br = el.nextSibling;
+
+            // get custom attributes
+			$('.uk-repeatable').each(function () {
+				var elements = $('input, select', this);
+				var key = $(elements).eq(0).val(),
+					value = $(elements).eq(1).val();
+
+				if (key) {
+					args[key] = value;
+				}
+			});
 
             if (el && el.nodeName == 'IMG') {
 
