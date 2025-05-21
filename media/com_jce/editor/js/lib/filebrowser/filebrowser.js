@@ -1045,7 +1045,7 @@
                     }
 
                     // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
-                    name = e.name.replace(/([^\s\/]+)(\/)/g, function (m) {
+                    name = name.replace(/([^\s\/]+)(\/)/g, function (m) {
                         return '<strong>' + m + '</strong>';
                     });
 
