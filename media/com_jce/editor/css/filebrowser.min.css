@@ -907,6 +907,10 @@ div#info-comment {
   visibility: hidden;
 }
 
+.root:not(.view-mode-grid) .folder-up {
+  display: none;
+}
+
 .grid-size {
   display: none;
   align-items: center;

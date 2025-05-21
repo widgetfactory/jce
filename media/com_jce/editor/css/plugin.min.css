@@ -1246,6 +1246,17 @@ html {
 }
 */
 
+.uk-form-row.uk-flex {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.uk-form-horizontal .uk-form-controls {
+    display: flex;
+    align-items: center;
+}
+
 .uk-form-horizontal .uk-form-controls input[type="text"],
 .uk-form-horizontal .uk-form-controls input[type="number"],
 .uk-form-horizontal .uk-form-controls select,
@@ -1727,6 +1738,13 @@ select:not([multiple]):not([size]) {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.uk-checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
 }
 .uk-datalist-control {
     position: relative;
