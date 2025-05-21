@@ -93,7 +93,6 @@ class WFImgManagerPlugin extends WFMediaManager
     public function getSettings($settings = array())
     {        
         $settings = array(
-            'attributes' => $this->getDefaultAttributes(),
             'always_include_dimensions' => (bool) $this->getParam('always_include_dimensions', 1),
         );
 
