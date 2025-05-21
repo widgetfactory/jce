@@ -710,22 +710,30 @@ class WFFileBrowser extends CMSObject
         return $list;
     }
 
-    private static function sanitizeSearchTerm($query)
+    private static function sanitizeSearchTerm($term)
     {
         try {
-            $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\pL\pM\pN\s\* ]#u', '', $query);
+            $query = preg_replace('#[^a-zA-Z0-9_\.\-\:~\pL\pM\pN\s\* ]#u', '', $term);
         } catch (\Exception $e) {
             // PCRE replace failed, use ASCII
-            $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $query);
+            $query = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $term);
         }
 
         // PCRE replace failed, use ASCII
-        if (is_null($q) || $q === false) {
-            $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $query);
+        if (is_null($query) || $query === false) {
+            $query = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $term);
         }
 
         // trim and return
-        return trim($q);
+        $query = trim($query);
+
+        // allow for wildcards
+        $query = str_replace('*', '.*', $query);
+
+        // quote
+        $query = preg_quote($query);
+
+        return $query;
     }
 
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
@@ -762,9 +770,6 @@ class WFFileBrowser extends CMSObject
 
         // copy query
         $keyword = self::sanitizeSearchTerm($query);
-
-        // allow for wildcards
-        $keyword = str_replace('*', '.*', $keyword);
 
         // query filter
         $keyword = '^(?i).*' . $keyword . '.*';

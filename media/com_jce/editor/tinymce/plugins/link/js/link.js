@@ -75,6 +75,8 @@
 
             var api = ed.plugins.link;
 
+            var params = ed.getParam('link', {});
+
             tinyMCEPopup.restoreSelection();
 
             $('button#insert').on('click', function (e) {
@@ -228,7 +230,9 @@
             WFPopups.setup();
 
             // init dialog
-            Wf.init();
+            Wf.init({
+                classes: params.custom_classes || []
+            });
 
             // store text value when changed
             $('#text').on('change', function () {

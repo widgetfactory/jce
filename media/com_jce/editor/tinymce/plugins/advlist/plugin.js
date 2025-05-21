@@ -44,7 +44,7 @@
             self.numlist = buildFormats(numlist);
         }
 
-        var bullist = editor.getParam("advlist_bullet_styles", "default,circle,disc,square");
+        var bullist = editor.getParam("advlist_bullist_styles", "default,circle,disc,square");
 
         if (bullist) {
             self.bullist = buildFormats(bullist);
@@ -87,9 +87,23 @@
                     // Append styles to new list element
                     if (format) {
                         list = dom.getParent(sel.getNode(), 'ol,ul');
+
                         if (list) {
                             dom.setStyles(list, format.styles);
                             list.removeAttribute('data-mce-style');
+
+                            // add any default classes
+                            var classes = editor.getParam('advlist_' + name + '_classes', '');
+
+                            if (classes) {
+                                classes = classes.trim();
+
+                                classes.split(/\s+/).forEach(function (cls) {
+                                    if (cls) {
+                                        editor.dom.addClass(list, cls);
+                                    }
+                                });
+                            }
                         }
                     }
 
@@ -145,10 +159,15 @@
                         form.add(reversed_ctrl);
                     }
 
+                    var styles = editor.getParam('advlist_' + name + '_custom_classes', '').trim().split(',').filter(function (cls) {
+                        return cls.trim() !== '';
+                    });
+
                     var styles_ctrl = cm.createStylesBox(name + '_class', {
                         label: editor.getLang('adlist.class', 'Classes'),
                         onselect: function () { },
-                        name: 'classes'
+                        name: 'classes',
+                        styles: styles
                     });
 
                     form.add(styles_ctrl);
@@ -162,22 +181,28 @@
 
                             var list = editor.dom.getParent(node, name == 'bullist' ? 'ul' : 'ol');
 
+                            var classes = editor.getParam('advlist_' + name + '_classes', '').trim().split(' ').filter(function (cls) {
+                                return cls.trim() !== '';
+                            });
+
                             if (list) {
                                 if (name == 'numlist') {
                                     start_ctrl.value(editor.dom.getAttrib(list, 'start') || 1);
                                     reversed_ctrl.checked(!!editor.dom.getAttrib(list, 'reversed'));
                                 }
 
-                                var classes = editor.dom.getAttrib(list, 'class');
+                                classes = editor.dom.getAttrib(list, 'class');
 
                                 // clean
-                                classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim();
-
-                                styles_ctrl.value(classes);
+                                classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                                    return cls.trim() !== '';
+                                });
 
                                 listStyleType = editor.dom.getStyle(list, 'list-style-type') || 'default';
                                 type_ctrl.value(listStyleType);
                             }
+
+                            styles_ctrl.value(classes);
 
                             DOM.setHTML(this.id + '_insert', label);
                         },

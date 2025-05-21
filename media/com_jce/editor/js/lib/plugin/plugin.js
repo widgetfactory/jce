@@ -9,7 +9,7 @@
  * other free or open source software licenses.
  */
 
-/* global tinyMCEPopup, jQuery, TinyMCE_Utils */
+/* global tinyMCEPopup, jQuery */
 
 // String functions
 (function ($) {
@@ -42,7 +42,8 @@
             site: '',
             root: '',
             help: $.noop,
-            alerts: ''
+            alerts: '',
+            classes: []
         },
         getURI: function (absolute) {
             if (!standalone) {
@@ -89,7 +90,7 @@
                 return;
             }
 
-            TinyMCE_Utils.fillClassList('classes');
+            this.createClassList('classes', this.options.classes);
 
             $('#apply').button({
                 icons: {
@@ -219,9 +220,9 @@
             // close on esc
             $('body').on('keyup.esc', function (e) {
                 if (e.keyCode === 27) {
-                   // cancel event
-                   e.preventDefault();
-                   e.stopPropagation();
+                    // cancel event
+                    e.preventDefault();
+                    e.stopPropagation();
 
                     // close an existing modal first
                     if ($('.uk-modal-close').length) {
@@ -300,6 +301,132 @@
                 height: 768,
                 size: 'mce-modal-landscape-full',
                 close_previous: 0
+            });
+        },
+
+        createClassList: function (id, options) {
+            var ed = tinyMCEPopup.editor,
+                lst = document.getElementById(id),
+                values = [],
+                filter = ed.settings.class_filter,
+                PreviewCss = tinymce.util.PreviewCss;
+
+            if (!lst) {
+                return;
+            }
+
+            if (typeof options == 'string') {
+                // split by comma or space
+                options = options.split(/[\s,]+/);
+            }
+
+            options = options || [];
+
+            // support <datalist> element
+            if (lst.list) {
+                lst = lst.list;
+            }
+
+            if (!options.length) {
+                var classes = [],
+                    custom = ed.getParam('styleselect_custom_classes'),
+                    importcss_classes = ed.settings.importcss_classes ||
+                        (ed.plugins.importcss && ed.plugins.importcss.get && ed.plugins.importcss.get());
+
+                // Add custom class list
+                if (custom) {
+                    values = values.concat(custom.split(','));
+                }
+
+                // Add stylesheet-derived classes
+                if (ed.getParam('styleselect_stylesheet') !== false && Array.isArray(importcss_classes)) {
+                    importcss_classes.forEach(function (item) {
+                        var val = item["class"],
+                            original = val;
+
+                        if (filter && !(val = filter(val, original))) {
+                            return;
+                        }
+
+                        classes.push(item);
+                    });
+
+                    if (classes.length) {
+                        values = values.concat(classes);
+                    }
+
+                    // Remove duplicates
+                    var seen = {};
+                    values = values.filter(function (item) {
+                        var key = typeof item === "string" ? item : item["class"];
+                        if (!key || seen[key]) {
+                            return false;
+                        }
+                        seen[key] = true;
+                        return true;
+                    });
+                }
+
+                // Normalize into option format
+                values.forEach(function (item) {
+                    if (typeof item === "string") {
+                        item = { selector: item, "class": "", style: "" };
+                    }
+
+                    var className = item["class"];
+
+                    if (!className) {
+                        return;
+                    }
+
+                    var opt = {
+                        title: item.title || className,
+                        value: className,
+                        style: ''
+                    };
+
+                    var styles = item.style || PreviewCss.getCssText(ed, { classes: className });
+                    if (styles) {
+                        opt.style = ed.dom.serializeStyle(ed.dom.parseStyle(styles));
+                    }
+
+                    options.push(opt);
+                });
+
+                PreviewCss.reset();
+            }
+
+            // Populate datalist or select
+            options.forEach(function (item) {
+                if (typeof item === "string") {
+                    item = { title: item, value: item };
+                }
+
+                if (!item || !item.title || !item.value) {
+                    return;
+                }
+
+                // check for duplicates in options
+                var found = false;
+
+                for (var i = 0; i < lst.options.length; i++) {
+                    if (lst.options[i].value === item.value) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    return;
+                }
+
+                var elm = new Option(item.title, item.value);
+
+                if (item.style) {
+                    elm.setAttribute('style', item.style);
+                }
+
+                lst.appendChild(elm);
             });
         },
 
@@ -437,6 +564,7 @@
                 }
             });
         },
+
         createBrowsers: function (el, callback, filter) {
             var self = this;
 
@@ -483,6 +611,7 @@
                 }).insertAfter(this);
             });
         },
+
         getLanguage: function () {
             if (!this.language) {
                 var s = $('body').attr('lang') || 'en';

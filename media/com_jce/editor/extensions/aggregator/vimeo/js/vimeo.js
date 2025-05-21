@@ -55,7 +55,7 @@ WFAggregator.add('vimeo', {
 
                 return true;
             }
-            
+
             $('#vimeo_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
         });
     },
@@ -86,11 +86,12 @@ WFAggregator.add('vimeo', {
 
         return false;
     },
-    getValues: function (src) {
+    getValues: function (data) {
         var self = this,
-            data = {},
             args = {},
             id = '';
+
+        var src = data.src;
 
         // get variables from query string
         if (src.indexOf('=') !== -1) {
@@ -100,6 +101,12 @@ WFAggregator.add('vimeo', {
         $('input, select', '#vimeo_options').not('#vimeo_embed').each(function () {
             var k = $(this).attr('id'),
                 v = $(this).val();
+
+            // no id set, skip it as it is a custom parameter
+            if (!k) {
+                return true;
+            }
+
             // remove vimeo_ prefix
             k = k.substr(k.indexOf('_') + 1);
 

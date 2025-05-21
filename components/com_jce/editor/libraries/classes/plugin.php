@@ -366,7 +366,7 @@ class WFEditorPlugin extends CMSObject
         }
 
         // exclude custom attributes
-        $exclude[] = 'custom_attributes';
+        $exclude[] = 'attributes';
 
         // get parameter defaults
         if (is_file($manifest)) {
@@ -401,6 +401,10 @@ class WFEditorPlugin extends CMSObject
         if ($customAttributes) {
             if (is_string($customAttributes)) {
                 $customAttributes = json_decode($customAttributes, true);
+            }
+
+            if (!is_array($customAttributes)) {
+                $customAttributes = array();
             }
             
             // Remove values with invalid key, must be indexed array

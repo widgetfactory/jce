@@ -353,6 +353,11 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $name = WFUtility::mb_basename($item);
                 $name = WFUtility::convertEncoding($name);
 
+                if ($depth) {
+                    $relative = $this->toRelative($item);
+                    $relative = WFUtility::mb_dirname($relative);
+                } 
+
                 // create relative file
                 $id = WFUtility::makePath($relative, $name, '/');
 
@@ -361,14 +366,10 @@ class WFJoomlaFileSystem extends WFFileSystem
                     continue;
                 }
 
+                // reset name for recursive search
                 if ($depth) {
-                    $id = $this->toRelative($item);
-                    $id = WFUtility::convertEncoding($id);
-                    $name = $id;
+                    $name = trim($id, '/');
                 }
-
-                // get basename of file name
-                $name = WFUtility::mb_basename($name);
 
                 // create url
                 $url = WFUtility::makePath($id, '/');
@@ -405,31 +406,17 @@ class WFJoomlaFileSystem extends WFFileSystem
         );
 
         // get folder list
-        $folders = $this->getFolders($relative, '', 0, 0, $sort, 3);
+        $result['folders'] = $this->getFolders($relative, $query, 0, 0, $sort, 3);
 
-        // filter based on passed in query
-        foreach ($folders as $folder) {
-            if (preg_match("/$query/u", $folder['id'])) {
-                $result['folders'][] = $folder;
-            }
-        }
-
-        $filter = '';
+        $filter = $query;
 
         // create filter for filetypes
-        if (!empty($filestypes)) {
+        if (!empty($filetypes)) {
             $filter .= '\.(?i)(' . implode('|', $filetypes) . ')$';
         }
 
         // get file list
-        $files = $this->getFiles($relative, $filter, 0, 0, $sort, 3);
-
-        // filter based on passed in query
-        foreach ($files as $files) {
-            if (preg_match("/$query/u", $files['id'])) {
-                $result['files'][] = $files;
-            }
-        }
+        $result['files'] = $this->getFiles($relative, $filter, 0, 0, $sort, 3);
 
         return $result;
     }

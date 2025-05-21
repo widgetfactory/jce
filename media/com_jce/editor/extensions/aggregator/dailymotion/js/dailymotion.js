@@ -91,11 +91,12 @@ WFAggregator.add('dailymotion', {
 
         return false;
     },
-    getValues: function (src) {
+    getValues: function (data) {
         var self = this,
-            data = {},
             args = {},
             id = '';
+
+        var src = data.src;
 
         // get variables from query string
         if (src.indexOf('=') !== -1) {
@@ -105,6 +106,11 @@ WFAggregator.add('dailymotion', {
         $('input[id], select[id]', '#dailymotion_options').each(function () {
             var k = $(this).attr('id'),
                 v = $(this).val();
+
+            // no id set, skip it as it is a custom parameter
+            if (!k) {
+                return true;
+            }
 
             // remove dailymotion_ prefix
             k = k.substr(k.indexOf('_') + 1);

@@ -20,6 +20,7 @@ class WFLinkPluginConfig
 
         $config = array(
             'attributes' => $plugin->getDefaults(),
+            'custom_classes' => $plugin->getParam('link.custom_classes', []),
         );
 
         // expose globally for use by Autolink and Clipboard

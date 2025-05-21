@@ -199,13 +199,15 @@
     var TableDialog = {
         settings: {},
         init: function () {
-            var layout = tinyMCEPopup.getWindowArg('layout', 'table');
+            var ed = tinyMCEPopup.editor, layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
             if (!this.settings.file_browser) {
                 $('input.browser').removeClass('browser');
             }
 
-            Wf.init();
+            Wf.init({
+                classes: ed.getParam('table_classes_custom', [])
+            });
 
             if (layout == 'merge') {
                 return this.initMerge();

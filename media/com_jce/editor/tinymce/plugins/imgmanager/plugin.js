@@ -204,7 +204,8 @@
             var stylesListCtrl = cm.createStylesBox('image_class', {
                 label: ed.getLang('image.class', 'Classes'),
                 onselect: function () { },
-                name: 'classes'
+                name: 'classes',
+                styles: params.custom_classes || []
             });
 
             form.add(stylesListCtrl);
@@ -224,6 +225,8 @@
                     open: function () {
                         var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', alt = '';
 
+                        var classes = params.attributes.classes || '';
+
                         if (isImage(node)) {
                             var src = ed.dom.getAttrib(node, 'src');
 
@@ -233,13 +236,17 @@
 
                             var alt = ed.dom.getAttrib(node, 'alt');
 
-                            var classes = ed.dom.getAttrib(node, 'class');
-
-                            stylesListCtrl.value(classes);
+                            classes = ed.dom.getAttrib(node, 'class');
                         }
+
+                        // clean
+                        classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                            return cls.trim() !== '';
+                        });
 
                         urlCtrl.value(src);
                         descriptionCtrl.value(alt);
+                        stylesListCtrl.value(classes);
 
                         window.setTimeout(function () {
                             urlCtrl.focus();

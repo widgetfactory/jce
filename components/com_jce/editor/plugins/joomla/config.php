@@ -17,19 +17,11 @@ class WFJoomlaPluginConfig
 {
     public static function getConfig(&$settings)
     {
-        // already set by editor display
-        if (isset($settings['joomla_xtd_buttons'])) {
-            return;
+        if (empty($settings['joomla_xtd_buttons'])) {
+            $settings['joomla_xtd_buttons'] = array();
         }
-
-        // everything below is only required for SP Page Builder...
-        if (Factory::getApplication()->input->get('option') !== 'com_sppagebuilder') {
-            return;
-        }
-
-        $list = array(
-            '__jce__' => array()
-        );
+        
+        $list = array();
 
         $editor = Editor::getInstance('jce');
 
@@ -68,8 +60,9 @@ class WFJoomlaPluginConfig
                 'options' => $button->get('options', array()),
             );
 
-            $list['__jce__'][] = $options;
+            $list[] = $options;
         }
-        $settings['joomla_xtd_buttons'] = json_encode($list);
+        
+        $settings['joomla_xtd_buttons']['__jce__'] = $list;
     }
 }

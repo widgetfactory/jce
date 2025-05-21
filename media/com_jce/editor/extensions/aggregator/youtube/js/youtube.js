@@ -182,7 +182,7 @@ WFAggregator.add('youtube', {
             var key = $('input[name^="youtube_params_name"]', this).val();
             var value = $('input[name^="youtube_params_value"]', this).val();
 
-            if (key !== '' && value !== '') {
+            if (key) {
                 args[key] = value;
             }
         });

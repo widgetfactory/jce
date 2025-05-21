@@ -57,11 +57,7 @@ class WFImgManagerPlugin extends WFMediaManager
 
     public function getDefaultAttributes()
     {
-        $attribs = parent::getDefaultAttributes();
-
-        unset($attribs['always_include_dimensions']);
-
-        return $attribs;
+        return parent::getDefaultAttributes();
     }
 
     public function onUpload($file, $relative = '')
@@ -95,14 +91,8 @@ class WFImgManagerPlugin extends WFMediaManager
     }
 
     public function getSettings($settings = array())
-    {
+    {        
         $settings = array(
-            'attributes' => array(
-                'dimensions' => $this->getParam('attributes_dimensions', 1),
-                'align' => $this->getParam('attributes_align', 1),
-                'margin' => $this->getParam('attributes_margin', 1),
-                'border' => $this->getParam('attributes_border', 1),
-            ),
             'always_include_dimensions' => (bool) $this->getParam('always_include_dimensions', 1),
         );
 

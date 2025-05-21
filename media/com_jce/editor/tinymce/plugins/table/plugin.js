@@ -2395,7 +2395,8 @@
             var stylesList = cm.createStylesBox('table_classes', {
                 label: ed.getLang('table.classes', 'Classes'),
                 onselect: function (v) { },
-                name: 'classes'
+                name: 'classes',
+                styles: ed.getParam('table_classes_custom', [])
             });
 
             form.add(stylesList);
@@ -2425,6 +2426,12 @@
                         var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getNode(), "table");
 
                         var width, height, rows, cols, caption;
+
+                        var classes = ed.getParam('table_classes', '');
+
+                        classes.trim().split(' ').filter(function (cls) {
+                            return cls.trim() !== '';
+                        });
 
                         if (elm) {
                             label = ed.getLang('update', 'Update');
@@ -2460,16 +2467,15 @@
                             setValue('width', width);
                             setValue('height', height);
 
-                            var classes = ed.dom.getAttrib(elm, 'class');
+                            classes = ed.dom.getAttrib(elm, 'class');
 
-                            // remove mce- and mceItem- classes
-                            classes = classes.replace(/mce-[\w\-]+/g, '');
-
-                            // trim
-                            classes = classes.replace(/^\s+|\s+$/g, '');
-
-                            setValue('classes', classes);
+                            // clean
+                            classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                                return cls.trim() !== '';
+                            });
                         }
+
+                        setValue('classes', classes);
 
                         DOM.setHTML(this.id + '_insert', label);
                     },
@@ -2596,7 +2602,8 @@
             var stylesList = cm.createStylesBox('table_row_classes', {
                 label: ed.getLang('table.classes', 'Classes'),
                 onselect: function (v) { },
-                name: 'classes'
+                name: 'classes',
+                styles: ed.getParam('table_classes_custom', [])
             });
 
             form.add(stylesList);
@@ -2628,11 +2635,10 @@
 
                         var classes = ed.dom.getAttrib(elm, 'class');
 
-                        // remove mce- and mceItem- classes
-                        classes = classes.replace(/mce-[\w\-]+/g, '');
-
-                        // trim
-                        classes = classes.replace(/^\s+|\s+$/g, '');
+                        // clean
+                        classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                            return cls.trim() !== '';
+                        });
 
                         stylesList.value(classes);
 
@@ -2719,7 +2725,8 @@
             var stylesList = cm.createStylesBox('table_cell_classes', {
                 label: ed.getLang('table.classes', 'Classes'),
                 onselect: function (v) { },
-                name: 'classes'
+                name: 'classes',
+                styles: ed.getParam('table_classes_custom', [])
             });
 
             form.add(stylesList);
@@ -2759,11 +2766,10 @@
 
                         var classes = ed.dom.getAttrib(elm, 'class');
 
-                        // remove mce- and mceItem- classes
-                        classes = classes.replace(/mce-[\w\-]+/g, '');
-
-                        // trim
-                        classes = classes.replace(/^\s+|\s+$/g, '');
+                        // clean
+                        classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                            return cls.trim() !== '';
+                        });
 
                         stylesList.value(classes);
 
