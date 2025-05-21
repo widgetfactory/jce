@@ -640,6 +640,11 @@
                     return;
                 }
 
+                // remove any node with a data-mce-bookmark attribute
+                if (attrs.map && attrs.map['data-mce-type'] == 'bookmark' || attrs.map['data-mce-bogus']) {
+                    return;
+                }
+
                 for (var i = attrs.length - 1; i >= 0; i--) {
                     var attrName = attrs[i].name;
 
@@ -1537,6 +1542,10 @@
 
                 if (node.parent.attr('data-mce-object')) {
                     continue;
+                }
+
+                if (node.firstChild && node.firstChild.attr('data-mce-type') == 'bookmark') {
+                    node.firstChild.remove();
                 }
 
                 // mark iframe for removal if invalid
