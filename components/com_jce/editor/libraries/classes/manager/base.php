@@ -101,9 +101,6 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $options = $browser->getProperties();
 
-        // process options array
-        $browser->getFileSystem()->updateOptions($options);
-
         // set global options
         $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
     }
@@ -142,19 +139,18 @@ class WFMediaManagerBase extends WFEditorPlugin
     public function getDimensions($file)
     {
         $browser = $this->getFileBrowser();
-        $filesystem = $browser->getFileSystem();
-
-        $path = WFUtility::makePath($filesystem->getBaseDir(), rawurldecode($file));
 
         $data = array();
 
-        $extension = WFUtility::getExtension($path, true);
+        $extension = WFUtility::getExtension($file, true);
 
         // images and flash
-        if (in_array($extension, array('jpg', 'jpeg', 'png', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp', 'swf'))) {
-            list($data['width'], $data['height']) = getimagesize($path);
+        if (in_array($extension, array('jpg', 'jpeg', 'png', 'apng', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp', 'swf'))) {
+            list($data['width'], $data['height']) = $browser->getDimensions($file);
             return $data;
         }
+
+        $path = $browser->toAbsolute($file);
 
         // svg
         if ($extension == 'svg') {
@@ -218,6 +214,37 @@ class WFMediaManagerBase extends WFEditorPlugin
             $dir = $this->getParam($this->get('caller') . '.dir', $dir);
         }
 
+        // Normalize $dir into an array of directories
+        if (!is_array($dir)) {
+            $dir = [
+                [
+                    'path' => $dir,
+                    'label' => '',
+                ],
+            ];
+        }
+
+        $dirStore = [];
+
+        foreach ($dir as $values) {
+            $path = trim($values['path'] ?? '');
+
+            // If path is missing or empty, default to 'images'
+            if ($path == '') {
+                $path = 'images';
+            }
+
+            $label = $values['label'] ?? '';
+
+            // Create a unique id hash for each directory based on the path
+            $hash = md5($path);
+
+            $dirStore[$hash] = [
+                'path' => $path,
+                'label' => $label,
+            ];
+        }
+
         // get websafe spaces parameter and convert legacy values
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
 
@@ -241,7 +268,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         $base = array(
-            'dir' => $dir,
+            'dir' => $dirStore,
             'filesystem' => $this->getFileSystem(),
             'filetypes' => $filetypes,
             'filter' => $filter,

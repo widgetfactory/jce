@@ -18,6 +18,9 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\User\UserHelper;
 
 class WFFileBrowser extends CMSObject
 {
@@ -33,8 +36,8 @@ class WFFileBrowser extends CMSObject
     /* @var array */
     private $_result = array('error' => array(), 'files' => array(), 'folders' => array());
 
-    /* @var string */
-    public $dir = '';
+    /* @var array */
+    public $dir = array();
 
     /* @var string */
     public $filesystem = 'joomla';
@@ -107,6 +110,11 @@ class WFFileBrowser extends CMSObject
         $this->setRequest(array($this, 'upload'));
     }
 
+    protected function getProfile()
+    {
+        return WFApplication::getInstance()->getActiveProfile();
+    }
+
     /**
      * Display the browser.
      */
@@ -149,8 +157,10 @@ class WFFileBrowser extends CMSObject
 
         // assign session data
         $view->session = $session;
+
         // assign form action
         $view->action = $this->getFormAction();
+
         // return view output
         $view->display();
     }
@@ -202,10 +212,9 @@ class WFFileBrowser extends CMSObject
         $wf = WFEditorPlugin::getInstance();
 
         $config = array(
-            'dir' => $this->get('dir'),
-            'upload_conflict' => $wf->getParam('editor.upload_conflict', 'overwrite'),
-            'upload_suffix' => $wf->getParam('editor.upload_suffix', '_copy'),
-            'filetypes' => $this->listFileTypes(),
+            'upload_conflict'   => $wf->getParam('editor.upload_conflict', 'overwrite'),
+            'upload_suffix'     => $wf->getParam('editor.upload_suffix', '_copy'),
+            'filetypes'         => $this->listFileTypes(),
         );
 
         $signature = md5($fs . serialize($config));
@@ -315,6 +324,242 @@ class WFFileBrowser extends CMSObject
         return false;
     }
 
+    /**
+     * Get the source directory of a file path.
+     */
+    public function getSourceDir($path)
+    {
+        // return nothing if absolute $path
+        if (preg_match('#^(file|http(s)?):\/\/#', $path)) {
+            return '';
+        }
+
+        $filesystem = $this->getFileSystem();
+
+        $path = $this->extractPath($path);
+
+        // directory path relative base directory, eg: images/2025
+        if ($filesystem->is_dir($path)) {
+            return $path;
+        }
+
+        // file url relative to site root
+        if ($filesystem->is_file($path)) {
+            return dirname($path);
+        }
+
+        return '';
+    }
+
+    /**
+     * Extract a path value from the complex path.
+     *
+     * @param string $path     The path value to process. The path is updated with the id removed
+     *
+     * @return string $path    Simple path value
+     */
+    private function extractPath($path)
+    {
+        if (strpos($path, ':') !== false) {
+            list($id, $path) = explode(':', $path);
+        }
+
+        return $path;
+    }
+
+    /**
+     * Parse a path value to get the path id.
+     *
+     * @param string $path     The path value to parse. The updated path is updated with the id removed
+     *
+     * @return string $id A Path Id
+     */
+    private function parsePath(&$path)
+    {
+        $id = '';
+
+        if (strpos($path, ':') !== false) {
+            list($id, $path) = explode(':', $path);
+        }
+
+        return $id;
+    }
+
+    /**
+     * Get a path id prefix from a path value
+     *
+     * @param [string] $path
+     * @return string prefix
+     */
+    private function getPathPrefix($path)
+    {
+        $prefix = "";
+
+        if (strpos($path, ':') !== false) {
+            list($prefix, $path) = explode(':', $path);
+        }
+
+        return $prefix;
+    }
+
+    private function getDirectoryStore()
+    {
+        $dir = $this->get('dir');
+
+        array_walk($dir, function (&$item, $key) {
+            if (empty($item['label'])) {
+                $processedPath = $this->processPath($item['path']);
+
+                // get the last part of the processed path as the label
+                $label = basename($processedPath);
+                $item['label'] = $label;
+            }
+
+            $item['label']  = htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8');
+            $item['prefix'] = $key;
+        });
+
+        if (empty($dir)) {
+            $dir = array();
+        }
+
+        return $dir;
+    }
+
+    private function getPathFromDirectoryStore($path)
+    {
+        $path = trim($path, '/');
+
+        // find the correct entry in the directory store
+        $store = $this->getDirectoryStore();
+
+        if (empty($path)) {
+            return array_values($store);
+        }
+
+        // get the path prefix
+        $prefix = $this->getPathPrefix($path);
+
+        // no prefix?
+        if (empty($prefix)) {
+            $default = array_shift(array_values($store));
+            return $default;
+        }
+
+        if (isset($store[$prefix])) {
+            return $store[$prefix];
+        }
+
+        // no prefix found, return the path
+        return $path;
+    }
+
+    private function getPathVariables()
+    {
+        static $variables;
+
+        if (!isset($variables)) {
+            $app = Factory::getApplication();
+            $user = Factory::getUser();
+            $wf = WFApplication::getInstance();
+            $profile = $this->getProfile();
+
+            $groups = UserHelper::getUserGroups($user->id);
+
+            // get keys only
+            $groups = array_keys($groups);
+
+            // get the first group
+            $group_id = array_shift($groups);
+
+            if (is_int($group_id)) {
+                // usergroup table
+                $group = Table::getInstance('Usergroup');
+                $group->load($group_id);
+                // usertype
+                $usertype = $group->title;
+            } else {
+                $usertype = $group_id;
+            }
+
+            $context = $app->input->getInt('context', null);
+
+            $contextName = '';
+
+            if (is_int($context)) {
+                foreach (ComponentHelper::getComponents() as $component) {
+                    if ($context == $component->id) {
+                        $contextName = $component->option;
+                        break;
+                    }
+                }
+            }
+
+            // Replace any path variables
+            $path_pattern = array(
+                '/\$id/',
+                '/\$username/',
+                '/\$name/',
+                '/\$user(group|type)/',
+                '/\$(group|profile)/',
+                '/\$context/',
+                '/\$hour/',
+                '/\$day/',
+                '/\$month/',
+                '/\$year/',
+            );
+
+            $path_replacement = array(
+                'id' => $user->id,
+                'username' => $user->username,
+                'name' => $user->name,
+                'usertype' => $usertype,
+                'profile' => $profile->name,
+                'context' => $contextName,
+                'hour' => date('H'),
+                'day' => date('d'),
+                'month' => date('m'),
+                'year' => date('Y')
+            );
+
+            Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetPathVariables', array(&$path_replacement, &$path_pattern));
+
+            // convert to array values
+            $path_replacement = array_values($path_replacement);
+
+            // get websafe options
+            $websafe_textcase = $wf->getParam('editor.websafe_textcase', '');
+            $websafe_mode = $wf->getParam('editor.websafe_mode', 'utf-8');
+            $websafe_allow_spaces = $wf->getParam('editor.websafe_allow_spaces', '_');
+
+            // implode textcase array to create string
+            if (is_array($websafe_textcase)) {
+                $websafe_textcase = implode(',', $websafe_textcase);
+            }
+
+            // expose variables
+            $variables = compact('path_pattern', 'path_replacement', 'websafe_textcase', 'websafe_mode', 'websafe_allow_spaces');
+        }
+
+        Factory::getApplication()->triggerEvent('onWfFileSystemGetPathVariables', array(&$variables));
+
+        return $variables;
+    }
+
+    public function processPath(&$path)
+    {
+        $path = preg_replace($this->get('path_pattern', array()), $this->get('path_replacement', array()), $path);
+
+        // split into path parts to preserve /
+        $parts = explode('/', $path);
+
+        // clean path parts
+        $parts = WFUtility::makeSafe($parts, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_allow_spaces', '_'), $this->get('websafe_textcase', ''));
+
+        // join path parts
+        $path = implode('/', $parts);
+    }
+
     public function checkPathAccess($path)
     {
         $path = trim($path, '/');
@@ -357,7 +602,7 @@ class WFFileBrowser extends CMSObject
             $access = false;
 
             // process path for variables, text case etc.
-            $filesystem->processPath($filter);
+            $this->processPath($filter);
 
             // explode to array
             $filter_parts = explode('/', $filter);
@@ -505,11 +750,13 @@ class WFFileBrowser extends CMSObject
             return $this->getItems($path, $limit, $start, $query, $sort);
         }
 
+        $prefix = $this->parsePath($path);
+
         // trim leading slash
         $path = ltrim($path, '/');
 
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
-        $dir = $filesystem->getSourceDir($path);
+        $source = $filesystem->getSourceDir($path);
 
         $filetypes = (array) $this->getFileTypes('array');
 
@@ -536,7 +783,7 @@ class WFFileBrowser extends CMSObject
         // get search depth
         $depth = (int) $this->get('search_depth', 3);
 
-        $list = $filesystem->searchItems($path, $keyword, $filetypes, $sort, $depth);
+        $list = $filesystem->searchItems($source, $keyword, $filetypes, $sort, $depth);
 
         $items = array_merge($list['folders'], $list['files']);
 
@@ -557,12 +804,16 @@ class WFFileBrowser extends CMSObject
                 if (empty($item['properties'])) {
                     $item['properties'] = $filesystem->getFileDetails($item);
                 }
+
+                $item['id'] = $prefix . ':' . $item['id'];
             }
 
             if ($type === 'folders') {
                 if (empty($item['properties'])) {
                     $item['properties'] = $filesystem->getFolderDetails($item);
                 }
+
+                $item['id'] = $prefix . ':' . $item['id'];
             }
 
             $result[$type][] = $item;
@@ -574,6 +825,13 @@ class WFFileBrowser extends CMSObject
         return $result;
     }
 
+    public function getRootDir($source)
+    {
+        
+
+        return $source;
+    }
+
     /**
      * Get file and folder lists.
      *
@@ -583,7 +841,7 @@ class WFFileBrowser extends CMSObject
      * @param int    $limit    List limit
      * @param int    $start    list start point
      */
-    public function getItems($path, $limit = 25, $start = 0, $filter = '', $sort = '')
+    public function getItems($source, $limit = 25, $start = 0, $filter = '', $sort = '')
     {
         $filesystem = $this->getFileSystem();
 
@@ -593,15 +851,50 @@ class WFFileBrowser extends CMSObject
         clearstatcache();
 
         // decode path
-        $path = rawurldecode($path);
+        $source = rawurldecode($source);
 
-        WFUtility::checkPath($path);
+        WFUtility::checkPath($source);
+
+        // trim
+        $source = trim($source, '/');
+
+        // no path so get the default directories
+        if (empty($source)) {
+            $store = $this->getDirectoryStore();
+            $storeArray = array_values($store);
+
+            if (count($storeArray) > 1) {
+                $folders = [];
+
+                foreach ($storeArray as $items) {
+                    $folders[] = array(
+                        'id'            => $items['prefix'] . ':' . $items['path'],
+                        'name'          => $items['label'],
+                        'type'          => 'folders',
+                        'properties'    => array(),
+                    );
+                }
+
+                return array(
+                    'folders' => $folders,
+                    'files' => array(),
+                    'total' => array(
+                        'folders' => count($folders),
+                        'files' => 0,
+                    ),
+                );
+            }
+
+            $source = $storeArray[0]['path'];
+        }
+
+        $prefix = $this->parsePath($source);
 
         // trim leading slash
-        $path = ltrim($path, '/');
+        $source = ltrim($source, '/');
 
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
-        $dir = $filesystem->getSourceDir($path);
+        $path = $filesystem->getSourceDir($source);
 
         $filetypes = (array) $this->getFileTypes('array');
 
@@ -622,11 +915,11 @@ class WFFileBrowser extends CMSObject
         }
 
         // get file list by filter
-        $files = $this->getFiles($dir, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $limit, $start);
+        $files = $this->getFiles($path, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $limit, $start);
 
         if (empty($filter) || $filter[0] != '.') {
             // get folder list
-            $folders = $this->getFolders($dir, '^(?i).*' . WFUtility::makeSafe($filter) . '.*', $sort, $limit, $start);
+            $folders = $this->getFolders($path, '^(?i).*' . WFUtility::makeSafe($filter) . '.*', $sort, $limit, $start);
         }
 
         $folderArray = array();
@@ -647,14 +940,20 @@ class WFFileBrowser extends CMSObject
                         $item['properties'] = $filesystem->getFolderDetails($item);
                     }
 
+                    // add the path prefix to the folder id
+                    $item['id'] = $prefix . ':' . $item['id'];
+
                     $folderArray[] = $item;
                 } else {
                     // check for selected item
-                    $item['selected'] = $filesystem->isMatch($item['url'], $path);
+                    $item['selected'] = $filesystem->isMatch($item['url'], $source);
 
                     if (empty($item['properties'])) {
                         $item['properties'] = $filesystem->getFileDetails($item);
                     }
+
+                    // add the path prefix to the file id
+                    $item['id'] = $prefix . ':' . $item['id'];
 
                     $fileArray[] = $item;
                 }
@@ -685,44 +984,55 @@ class WFFileBrowser extends CMSObject
      */
     public function getTreeItem($path = "")
     {
-        $filesystem = $this->getFileSystem();
         $path = rawurldecode($path);
 
         WFUtility::checkPath($path);
 
-        // get source dir from path eg: images/stories/fruit.jpg = images/stories
-        $dir = $filesystem->getSourceDir($path);
+        $path = trim($path, '/');
 
-        $folders = $this->getFolders($dir);
-        $array = array();
-        if (!empty($folders)) {
-            foreach ($folders as $folder) {
-                $array[] = array(
-                    'id' => $folder['id'],
-                    'name' => $folder['name'],
-                    'class' => 'folder',
-                );
+        $folders = array();
+
+        if (empty($path)) {
+            $store = $this->getDirectoryStore();
+            $storeArray = array_values($store);
+
+            if (count($storeArray) > 1) {
+                foreach ($storeArray as $item) {
+                    $folders[] = array(
+                        'id'    => $item['prefix'] . ':' . $item['path'],
+                        'name'  => $item['label'],
+                        'class' => 'folder'
+                    );
+                }
+            } else {
+                $default = $storeArray[0];
+                $folders = $this->getFolders($default['path']);
+
+                array_walk($folders, function (&$item) use ($default) {
+                    $item['id'] = $default['prefix'] . ':' . $item['id'];
+                    $item['class'] = 'folder';
+                });
             }
+        } else {
+            // get the prefix and update the path value with the prefix removed
+            $prefix = $this->parsePath($path);
+
+            // get source dir from path eg: images/stories/fruit.jpg = images/stories
+            $source = $this->getSourceDir($path);
+
+            $folders = $this->getFolders($source);
+
+            array_walk($folders, function (&$item) {
+                $item['id'] = $prefix . ':' . $item['id'];
+                $item['class'] = 'folder';
+            });
         }
+
         $result = array(
-            'folders' => $array,
+            'folders' => $folders,
         );
 
         return $result;
-    }
-
-    /**
-     * Escape a string.
-     *
-     * @return string Escaped string
-     *
-     * @param string $string
-     */
-    private function escape($string)
-    {
-        $revert = array('%2A' => '*', '%2B' => '+', '%2F' => '/', '%3F' => '?', '%40' => '@');
-
-        return strtr(rawurlencode($string), $revert);
     }
 
     /**
@@ -741,13 +1051,7 @@ class WFFileBrowser extends CMSObject
 
         WFUtility::checkPath($path);
 
-        // get source dir from path eg: images/stories/fruit.jpg = /stories
-        $dir = $filesystem->getSourceDir($path);
-
-        // remove leading slash
-        $dir = ltrim($dir, '/');
-
-        $result = $this->getTreeItems($dir);
+        $result = $this->getTreeItems($path);
 
         return $result;
     }
@@ -757,52 +1061,72 @@ class WFFileBrowser extends CMSObject
      *
      * @return Tree list html string
      *
-     * @param string $dir            Current directory
+     * @param string $path            Current directory
      * @param bool   $root[optional] Is root directory
      * @param bool   $init[optional] Is tree initialisation
      */
-    public function getTreeItems($dir, $root = true, $init = true)
+    public function getTreeItems($path, $root = true, $init = true)
     {
         $result = '';
 
         static $treedir = null;
 
         if ($init) {
-            $treedir = $dir;
+            $treedir = $path;
 
             if ($root) {
-                $result = '<ul>'
-                    . '<li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
-                    . ' <div class="uk-tree-row">'
-                    . '   <a href="#">'
-                    . '     <span class="uk-tree-icon" role="presentation">'
-                    . '       <i class="uk-icon uk-icon-home"></i>'
-                    . '     </span>'
-                    . '     <span class="uk-tree-text">' . Text::_('WF_LABEL_HOME', 'Home') . '</span>'
-                    . '   </a>'
-                    . ' </div>';
-
-                $dir = '/';
+                $result .= '
+                <ul>
+                    <li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">
+                        <div class="uk-tree-row">
+                            <a href="#">
+                                <span class="uk-tree-icon" role="presentation">
+                                    <i class="uk-icon uk-icon-home"></i>
+                                </span>
+                                <span class="uk-tree-text">' . Text::_('WF_LABEL_HOME', 'Home') . '</span>
+                            </a>
+                        </div>
+                ';
             }
         }
 
-        $folders = $this->getFolders($dir);
+        $folders = [];
 
-        if ($folders) {
+        $store = $this->getDirectoryStore();
+        $storeArray = array_values($store);
+
+        if (count($storeArray) > 1) {
+            foreach ($storeArray as $item) {
+                $folders[] = array(
+                    'id'    => $item['prefix'] . ':' . $item['path'],
+                    'name'  => $item['label'],
+                );
+            }
+        } else {
+            $default = $storeArray[0];
+            $folders = $this->getFolders($default['path']);
+
+            array_walk($folders, function (&$item) use ($default) {
+                $item['id'] = $default['prefix'] . ':' . $item['id'];
+            });
+        }
+
+        if (count($folders)) {
             $result .= '<ul class="uk-tree-node">';
 
             foreach ($folders as $folder) {
-                $name = ltrim($folder['id'], '/');
+                $id = ltrim($folder['id'], '/');
 
-                $open = preg_match('#' . preg_quote($name) . '\b#', $treedir);
+                $open = preg_match('#' . preg_quote($id) . '\b#', $treedir);
 
-                $result .= '<li data-id="' . $this->escape($name) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
-                    . ' <div class="uk-tree-row">'
-                    . '   <a href="#">'
-                    . '     <span class="uk-tree-icon" role="presentation"></span>'
-                    . '     <span class="uk-tree-text uk-text-truncate" title="' . $folder['name'] . '">' . $folder['name'] . '</span>'
-                    . '   </a>'
-                    . ' </div>';
+                $result .= '
+                <li data-id="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '" class="' . ($open ? 'uk-tree-open' : '') . '">
+                    <div class="uk-tree-row">
+                        <a href="#">
+                            <span class="uk-tree-icon" role="presentation"></span>
+                            <span class="uk-tree-text uk-text-truncate" title="' . $folder['name'] . '">' . $folder['name'] . '</span>
+                        </a>
+                    </div>';
 
                 if ($open) {
                     $result .= $this->getTreeItems($folder['id'], false, false);
@@ -835,6 +1159,7 @@ class WFFileBrowser extends CMSObject
         WFUtility::checkPath($dir);
 
         $filesystem = $this->getFileSystem();
+
         // get array with folder date and content count eg: array('date'=>'00-00-000', 'folders'=>1, 'files'=>2);
         return $filesystem->getFolderDetails($dir);
     }
@@ -851,6 +1176,7 @@ class WFFileBrowser extends CMSObject
         WFUtility::checkPath($file);
 
         $filesystem = $this->getFileSystem();
+
         // get array with folder date and content count eg: array('date'=>'00-00-000', 'folders'=>1, 'files'=>2);
         return $filesystem->getFileDetails($file);
     }
@@ -1237,6 +1563,9 @@ class WFFileBrowser extends CMSObject
         // check destination path
         WFUtility::checkPath($dir);
 
+        // extract the path from the complex path, remove prefix
+        $dir = $this->extractPath($dir);
+
         // check path exists
         if (!$filesystem->is_dir($dir)) {
             throw new InvalidArgumentException('Upload Failed: The target directory does not exist');
@@ -1305,7 +1634,7 @@ class WFFileBrowser extends CMSObject
                 $name = WFUtility::mb_basename($result->path);
 
                 if (empty($result->url)) {
-                    $result->url = WFUtility::makePath($filesystem->getRootDir(), WFUtility::makePath($dir, $name));
+                    $result->url = WFUtility::makePath($filesystem->getBaseURL(), $dir, $name);
                 }
 
                 // trim slashes
@@ -1348,6 +1677,8 @@ class WFFileBrowser extends CMSObject
 
             // check path
             WFUtility::checkPath($item);
+
+            $item = $this->extractPath($item);
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('delete', 'file') === false) {
@@ -1409,6 +1740,7 @@ class WFFileBrowser extends CMSObject
 
         // decode and cast as string
         $source = (string) rawurldecode($source);
+
         // decode and cast as string
         $destination = (string) rawurldecode($destination);
 
@@ -1424,6 +1756,9 @@ class WFFileBrowser extends CMSObject
         if (!$this->checkPathAccess($destination)) {
             throw new InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
         }
+
+        // extract the path from the complex path, removing the prefix
+        $source = $this->extractPath($source);
 
         $filesystem = $this->getFileSystem();
 
@@ -1496,12 +1831,15 @@ class WFFileBrowser extends CMSObject
         // decode and cast as string
         $destination = (string) rawurldecode($destination);
 
-        if (empty($destination)) {
-            $destination = '/';
-        }
-
         // check destination path
         WFUtility::checkPath($destination);
+
+        // extract the path from the complex path, removing the prefix
+        $destination = $this->extractPath($destination);
+
+        if (empty($destination)) {
+            throw new InvalidArgumentException('Copy Failed:Invalid destination path.');
+        }
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
@@ -1528,6 +1866,8 @@ class WFFileBrowser extends CMSObject
             if (WFUtility::validateFileName($item) === false) {
                 throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
             }
+
+            $item = $this->extractPath($item);
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
@@ -1613,12 +1953,15 @@ class WFFileBrowser extends CMSObject
         // decode and cast as string
         $destination = (string) rawurldecode($destination);
 
-        if (empty($destination)) {
-            $destination = '/';
-        }
-
         // check destination path
         WFUtility::checkPath($destination);
+
+        // extract the path from the complex path, removing the prefix
+        $destination = $this->extractPath($destination);
+
+        if (empty($destination)) {
+            throw new InvalidArgumentException('Move Failed: The destination path is invalid.');
+        }
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
@@ -1638,8 +1981,12 @@ class WFFileBrowser extends CMSObject
         foreach ($items as $item) {
             // decode and cast as string
             $item = (string) rawurldecode($item);
+
             // check source path
             WFUtility::checkPath($item);
+
+            // extract the path from the complex path, removing the prefix
+            $item = $this->extractPath($item);
 
             if (WFUtility::validateFileName($item) === false) {
                 throw new InvalidArgumentException('Move Failed: The file name is invalid.');
@@ -1698,6 +2045,7 @@ class WFFileBrowser extends CMSObject
      */
     public function folderNew()
     {
+        // check if the user has access to create a folder
         if ($this->checkFeature('create', 'folder') === false) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
@@ -1725,7 +2073,9 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Action Failed: The file name is invalid.');
         }
 
-        $result = $filesystem->createFolder($dir, $name, $args);
+        $target = $this->extractPath($dir);
+
+        $result = $filesystem->createFolder($target, $name, $args);
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
@@ -1736,8 +2086,8 @@ class WFFileBrowser extends CMSObject
                 }
             } else {
                 $data = array(
-                    'name' => WFUtility::mb_basename($new),
-                    'id' => WFUtility::mb_basename($new),
+                    'name'  => WFUtility::mb_basename($new),
+                    'id'    => WFUtility::mb_basename($new),
                 );
 
                 $event = $this->fireEvent('onFolderNew', array($new));
@@ -1750,6 +2100,71 @@ class WFFileBrowser extends CMSObject
         }
 
         return $this->getResult();
+    }
+
+    /**
+     * Get the dimensions of a file.
+     *
+     * @param string $file The file to get dimensions for
+     * @return array The dimensions of the file
+     */
+    public function getDimensions($file)
+    {
+        return $this->getFileSystem()->getDimensions($path);
+    }
+
+    /**
+     * Convert a file to an absolute path.
+     *
+     * @param string $file The file to convert
+     * @return string The absolute path
+     */
+    public function toAbsolute($file)
+    {
+        return $this->getFileSystem()->toAbsolute($file);
+    }
+
+    /**
+     * Convert a file to a relative path.
+     *
+     * @param string $file The file to convert
+     * @return string The relative path
+     */
+    public function toRelative($file)
+    {
+        return $this->getFileSystem()->toRelative($file);
+    }
+
+    /**
+     * Proxy for the filesystem read method.
+     *
+     * @param string $file The file to read
+     * @return string The file contents
+     */
+    public function readFile($file)
+    {
+        return $this->getFileSystem()->read($path);
+    }
+
+    /**
+     * Proxy for the filesystem is_file method.
+     * @param string $file The file to check
+     * @return bool True if the file exists
+     */
+    public function is_file($file)
+    {
+        return $this->getFileSystem()->is_file($file);
+    }
+
+    /**
+     * Proxy for the filesystem is_dir method.
+     *
+     * @param string $path The path to check
+     * @return boolean True if the path is a directory
+     */
+    public function is_dir($path)
+    {
+        return $this->getFileSystem()->is_dir($path);
     }
 
     private function getUploadValue()
@@ -1807,11 +2222,6 @@ class WFFileBrowser extends CMSObject
         return $upload;
     }
 
-    public function getDimensions($file)
-    {
-        return $this->getFileSystem()->getDimensions($file);
-    }
-
     // Set File Browser config
     private function setConfig($config = array())
     {
@@ -1826,12 +2236,18 @@ class WFFileBrowser extends CMSObject
             'upload' => $this->getUploadDefaults(),
         );
 
-        $properties = array('base', 'delete', 'rename', 'folder_new', 'copy', 'move');
+        $properties = array('base', 'delete', 'rename', 'folder_new', 'copy', 'move', 'list_limit');
 
         foreach ($properties as $property) {
             if ($filesystem->get($property)) {
                 $default[$property] = $filesystem->get($property);
             }
+        }
+
+        $pathVariables = $this->getPathVariables();
+
+        foreach ($pathVariables as $key => $value) {
+            $default[$key] = $value;
         }
 
         // apply default properties

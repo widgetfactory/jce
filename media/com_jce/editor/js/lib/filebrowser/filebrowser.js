@@ -1052,7 +1052,9 @@
 
             $('#tree-body').trigger('tree:toggleloader', node);
 
-            Wf.JSON.request('getTreeItem', $(node).attr('data-id'), function (o) {
+            var path = $(node).attr('data-id');
+
+            Wf.JSON.request('getTreeItem', path, function (o) {
                 if (o && !o.error) {
                     $('ul:first', node).remove();
 
@@ -1152,6 +1154,7 @@
             });
 
             var $pathway = $('.uk-breadcrumb.pathway', $status);
+
             // remove all but "home"
             $('li', $pathway).not(':first').remove();
 
@@ -1173,6 +1176,15 @@
             var w = $pathway.outerWidth(true);
 
             if (dir) {
+                // get prefix
+                var parts = dir.split(':'), dir = parts.pop(), prefix = '';
+
+                if (parts.length) {
+                    prefix = parts.join('');
+                }
+
+                dir = dir.split(':').pop();
+                
                 var x = 1,
                     parts = dir.split('/');
 
@@ -1184,6 +1196,7 @@
                     }
 
                     var $item = $('<li title="' + s + '"></li>').on('click', function (e) {
+                        path = prefix + ':' + path;
                         self._changeDir(path);
                     }).append('<a>' + s + '</a>').insertBefore($count);
 

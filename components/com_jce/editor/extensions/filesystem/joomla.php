@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -20,11 +21,38 @@ use Joomla\Registry\Registry;
 
 class WFJoomlaFileSystem extends WFFileSystem
 {
-    private static $restricted = array(
-        'administrator', 'api', 'bin', 'cache', 'components', 'cli', 'includes', 'language', 'layouts', 'libraries', 'logs', 'media', 'modules', 'plugins', 'templates', 'tmp', 'xmlrpc',
+    /**
+     * A list of restricted directories if allowroot is set to true.
+     *
+     * @var array
+     */
+    protected $restricted = array(
+        'administrator',
+        'api',
+        'bin',
+        'cache',
+        'components',
+        'cli',
+        'includes',
+        'language',
+        'layouts',
+        'libraries',
+        'logs',
+        'media',
+        'modules',
+        'plugins',
+        'templates',
+        'tmp',
+        'xmlrpc',
     );
 
-    private static $allowroot = false;
+    /**
+     * Allow root access to the filesystem.
+     *
+     * @var boolean
+     */
+    protected $allowroot = false;
+
     /**
      * Constructor activating the default information of the class.
      */
@@ -42,9 +70,47 @@ class WFJoomlaFileSystem extends WFFileSystem
             $safe_mode = true;
         }
 
-        $this->setProperties(array(
-            'local' => true,
-        ));
+        $wf = WFEditorPlugin::getInstance();
+
+        // Get default restricted directories and root access setting
+        $restricted = $wf->getParam('filesystem.joomla.restrict_dir', $this->restricted);
+        $allowroot  = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
+
+        // Get the Joomla filesystem config object
+        $fsConfig = $wf->getParam($wf->getName() . '.filesystem.joomla', '');
+
+        // Override defaults if config is an object
+        if (is_object($fsConfig)) {
+            $fs = new Registry($fsConfig);
+
+            $restricted = $fs->get('restrict_dir', $restricted);
+            $allowroot = (int) $fs->get('allow_root', $allowroot);
+        }
+
+        // Normalize $restricted to array
+        if (is_string($restricted)) {
+            $restricted = array_map('trim', explode(',', $restricted));
+        }
+
+        // Clean empty values
+        $restricted = array_filter($restricted);
+
+        // Cast to bool
+        $allowroot = (bool) $allowroot;
+
+        // remove root folder restrictions
+        if (!$allowroot) {
+            $restricted = [];
+        }
+
+        $this->setProperties(
+            array(
+                'local' => true,
+                'list_limit' => 0, // "all",
+                'allowroot' => (bool) $allowroot,
+                'restricted' => $restricted
+            )
+        );
     }
 
     /**
@@ -52,9 +118,9 @@ class WFJoomlaFileSystem extends WFFileSystem
      *
      * @return string base dir
      */
-    public function getBaseDir()
+    public function getBaseDir($path = '')
     {
-        return WFUtility::makePath(JPATH_SITE, $this->getRootDir());
+        return JPATH_SITE;
     }
 
     /**
@@ -62,15 +128,11 @@ class WFJoomlaFileSystem extends WFFileSystem
      *
      * @return string base url
      */
-    public function getBaseURL()
+    public function getBaseURL($path = '')
     {
-        return WFUtility::makePath(Uri::root(true), $this->getRootDir());
+        return Uri::root(true);
     }
 
-    protected function getBaseRoot()
-    {
-        return parent::getRootDir();
-    }
 
     /**
      * Return the full user directory path. Create if required.
@@ -81,70 +143,11 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function getRootDir()
     {
-        static $root;
+       if ($this->get('allowroot')) {
+            return '';
+       }
 
-        if (!isset($root)) {
-            $root = $this->getBaseRoot();
-            $wf = WFEditorPlugin::getInstance();
-
-            // Default to 'images' if no root is set
-            if (empty($root)) {
-                $root = 'images';
-            }
-
-            // Get default restricted directories and root access setting
-            $restricted = $wf->getParam('filesystem.joomla.restrict_dir', self::$restricted);
-            $allowroot = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
-
-            // Get the Joomla filesystem config object
-            $fsConfig = $wf->getParam($wf->getName() . '.filesystem.joomla', '');
-
-            // Override defaults if config is an object
-            if (is_object($fsConfig)) {
-                $fs = new Registry($fsConfig);
-
-                $restricted = $fs->get('restrict_dir', $restricted);
-                $allowroot = (int) $fs->get('allow_root', $allowroot);
-            }
-
-            // Normalize $restricted to array
-            if (is_string($restricted)) {
-                self::$restricted = array_map('trim', explode(',', $restricted));
-            } elseif (is_array($restricted)) {
-                self::$restricted = $restricted;
-            } else {
-                self::$restricted = [];
-            }
-
-            // Clean empty values
-            self::$restricted = array_filter(self::$restricted);
-
-            // Cast to bool
-            self::$allowroot = (bool) $allowroot;
-
-            // Adjust root and restricted based on allowroot setting
-            if (self::$allowroot) {
-                $root = '';
-            } else {
-                self::$restricted = [];
-            }
-
-            if (!empty($root)) {
-                // Create the folder
-                $full = WFUtility::makePath(JPATH_SITE, $root);
-
-                if (!Folder::exists($full)) {
-                    $this->folderCreate($full);
-                }
-
-                // Fallback
-                $root = Folder::exists($full) ? $root : 'images';
-            }
-        }
-
-        Factory::getApplication()->triggerEvent('onWfFileSystemGetRootDir', array(&$root));
-
-        return $root;
+       return 'images';
     }
 
     public function toAbsolute($path)
@@ -159,7 +162,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // path is relative to Joomla! root, eg: images/folder
         if ($isabsolute === false) {
-            $base = $this->getRootDir();
+            $base = '';
         }
 
         if (function_exists('mb_substr')) {
@@ -278,9 +281,9 @@ class WFJoomlaFileSystem extends WFFileSystem
 
                 $break = false;
 
-                if (self::$allowroot) {
-                    foreach (self::$restricted as $val) {
-                        if ($item === WFUtility::makePath($path, $val)) {
+                if ($this->allowroot) {
+                    foreach ($this->restricted as $val) {
+                        if ($item === $this->toAbsolute(WFUtility::makePath($path, $val))) {
                             $break = true;
                         }
                     }
@@ -368,10 +371,10 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $name = WFUtility::mb_basename($name);
 
                 // create url
-                $url = WFUtility::makePath($this->getRootDir(), $id, '/');
+                $url = WFUtility::makePath($id, '/');
 
                 // remove leading slash
-                $url = ltrim($url, '/');
+                $url = trim($url, '/');
 
                 $data = array(
                     'id' => $id,
@@ -472,22 +475,9 @@ class WFJoomlaFileSystem extends WFFileSystem
             return $path;
         }
 
-        // directory path relative to site root
-        if (is_dir(WFUtility::makePath(JPATH_SITE, $path))) {
-            if (function_exists('mb_substr')) {
-                return mb_substr($path, mb_strlen($this->getRootDir()));
-            }
-
-            return substr($path, strlen($this->getRootDir()));
-        }
-
         // file url relative to site root
-        if (is_file(WFUtility::makePath(JPATH_SITE, $path))) {
-            if (function_exists('mb_substr')) {
-                return mb_substr(dirname($path), mb_strlen($this->getRootDir()));
-            }
-
-            return substr(dirname($path), strlen($this->getRootDir()));
+        if ($this->is_file($path)) {
+            return dirname($path);
         }
 
         return '';
@@ -573,8 +563,8 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     private function checkRestrictedDirectory($path)
     {
-        if (self::$allowroot) {
-            foreach (self::$restricted as $name) {
+        if ($this->allowroot) {
+            foreach ($this->restricted as $name) {
                 $restricted = $this->toAbsolute($name);
 
                 $match = false;
@@ -959,14 +949,18 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function read($file)
     {
-        $path = $this->toAbsolute(rawurldecode($file));
+        $file = rawurldecode($file);
+
+        $path = $this->toAbsolute($file);
 
         return file_get_contents($path);
     }
 
     public function write($file, $content)
     {
-        $path = $this->toAbsolute(rawurldecode($file));
+        $file = rawurldecode($file);
+
+        $path = $this->toAbsolute($file);
 
         // check path does not fall within a restricted folder
         $this->checkRestrictedDirectory($path);
