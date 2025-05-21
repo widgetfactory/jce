@@ -366,7 +366,7 @@ class WFEditorPlugin extends CMSObject
         }
 
         // exclude custom attributes
-        $exclude[] = 'custom_attributes';
+        $exclude[] = 'attributes';
 
         // get parameter defaults
         if (is_file($manifest)) {
