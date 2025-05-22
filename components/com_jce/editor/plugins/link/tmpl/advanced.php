@@ -112,29 +112,23 @@ use Joomla\CMS\Language\Text;
 </div>
 
 <div class="uk-form-row uk-grid uk-grid-small">
-    <div class="uk-form-controls uk-width-1-1">
-        <div class="uk-repeatable">
-            <div class="uk-form-controls uk-flex uk-margin-small uk-width-9-10">
-                <label class="uk-form-label uk-width-1-10">
-                    <?php echo Text::_('WF_LABEL_NAME'); ?>
-                </label>
-                <div class="uk-form-controls uk-width-4-10">
-                    <input type="text" name="custom_name[]" />
+    <label for="custom_attributes" class="uk-form-label uk-width-1-1 uk-width-small-3-10"><?php echo Text::_('WF_LABEL_ATTRIBUTES'); ?></label>
+    
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10 uk-flex-wrap" id="custom_attributes">
+        <div class="uk-form-row uk-repeatable uk-width-1-1">
+            <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
+                <label class="uk-form-label uk-width-1-1 uk-width-small-1-10"><?php echo Text::_('WF_LABEL_NAME'); ?></label>
+                <div class="uk-form-controls uk-width-1-1 uk-width-small-4-10">
+                    <input type="text" name="custom_attributes_name[]" />
                 </div>
-                <label class="uk-form-label uk-width-1-10">
-                    <?php echo Text::_('WF_LABEL_VALUE'); ?>
-                </label>
-                <div class="uk-form-controls uk-width-4-10">
-                    <input type="text" name="custom_value[]" />
+                <label class="uk-form-label uk-width-1-1 uk-width-small-1-10"><?php echo Text::_('WF_LABEL_VALUE'); ?></label>
+                <div class="uk-form-controls uk-width-1-1 uk-width-small-4-10">
+                    <input type="text" name="custom_attributes_value[]" />
                 </div>
             </div>
             <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
-                <button type="button" class="uk-button uk-button-link uk-repeatable-create">
-                    <i class="uk-icon-plus"></i>
-                </button>
-                <button type="button" class="uk-button uk-button-link uk-repeatable-delete">
-                    <i class="uk-icon-trash"></i>
-                </button>
+                <button class="uk-button uk-button-link uk-repeatable-create" aria-label="<?php echo Text::_('WF_LABEL_ADD'); ?>" title="<?php echo Text::_('WF_LABEL_ADD'); ?>"><i class="uk-icon-plus"></i></button>
+                <button class="uk-button uk-button-link uk-repeatable-delete" aria-label="<?php echo Text::_('WF_LABEL_REMOVE'); ?>" title="<?php echo Text::_('WF_LABEL_REMOVE'); ?>"><i class="uk-icon-trash"></i></button>
             </div>
         </div>
     </div>

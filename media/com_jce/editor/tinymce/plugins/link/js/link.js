@@ -322,6 +322,8 @@
 
                 var x = 0, attribs = getAttributes(anchorElm);
 
+                 var $repeatable = $('.uk-repeatable', '#custom_attributes');
+
                 // process remaining attributes
                 $.each(attribs, function (key, val) {
                     if (key === 'data-mouseover' || key === 'data-mouseout' || key.indexOf('on') === 0) {
@@ -338,13 +340,11 @@
                         // error
                     }
 
-                    var repeatable = $('.uk-repeatable').eq(0);
-
                     if (x > 0) {
-                        $(repeatable).clone(true).appendTo($(repeatable).parent());
+                        $repeatable.clone(true).appendTo($repeatable.parent());
                     }
 
-                    var elements = $('.uk-repeatable').eq(x).find('input, select');
+                    var elements = $repeatable.eq(x).find('input, select');
 
                     $(elements).eq(0).val(key);
                     $(elements).eq(1).val(val);
@@ -510,7 +510,7 @@
             });
 
             // get custom attributes
-			$('.uk-repeatable').each(function () {
+			$('.uk-repeatable', '#custom_attributes').each(function () {
 				var elements = $('input, select', this);
 				var key = $(elements).eq(0).val(),
 					value = $(elements).eq(1).val();
