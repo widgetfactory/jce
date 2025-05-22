@@ -59,6 +59,9 @@ class WFFileSystem extends WFExtension
 
             $classname = 'WF' . ucfirst($fs->name) . 'FileSystem';
 
+            // store the name
+            $config['name'] = $fs->name;
+
             if (class_exists($classname)) {
                 $instances[$signature] = new $classname($config);
             } else {
@@ -96,6 +99,15 @@ class WFFileSystem extends WFExtension
      */
     public function getRootDir()
     {
+        $wf = WFEditorPlugin::getInstance();
+        $name = $this->get('name');
+        
+        $allow_root = $wf->getParam('filesystem.' . $name . '.allow_root', 0);
+
+        if ($allow_root) {
+            return '';
+        }
+        
         return 'images';
     }
 
