@@ -52,6 +52,15 @@
 
         });
 
+        // update checkboxes if values are the same
+        $('.controls .wf-keyvalue').each(function () {
+            var $inp = $(this).find(':input:text');
+
+            if ($inp.eq(0).val() === $inp.eq(1).val()) {
+                $(this).find(':input:checkbox').prop('checked', true);
+            }
+        });
+
         $('.controls .wf-keyvalue :input:checkbox').trigger('change');
     });
 })(jQuery);
