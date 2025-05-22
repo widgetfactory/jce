@@ -77,6 +77,9 @@
                 $(this).attr('id', id);
             }).trigger('change');
 
+            // remove disabled states
+            $item.find(':input').removeAttr('disabled');
+
             $item.find(':input[name]').val('').trigger('change').removeClass('isdirty');
             $item.find('select[name]').find('option:first').prop('selected', true).parent().trigger('change').removeClass('isdirty');
 
