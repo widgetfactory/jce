@@ -73,18 +73,21 @@ class WFJoomlaFileSystem extends WFFileSystem
         $wf = WFEditorPlugin::getInstance();
 
         // Get default restricted directories and root access setting
-        $restricted = $wf->getParam('filesystem.joomla.restrict_dir', $this->restricted);
-        $allowroot  = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
+        $restricted = $wf->getParam('editor.filesystem.joomla.restrict_dir', $this->restricted);
+        $allowroot = (bool) $wf->getParam('editor.filesystem.joomla.allow_root', 0);
 
-        // Get the Joomla filesystem config object
-        $fsConfig = $wf->getParam($wf->getName() . '.filesystem.joomla', '');
+        // Get the filesystem config object
+        $fsConfig = $wf->getParam($wf->getName() . '.filesystem', '');
 
         // Override defaults if config is an object
         if (is_object($fsConfig)) {
             $fs = new Registry($fsConfig);
 
-            $restricted = $fs->get('restrict_dir', $restricted);
-            $allowroot = (int) $fs->get('allow_root', $allowroot);
+            // only if a specific filsystem has been set, otherwise "inherit"
+            if ($fs->get('name')) {
+                $restricted = $fs->get('restrict_dir', $restricted);
+                $allowroot = (int) $fs->get('allow_root', $allowroot);
+            }
         }
 
         // Normalize $restricted to array
@@ -108,7 +111,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 'local' => true,
                 'list_limit' => 0, // "all",
                 'allowroot' => (bool) $allowroot,
-                'restricted' => $restricted
+                'restricted' => $restricted,
             )
         );
     }
@@ -133,7 +136,6 @@ class WFJoomlaFileSystem extends WFFileSystem
         return Uri::root(true);
     }
 
-
     /**
      * Return the full user directory path. Create if required.
      *
@@ -143,11 +145,11 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function getRootDir()
     {
-       if ($this->get('allowroot')) {
-            return '';
-       }
+        if ($this->get('allowroot')) {
+            return ''; // return a blank value for allowroot
+        }
 
-       return 'images';
+        return 'images';
     }
 
     public function toAbsolute($path)
@@ -266,6 +268,10 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $folders = array();
 
+        $restrictedPaths = array_map(function ($val) use ($path) {
+            return WFUtility::makePath($path, $val);
+        }, $this->restricted);
+
         if (!empty($list)) {
             // Sort alphabetically by default
             natcasesort($list);
@@ -279,17 +285,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $name = WFUtility::mb_basename($item);
                 $name = WFUtility::convertEncoding($name);
 
-                $break = false;
-
-                if ($this->allowroot) {
-                    foreach ($this->restricted as $val) {
-                        if ($item === $this->toAbsolute(WFUtility::makePath($path, $val))) {
-                            $break = true;
-                        }
-                    }
-                }
-
-                if ($break) {
+                if (in_array($item, $restrictedPaths, true)) {
                     continue;
                 }
 
@@ -356,7 +352,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 if ($depth) {
                     $relative = $this->toRelative($item);
                     $relative = WFUtility::mb_dirname($relative);
-                } 
+                }
 
                 // create relative file
                 $id = WFUtility::makePath($relative, $name, '/');
