@@ -728,6 +728,13 @@
     Wf.loadLanguage();
 
     window.Wf = Wf;
+
+    // backwards compatability
+    window.TinyMCE_Utils = {
+        fillClassList: function (id) {
+            Wf.createClassList(id);
+        }
+    };
 })(jQuery);
 
 if (typeof ColorPicker === 'undefined') {
