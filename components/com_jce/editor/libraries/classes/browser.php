@@ -404,6 +404,13 @@ class WFFileBrowser extends CMSObject
 
     private function getDirectoryStore()
     {
+        $filesystem = $this->getFileSystem();
+
+        // if Allow Root is enabled, return an empty array so no specific folders are root
+        if (empty($filesystem->getRootDir())) {
+            return array();
+        }
+        
         $dir = $this->get('dir');
 
         array_walk($dir, function (&$item, $key) {
@@ -832,8 +839,6 @@ class WFFileBrowser extends CMSObject
 
     public function getRootDir($source)
     {
-        
-
         return $source;
     }
 
@@ -866,31 +871,34 @@ class WFFileBrowser extends CMSObject
         // no path so get the default directories
         if (empty($source)) {
             $store = $this->getDirectoryStore();
-            $storeArray = array_values($store);
 
-            if (count($storeArray) > 1) {
-                $folders = [];
+            if (!empty($store)) {
+                $storeArray = array_values($store);
 
-                foreach ($storeArray as $items) {
-                    $folders[] = array(
-                        'id'            => $items['prefix'] . ':' . $items['path'],
-                        'name'          => $items['label'],
-                        'type'          => 'folders',
-                        'properties'    => array(),
+                if (count($storeArray) > 1) {
+                    $folders = [];
+
+                    foreach ($storeArray as $items) {
+                        $folders[] = array(
+                            'id'            => $items['prefix'] . ':' . $items['path'],
+                            'name'          => $items['label'],
+                            'type'          => 'folders',
+                            'properties'    => array(),
+                        );
+                    }
+
+                    return array(
+                        'folders' => $folders,
+                        'files' => array(),
+                        'total' => array(
+                            'folders' => count($folders),
+                            'files' => 0,
+                        ),
                     );
                 }
 
-                return array(
-                    'folders' => $folders,
-                    'files' => array(),
-                    'total' => array(
-                        'folders' => count($folders),
-                        'files' => 0,
-                    ),
-                );
+                $source = $storeArray[0]['path'];
             }
-
-            $source = $storeArray[0]['path'];
         }
 
         $prefix = $this->parsePath($source);
