@@ -167,6 +167,15 @@ class WFFileSystem extends WFExtension
         return $path;
     }
 
+    public function getSourceDirFromFile($path)
+    {
+        if ($this->is_file($path)) {
+            return $this->getSourceDir($path);
+        }
+
+        return $path;
+    }
+
     public function isMatch($needle, $haystack)
     {
         return $needle == $haystack;
