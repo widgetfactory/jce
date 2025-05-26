@@ -129,9 +129,9 @@
             });
 
             // update events when content is inserted
-            /*ed.selection.onSetContent.add(function () {
+            ed.selection.onSetContent.add(function () {
                 bindMouseoverEvent(ed);
-            });*/
+            });
 
             // update events when content is set
             ed.onSetContent.add(function () {

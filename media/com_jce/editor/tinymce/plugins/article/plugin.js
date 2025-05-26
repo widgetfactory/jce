@@ -143,8 +143,8 @@
         });
 
         ed.onPreInit.add(function () {
-            ed.onBeforeSetContent.addToTop(function (ed, o) {
-                o.content = o.content.replace(/<hr([^>]*)\salt="([^"]+)"([^>]*)>/gi, '<hr$1 data-alt="$2"$3>');
+            ed.selection.onBeforeSetContent.addToTop(function (ed, o) {
+                o.content = o.content.replace(/<hr\b([^>]*?)\balt="([^"]+)"([^>]*?)>/gi, '<hr$1 data-alt="$2"$3>');
             });
 
             ed.parser.addNodeFilter('hr', function (nodes) {

@@ -137,8 +137,13 @@
             }
         }, update_rate);
 
+        ed.onKeyUp.add(countAll);
+        ed.onSetContent.add(countAll);
+        ed.onUndo.add(countAll);
+        ed.onRedo.add(countAll);
+
         ed.onPreInit.add(function () {
-            ed.on('keyup setcontent undo redo', countAll); // use "on" events for simplicity
+            ed.selection.onSetContent.add(countAll);
         });
 
         ed.onSelectionChange.add(countSelection);
