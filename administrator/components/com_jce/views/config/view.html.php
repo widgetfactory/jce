@@ -40,7 +40,12 @@ class JceViewConfig extends HtmlView
         $this->addToolbar();
         parent::display($tpl);
 
-        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/core.min.js?' . md5(WF_VERSION));
+        $hash = md5(WF_VERSION);
+
+        $document->addScript(Uri::root(true) . '/media/com_jce/editor/vendor/jquery/js/jquery-ui.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/editor/vendor/jquery/js/jquery-ui.touch.min.js?' . $hash);
+
+        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/core.min.js?' . $hash);
     }
 
     /**
