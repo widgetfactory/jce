@@ -13488,6 +13488,12 @@
 
   		if (doc.caretPositionFromPoint) {
   			point = doc.caretPositionFromPoint(x, y);
+
+  			// if point is null
+  			if (!point) {
+  				return null;
+  			}
+
   			rng = doc.createRange();
   			rng.setStart(point.offsetNode, point.offset);
   			rng.collapse(true);
