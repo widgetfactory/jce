@@ -3688,7 +3688,7 @@
         }
       });
 
-      editor.onSetContent.add(fixLinks);
+      editor.onSetContent.add(selection.onSetContent.add(fixLinks));
     }
 
     /**
@@ -5743,9 +5743,6 @@
 
       // Event attributes can be opt-in/opt-out
       globalAttributes.push.apply(globalAttributes, eventAttributes);
-
-      // schema.org attributes
-      globalAttributes.push.apply(globalAttributes, split("itemscope itemtype itemid itemprop itemref"));
 
       // aria attributes
       globalAttributes.push.apply(globalAttributes, split("role"));
@@ -9197,20 +9194,20 @@
           for (i = 0, l = attrs.length; i < l; i++) {
             attr = attrs[i];
 
+            // treat as boolean attribute
+            if (attr.name === attr.value) {
+              attr["boolean"] = true;
+            }
+
             if (attr["boolean"]) {
-              if (settings.schema != 'html4') {
+              if (settings.schema == 'html5-strict') {
                 // boolean attributes in HTML5 are written without a value
                 bool.push(' ', attr.name);
               } else {
                 bool.push(' ', attr.name, '="', encode('' + attr.name, true), '"');
               }
             } else {
-              // treat as a boolean
-              if (attr.name == attr.value) {
-                bool.push(' ', attr.name);
-              } else {
-                html.push(' ', attr.name, '="', encode('' + attr.value, true), '"');
-              }
+              html.push(' ', attr.name, '="', encode('' + attr.value, true), '"');
             }
           }
           // add boolean attributes at the end. This is primarily for readability and because the Joomla Text Filter will remove boolean attributes if they are not at the end of the tag.
@@ -13491,6 +13488,12 @@
 
   		if (doc.caretPositionFromPoint) {
   			point = doc.caretPositionFromPoint(x, y);
+
+  			// if point is null
+  			if (!point) {
+  				return null;
+  			}
+
   			rng = doc.createRange();
   			rng.setStart(point.offsetNode, point.offset);
   			rng.collapse(true);
@@ -22943,7 +22946,6 @@
        */
       getContent: function (s) {
         var self = this,
-        ed = self.editor,
           r = self.getRng(),
           e = self.dom.create("body"),
           se = self.getSel(),
@@ -22955,10 +22957,6 @@
         s.format = s.format || 'html';
         s.forced_root_block = '';
         self.onBeforeGetContent.dispatch(self, s);
-
-        s.selection = true;
-
-        ed.onBeforeGetContent.dispatch(ed, s);
 
         if (s.format == 'text') {
           return self.isCollapsed() ? '' : (r.text || (se.toString ? se.toString() : ''));
@@ -23001,8 +22999,6 @@
 
         self.onGetContent.dispatch(self, s);
 
-        ed.onGetContent.dispatch(ed, s);
-
         return s.content;
       },
 
@@ -23020,7 +23016,6 @@
        */
       setContent: function (content, args) {
         var self = this,
-        ed = self.editor,
           rng = self.getRng(),
           caretNode, doc = self.win.document;
 
@@ -23030,13 +23025,9 @@
         args.set = true;
         args.content = content;
 
-        args.selection = true;
-
         // Dispatch before set content event
         if (!args.no_events) {
-          //self.onBeforeSetContent.dispatch(self, args);
-
-          ed.onBeforeSetContent.dispatch(ed, args);
+          self.onBeforeSetContent.dispatch(self, args);
         }
 
         content = args.content;
@@ -23094,9 +23085,7 @@
 
         // Dispatch set content event
         if (!args.no_events) {
-          //self.onSetContent.dispatch(self, args);
-
-          ed.onSetContent.dispatch(ed, args);
+          self.onSetContent.dispatch(self, args);
         }
       },
 
@@ -35291,6 +35280,13 @@
   			});
   		}
 
+  		var selectionEvents = [
+  			'onSetContent',
+  			'onBeforeSetContent',
+  			'onGetContent',
+  			'onBeforeGetContent'
+  		];
+
   		// proxy "on" function for legacy code
   		self.on = function (name, handler, prepend) {
   			// split into an array by space
@@ -35314,6 +35310,28 @@
   					self[evt].addToTop(wrapped);
   				} else {
   					self[evt].add(wrapped);
+  				}
+
+  				// Special case: if this is a content event with a selection flag, also attach to editor.selection
+  				if (tinymce.inArray(selectionEvents, evt) !== -1 &&
+  					self.selection &&
+  					typeof self.selection[evt] === 'object' &&
+  					typeof self.selection[evt].add === 'function'
+  				) {
+  					// eslint-disable-next-line no-loop-func
+  					var selectionWrapped = function (sel, arg) {						
+  						// Only fire if the event was dispatched with selection: true
+  						if (arg && arg.selection === true) {
+  							var eventObj = (typeof arg === 'object' && arg !== null) ? tinymce.extend({ editor: self }, arg) : { editor: self, data: arg };
+  							handler(eventObj);
+  						}
+  					};
+
+  					if (prepend) {
+  						self.selection[evt].add(selectionWrapped);
+  					} else {
+  						self.selection[evt].addToTop(selectionWrapped);
+  					}
   				}
   			}
   		};
@@ -35943,7 +35961,7 @@
         selection: true
       };
 
-      editor.onBeforeSetContent.dispatch(editor, args);
+      selection.onBeforeSetContent.dispatch(selection, args);
       value = args.content;
 
       // Add caret at end of contents if it's missing
@@ -36064,7 +36082,8 @@
       umarkFragmentElements(editor.getBody());
 
       args.selection = true;
-      editor.onSetContent.dispatch(editor, args);
+
+      selection.onSetContent.dispatch(selection, args);
 
       editor.addVisual();
     };
@@ -40556,7 +40575,6 @@
             // Non indexed object
             if (items.length === undef) {
               for (key in items) {
-                // eslint-disable-next-line no-prototype-builtins
                 if (items.hasOwnProperty(key)) {
                   if (item_name === 'attributes') {
                     value = dom.getAttrib(node, key);
@@ -41610,7 +41628,6 @@
 
             for (name in obj1) {
               // Obj1 has item obj2 doesn't have
-              // eslint-disable-next-line no-prototype-builtins
               if (obj1.hasOwnProperty(name)) {
                 value = obj2[name];
 
@@ -41632,7 +41649,6 @@
             // Check if obj 2 has something obj 1 doesn't have
             for (name in obj2) {
               // Obj2 has item obj1 doesn't have
-              // eslint-disable-next-line no-prototype-builtins
               if (obj2.hasOwnProperty(name)) {
                 return FALSE;
               }
@@ -42022,11 +42038,7 @@
           });
 
           // Remove bogus state if they got filled by contents using editor.selection.setContent
-          ed.onSetContent.add(function (ed, e) {
-            if (e.selection) {
-              unmarkBogusCaretParents();
-            }
-          });
+          selection.onSetContent.add(unmarkBogusCaretParents);
 
           ed._hasCaretEvents = true;
         }
@@ -42148,6 +42160,10 @@
 
       ed.onPreProcess.add(convert);
       ed.onSetContent.add(convert);
+
+      ed.onInit.add(function () {
+        ed.selection.onSetContent.add(convert);
+      });
     }
   });
 
