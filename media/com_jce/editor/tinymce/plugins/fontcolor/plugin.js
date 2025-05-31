@@ -87,18 +87,25 @@
 
             o.title = 'advanced.forecolor_desc';
 
-            o.onselect = o.onclick = function (v) {
-
-                if (!v) {
+            var applyColor = function (color) {
+                if (!color) {
                     return ed.formatter.remove('forecolor');
                 }
 
                 ed.formatter.apply('forecolor', {
-                    'value': v
+                    'value': color
                 });
 
                 ed.undoManager.add();
                 ed.nodeChanged();
+            };
+
+            o.onselect = function (val) {
+                applyColor(val);
+            };
+
+            o.onclick = function (e, val) {
+                applyColor(val);
             };
 
             o.scope = this;
@@ -131,19 +138,28 @@
             o.default_color = s.fontcolor_background_color || '#FFFF00';
 
             o.title = 'advanced.backcolor_desc';
-            o.onselect = o.onclick = function (v) {
 
-                if (!v) {
+            var applyColor = function (color) {
+                if (!color) {
                     return ed.formatter.remove('hilitecolor');
                 }
 
                 ed.formatter.apply('hilitecolor', {
-                    'value': v
+                    'value': color
                 });
 
                 ed.undoManager.add();
                 ed.nodeChanged();
             };
+
+            o.onselect = function (val) {
+                applyColor(val);
+            };
+
+            o.onclick = function (e, val) {
+                applyColor(val);
+            };
+
             o.scope = this;
 
             c = ed.controlManager.createColorSplitButton('backcolor', o);
