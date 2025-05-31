@@ -9189,8 +9189,6 @@
         html.push('<', name);
 
         if (attrs) {
-          var bool = [];
-
           for (i = 0, l = attrs.length; i < l; i++) {
             attr = attrs[i];
 
@@ -9199,19 +9197,13 @@
               attr["boolean"] = true;
             }
 
-            if (attr["boolean"]) {
-              if (settings.schema == 'html5-strict') {
+            if (attr["boolean"] && settings.schema == 'html5-strict') {
                 // boolean attributes in HTML5 are written without a value
-                bool.push(' ', attr.name);
-              } else {
-                bool.push(' ', attr.name, '="', encode('' + attr.name, true), '"');
-              }
+                html.push(' ', attr.name);
             } else {
               html.push(' ', attr.name, '="', encode('' + attr.value, true), '"');
             }
           }
-          // add boolean attributes at the end. This is primarily for readability and because the Joomla Text Filter will remove boolean attributes if they are not at the end of the tag.
-          html = html.concat(bool);
         }
 
         if (!empty || htmlOutput) {
