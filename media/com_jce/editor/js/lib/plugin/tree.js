@@ -16,6 +16,10 @@
 
 (function ($, Wf) {
 
+    function escapeRegex(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+    
     var Tree = function (element, options) {
         this.element = element;
 
@@ -360,7 +364,10 @@
          */
         _findParent: function (el) {
             if ($.type(el) === "string") {
-                return $('li[data-id="' + this._encode(el) + '"]:first', this.element);
+                // excape for regex
+                el = escapeRegex(el);
+                
+                return $('li[data-id="' + el + '"]:first', this.element);
             } else {
                 return $(el).parents('li:first');
             }
@@ -386,7 +393,10 @@
             // remove leading or trailing slash
             id = id.replace(/^\/|\/$/, '');
 
-            return $(parent).find('li[data-id="' + this._escape(this._encode(id)) + '"]:first');
+            // excape for regex
+            id = escapeRegex(id);
+
+            return $(parent).find('li[data-id="' + id + '"]:first');
         },
         /**
          * Toggle the loader class on the node span element
@@ -484,17 +494,6 @@
         refreshNode: function (node) {
             var parent = this._findParent(node);
             return this._trigger('nodeload', parent);
-        },
-        _encode: function (s) {
-            // decode first in case already encoded
-            try {
-                s = decodeURIComponent(s);
-            } catch (e) {
-                // error
-            }
-
-            // encode but decode backspace
-            return encodeURIComponent(s).replace(/%2F/gi, '\/');
         },
         /**
          * Private function Escape a string
