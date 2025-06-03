@@ -218,6 +218,12 @@ class WFMediaManagerBase extends WFEditorPlugin
             $dir = $this->getParam($this->get('caller') . '.dir', $dir);
         }
 
+        // From JCE Pro 2.9.0+, $dir may be an array — extract the path from the first item.
+        if (is_array($dir)) {
+            $first = reset($dir); // Get the first element of the array
+            $dir = is_array($first) && isset($first['path']) ? $first['path'] : '';
+        }
+
         // get websafe spaces parameter and convert legacy values
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
 
