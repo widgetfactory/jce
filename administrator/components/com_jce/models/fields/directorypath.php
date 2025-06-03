@@ -39,8 +39,8 @@ class JFormFieldDirectoryPath extends FormField
         $value = $this->value;
 
         if (is_array($value)) {
-            $value = reset($value);
-            $value = $value && isset($value['path']) ? $value['path'] : '';
+            $first = reset($value); // Get the first element of the array
+            $value = is_array($first) && isset($first['path']) ? $first['path'] : '';
         }
 
         $data['value'] = $value;
