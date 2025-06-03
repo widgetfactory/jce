@@ -50,7 +50,7 @@
             </field>
 
             <field type="container" name="browser" showon="file_browser:1" class="inset" label="WF_FILE_BROWSER_OPTIONS">
-                <field name="dir" type="text" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
+                <field name="dir" type="directorypath" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
                 <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" placeholder="" />
                 <field name="extensions" type="filetype" default="doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,apng,webp,avif,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC">
                     <option value="doc">doc</option>

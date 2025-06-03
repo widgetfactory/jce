@@ -15,7 +15,7 @@
     <fields name="imgmanager">
         <fieldset name="config">
 
-            <field name="dir" type="text" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
+            <field name="dir" type="directorypath" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
             <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" />
             <field name="extensions" type="filetype" class="extensions" default="jpeg,jpg,png,apng,gif,webp,avif" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC">
                 <option value="jpeg">jpeg</option>
