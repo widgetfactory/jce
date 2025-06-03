@@ -223,6 +223,9 @@ class WFMediaManagerBase extends WFEditorPlugin
             $first = reset($dir); // Get the first element of the array
             $dir = is_array($first) && isset($first['path']) ? $first['path'] : '';
         }
+        
+        // normalize $dir to a string
+        $dir = (string) $dir;
 
         // get websafe spaces parameter and convert legacy values
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');

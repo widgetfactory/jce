@@ -43,6 +43,9 @@ class JFormFieldDirectoryPath extends FormField
             $value = is_array($first) && isset($first['path']) ? $first['path'] : '';
         }
 
+        // normalize the value to a string
+        $value = (string) $value;
+
         $data['value'] = $value;
 
         // override options for the text layout
