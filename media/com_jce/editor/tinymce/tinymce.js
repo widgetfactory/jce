@@ -3183,38 +3183,6 @@
       editor.addCommand('ForwardDelete', function () {
         customDelete(true);
       });
-
-      /*editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
-        dragStartRng = selection.getRng();
-        setMceInternalContent(e);
-      });
-
-      editor.dom.bind(editor.getBody(), 'drop', function (e) {
-        if (!isDefaultPrevented(e)) {
-          var internalContent = getMceInternalContent(e);
-
-          if (internalContent) {
-            e.preventDefault();
-
-            // Safari has a weird issue where drag/dropping images sometimes
-            // produces a green plus icon. When this happens the caretRangeFromPoint
-            // will return "null" even though the x, y coordinate is correct.
-            // But if we detach the insert from the drop event we will get a proper range
-            setTimeout(function () {
-              var pointRng = RangeUtils.getCaretRangeFromPoint(e.x, e.y, doc);
-
-              if (dragStartRng) {
-                selection.setRng(dragStartRng);
-                dragStartRng = null;
-                transactCustomDelete();
-              }
-
-              selection.setRng(pointRng);
-              insertClipboardContents(internalContent.html);
-            }, 0);
-          }
-        }
-      });*/
     }
 
     /**
@@ -14360,6 +14328,20 @@
     return div.innerHTML;
   };
 
+  var updateInternalStyleAttribute = function (content) {
+    var div = DOM.create('div', {}, content);
+
+    each$4(DOM.select('[style]', div), function (elm) {
+      var style = elm.getAttribute('style');
+
+      if (style) {
+        elm.setAttribute('data-mce-style', style);
+      }
+    });
+
+    return div.innerHTML;
+  };
+
   var parseCssToRules = function (content) {
     var doc = document.implementation.createHTMLDocument(""),
       styleElement = document.createElement("style");
@@ -16968,7 +16950,7 @@
 
                       if (!dropContent['text/html']) {
                           data.text = content;
-                      } else {
+                      } else {                        
                           // reset styles, replacing style attribute with data-mce-style value or remove
                           content = resetStyleAttribute(content);
 
@@ -16989,6 +16971,20 @@
               e.dataTransfer.effectAllowed = "copy";
               e.dataTransfer.dropEffect = "copy";
           }
+
+          var content = editor.selection.getContent({
+              contextual: true
+          });
+
+          if (!content) {
+              return;
+          }
+
+          // update the content to have the internal style attribute, ie: data-mce-style
+          content = updateInternalStyleAttribute(content);
+
+          // set clipboard data for all instances
+          e.dataTransfer.setData(internalHtmlMime(), content);
       });
 
       editor.dom.bind(editor.getBody(), ['dragover', 'dragend'], function (e) {
