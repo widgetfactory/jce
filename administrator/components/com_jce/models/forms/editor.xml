@@ -101,12 +101,7 @@
             <field name="custom_colors" type="textarea" rows="3" cols="50" default="" label="WF_PARAM_CUSTOM_COLORS" description="WF_PARAM_CUSTOM_COLORS_DESC" placeholder="eg: #CC0000,#FF0000" />
         </fieldset>
         <fieldset name="editor.filesystem">
-            <!--field name="dir" type="filesystempath" default="" size="50" placeholder="images" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC" /-->
-
-            <field name="dir" type="keyvalue" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC" sortable="true">
-                <field name="path"  type="text" placeholder="images" size="50" label="WF_PARAM_DIRECTORY_PATH" />
-                <field name="label" type="text" size="50" label="WF_PARAM_DIRECTORY_LABEL" />
-            </field>
+            <field name="dir" type="filesystempath" default="" size="50" placeholder="images" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC" />
 
             <field name="dir_filter" type="repeatable" default="" label="WF_PARAM_DIRECTORY_FILTER" description="WF_PARAM_DIRECTORY_FILTER_DESC">
                 <field type="text" size="50" hiddenLabel="true" />
