@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -11,9 +12,10 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Uri\Uri;
+use Joomla\Registry\Registry;
 
 class WFFileSystem extends WFExtension
-{    
+{
     /**
      * Constructor activating the default information of the class.
      */
@@ -23,7 +25,8 @@ class WFFileSystem extends WFExtension
 
         $this->setProperties(
             array_merge(
-                $config, array(
+                $config,
+                array(
                     'local' => true,
                     'list_limit' => 50
                 )
@@ -32,11 +35,34 @@ class WFFileSystem extends WFExtension
     }
 
     /**
+     * Custom parameter function for Filesystems which contain complex values
+     *
+     * @param [string] $key Parameter key
+     * @param string $default Default value to return
+     * @return mixed Parameter value or default
+     */
+    public function getParam($key, $default = '')
+    {
+        $wf = WFEditorPlugin::getInstance();
+
+        // get the filesystem plugin name
+        $name = $this->get('name');
+
+        // First, try from the editor context
+        $value = $wf->getParam('editor.filesystem.' . $name . '.' . $key, $default);
+
+        $fsConfig = $wf->getParam($wf->getName() . '.filesystem.' . $name);
+
+        if (is_object($fsConfig)) {
+            $fs = new Registry($fsConfig);
+            $value = $fs->get($key, $value);
+        }
+
+        return $value;
+    }
+
+    /**
      * Returns a reference to a plugin object.
-     *
-     * @return JCE The editor object
-     *
-     * @since 1.5
      */
     public static function getInstance($type = 'joomla', $config = array())
     {
@@ -101,13 +127,13 @@ class WFFileSystem extends WFExtension
     {
         $wf = WFEditorPlugin::getInstance();
         $name = $this->get('name');
-        
+
         $allow_root = $wf->getParam('filesystem.' . $name . '.allow_root', 0);
 
         if ($allow_root) {
             return '';
         }
-        
+
         return 'images';
     }
 
@@ -321,7 +347,5 @@ final class WFFileSystemResult
      */
     public $source = null;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 }

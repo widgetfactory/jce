@@ -57,7 +57,7 @@ class WFJoomlaFileSystem extends WFFileSystem
      * Constructor activating the default information of the class.
      */
     public function __construct($config = array())
-    {
+    {        
         parent::__construct($config);
 
         $safe_mode = false;
@@ -73,22 +73,8 @@ class WFJoomlaFileSystem extends WFFileSystem
         $wf = WFEditorPlugin::getInstance();
 
         // Get default restricted directories and root access setting
-        $restricted = $wf->getParam('editor.filesystem.joomla.restrict_dir', $this->restricted);
-        $allowroot = (bool) $wf->getParam('editor.filesystem.joomla.allow_root', 0);
-
-        // Get the filesystem config object
-        $fsConfig = $wf->getParam($wf->getName() . '.filesystem', '');
-
-        // Override defaults if config is an object
-        if (is_object($fsConfig)) {
-            $fs = new Registry($fsConfig);
-
-            // only if a specific filsystem has been set, otherwise "inherit"
-            if ($fs->get('name')) {
-                $restricted = $fs->get('restrict_dir', $restricted);
-                $allowroot = (int) $fs->get('allow_root', $allowroot);
-            }
-        }
+        $restricted = $this->getParam('restricted', $this->restricted);
+        $allowroot = (bool) $this->getParam('allow_root', 0);
 
         // Normalize $restricted to array
         if (is_string($restricted)) {
@@ -144,7 +130,7 @@ class WFJoomlaFileSystem extends WFFileSystem
      * @return Full path to folder
      */
     public function getRootDir()
-    {
+    {        
         if ($this->get('allowroot')) {
             return ''; // return a blank value for allowroot
         }
@@ -430,7 +416,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         clearstatcache();
 
         if (is_array($dir)) {
-            $dir = isset($dir['id']) ? $dir['id'] : '';
+            $dir = isset($dir['path']) ? $dir['path'] : '';
         }
 
         if (empty($dir)) {
@@ -493,7 +479,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         clearstatcache();
 
         if (is_array($file)) {
-            $file = isset($file['id']) ? $file['id'] : '';
+            $file = isset($file['path']) ? $file['path'] : '';
         }
 
         if (empty($file)) {
