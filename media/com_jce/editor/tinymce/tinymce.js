@@ -4045,12 +4045,17 @@
               if (isBr(node.nextSibling) && node.nextSibling == node.parentNode.lastChild) {
                 node = node.nextSibling;
               }
+
               node.insertAdjacentElement('afterend', marker);
 
               moveToMarker();
             }
+            
+            // only cancel event if Right Arrow
+            if (e.keyCode == VK.RIGHT) {
+              e.preventDefault();
+            }
 
-            e.preventDefault();
             editor.nodeChanged();
           }
         }
@@ -4060,7 +4065,7 @@
       editor.onKeyDown.addToTop(function (editor, e) {
         dom.remove(marker);
 
-        if (e.keyCode == VK.RIGHT) {
+        if (e.keyCode == VK.RIGHT || e.keyCode == VK.ENTER) {
           moveCursorToEnd(e);
         }
       });
