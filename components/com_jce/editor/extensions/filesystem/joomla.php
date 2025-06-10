@@ -387,9 +387,11 @@ class WFJoomlaFileSystem extends WFFileSystem
             'files' => array(),
         );
 
-        // get folder list
-        $result['folders'] = $this->getFolders($relative, $query, 0, 0, $sort, 3);
-
+        if ($query) {
+            // get folder list
+            $result['folders'] = $this->getFolders($relative, $query, 0, 0, $sort, $depth);
+        }
+        
         $filter = $query;
 
         // create filter for filetypes
@@ -398,7 +400,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         }
 
         // get file list
-        $result['files'] = $this->getFiles($relative, $filter, 0, 0, $sort, 3);
+        $result['files'] = $this->getFiles($relative, $filter, 0, 0, $sort, $depth);
 
         return $result;
     }
