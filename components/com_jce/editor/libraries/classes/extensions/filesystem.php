@@ -53,9 +53,9 @@ class WFFileSystem extends WFExtension
 
         $fsConfig = $wf->getParam($wf->getName() . '.filesystem.' . $name);
 
-        if (is_object($fsConfig)) {
+        if (is_object($fsConfig) || $wf->getParam($wf->getName() . '.filesystem.name') == $name) {
             $fs = new Registry($fsConfig);
-            $value = $fs->get($key, $value);
+            $value = $fs->get($key, $default);
         }
 
         return $value;
