@@ -8,6 +8,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+use Joomla\Registry\Registry;
+
 defined('JPATH_PLATFORM') or die;
 
 class WFMediaManagerBase extends WFEditorPlugin
@@ -117,19 +119,24 @@ class WFMediaManagerBase extends WFEditorPlugin
 
     private function getFileSystem()
     {
-        $filesystem = $this->getParam('filesystem.name', '');
+        $filesystem = (array) $this->getParam('filesystem', array());
 
         // if an object, get the name
-        if (is_object($filesystem)) {
-            $filesystem = isset($filesystem->name) ? $filesystem->name : 'joomla';
+        $name = empty($filesystem['name']) ? 'joomla' : $filesystem['name'];
+
+        $item = array(
+            'name' => $name,
+            'properties' => new Registry(),
+        );
+
+        if (isset($filesystem[$name])) {
+            $item = array(
+                'name' => $name,
+                'properties' => new Registry($filesystem[$name]),
+            );
         }
 
-        // if no value, default to "joomla"
-        if (empty($filesystem)) {
-            $filesystem = 'joomla';
-        }
-
-        return $filesystem;
+        return (object) $item;
     }
 
     public function onUpload($file, $relative = '')
@@ -181,6 +188,8 @@ class WFMediaManagerBase extends WFEditorPlugin
      */
     protected function getFileBrowserConfig($config = array())
     {
+        $filesystem = $this->getFileSystem();
+        
         $filetypes = $this->getParam('extensions', $this->get('_filetypes'));
         $textcase = $this->getParam('editor.websafe_textcase', '');
 
@@ -229,8 +238,8 @@ class WFMediaManagerBase extends WFEditorPlugin
         foreach ($dir as $values) {
             $path = trim($values['path'] ?? '');
 
-            // If path is missing or empty, default to 'images'
-            if ($path == '') {
+            // empty path defaults to "images" if allow_root is false
+            if (empty($path) && (bool) $filesystem->properties->get('allow_root', 0) === false) {
                 $path = 'images';
             }
 
@@ -240,7 +249,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             $hash = md5($path);
 
             $dirStore[$hash] = [
-                'path' => $path,
+                'path'  => $path,
                 'label' => $label,
             ];
         }
@@ -269,7 +278,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $base = array(
             'dir' => $dirStore,
-            'filesystem' => $this->getFileSystem(),
+            'filesystem' => $filesystem->name,
             'filetypes' => $filetypes,
             'filter' => $filter,
             'upload' => array(
