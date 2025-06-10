@@ -14,6 +14,10 @@
 (function ($, Wf, undef) {
     var mimeTypes = {};
 
+    function escapeRegex(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     // Parses the default mime types string into a mimes lookup map
     (function (data) {
         var items = data.split(","),
@@ -89,7 +93,7 @@
         // base url (used by external filesystems)
         base: '',
         // base dir
-        dir: 'images',
+        dir: '',
         // source folder
         source: '',
         actions: null,
@@ -142,6 +146,33 @@
 
         getOptions: function () {
             return this.options;
+        },
+
+        getDirectoryStore: function (prefix) {
+            var store = this.options.dir;
+
+            if (prefix && store[prefix]) {
+                return store[prefix];
+            }
+
+            return store;
+        },
+
+        gerDirectoryStoreFromPath: function (path) {
+            var store = this.getDirectoryStore();
+
+            // if path is not set, return store
+            if (!path) {
+                return store;
+            }
+
+            $.each(store, function (key, item) {
+                if (item.path && item.path.indexOf(path) === 0) {
+                    return item;
+                }
+            });
+
+            return null;
         },
 
         /**
@@ -311,7 +342,7 @@
 
                 if (btn.hasClass('grid-size-minus')) {
                     size = Math.min(size + 1, 4);
-                    
+
                     $('#browser-list').addClass('grid-size-' + size);
 
                     $(btn).parent().data('size', size);
@@ -319,7 +350,7 @@
 
                 if (btn.hasClass('grid-size-plus')) {
                     size = Math.max(size - 1, 1);
-                    
+
                     $('#browser-list').addClass('grid-size-' + size);
 
                     $(btn).parent().data('size', size);
@@ -351,7 +382,7 @@
                     $('#browser-list').scrollTop(Math.round(top));
                 }, 10);
 
-                
+
             }).data('size', parseInt(grid_size, 10)).find('.grid-size-minus').prop('disabled', true);
 
             // set the stored grid size
@@ -831,9 +862,15 @@
                 // get dir if file (relative to site url)
                 if (/\.([a-z0-9]{2,}$)/i.test(path)) {
                     path = Wf.String.dirname(path);
-                    path = path.replace(new RegExp(this.options.dir), '').replace(/^[\/\\]+/, '');
+
+                    var store = this.gerDirectoryStoreFromPath(path);
+
+                    if (store && store.path) {
+                        path = path.replace(new RegExp('^' + escapeRegex(store.path)), '').replace(/^[\/\\]+/, '');
+                    }
                 }
             }
+
             return path;
         },
 
@@ -973,15 +1010,33 @@
 
                     // add websafe class
                     classes.push(self._isWebSafe(e.name) ? 'safe' : 'notsafe');
+
                     // add writable class
                     classes.push(e.writable ? 'writable' : 'notwritable');
+
                     // add custom classes
                     if (e.classes) {
                         classes.push(e.classes);
                     }
 
+                    var name = e.name;
+
+                    // is a search result
+                    if (o.search) {
+                        // get the prefix from the id
+                        var prefix = e.id.split(':')[0];
+
+                        // get the store
+                        var store = self.getDirectoryStore(prefix);
+
+                        name = (store.label || '') + '/' + name;
+
+                        // trim the name
+                        name = name.replace(/^\//, '').replace(/\/$/, '');
+                    }
+
                     // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
-                    var name = e.name.replace(/([^\s\/]+)(\/)/g, function (m) {
+                    name = name.replace(/([^\s\/]+)(\/)/g, function (m) {
                         return '<strong>' + m + '</strong>';
                     });
 
@@ -1020,14 +1075,19 @@
 
                     // add websafe class
                     classes.push(self._isWebSafe(e.name) ? 'safe' : 'notsafe');
+
                     // add writable class
                     classes.push(e.writable ? 'writable' : 'notwritable');
+
                     // add selected item to returned items
                     if (e.selected) {
                         self._addReturnedItem({
-                            'name': e.id
+                            'id': e.id
                         });
+
+                        classes.push('selected');
                     }
+
                     // add custom classes
                     if (e.classes) {
                         classes.push(e.classes);
@@ -1042,6 +1102,28 @@
 
                     if (self.options.allow_download && e.properties.preview) {
                         download = ' download="' + filename + '"';
+                    }
+
+                    // is a search result
+                    if (o.search) {
+                        // get the prefix from the id
+                        var parts = e.id.split(':');
+                        var prefix = parts[0];
+                        var path = parts[1] || '';
+
+                        // get the dirname of the path
+                        path = Wf.String.dirname(path);
+
+                        // get the store
+                        var store = self.getDirectoryStore(prefix);
+
+                        name = (store.label || '') + '/' + path + '/' + name;
+
+                        // if the name contains / characters, replace them with a single /
+                        name = name.replace(/\/+/g, '/');
+
+                        // trim the name
+                        name = name.replace(/^\//, '').replace(/\/$/, '');
                     }
 
                     // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
@@ -1245,30 +1327,42 @@
             // get base list width
             var w = $pathway.outerWidth(true);
 
+            // get the complete directory store
+            var store = self.getDirectoryStore();
+
             if (dir) {
                 // get prefix
-                var parts = dir.split(':'), dir = parts.pop(), prefix = '';
+                var parts = dir.split(':'), path = parts.pop(), prefix = parts[0];
+                
+                // get the store item using the prefix or default
+                var storeItem = store[prefix] || { 'path': path, 'label': '' };
 
-                if (parts.length) {
-                    prefix = parts.join('');
+                var x = 1;
+
+                // split to array...
+                var crumbs = path.split('/');
+
+                //...add store label at the start if there are multiple directories
+                if (store.length > 1) {
+                    crumbs.unshift(storeItem.label);
                 }
 
-                dir = dir.split(':').pop();
-                
-                var x = 1,
-                    parts = dir.split('/');
+                var crumbPath = '';
 
-                $.each(parts, function (i, s) {
-                    var path = s;
-
-                    if (i > 0) {
-                        path = parts.slice(0, i + 1).join('/');
+                $.each(crumbs, function (i, name) {
+                    if (!name) {
+                        return true; // skip empty names
                     }
 
-                    var $item = $('<li title="' + s + '"></li>').on('click', function (e) {
-                        path = prefix + ':' + path;
-                        self._changeDir(path);
-                    }).append('<a>' + s + '</a>').insertBefore($count);
+                    // only add a path if not the first item
+                    if (i) {
+                        crumbPath = Wf.String.path(crumbPath, name);
+                    }
+
+                    var $item = $('<li title="' + name + '"></li>').on('click', 'a', function (e) {
+                        var url = $(e.target).data('url');
+                        self._changeDir(url);
+                    }).append('<a data-url="' + prefix + ':' + crumbPath + '">' + name + '</a>').insertBefore($count);
 
                     // add item width
                     w += $item.outerWidth(true);
@@ -1289,14 +1383,26 @@
                 return this._dir;
             }
 
-            var dirs = this._dir.split('/');
-            var s = '';
+            var dir = this._dir, parts = dir.split(':');
 
-            for (var i = 0; i < dirs.length - 1; i++) {
-                s = Wf.String.path(s, dirs[i]);
+            var prefix = parts[0], path = parts.pop();
+
+            if (!path) {
+                return '';
             }
 
-            return s;
+            var dirs = path.split('/');
+
+            var previous = '';
+
+
+            for (var i = 0; i < dirs.length - 1; i++) {
+                previous = Wf.String.path(previous, dirs[i]);
+            }
+
+            previous = prefix + ':' + previous;
+
+            return previous;
         },
 
         /**
@@ -1442,8 +1548,10 @@
             if (typeof e !== 'undefined') {
                 this.clearQuery();
 
+                // create token to be passed with form data
                 $('form').append('<input type="hidden" name="refresh" value="1" />');
-                this._refreshTree();
+
+                //this._refreshTree();
             }
 
             // get list from server with query if set
@@ -1506,8 +1614,7 @@
          * @param {Object} The folder/file JSON object
          */
         _loadList: function (o) {
-            var dir = '';
-
+            // remove refresh input
             $('input[name="refresh"]', 'form').remove();
 
             // data error...
@@ -1544,15 +1651,8 @@
             }
 
             if (!this._searchQuery) {
-                $.each([].concat(o.folders, o.files), function (i, item) {
-                    if (item.id) {
-                        dir = Wf.String.encodeURI(Wf.String.dirname(item.id) || '/', true);
-                        return false;
-                    }
-                });
-
-                if (dir) {
-                    this._setDir(dir);
+                if (o.path) {
+                    this._setDir(o.path);
                 }
             }
 
@@ -1560,6 +1660,7 @@
             if (!this._isRoot()) {
                 $('#folder-list').append('<li class="folder-up" title="Up"><a href="#">...</a></li>');
 
+                // create tree nodes
                 if (this._treeLoaded()) {
                     $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
 
@@ -1697,9 +1798,9 @@
                     }
                     break;
                 case 'upload':
-                     // clear query
+                    // clear query
                     this.clearQuery();
-                
+
                     var uploadModal = Wf.Modal.upload($.extend({
                         elements: elements,
                         open: function () {
@@ -1898,9 +1999,9 @@
 
                 // Paste the file
                 case 'paste':
-                     // clear query
+                    // clear query
                     this.clearQuery();
-                
+
                     var fn = (this._pasteaction == 'copy') ? 'copyItem' : 'moveItem';
                     this._setLoader();
 
@@ -2142,7 +2243,7 @@
 
                     Wf.Modal.custom(dialog.title, function (args) {
                         args = [list].concat(args || []);
-                        
+
                         Wf.JSON.request(action, args, function (o) {
                             self.refresh();
                         });
@@ -2764,17 +2865,30 @@
             var insert = false;
             var $list = $('#item-list');
 
-            var base = self.getBaseDir();
-
             $.each(files, function (i, file) {
-                if (file && file.name) {
-                    var name = decodeURIComponent(file.name);
+                if (file) {
+                    var name = file.name || '', id = file.id || '', url = file.url || '';
+
+                    name = decodeURIComponent(name);
 
                     if ($list.length) {
                         var item = [];
 
-                        // find item from name, id or data-url
-                        item = $('li.' + type + '[title="' + Wf.String.basename(name) + '"], li.' + type + '[data-url="' + Wf.String.path(base, name) + '"]', $list);
+                        var selectors = [];
+
+                        if (id) {
+                            selectors.push('li.' + type + '#' + $.escapeSelector(id));
+                        }
+
+                        if (url) {
+                            selectors.push('li.' + type + '[data-url="' + url + '"]');
+                        }
+
+                        if (name) {
+                            selectors.push('li.' + type + '[title="' + Wf.String.basename(name) + '"]');
+                        }
+
+                        item = $(selectors.join(','), $list);
 
                         if (item.length) {
                             if (file.insert) {
@@ -2799,8 +2913,10 @@
                 var h = $(items).first().outerHeight() + $('.folder-up').outerHeight();
                 var top = $(items).get(0).offsetTop - h;
 
-                $('#browser-list').animate({
-                    scrollTop: Math.round(top)
+                top = Math.round(top);
+
+                $('#browser-list').delay(100).animate({
+                    scrollTop: top
                 }, 1500, function () {
                     $(this).off(scrollEvents);
                 });
