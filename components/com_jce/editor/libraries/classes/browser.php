@@ -797,23 +797,20 @@ class WFFileBrowser extends CMSObject
         try {
             $query = preg_replace('#[^a-zA-Z0-9_\.\-\:~\pL\pM\pN\s\* ]#u', '', $term);
         } catch (\Exception $e) {
-            // PCRE replace failed, use ASCII
             $query = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $term);
         }
 
-        // PCRE replace failed, use ASCII
         if (is_null($query) || $query === false) {
             $query = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $term);
         }
 
-        // trim and return
         $query = trim($query);
 
-        // allow for wildcards
-        $query = str_replace('*', '.*', $query);
+        // quote first
+        $query = preg_quote($query, '/');
 
-        // quote
-        $query = preg_quote($query);
+        // then restore wildcards (escaped \* becomes real regex .*)
+        $query = str_replace('\*', '.*', $query);
 
         return $query;
     }
@@ -845,11 +842,43 @@ class WFFileBrowser extends CMSObject
         // define and configure seach parameters
         $filetypes = (array) $this->getFileTypes('array');
 
-        // copy query
-        $keyword = self::sanitizeSearchTerm($query);
+        // Split query by "OR" or "|" operators
+        $terms = array_map('trim', preg_split('/\s*(?:\bOR\b|\|)\s*/i', $query, -1, PREG_SPLIT_NO_EMPTY));
+
+        $extensions = [];
+        $keywords = [];
+
+        foreach ($terms as $term) {
+            if (
+                strpos($term, '.') === 0 ||                            // ".jpg"
+                (strpos($term, '*.') === 0 && strlen($term) > 2)       // "*.jpg"
+            ) {
+                // It's an extension
+                $extensions[] = WFUtility::makeSafe($term);
+            } elseif ($term !== '') {
+                // It's a keyword, clean and convert wildcards
+                foreach (preg_split('/\s+/', $term, -1, PREG_SPLIT_NO_EMPTY) as $subterm) {
+                    $keywords[] = self::sanitizeSearchTerm($subterm);
+                }
+            }
+        }
+
+        // Filter filetypes
+        if (!empty($extensions)) {
+            $filetypes = array_filter($filetypes, function ($value) use ($extensions) {
+                return in_array($value, $extensions, true);
+            });
+        }
+
+        // Build keyword regex (match any of the keywords, case-insensitive)
+        $filter = '';
+
+        if (!empty($keywords)) {
+            $filter = '^(?i).*(' . implode('|', $keywords) . ').*';
+        }
 
         // query filter
-        $keyword = '^(?i).*' . $keyword . '.*';
+        /*$keyword = '^(?i).*' . $keyword . '.*';
 
         if ($query[0] === '.') {
             // clean query removing leading .
@@ -860,10 +889,10 @@ class WFFileBrowser extends CMSObject
             });
 
             $filter = '';
-        }
+        }*/
 
         // get search depth
-        $depth = (int) $this->get('search_depth', 3);
+        $depth = $this->get('search_depth', 3);
 
         // trim the passed in path if any
         $path = trim($path, '/');
@@ -897,7 +926,7 @@ class WFFileBrowser extends CMSObject
             // trim leading and trailing slash
             $source = trim($source, '/');
 
-            $list = $filesystem->searchItems($source, $keyword, $filetypes, $sort, $depth);
+            $list = $filesystem->searchItems($source, $filter, $filetypes, $sort, $depth);
 
             $items = array_merge($list['folders'], $list['files']);
 
@@ -925,7 +954,7 @@ class WFFileBrowser extends CMSObject
 
                 if ($type === 'folders') {
                     $item['path'] = WFUtility::makePath($storeItem['path'], $item['id']);
-                    
+
                     if (empty($item['properties'])) {
                         $item['properties'] = $filesystem->getFolderDetails($item);
                     }
