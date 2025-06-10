@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -19,22 +20,33 @@ use Joomla\CMS\Uri\Uri;
 
 abstract class WFUtility
 {
-    private static function safe_substr($string, $start, $length = null) {
+    public static function safe_strpos($string, $needle, $offset = 0)
+    {
+        if (function_exists('mb_strpos')) {
+            return mb_strpos($string, $needle, $offset);
+        } else {
+            return strpos($string, $needle, $offset);
+        }
+    }
+
+    public static function safe_substr($string, $start, $length = null)
+    {
         if (function_exists('mb_substr')) {
             return mb_substr($string, $start, $length);
         } else {
             return substr($string, $start, $length);
         }
     }
-    
-    private static function safe_strlen($string) {
+
+    public static function safe_strlen($string)
+    {
         if (function_exists('mb_strlen')) {
             return mb_strlen($string);
         } else {
             return strlen($string);
         }
     }
-    
+
     /**
      * Multi-byte-safe pathinfo replacement.
      * Drop-in replacement for pathinfo(), but multibyte- and cross-platform-safe.
@@ -97,7 +109,7 @@ abstract class WFUtility
 
     /**
      * Get the file extension from a path
-     * 
+     *
      * From libraries/vendor/joomla/filesystem/src/File.php
      * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
      *
@@ -180,22 +192,23 @@ abstract class WFUtility
         return $prefix . $path;
     }
 
-    public static function uriToAbsolutePath($url) {
+    public static function uriToAbsolutePath($url)
+    {
         // Get the relative root URL
         $root = Uri::root(true);
-        
+
         // Make sure JPATH_SITE has a trailing slash
         $base = rtrim(JPATH_SITE, '/');
-        
+
         // If $url starts with the root URL, replace it with JPATH_SITE
         $path = self::safe_substr($url, 0, self::safe_strlen($root));
 
         if ($path === $root) {
             $relativePath = self::safe_substr($url, self::safe_strlen($root));
-            
+
             return self::makePath($base, $relativePath);
         }
-        
+
         // If no match, return the original URL as it is (or handle accordingly)
         return $url;
     }
@@ -213,22 +226,77 @@ abstract class WFUtility
         return self::cleanPath($path . '/');
     }
 
+    /**
+     * Validates a string for use as a file or folder name or path, ensuring it contains only safe characters.
+     *
+     * - Disallows null bytes and control characters.
+     * - Accepts valid UTF-8 strings with letters, digits, combining marks, and common safe punctuation.
+     * - Allows characters: Unicode letters (L), numbers (N), marks (M), space, dot (.), dash (-),
+     *   underscore (_), colon (:), forward slash (/), parentheses (), and square brackets [].
+     * - Provides a fallback byte-level ASCII check if the string is not valid UTF-8.
+     * - Safe for use with both multibyte and legacy ASCII inputs, even if mbstring is not available.
+     *
+     * @param string $string The input string to validate.
+     *
+     * @return bool True if the string contains only valid characters, false otherwise.
+     */
+
     private static function checkCharValue($string)
     {
-        // null byte check
-        if (strstr($string, "\x00")) {
+        // Disallow null byte
+        if (strpos($string, "\x00") !== false) {
             return false;
         }
 
-        // permitted characters below 127, eg: () Although reserved characters (sub-delims https://www.rfc-editor.org/rfc/rfc3986#section-2), probably OK in file paths
-        $permitted = array(40, 41);
+        // Try UTF-8 validation if mb_check_encoding() is available
+        $isUtf8 = function_exists('mb_check_encoding')
+        ? mb_check_encoding($string, 'UTF-8')
+        : (bool) preg_match('//u', $string); // minimal UTF-8 validity test
 
-        if (preg_match('#([^\w\.\:\-\/\\\\\s ])#i', $string, $matches)) {
-            foreach ($matches as $match) {
-                $ord = ord($match);
+        if ($isUtf8) {
+            // Use mb_* if available
+            if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+                $length = mb_strlen($string, 'UTF-8');
 
-                // not a safe UTF-8 character
-                if ($ord < 127 && !in_array($ord, $permitted)) {
+                for ($i = 0; $i < $length; $i++) {
+                    $char = mb_substr($string, $i, 1, 'UTF-8');
+
+                    if (!preg_match('#^[\p{L}\p{N}\p{M}\.\-_\:/\(\)\[\] ]$#u', $char)) {
+                        return false;
+                    }
+                }
+            } else {
+                // No mbstring: use preg_match_all to split into characters
+                if (!preg_match_all('/./u', $string, $matches)) {
+                    return false;
+                }
+
+                foreach ($matches[0] as $char) {
+                    if (!preg_match('#^[\p{L}\p{N}\p{M}\.\-_\:/\(\)\[\] ]$#u', $char)) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            // Fallback: raw byte-level ASCII check
+            $length = strlen($string);
+
+            for ($i = 0; $i < $length; $i++) {
+                $ord = ord($string[$i]);
+
+                if (
+                    $ord < 32 || $ord > 126 ||
+                    in_array($ord, [34, 42, 60, 62, 63, 92, 124]) // " * < > ? \ |
+                ) {
+                    return false;
+                }
+
+                if (!(
+                    ($ord >= 48 && $ord <= 57) || // 0–9
+                    ($ord >= 65 && $ord <= 90) || // A–Z
+                    ($ord >= 97 && $ord <= 122) || // a–z
+                    in_array($ord, [32, 45, 46, 95, 58, 47, 40, 41, 91, 93]) // allowed symbols
+                )) {
                     return false;
                 }
             }
@@ -237,11 +305,32 @@ abstract class WFUtility
         return true;
     }
 
+    /**
+     * Validates a relative file or folder path for safe usage.
+     *
+     * - Decodes the path using urldecode().
+     * - Rejects paths containing directory traversal sequences (../).
+     * - Delegates character validation to checkCharValue(), ensuring only safe characters are used.
+     * - Throws an InvalidArgumentException on failure.
+     *
+     * Intended for validating UTF-8-safe relative paths, including multibyte directory and file names.
+     *
+     * @param string $path The relative path to validate (e.g. 'images/ειδήσεις/photo.jpg').
+     *
+     * @return bool True if the path is valid.
+     *
+     * @throws InvalidArgumentException If the path contains invalid characters or traversal attempts.
+     */
+
     public static function checkPath($path)
     {
         $path = urldecode($path);
 
-        if (self::checkCharValue($path) === false || strpos($path, '..') !== false) {
+        if (preg_match('#(^|/)\.\.(/|$)#', $path)) {
+            throw new InvalidArgumentException('Invalid path traversal');
+        }
+
+        if (self::checkCharValue($path) === false) {
             throw new InvalidArgumentException('Invalid path');
         }
 
@@ -262,58 +351,277 @@ abstract class WFUtility
         return self::cleanPath($a . $ds . $b, $ds);
     }
 
+    /**
+     * Converts UTF-8 encoded Latin-based characters with diacritics to their closest ASCII equivalents.
+     *
+     * - Uses `transliterator_transliterate()` (from the intl extension) if available for broad Unicode support.
+     * - Falls back to a static map of pre-defined Latin characters to ASCII equivalents if transliterator is not available.
+     * - Handles both single strings and arrays of strings recursively.
+     * - Only converts Latin-based accented characters; non-Latin scripts (e.g. Greek, Cyrillic) are not affected unless transliterator is used.
+     *
+     * Example:
+     *   "Crème brûlée" => "Creme brulee"
+     *   "Jürgen" => "Jurgen"
+     *
+     * @param string|array $subject The input string or array of strings to convert.
+     *
+     * @return string|array The ASCII-transliterated version of the input.
+     */
     private static function utf8_latin_to_ascii($subject)
     {
         static $CHARS = null;
 
         if (is_null($CHARS)) {
             $CHARS = array(
-                'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE',
-                'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
-                'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O',
-                'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'ß' => 's',
-                'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae',
-                'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
-                'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
-                'ý' => 'y', 'ÿ' => 'y', 'Ā' => 'A', 'ā' => 'a', 'Ă' => 'A', 'ă' => 'a', 'Ą' => 'A', 'ą' => 'a',
-                'Ć' => 'C', 'ć' => 'c', 'Ĉ' => 'C', 'ĉ' => 'c', 'Ċ' => 'C', 'ċ' => 'c', 'Č' => 'C', 'č' => 'c', 'Ď' => 'D', 'ď' => 'd', 'Đ' => 'D', 'đ' => 'd',
-                'Ē' => 'E', 'ē' => 'e', 'Ĕ' => 'E', 'ĕ' => 'e', 'Ė' => 'E', 'ė' => 'e', 'Ę' => 'E', 'ę' => 'e', 'Ě' => 'E', 'ě' => 'e',
-                'Ĝ' => 'G', 'ĝ' => 'g', 'Ğ' => 'G', 'ğ' => 'g', 'Ġ' => 'G', 'ġ' => 'g', 'Ģ' => 'G', 'ģ' => 'g', 'Ĥ' => 'H', 'ĥ' => 'h', 'Ħ' => 'H', 'ħ' => 'h',
-                'Ĩ' => 'I', 'ĩ' => 'i', 'Ī' => 'I', 'ī' => 'i', 'Ĭ' => 'I', 'ĭ' => 'i', 'Į' => 'I', 'į' => 'i', 'İ' => 'I', 'ı' => 'i',
-                'Ĳ' => 'IJ', 'ĳ' => 'ij', 'Ĵ' => 'J', 'ĵ' => 'j', 'Ķ' => 'K', 'ķ' => 'k', 'Ĺ' => 'L', 'ĺ' => 'l', 'Ļ' => 'L', 'ļ' => 'l', 'Ľ' => 'L', 'ľ' => 'l', 'Ŀ' => 'L', 'ŀ' => 'l', 'Ł' => 'l', 'ł' => 'l',
-                'Ń' => 'N', 'ń' => 'n', 'Ņ' => 'N', 'ņ' => 'n', 'Ň' => 'N', 'ň' => 'n', 'ŉ' => 'n', 'Ō' => 'O', 'ō' => 'o', 'Ŏ' => 'O', 'ŏ' => 'o', 'Ő' => 'O', 'ő' => 'o', 'Œ' => 'OE', 'œ' => 'oe',
-                'Ŕ' => 'R', 'ŕ' => 'r', 'Ŗ' => 'R', 'ŗ' => 'r', 'Ř' => 'R', 'ř' => 'r', 'Ś' => 'S', 'ś' => 's', 'Ŝ' => 'S', 'ŝ' => 's', 'Ş' => 'S', 'ş' => 's', 'Š' => 'S', 'š' => 's',
-                'Ţ' => 'T', 'ţ' => 't', 'Ť' => 'T', 'ť' => 't', 'Ŧ' => 'T', 'ŧ' => 't', 'Ũ' => 'U', 'ũ' => 'u', 'Ū' => 'U', 'ū' => 'u', 'Ŭ' => 'U', 'ŭ' => 'u', 'Ů' => 'U', 'ů' => 'u', 'Ű' => 'U', 'ű' => 'u', 'Ų' => 'U', 'ų' => 'u',
-                'Ŵ' => 'W', 'ŵ' => 'w', 'Ŷ' => 'Y', 'ŷ' => 'y', 'Ÿ' => 'Y', 'Ź' => 'Z', 'ź' => 'z', 'Ż' => 'Z', 'ż' => 'z', 'Ž' => 'Z', 'ž' => 'z', 'ſ' => 's', 'ƒ' => 'f', 'Ơ' => 'O', 'ơ' => 'o', 'Ư' => 'U', 'ư' => 'u',
-                'Ǎ' => 'A', 'ǎ' => 'a', 'Ǐ' => 'I', 'ǐ' => 'i', 'Ǒ' => 'O', 'ǒ' => 'o', 'Ǔ' => 'U', 'ǔ' => 'u', 'Ǖ' => 'U', 'ǖ' => 'u', 'Ǘ' => 'U', 'ǘ' => 'u', 'Ǚ' => 'U', 'ǚ' => 'u', 'Ǜ' => 'U', 'ǜ' => 'u',
-                'Ǻ' => 'A', 'ǻ' => 'a', 'Ǽ' => 'AE', 'ǽ' => 'ae', 'Ǿ' => 'O', 'ǿ' => 'o',
+                'À' => 'A',
+                'Á' => 'A',
+                'Â' => 'A',
+                'Ã' => 'A',
+                'Ä' => 'A',
+                'Å' => 'A',
+                'Æ' => 'AE',
+                'Ç' => 'C',
+                'È' => 'E',
+                'É' => 'E',
+                'Ê' => 'E',
+                'Ë' => 'E',
+                'Ì' => 'I',
+                'Í' => 'I',
+                'Î' => 'I',
+                'Ï' => 'I',
+                'Ð' => 'D',
+                'Ñ' => 'N',
+                'Ò' => 'O',
+                'Ó' => 'O',
+                'Ô' => 'O',
+                'Õ' => 'O',
+                'Ö' => 'O',
+                'Ø' => 'O',
+                'Ù' => 'U',
+                'Ú' => 'U',
+                'Û' => 'U',
+                'Ü' => 'U',
+                'Ý' => 'Y',
+                'ß' => 's',
+                'à' => 'a',
+                'á' => 'a',
+                'â' => 'a',
+                'ã' => 'a',
+                'ä' => 'a',
+                'å' => 'a',
+                'æ' => 'ae',
+                'ç' => 'c',
+                'è' => 'e',
+                'é' => 'e',
+                'ê' => 'e',
+                'ë' => 'e',
+                'ì' => 'i',
+                'í' => 'i',
+                'î' => 'i',
+                'ï' => 'i',
+                'ñ' => 'n',
+                'ò' => 'o',
+                'ó' => 'o',
+                'ô' => 'o',
+                'õ' => 'o',
+                'ö' => 'o',
+                'ø' => 'o',
+                'ù' => 'u',
+                'ú' => 'u',
+                'û' => 'u',
+                'ü' => 'u',
+                'ý' => 'y',
+                'ÿ' => 'y',
+                'Ā' => 'A',
+                'ā' => 'a',
+                'Ă' => 'A',
+                'ă' => 'a',
+                'Ą' => 'A',
+                'ą' => 'a',
+                'Ć' => 'C',
+                'ć' => 'c',
+                'Ĉ' => 'C',
+                'ĉ' => 'c',
+                'Ċ' => 'C',
+                'ċ' => 'c',
+                'Č' => 'C',
+                'č' => 'c',
+                'Ď' => 'D',
+                'ď' => 'd',
+                'Đ' => 'D',
+                'đ' => 'd',
+                'Ē' => 'E',
+                'ē' => 'e',
+                'Ĕ' => 'E',
+                'ĕ' => 'e',
+                'Ė' => 'E',
+                'ė' => 'e',
+                'Ę' => 'E',
+                'ę' => 'e',
+                'Ě' => 'E',
+                'ě' => 'e',
+                'Ĝ' => 'G',
+                'ĝ' => 'g',
+                'Ğ' => 'G',
+                'ğ' => 'g',
+                'Ġ' => 'G',
+                'ġ' => 'g',
+                'Ģ' => 'G',
+                'ģ' => 'g',
+                'Ĥ' => 'H',
+                'ĥ' => 'h',
+                'Ħ' => 'H',
+                'ħ' => 'h',
+                'Ĩ' => 'I',
+                'ĩ' => 'i',
+                'Ī' => 'I',
+                'ī' => 'i',
+                'Ĭ' => 'I',
+                'ĭ' => 'i',
+                'Į' => 'I',
+                'į' => 'i',
+                'İ' => 'I',
+                'ı' => 'i',
+                'Ĳ' => 'IJ',
+                'ĳ' => 'ij',
+                'Ĵ' => 'J',
+                'ĵ' => 'j',
+                'Ķ' => 'K',
+                'ķ' => 'k',
+                'Ĺ' => 'L',
+                'ĺ' => 'l',
+                'Ļ' => 'L',
+                'ļ' => 'l',
+                'Ľ' => 'L',
+                'ľ' => 'l',
+                'Ŀ' => 'L',
+                'ŀ' => 'l',
+                'Ł' => 'l',
+                'ł' => 'l',
+                'Ń' => 'N',
+                'ń' => 'n',
+                'Ņ' => 'N',
+                'ņ' => 'n',
+                'Ň' => 'N',
+                'ň' => 'n',
+                'ŉ' => 'n',
+                'Ō' => 'O',
+                'ō' => 'o',
+                'Ŏ' => 'O',
+                'ŏ' => 'o',
+                'Ő' => 'O',
+                'ő' => 'o',
+                'Œ' => 'OE',
+                'œ' => 'oe',
+                'Ŕ' => 'R',
+                'ŕ' => 'r',
+                'Ŗ' => 'R',
+                'ŗ' => 'r',
+                'Ř' => 'R',
+                'ř' => 'r',
+                'Ś' => 'S',
+                'ś' => 's',
+                'Ŝ' => 'S',
+                'ŝ' => 's',
+                'Ş' => 'S',
+                'ş' => 's',
+                'Š' => 'S',
+                'š' => 's',
+                'Ţ' => 'T',
+                'ţ' => 't',
+                'Ť' => 'T',
+                'ť' => 't',
+                'Ŧ' => 'T',
+                'ŧ' => 't',
+                'Ũ' => 'U',
+                'ũ' => 'u',
+                'Ū' => 'U',
+                'ū' => 'u',
+                'Ŭ' => 'U',
+                'ŭ' => 'u',
+                'Ů' => 'U',
+                'ů' => 'u',
+                'Ű' => 'U',
+                'ű' => 'u',
+                'Ų' => 'U',
+                'ų' => 'u',
+                'Ŵ' => 'W',
+                'ŵ' => 'w',
+                'Ŷ' => 'Y',
+                'ŷ' => 'y',
+                'Ÿ' => 'Y',
+                'Ź' => 'Z',
+                'ź' => 'z',
+                'Ż' => 'Z',
+                'ż' => 'z',
+                'Ž' => 'Z',
+                'ž' => 'z',
+                'ſ' => 's',
+                'ƒ' => 'f',
+                'Ơ' => 'O',
+                'ơ' => 'o',
+                'Ư' => 'U',
+                'ư' => 'u',
+                'Ǎ' => 'A',
+                'ǎ' => 'a',
+                'Ǐ' => 'I',
+                'ǐ' => 'i',
+                'Ǒ' => 'O',
+                'ǒ' => 'o',
+                'Ǔ' => 'U',
+                'ǔ' => 'u',
+                'Ǖ' => 'U',
+                'ǖ' => 'u',
+                'Ǘ' => 'U',
+                'ǘ' => 'u',
+                'Ǚ' => 'U',
+                'ǚ' => 'u',
+                'Ǜ' => 'U',
+                'ǜ' => 'u',
+                'Ǻ' => 'A',
+                'ǻ' => 'a',
+                'Ǽ' => 'AE',
+                'ǽ' => 'ae',
+                'Ǿ' => 'O',
+                'ǿ' => 'o',
             );
         }
 
-        if (function_exists('transliterator_transliterate')) {
-            if (is_array($subject)) {
-                /*array_walk($subject, function (&$string) {
-                $string = WFUtility::utf8_latin_to_ascii($string);
-                });*/
-
-                for ($i = 0; $i < count($subject); $i++) {
-                    $subject[$i] = WFUtility::utf8_latin_to_ascii($subject[$i]);
-                }
-
-                return $subject;
+        if (is_array($subject)) {
+            foreach ($subject as $i => $string) {
+                $subject[$i] = self::utf8_latin_to_ascii($string);
             }
 
+            return $subject;
+        }
+
+        if (!is_string($subject)) {
+            return $subject;
+        }
+
+        if (function_exists('transliterator_transliterate')) {
             $transformed = transliterator_transliterate('Any-Latin; Latin-ASCII;', $subject);
 
             if ($transformed !== false) {
                 return $transformed;
             }
-
-            return str_replace(array_keys($CHARS), array_values($CHARS), $subject);
         }
 
-        return str_replace(array_keys($CHARS), array_values($CHARS), $subject);
+        return strtr($subject, $CHARS);
     }
+
+    /**
+     * Changes the case of a string or an array of strings using multibyte-safe functions.
+     *
+     * Supports 'lowercase' and 'uppercase' case transformations for UTF-8 encoded text.
+     * If the input is an array, the transformation is applied recursively to each element.
+     * Falls back to returning the original value if mbstring functions are not available.
+     *
+     * @param string|array $string The input string or array of strings to transform.
+     * @param string $case The case to apply: 'lowercase' or 'uppercase'.
+     *
+     * @return string|array The transformed string or array, or the original input if unsupported.
+     */
 
     protected static function changeCase($string, $case)
     {
@@ -321,44 +629,59 @@ abstract class WFUtility
             return $string;
         }
 
+        $encoding = 'UTF-8';
+
         if (is_array($string)) {
-            for ($i = 0; $i < count($string); $i++) {
-                $string[$i] = WFUtility::changeCase($string[$i], $case);
+            $result = [];
+
+            foreach ($string as $key => $value) {
+                $result[$key] = self::changeCase($value, $case);
             }
-        } else {
-            switch ($case) {
-                case 'lowercase':
-                    $string = mb_strtolower($string);
-                    break;
-                case 'uppercase':
-                    $string = mb_strtoupper($string);
-                    break;
-            }
+
+            return $result;
         }
 
-        return $string;
+        switch ($case) {
+            case 'lowercase':
+                return mb_strtolower($string, $encoding);
+
+            case 'uppercase':
+                return mb_strtoupper($string, $encoding);
+
+            default:
+                return $string;
+        }
     }
 
+    /**
+     * Cleans a UTF-8 string by removing disallowed characters.
+     *
+     * - Strips common punctuation, symbols, brackets, and currency characters.
+     * - Preserves only Unicode letters (\p{L}), numbers (\p{N}), space, dot (.), dash (-), and underscore (_).
+     * - Returns a cleaned string consisting of readable alphanumeric and structural characters.
+     * - Intended for safe output in filenames, slugs, or sanitized text fields.
+     *
+     * @param string $string The UTF-8 encoded input string to clean.
+     * @return string The sanitized UTF-8 string with disallowed characters removed.
+     */
     private static function cleanUTF8($string)
     {
-        // remove some common characters
-        $string = preg_replace('#[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]#', '', $string);
+        // Remove disallowed ASCII characters (punctuation, symbols)
+        // This also removes brackets, currency, etc.
+        $string = preg_replace('#[\\\+/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]#u', '', $string);
 
         $result = '';
-        $length = strlen($string);
+        $length = mb_strlen($string, 'UTF-8');
 
         for ($i = 0; $i < $length; $i++) {
-            $char = $string[$i];
+            $char = mb_substr($string, $i, 1, 'UTF-8');
 
-            // only process on possible restricted characters or utf-8 letters/numbers
-            if (preg_match('#[^\w\.\-\s ]#', $char)) {
-                // skip any character less than 127, eg: &?@* etc.
-                if (ord($char) < 127) {
-                    continue;
-                }
+            // Keep: Unicode letters, numbers, space, dash, underscore, dot
+            if (preg_match('#[\p{L}\p{N}\s\.\-_]#u', $char)) {
+                $result .= $char;
             }
 
-            $result .= $char;
+            // Everything else is skipped
         }
 
         return $result;
@@ -449,21 +772,26 @@ abstract class WFUtility
     }
 
     /**
-     * Format the file size, limits to Mb.
+     * Formats a raw file size (in bytes) as a human-readable string, limited to MB.
      *
-     * @param int $size the raw filesize
+     * - Bytes (< 1 KB): formatted as "123 bytes"
+     * - Kilobytes (< 1 MB): formatted as "12.34 KB"
+     * - Megabytes (≥ 1 MB): formatted as "1.23 MB"
      *
-     * @return string formated file size
+     * @param int $size The file size in bytes.
+     * @return string The formatted file size string.
      */
     public static function formatSize($size)
     {
         if ($size < 1024) {
             return $size . ' ' . WFText::_('WF_LABEL_BYTES');
-        } elseif ($size >= 1024 && $size < 1024 * 1024) {
-            return sprintf('%01.2f', $size / 1024.0) . ' ' . WFText::_('WF_LABEL_KB');
-        } else {
-            return sprintf('%01.2f', $size / (1024.0 * 1024)) . ' ' . WFText::_('WF_LABEL_MB');
         }
+
+        if ($size < 1048576) { // 1024 * 1024
+            return sprintf('%.2f', $size / 1024) . ' ' . WFText::_('WF_LABEL_KB');
+        }
+
+        return sprintf('%.2f', $size / 1048576) . ' ' . WFText::_('WF_LABEL_MB');
     }
 
     /**
@@ -602,109 +930,124 @@ abstract class WFUtility
         return $path;
     }
 
+    /**
+     * Converts a string to UTF-8 encoding if it's not already UTF-8.
+     *
+     * - Uses mb_detect_encoding() if available.
+     * - Falls back to regex-based UTF-8 detection and utf8_encode() for Latin-1 strings if mbstring is unavailable.
+     * - If encoding cannot be determined, returns a sanitized ASCII-only version.
+     *
+     * @param string $string The input string to normalize.
+     * @return string UTF-8 encoded or sanitized string.
+     */
     public static function convertEncoding($string)
     {
-        if (!function_exists('mb_detect_encoding')) {
-            // From http://w3.org/International/questions/qa-forms-utf-8.html
+        if (!function_exists('mb_detect_encoding') || !function_exists('mb_convert_encoding')) {
+            // Regex-based UTF-8 detection (W3C)
             $isUTF8 = preg_match('%^(?:
-	              [\x09\x0A\x0D\x20-\x7E]          	 # ASCII
-	            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-	            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-	            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-	            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-	            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-	            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-	            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-	        )*$%xs', $string);
+              [\x09\x0A\x0D\x20-\x7E]              # ASCII
+            | [\xC2-\xDF][\x80-\xBF]               # non-overlong 2-byte
+            |  \xE0[\xA0-\xBF][\x80-\xBF]          # excluding overlongs
+            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}    # straight 3-byte
+            |  \xED[\x80-\x9F][\x80-\xBF]          # excluding surrogates
+            |  \xF0[\x90-\xBF][\x80-\xBF]{2}       # planes 1–3
+            | [\xF1-\xF3][\x80-\xBF]{3}            # planes 4–15
+            |  \xF4[\x80-\x8F][\x80-\xBF]{2}       # plane 16
+        )*$%xs', $string);
 
-            if (!$isUTF8) {
-                return utf8_encode($string);
-            }
-
-            return $string;
+            return $isUTF8 ? $string : utf8_encode($string);
         }
 
-        // get encoding
-        $encoding = mb_detect_encoding($string, "auto", true);
+        // Try to detect the encoding
+        $encoding = mb_detect_encoding($string, ['UTF-8', 'ISO-8859-1', 'Windows-1252', 'ASCII'], true);
 
-        // return existing string if it is already utf-8
+        // Return unchanged if already UTF-8
         if ($encoding === 'UTF-8') {
             return $string;
         }
 
-        // invalid encoding, so make a "safe" string
+        // If unknown encoding, fallback to stripped ASCII
         if ($encoding === false) {
-            return preg_replace('#[^a-zA-Z0-9_\.\-\s ]#', '', $string);
+            return preg_replace('#[^a-zA-Z0-9_\.\-\s ]#u', '', $string);
         }
 
-        // convert to utf-8 and return
+        // Convert from detected encoding to UTF-8
         return mb_convert_encoding($string, 'UTF-8', $encoding);
     }
 
+    /**
+     * Checks whether a string is valid UTF-8.
+     *
+     * Uses mb_detect_encoding() if available; otherwise falls back to a strict UTF-8 pattern check.
+     * Designed for safe operation even in environments without mbstring.
+     *
+     * @param string $string The input string to validate.
+     * @return bool True if the string is valid UTF-8, false otherwise.
+     */
     public static function isUtf8($string)
     {
         if (!function_exists('mb_detect_encoding')) {
-            // From http://w3.org/International/questions/qa-forms-utf-8.html
-            return preg_match('%^(?:
-	              [\x09\x0A\x0D\x20-\x7E]          	 # ASCII
-	            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
-	            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-	            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
-	            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-	            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-	            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
-	            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-	        )*$%xs', $string);
+            return (bool) preg_match(
+                '%^(?:
+                [\x09\x0A\x0D\x20-\x7E]              # ASCII
+              | [\xC2-\xDF][\x80-\xBF]               # non-overlong 2-byte
+              |  \xE0[\xA0-\xBF][\x80-\xBF]          # excluding overlongs
+              | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}    # straight 3-byte
+              |  \xED[\x80-\x9F][\x80-\xBF]          # excluding surrogates
+              |  \xF0[\x90-\xBF][\x80-\xBF]{2}       # planes 1-3
+              | [\xF1-\xF3][\x80-\xBF]{3}            # planes 4-15
+              |  \xF4[\x80-\x8F][\x80-\xBF]{2}       # plane 16
+            )*$%xs',
+                $string
+            );
         }
 
         return mb_detect_encoding($string, 'UTF-8', true);
     }
 
     /**
-     * Convert size value to bytes.
+     * Converts a human-readable size value (e.g., "2M", "512k", "1G") to bytes.
+     *
+     * Supports the following unit suffixes (case-insensitive):
+     * - K (kilobytes)
+     * - M (megabytes)
+     * - G (gigabytes)
+     *
+     * If no unit is specified, the value is assumed to be in bytes.
+     *
+     * @param string|int $value The size value to convert (e.g., "2M", "1024").
+     * @return int Size in bytes.
      */
     public static function convertSize($value)
     {
+        $value = trim((string) $value);
         $unit = '';
 
-        preg_match('#([0-9]+)\s?([a-z]*)#i', $value, $matches);
-
-        if (isset($matches[1])) {
-            $value = (int) $matches[1];
+        if (preg_match('#([\d\.]+)\s*([a-z]*)#i', $value, $matches)) {
+            $value = floatval($matches[1]);
+            $unit = strtolower(substr($matches[2], 0, 1));
         }
 
-        if (isset($matches[2])) {
-            $unit = $matches[2];
-
-            // extract first character only, eg: g, m, k
-            if ($unit) {
-                $unit = strtolower($unit[0]);
-            }
-        }
-
-        $value = intval($value);
-
-        // Convert to bytes
         switch ($unit) {
             case 'g':
-                $value = $value * 1073741824;
+                $value *= 1073741824; // 1024^3
                 break;
             case 'm':
-                $value = $value * 1048576;
+                $value *= 1048576; // 1024^2
                 break;
             case 'k':
-                $value = $value * 1024;
+                $value *= 1024; // 1024^1
                 break;
         }
 
-        return $value;
+        return (int) $value;
     }
 
     /**
      * Checks an upload for suspicious naming, potential PHP contents, valid image and HTML tags.
      */
     public static function isSafeFile($file)
-    {        
+    {
         // null byte check
         if (strstr($file['name'], "\x00")) {
             @unlink($file['tmp_name']);
@@ -784,8 +1127,51 @@ abstract class WFUtility
 
         // list of invalid extensions
         $executable = array(
-            'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'phar', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
-            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh', 'svg',
+            'php',
+            'php3',
+            'php4',
+            'php5',
+            'php6',
+            'php7',
+            'phar',
+            'js',
+            'exe',
+            'phtml',
+            'java',
+            'perl',
+            'py',
+            'asp',
+            'dll',
+            'go',
+            'ade',
+            'adp',
+            'bat',
+            'chm',
+            'cmd',
+            'com',
+            'cpl',
+            'hta',
+            'ins',
+            'isp',
+            'jse',
+            'lib',
+            'mde',
+            'msc',
+            'msp',
+            'mst',
+            'pif',
+            'scr',
+            'sct',
+            'shb',
+            'sys',
+            'vb',
+            'vbe',
+            'vbs',
+            'vxd',
+            'wsc',
+            'wsf',
+            'wsh',
+            'svg',
         );
 
         // get file parts, eg: ['image', 'php', 'jpg']
