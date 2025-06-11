@@ -4020,10 +4020,9 @@
         }
 
         function moveToMarker() {
-          // Move the caret to the end of the marker
-          rng = dom.createRng();
-          rng.setStart(marker, 0);
-          rng.setEnd(marker, 0);
+          var rng = dom.createRng();
+          rng.setStartAfter(marker);
+          rng.setEndAfter(marker);
           rng.collapse();
           selection.setRng(rng);
         }
@@ -4049,12 +4048,11 @@
               node.insertAdjacentElement('afterend', marker);
 
               moveToMarker();
+              dom.remove(marker);
             }
-            
-            // only cancel event if Right Arrow
-            if (e.keyCode == VK.RIGHT) {
-              e.preventDefault();
-            }
+
+            // cancel event
+            e.preventDefault();
 
             editor.nodeChanged();
           }
@@ -4065,14 +4063,13 @@
       editor.onKeyDown.addToTop(function (editor, e) {
         dom.remove(marker);
 
-        if (e.keyCode == VK.RIGHT || e.keyCode == VK.ENTER) {
+        if (e.keyCode == VK.RIGHT) {
           moveCursorToEnd(e);
         }
       });
 
-      editor.onMouseDown.add(function (editor, e) {
+      editor.onMouseUp.add(function (editor, e) {
         dom.remove(marker);
-
         moveCursorToEnd(e);
       });
     }
@@ -36445,8 +36442,8 @@
 
           value = parseInt(value, 10);
 
-          dom.getParent(selection.getNode(), function (node) {          
-            if (node.nodeType == 1 && counter++ == value) {            
+          dom.getParent(selection.getNode(), function (node) {
+            if (node.nodeType == 1 && counter++ == value) {
               selection.select(node);
               return FALSE;
             }
@@ -36897,8 +36894,20 @@
             }
           }
 
-          if (container && container.nodeType == 3 && offset >= container.nodeValue.length) {
-            // Insert extra BR element at the end block elements
+          if (container && container.nodeType === 3 && offset >= container.nodeValue.length) {
+            let parentAnchor = dom.getParent(container, 'a');
+
+            if (parentAnchor) {
+              // Check if there's no content after the anchor
+              let nextSibling = parentAnchor.nextSibling;
+              if (!nextSibling || (nextSibling.nodeType === 3 && /^\s*$/.test(nextSibling.nodeValue))) {
+                // Move the range outside the <a> before inserting
+                rng.setStartAfter(parentAnchor);
+                rng.setEndAfter(parentAnchor);
+                container = parentAnchor.parentNode;
+              }
+            }
+
             if (!hasRightSideContent()) {
               brElm = dom.create('br');
               rng.insertNode(brElm);
@@ -42906,6 +42915,10 @@
           }
         }
       });
+
+      return {
+        handleEnterKey: handleEnterKey
+      };
     };
   })(tinymce);
 
