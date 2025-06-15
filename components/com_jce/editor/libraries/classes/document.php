@@ -16,7 +16,7 @@ use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 
-class WFDocument extends CMSObject
+class WFDocument extends WFObject
 {
     /**
      * Array of linked scripts.

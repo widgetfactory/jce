@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 
-class JoomlalinksTags extends CMSObject
+class JoomlalinksTags extends WFObject
 {
     private $option = 'com_tags';
 

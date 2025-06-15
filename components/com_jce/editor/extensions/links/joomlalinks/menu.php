@@ -16,7 +16,7 @@ use Joomla\CMS\Object\CMSObject;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
 
-class JoomlalinksMenu extends CMSObject
+class JoomlalinksMenu extends WFObject
 {
     private $option = 'com_menu';
 

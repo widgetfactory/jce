@@ -18,7 +18,6 @@ use Joomla\CMS\Form\Form;
  */
 class PlgContentJce extends CMSPlugin
 {
-    
     /**
      * Process form fields in content.
      * This is included to process Joomla Media Fields in 3rd party extensions that call onContentPrepareForm after the System - JCE plugin has been dispatched.

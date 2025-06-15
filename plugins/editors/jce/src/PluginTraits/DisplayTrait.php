@@ -115,8 +115,10 @@ trait DisplayTrait
             }
         }
 
-        $language = Factory::getLanguage();
-        $document = Factory::getDocument();
+        $app = Factory::getApplication();
+
+        $language = $app->getLanguage();
+        $document = $app->getDocument();
 
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
@@ -159,6 +161,8 @@ trait DisplayTrait
      */
     public function onDisplay($name, $content, $width = '100%', $height = '500', $col = 20, $row = 4, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
     {
+        $app = Factory::getApplication();
+        
         if ($this->isEditorEnabled() === false) {
 
             $ed = $this->getFallbackEditor();
@@ -205,7 +209,7 @@ trait DisplayTrait
                         'joomla_xtd_buttons' => $list,
                     );
 
-                    Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
+                    $app->getDocument()->addScriptOptions('plg_editor_jce', $options, true);
                 }
 
                 $buttonsStr = $this->displayXtdButtons($id, $buttons, $asset, $author, true);

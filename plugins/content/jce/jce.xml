@@ -9,6 +9,8 @@
   <copyright>@@copyright@@</copyright>
   <license>@@licence@@</license>
   <description>PLG_CONTENT_JCE_XML_DESCRIPTION</description>
+
+  <namespace path="src">Joomla\Plugin\Content\Jce</namespace>
   
   <files folder="plugins/content/jce">
     <file plugin="jce">jce.php</file>

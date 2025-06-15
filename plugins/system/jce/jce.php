@@ -11,13 +11,10 @@ defined('JPATH_BASE') or die;
 JLoader::registerNamespace('Joomla\\Plugin\\Editors\\Jce', JPATH_PLUGINS . '/editors/jce/src', false, false, 'psr4');
 JLoader::register('WfBrowserHelper', JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Document\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Form\Form;
+use Joomla\Plugin\System\Jce\PluginTraits\TemplatesTrait;
 
 /**
  * JCE.
@@ -26,99 +23,33 @@ use Joomla\CMS\Uri\Uri;
  */
 class PlgSystemJce extends CMSPlugin
 {
-    protected $mediaLoaded = false;
+    use TemplatesTrait;
 
-    protected $booted = false;
-    
+    /**
+     * Affects constructor behavior. If true, language files will be loaded automatically.
+     *
+     * @var    boolean
+     */
+    protected $autoloadLanguage = true;
+
+    /**
+     * Constructor.
+     *
+     * @param object $subject The object to observe
+     * @param array  $config  An array that holds the plugin configuration
+     *
+     * @since       1.5
+     */
+    public function __construct(&$subject, $config)
+    {
+        parent::__construct($subject, $config);
+    }
+
     private function getDummyDispatcher()
     {
-        $app = Factory::getApplication();
-
-        if (method_exists($app, 'getDispatcher')) {
-            $dispatcher = Factory::getApplication()->getDispatcher();
-        } else {
-            $dispatcher = JEventDispatcher::getInstance();
-        }
+        $dispatcher = JEventDispatcher::getInstance();
 
         return $dispatcher;
-    }
-
-    private function bootEditorPlugins()
-    {
-        if ($this->booted) {
-            return;
-        }
-        
-        $app = Factory::getApplication();
-
-        // only in "site"
-        if ($app->getClientId() !== 0) {
-            return;
-        }
-
-        // Joomla 4+ only
-        if (!method_exists($app, 'bootPlugin')) {
-            return;
-        }
-
-        $plugins = PluginHelper::getPlugin('jce');
-
-        foreach ($plugins as $plugin) {
-            if (!preg_match('/^editor[-_]/', $plugin->name)) {
-                continue;
-            }
-
-            $path = JPATH_PLUGINS . '/jce/' . $plugin->name;
-
-            // only modern plugins
-            if (!is_dir($path . '/src')) {
-                continue;
-            }
-
-            $plugin = $app->bootPlugin($plugin->name, $plugin->type);
-            $plugin->setDispatcher($app->getDispatcher());
-
-            $plugin->registerListeners();
-        }
-
-        $this->booted = true;
-    }
-
-    private function bootCustomPlugin($className, $config = array())
-    {
-        if (class_exists($className)) {
-            $dispatcher = $this->getDummyDispatcher();
-
-            // Instantiate and register the event
-            $plugin = new $className($dispatcher, $config);
-
-            if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
-                $plugin->registerListeners();
-            }
-        }
-    }
-
-    public function onBeforeWfEditorLoad()
-    {
-        $items = glob(__DIR__ . '/templates/*.php');
-
-        foreach ($items as $item) {
-            $name = basename($item, '.php');
-
-            $className = 'WfTemplate' . ucfirst($name);
-
-            require_once $item;
-
-            $this->bootCustomPlugin($className);
-        }
-    }
-
-    public function onAfterRoute()
-    {
-        // JCE Pro will load media
-        if (PluginHelper::isEnabled('system', 'jcepro')) {
-            $this->mediaLoaded = true;
-        }
     }
 
     public function onAfterDispatch()
@@ -137,9 +68,7 @@ class PlgSystemJce extends CMSPlugin
             return true;
         }
 
-        $this->bootEditorPlugins();
-
-        $app->triggerEvent('onWfPluginAfterDispatch');
+        $app->triggerEvent('onWfPluginBeforeDispatch');
     }
 
     /**
@@ -181,5 +110,10 @@ class PlgSystemJce extends CMSPlugin
 
         // update the mediaLoaded flag
         $this->mediaLoaded = true;
+    }
+
+    public function onWfBeforeEditorLoad($config = array())
+    {
+        $this->BeforeEditorLoad();
     }
 }

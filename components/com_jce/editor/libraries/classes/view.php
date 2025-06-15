@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Object\CMSObject;
 
-final class WFView extends CMSObject
+final class WFView extends WFObject
 {
     private $path = array();
 

@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Uri\Uri;
 
-class WFPacker extends CMSObject
+class WFPacker extends WFObject
 {
     const IMPORT_RX = '#@import.*?(?:\(([^\)]+)\);|(?:[\'"]([^\'"]+)[\'"]);)#i'; // match @import url('...'); or @import '...'; or @import "...";
 

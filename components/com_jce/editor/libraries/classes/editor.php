@@ -149,7 +149,12 @@ class WFEditor
         }
 
         // trigger event
-        $app->triggerEvent('onBeforeWfEditorLoad', array(&$config));
+        $event = $wf->triggerEvent('onWfBeforeEditorLoad', [
+            'config' => $config
+        ]);
+
+        // merge event config
+        $config = array_merge($config, $event['config']);
 
         // set profile from "default"
         $this->profile = $wf->getActiveProfile($config);
@@ -207,7 +212,13 @@ class WFEditor
 
         $settings = $this->getSettings();
 
-        Factory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
+        $wf = WFApplication::getInstance();
+
+        $event = $wf->triggerEvent('onWfBeforeEditorRender', array(
+            'settings' => $settings
+        ));
+
+        $settings = array_merge($settings, $event['settings']);
 
         $this->render($settings, $autoInit);
 
@@ -514,7 +525,12 @@ class WFEditor
             $settings['skin_directionality'] = 'rtl';
         }
         
-        $app->triggerEvent('onBeforeWfEditorSettings', array(&$settings));
+        $event = $wf->triggerEvent('onWfBeforeEditorSettings', array(
+            'settings' => $settings
+        ));
+
+        // merge event settings
+        $settings = array_merge($settings, $event['settings']);
 
         // add module in Joomla 5
         if (version_compare(JVERSION, '5', 'ge')) {
@@ -937,7 +953,7 @@ class WFEditor
      */
     private function getPluginConfig(&$settings)
     {
-        $app = Factory::getApplication();
+        $wf = WFApplication::getInstance();
         
         $core = (array) $settings['plugins'];
         $items = array();
@@ -973,7 +989,14 @@ class WFEditor
             }
         }
 
-        $app->triggerEvent('onBeforeWfEditorPluginConfig', array($settings, &$items));
+        $event = $wf->triggerEvent('onWfBeforeEditorPluginConfig', array(
+            'items' => &$items,
+            'settings' => &$settings
+        ));
+
+        // merge event items
+        $items = array_merge($items, $event['items']);
+        $settings = array_merge($settings, $event['settings']);
 
         $delim = array('-', '_');
 
@@ -1202,7 +1225,10 @@ class WFEditor
                 if ($file) {
                     $files[] = $file;
                 } else {
-                    Factory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
+                    $wf->triggerEvent('onWfGetTemplateStylesheets', array(
+                        'file' => &$files,
+                        'template' => &$template
+                    ));
                 }
 
                 break;

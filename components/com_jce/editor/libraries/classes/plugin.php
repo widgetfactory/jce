@@ -13,14 +13,13 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 
 /**
  * JCE class.
  */
-class WFEditorPlugin extends CMSObject
+class WFEditorPlugin extends WFObject
 {
     // Editor Plugin instance
     private static $instance;

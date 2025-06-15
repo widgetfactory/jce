@@ -15,7 +15,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Helper\RouteHelper;
 
-class JoomlalinksContact extends CMSObject
+class JoomlalinksContact extends WFObject
 {
     private $option = 'com_contact';
 

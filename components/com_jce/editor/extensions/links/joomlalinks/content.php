@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
 
-class JoomlalinksContent extends CMSObject
+class JoomlalinksContent extends WFObject
 {
     private $option = 'com_content';
 

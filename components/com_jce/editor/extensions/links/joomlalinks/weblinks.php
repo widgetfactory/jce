@@ -14,7 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 
-class JoomlalinksWeblinks extends CMSObject
+class JoomlalinksWeblinks extends WFObject
 {
     private $option = 'com_weblinks';
 

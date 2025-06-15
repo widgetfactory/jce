@@ -14,7 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Object\CMSObject;
 
-class WFLanguageParser extends CMSObject
+class WFLanguageParser extends WFObject
 {
     protected $mode = 'editor';
     protected $plugins = array();

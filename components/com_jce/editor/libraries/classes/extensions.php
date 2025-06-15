@@ -16,7 +16,7 @@ use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 
-class WFExtension extends CMSObject
+class WFExtension extends WFObject
 {
     /**
      * Constructor activating the default information of the class.

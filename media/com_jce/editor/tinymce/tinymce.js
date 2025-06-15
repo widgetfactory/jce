@@ -36895,11 +36895,11 @@
           }
 
           if (container && container.nodeType === 3 && offset >= container.nodeValue.length) {
-            let parentAnchor = dom.getParent(container, 'a');
+            var parentAnchor = dom.getParent(container, 'a');
 
             if (parentAnchor) {
               // Check if there's no content after the anchor
-              let nextSibling = parentAnchor.nextSibling;
+              var nextSibling = parentAnchor.nextSibling;
               if (!nextSibling || (nextSibling.nodeType === 3 && /^\s*$/.test(nextSibling.nodeValue))) {
                 // Move the range outside the <a> before inserting
                 rng.setStartAfter(parentAnchor);

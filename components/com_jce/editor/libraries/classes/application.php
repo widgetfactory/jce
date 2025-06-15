@@ -26,7 +26,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
  *
  * @since    1.5
  */
-class WFApplication extends CMSObject
+class WFApplication extends WFObject
 {
     // Editor instance
     protected static $instance;
@@ -246,8 +246,8 @@ class WFApplication extends CMSObject
         }
 
         // get the passed in options as variables
-        extract ($options);
-        
+        extract($options);
+
         // reset the value if it is a core plugin
         if ($this->isCorePlugin($plugin)) {
             $plugin = '';
@@ -552,5 +552,45 @@ class WFApplication extends CMSObject
         }
 
         return $value;
+    }
+
+    /**
+     * Triggers a plugin event in a version-compatible way for Joomla 3 and Joomla 4/5+.
+     *
+     * This method ensures that plugin events are dispatched correctly across different Joomla versions.
+     * - In Joomla 4/5+, it uses the modern Event Dispatcher system and supports associative arguments via Joomla\Event\Event.
+     * - In Joomla 3, it falls back to JEventDispatcher and uses a numerically indexed argument array.
+     *
+     * @param string $name The name of the event to trigger (e.g., 'onContentPrepareForm').
+     * @param array|\Joomla\Event\EventInterface $args An associative array of arguments for the event, or an EventInterface instance.
+     *
+     * @return array The resulting arguments array after dispatch (J4/5+), or an array of return values from plugin handlers (J3).
+     */
+    public function triggerEvent($name, $args = array())
+    {
+        $app = Factory::getApplication();
+
+        if (method_exists($app, 'getDispatcher')) {
+            $dispatcher = Factory::getApplication()->getDispatcher();
+
+            if (!$args instanceof Joomla\Event\EventInterface) {
+                // required for dispatcher even if not used
+                if (!isset($args['subject'])) {
+                    $args['subject'] = $this;
+                }
+
+                // If args is not an EventInterface, we need to create a new Event object
+                $args = new Joomla\Event\Event($name, $args);
+            }
+
+            $dispatcher->dispatch($name, $args);
+
+            return $args instanceof Joomla\Event\EventInterface ? $args->getArguments() : $args;
+        } else {
+            $dispatcher = JEventDispatcher::getInstance();
+            $result = $dispatcher->trigger($name, array_values($args));
+
+            return $result;
+        }
     }
 }

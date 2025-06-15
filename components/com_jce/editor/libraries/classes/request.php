@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
 
-final class WFRequest extends CMSObject
+final class WFRequest extends WFObject
 {
     protected static $instance;
 

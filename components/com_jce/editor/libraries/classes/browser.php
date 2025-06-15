@@ -22,7 +22,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\UserHelper;
 
-class WFFileBrowser extends CMSObject
+class WFFileBrowser extends WFObject
 {
     /* @var array */
     private $_buttons = array();

@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 
-final class WFTabs extends CMSObject
+final class WFTabs extends WFObject
 {
     private $_tabs = array();
     private $_panels = array();
