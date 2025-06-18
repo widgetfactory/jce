@@ -105,6 +105,11 @@ class WFCleanupPluginConfig
 
         $allow_script = $wf->getParam('editor.allow_javascript', 0, 0, 'boolean');
 
+        // if scripts are allowed, then allow script urls
+        if ($allow_script) {
+            $settings['allow_script_urls'] = true;
+        }
+
         // if scripts are allowed, then allow event attributes
         if ($allow_script || (bool) $wf->getParam('editor.allow_event_attributes')) {
             $settings['allow_event_attributes'] = true;
