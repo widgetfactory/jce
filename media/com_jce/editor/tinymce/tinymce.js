@@ -5771,8 +5771,8 @@
       add("base", "href target");
       add("link", "href rel media hreflang type sizes");
       add("meta", "name http-equiv content charset");
-      add("style", "media type scoped");
-      add("script", "src async defer type charset");
+      add("style", "media type scoped", '#text #cdata-section');
+      add("script", "src async defer type charset", '#text #cdata-section');
       add("body", "onafterprint onbeforeprint onbeforeunload onblur onerror onfocus " +
         "onhashchange onload onmessage onoffline ononline onpagehide onpageshow " +
         "onpopstate onresize onscroll onstorage onunload", flowContent);
@@ -6586,9 +6586,8 @@
        * @param {String} child Element child to verify.
        * @return {Boolean} True/false if the element is a valid child of the specified parent.
        */
-      self.isValidChild = function (name, child) {
+      self.isValidChild = function (name, child) {      
         var parent = children[name];
-
         return !!(parent && parent[child]);
       };
 
@@ -6693,14 +6692,15 @@
   })(tinymce);
 
   /**
-   * SaxParser.js
+   * Originally part of TinyMCE 3.x
+   * Copyright © Moxiecode Systems AB
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * Copyright, Moxiecode Systems AB
-   * Released under LGPL License.
+   * This version:
+   * Copyright © 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * See LICENSE for GPL terms.
    */
 
   (function (tinymce) {
@@ -14134,6 +14134,18 @@
       };
   };
 
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
   var internalMimeType = 'x-tinymce/html';
   var internalMark = '<!-- ' + internalMimeType + ' -->';
 
@@ -14152,6 +14164,19 @@
   var internalHtmlMime = function () {
     return internalMimeType;
   };
+
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
 
   const internalHtmlMimeType = internalHtmlMime();
 
@@ -14194,6 +14219,19 @@
     hasData: hasData,
     setData: setData
   });
+
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
 
   var noop = function () { };
 
@@ -14315,6 +14353,18 @@
       editor.onCut.add(cut);
       editor.onCopy.add(copy);
   };
+
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
 
   var DomParser$2 = tinymce.html.DomParser, Schema$1 = tinymce.html.Schema, each$4 = tinymce.each, DOM = tinymce.DOM;
 
@@ -14601,6 +14651,19 @@
     return html;
   }
 
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
+
   var each$3 = tinymce.each;
 
   /**
@@ -14729,6 +14792,13 @@
           });
       }
   };
+
+  /**
+   * Copyright (c) 2025 Ryan Demmer
+   * Licensed under the GNU General Public License v2.0 or later.
+   *
+   * See the LICENSE file for details.
+   */
 
   function convertToPixels(v) {
       // return pixel value
@@ -14954,6 +15024,19 @@
 
       return value.toLowerCase();
   }
+
+  /**
+   * Originally based on TinyMCE 3.x
+   * Copyright © Moxiecode Systems AB
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright © 2024 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
 
   var each$2 = tinymce.each,
       Schema = tinymce.html.Schema,
@@ -15843,6 +15926,19 @@
       return content;
   }
 
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
+
   var each$1 = tinymce.each;
   var isIE$1 = tinymce.isIE || tinymce.isIE12;
 
@@ -16163,6 +16259,18 @@
       });
   };
 
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
   var Entities = tinymce.html.Entities;
 
   var isPlainText = function (text) {
@@ -16231,6 +16339,19 @@
   var convert = function (text, rootTag, rootAttrs) {    
       return rootTag ? toBlockElements(text, rootTag, rootAttrs) : toBRs(text);
   };
+
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
 
   var each = tinymce.each,
       VK = tinymce.VK,
@@ -16875,6 +16996,19 @@
 
   tinymce.clipboard.FakeClipboard = FakeClipboard;
 
+  /**
+   * Originally part of TinyMCE 3.x
+   * Copyright © Moxiecode Systems AB
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright © 2024 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
+
+
   var RangeUtils = tinymce.dom.RangeUtils, Delay = tinymce.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -17000,6 +17134,18 @@
           }
       });
   };
+
+  /**
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
 
   var pasteBinDefaultContent = '%MCEPASTEBIN%';
 
@@ -17224,14 +17370,15 @@
   };
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright (c) 1999-2017 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * JCE is free software. This version may have been modified pursuant
-   * to the GNU General Public License, and as distributed it includes or
-   * is derivative of works licensed under the GNU General Public License or
-   * other free or open source software licenses.
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
 
@@ -17259,14 +17406,15 @@
   };
 
   /**
-   * CaretBookmark.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -17521,14 +17669,15 @@
   })(tinymce);
 
   /**
-   * CaretContainer.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -17680,14 +17829,15 @@
   })(tinymce);
 
   /**
-   * CaretCandidate.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -17767,15 +17917,17 @@
   })(tinymce);
 
   /**
-   * CaretContainerRemove.js
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * Released under LGPL License.
-   * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * See LICENSE for GPL terms.
    */
+
   (function (tinymce) {
     var NodeType = tinymce.dom.NodeType, Zwsp = tinymce.text.Zwsp, CaretContainer = tinymce.caret.CaretContainer, CaretPosition = tinymce.caret.CaretPosition;
     var Arr = tinymce.util.Arr;
@@ -17877,14 +18029,15 @@
   })(tinymce);
 
   /**
-   * CaretPosition.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -18247,14 +18400,15 @@
   })(tinymce);
 
   /**
-   * CaretUtils.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -18564,14 +18718,15 @@
   })(tinymce);
 
   /**
-   * CaretWalker.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -18807,14 +18962,15 @@
   })(tinymce);
 
   /**
-   * FakeCaret.js
+   * Originally part of TinyMCE 4.x
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * Released under LGPL License.
-   * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -19010,14 +19166,15 @@
   })(tinymce);
 
   /**
-   * LineUtils.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -19147,14 +19304,15 @@
   })(tinymce);
 
   /**
-   * LineWalker.js
-   *
-   * Released under LGPL License.
+   * Originally part of TinyMCE 4.x
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * Licensed under LGPL-2.1-or-later (see LICENSE.TXT in the original project)
    *
-   * License: http://www.tinymce.com/license - Inactive
-   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under GPL-2.0-or-later as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
    */
 
   /**
@@ -44244,9 +44402,10 @@
   })(tinymce);
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -44590,9 +44749,10 @@
   })();
 
   /**
-   * @package    JCE
-   * @copyright    Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -44620,11 +44780,13 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009       Moxiecode Systems AB. All rights reserved.
+   * @copyright   Copyright (c) 1999–2015  Ephox Corp. All rights reserved.
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   * @note        Forked or includes code from TinyMCE 3.x/4.x/5.x (originally LGPL 2.1) and relicensed under GPL 2+ per LGPL 2.1 §3.
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -44845,9 +45007,10 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -45388,9 +45551,10 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -46474,9 +46638,10 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html3.
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -46661,9 +46826,10 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -47047,11 +47213,13 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009       Moxiecode Systems AB. All rights reserved.
+   * @copyright   Copyright (c) 1999–2015  Ephox Corp. All rights reserved.
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   * @note        Forked or includes code from TinyMCE 3.x/4.x/5.x (originally LGPL 2.1) and relicensed under GPL 2+ per LGPL 2.1 §3.
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -47601,9 +47769,10 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -47630,11 +47799,13 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009       Moxiecode Systems AB. All rights reserved.
+   * @copyright   Copyright (c) 1999–2017  Ephox Corp. All rights reserved.
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   * @note        Forked or includes code from TinyMCE 3.x/4.x/5.x (originally LGPL 2.1) and relicensed under GPL 2+ per LGPL 2.1 §3.
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -48357,9 +48528,10 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -48626,11 +48798,13 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009       Moxiecode Systems AB. All rights reserved.
+   * @copyright   Copyright (c) 1999–2017  Ephox Corp. All rights reserved.
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   * @note        Forked or includes code from TinyMCE 3.x/4.x/5.x (originally LGPL 2.1) and relicensed under GPL 2+ per LGPL 2.1 §3.
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -48790,11 +48964,11 @@
     });
   })();
 
-  /*global tinymce:true */
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -48832,11 +49006,13 @@
   })();
 
   /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * @package     JCE
+   * @copyright   Copyright (c) 2009       Moxiecode Systems AB. All rights reserved.
+   * @copyright   Copyright (c) 1999–2015  Ephox Corp. All rights reserved.
+   * @copyright   Copyright (c) 2009–2025  Ryan Demmer. All rights reserved.
+   * @license     GNU General Public License version 2 or later (GPL v2+) – https://www.gnu.org/licenses/gpl-2.0.html
+   * @note        Forked or includes code from TinyMCE 3.x/4.x/5.x (originally LGPL 2.1) and relicensed under GPL 2+ per LGPL 2.1 §3.
+   *
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
