@@ -1917,7 +1917,7 @@
     var blockSvgDataUris = function (allowSvgDataUrls, tagName) {
       if (isNonNullable(allowSvgDataUrls)) {
         return !allowSvgDataUrls;
-      } else {
+      } else {      
         // Only allow SVGs by default on images/videos since the browser won't execute scripts on those elements
         return isNonNullable(tagName) ? tinymce.inArray(safeSvgDataUrlElements, tagName) == -1 : true;
       }
@@ -5604,7 +5604,7 @@
     function compileSchema(type) {
       var schema = {},
         globalAttributes, blockContent;
-      var phrasingContent, flowContent, html4BlockContent, html4PhrasingContent, eventAttributes, microdataAttributes;
+      var phrasingContent, flowContent, transparentContent, html4BlockContent, html4PhrasingContent, eventAttributes, microdataAttributes;
 
       function add(name, attributes, children) {
         var ni, i, attributesOrder, args = arguments;
@@ -5715,11 +5715,19 @@
         "textarea u var link style #text #comment"
       );
 
+      // transparent content elements
+      transparentContent = split(
+        "a ins del canvas map"
+      );
+
       // Add HTML5 items to globalAttributes, blockContent, phrasingContent
       if (type != "html4") {
         globalAttributes.push.apply(globalAttributes, split("contenteditable contextmenu draggable dropzone " +
           "hidden spellcheck translate"));
         blockContent.push.apply(blockContent, split("article aside details dialog figure header footer hgroup section nav"));
+
+        blockContent.push.apply(blockContent, transparentContent);
+
         phrasingContent.push.apply(phrasingContent, split("audio canvas command datalist mark meter output picture " +
           "progress time wbr video ruby bdi keygen"));
       }
@@ -5961,7 +5969,7 @@
         patternElements = [],
         validStyles, invalidStyles, schemaItems;
       var whiteSpaceElementsMap, selfClosingElementsMap, shortEndedElementsMap, boolAttrMap, validClasses;
-      var blockElementsMap, nonEmptyElementsMap, moveCaretBeforeOnEnterElementsMap, textBlockElementsMap, textInlineElementsMap;
+      var blockElementsMap, nonEmptyElementsMap, moveCaretBeforeOnEnterElementsMap, textBlockElementsMap, textInlineElementsMap, transparentElementsMap;
       var customElementsMap = {},
         specialElements = {};
 
@@ -6000,7 +6008,7 @@
       validClasses = compileElementMap(settings.valid_classes, 'map');
 
       // Setup map objects
-      whiteSpaceElementsMap = createLookupTable('whitespace_elements', 'pre script noscript style textarea video audio iframe object');
+      whiteSpaceElementsMap = createLookupTable('whitespace_elements', 'pre script noscript style textarea video audio iframe object code');
 
       selfClosingElementsMap = createLookupTable('self_closing_elements', 'colgroup dd dt li option p td tfoot th thead tr');
 
@@ -6022,6 +6030,8 @@
 
       textInlineElementsMap = createLookupTable('text_inline_elements', 'span strong b em i font strike u var cite ' +
         'dfn code mark q sup sub samp');
+
+      transparentElementsMap = createLookupTable('transparent_elements', 'a ins del canvas map');
 
       each((settings.special || 'script noscript iframe noframes noembed title style textarea xmp').split(' '), function (name) {
         specialElements[name] = new RegExp('<\/' + name + '[^>]*>', 'gi');
@@ -6564,6 +6574,16 @@
       };
 
       /**
+       * Returns a map with transparent elements.
+       *
+       * @method getTransparentElements
+       * @return {Object} Name/value lookup map for transparent elements.
+       */
+      self.getTransparentElements = function () {
+        return transparentElementsMap;
+      };
+
+      /**
        * Returns true/false if the specified element and it's child is valid or not
        * according to the schema.
        *
@@ -6572,7 +6592,7 @@
        * @param {String} child Element child to verify.
        * @return {Boolean} True/false if the element is a valid child of the specified parent.
        */
-      self.isValidChild = function (name, child) {      
+      self.isValidChild = function (name, child) {
         var parent = children[name];
         return !!(parent && parent[child]);
       };
@@ -7387,6 +7407,35 @@
         '#document-fragment': 11
       };
 
+    function isNonEmptyElement(node) {
+      var isNamedAnchor = node.name === 'a' && !node.attr('href') && (node.attr('id'));
+
+      return (node.attr('name') || (node.attr('id') && !node.firstChild) || node.attr('data-mce-bookmark') || isNamedAnchor);
+    }
+
+    function isWhitespaceText(text) {
+      // Check if the text is only whitespace
+      return whiteSpaceRegExp.test(text);
+    }
+
+    function isEmptyTextNode(node) {
+      var text = node.value || '';
+
+      // Non whitespace content
+      if (!isWhitespaceText(text)) {
+        return false;
+      }
+
+      // Parent is not a span and only spaces or is a span but has styles
+      var parentNode = node.parent;
+
+      if (parentNode && (parentNode.name !== 'span' || parentNode.attr('style')) && /^[ ]+$/.test(text)) {
+        return false;
+      }
+
+      return true;
+    }
+
     // Walks the tree left/right
     function walk(node, root_node, prev) {
       var sibling, parent, startName = prev ? 'lastChild' : 'firstChild',
@@ -7851,11 +7900,11 @@
       },
 
       /**
-  		 * Removes all children of the current node.
-  		 *
-  		 * @method empty
-  		 * @return {tinymce.html.Node} The current node that got cleared.
-  		 */
+       * Removes all children of the current node.
+       *
+       * @method empty
+       * @return {tinymce.html.Node} The current node that got cleared.
+       */
       empty: function () {
         var self = this,
           nodes, i, node;
@@ -7891,10 +7940,14 @@
        * @param {Object} elements Name/value object with elements that are automatically treated as non empty elements.
        * @return {Boolean} true/false if the node is empty or not.
        */
-      isEmpty: function (elements) {
+      isEmpty: function (elements, whitespace) {
         var self = this,
           node = self.firstChild,
           i, name;
+
+        if (isNonEmptyElement(self)) {
+          return false;
+        }
 
         function isValidAttribute(name) {
           // allow for anchors and html templating
@@ -7922,12 +7975,16 @@
           do {
             if (node.type === 1) {
               // Ignore bogus elements
-              if (node.attributes.map['data-mce-bogus']) {
+              if (node.attr('data-mce-bogus')) {
                 continue;
               }
 
               // Keep empty elements like <img />
               if (elements[node.name]) {
+                return false;
+              }
+
+              if (isNonEmptyElement(node)) {
                 return false;
               }
 
@@ -7954,9 +8011,17 @@
             }
 
             // Keep non whitespace text nodes
-            if ((node.type === 3 && !whiteSpaceRegExp.test(node.value))) {
+            if (node.type === 3 && !isEmptyTextNode(node)) {
               return false;
             }
+
+            // Keep whitespace preserve elements
+            if (whitespace) {
+              if (node.type === 3 && node.parent && whitespace[node.parent.name] && isWhitespaceText(node.value || '')) {
+                return false;
+              }
+            }
+            
           } while ((node = walk(node, self)));
         }
 
@@ -9350,6 +9415,16 @@
 
 
   /**
+   * Copyright (c) 2025 Ryan Demmer
+   * Licensed under the GNU General Public License v2.0 or later
+   * Includes modified code from TinyMCE 7.x, licensed under the GNU General Public License v2.0 or later
+   * @code https://github.com/tinymce/tinymce/tree/main/modules/tinymce/src/core/main/ts/api/html/Sanitization.ts
+   * Copyright (c) 2025 Ephox Corporation DBA Tiny Technologies, Inc.
+   *  
+   * See LICENSE.txt
+   */
+
+  /**
    * tinymce.html.Sanitizer
    *
    * A custom HTML sanitizer integrating DOMPurify and schema-based filtering.
@@ -9404,26 +9479,34 @@
            *    replaced with a new element of that name, preserving its children.
            * 11. Remaining attributes are filtered via filterAttributes().
            */
-          function processNode(node) {
+          function processNode(node, evt) {
               if (node.nodeType !== 1) {
-                  return true;
+                  return;
               }
 
               var tag = node.tagName.toLowerCase();
 
               // skip body tag
               if (tag === 'body') {
-                  return true;
+                  return;
+              }
+
+              if (node.hasAttribute('data-mce-root')) {
+                  if (evt) {
+                      evt.allowedTags[tag] = true;
+                  }
+
+                  return;
               }
 
               // keep custom root nodes
               if (node.hasAttribute('data-mce-root')) {
-                  return true;
+                  return;
               }
 
               // keep internal nodes
               if (node.hasAttribute('data-mce-type')) {
-                  return true;
+                  return;
               }
 
               // always remove bogus nodes
@@ -9432,66 +9515,71 @@
                   return;
               }
 
-              // skip if we are not validating content
-              if (!settings.validate) {
-                  return;
-              }
-
               var rule = schema.getElementRule(tag);
 
-              if (!rule) {
-                  // If no rule, remove the invalid node
-                  removeNode(node);
-                  return;
+              if (settings.validate && !rule) {
+                  if (tag in special) {
+                      // Special elements are always removed
+                      removeNode(node);
+                      return;
+                  } else {
+                      // unwrap others
+                      removeNode(node, true);
+                  }
+              } else {
+                  if (evt) {
+                      evt.allowedTags[tag] = true;
+                  }
               }
 
-              // Enforce forced attributes
-              each(rule.attributesForced, function (attr) {
-                  node.setAttribute(
-                      attr.name,
-                      attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
-                  );
-              });
-
-              // Apply default attributes
-              each(rule.attributesDefault, function (attr) {
-                  if (!node.hasAttribute(attr.name)) {
+              if (settings.validate && rule) {
+                  // Enforce forced attributes
+                  each(rule.attributesForced, function (attr) {
                       node.setAttribute(
                           attr.name,
                           attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
                       );
+                  });
+
+                  // Apply default attributes
+                  each(rule.attributesDefault, function (attr) {
+                      if (!node.hasAttribute(attr.name)) {
+                          node.setAttribute(
+                              attr.name,
+                              attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
+                          );
+                      }
+                  });
+
+                  // Unwrap and remove if required attributes are missing
+                  if (
+                      rule.attributesRequired &&
+                      !rule.attributesRequired.some(function (attr) {
+                          return node.hasAttribute(attr.name);
+                      })
+                  ) {
+                      removeNode(node, true);
+                      return;
                   }
-              });
 
-              // Unwrap and remove if required attributes are missing
-              if (
-                  rule.attributesRequired &&
-                  !rule.attributesRequired.some(function (attr) {
-                      return node.hasAttribute(attr.name);
-                  })
-              ) {
-                  removeNode(node, true);
-                  return;
-              }
-
-              // Unwrap and remove if all attributes should be stripped and none remain
-              if (rule.removeEmptyAttrs && node.attributes.length === 0) {
-                  removeNode(node, true);
-                  return;
-              }
-
-              // Rename element if schema defines a different outputName
-              if (rule.outputName && rule.outputName !== tag) {
-                  var newNode = document.createElement(rule.outputName);
-                  while (node.firstChild) {
-                      newNode.appendChild(node.firstChild);
+                  // Unwrap and remove if all attributes should be stripped and none remain
+                  if (rule.removeEmptyAttrs && node.attributes.length === 0) {
+                      removeNode(node, true);
+                      return;
                   }
-                  node.parentNode.replaceChild(newNode, node);
-                  node = newNode;
-              }
 
-              // Finally, filter remaining attributes
-              filterAttributes(node);
+                  // Rename element if schema defines a different outputName
+                  if (rule.outputName && rule.outputName !== tag) {
+                      var newNode = document.createElement(rule.outputName);
+
+                      while (node.firstChild) {
+                          newNode.appendChild(node.firstChild);
+                      }
+
+                      node.parentNode.replaceChild(newNode, node);
+                      node = newNode;
+                  }
+              }
           }
 
           /**
@@ -9513,6 +9601,7 @@
            */
           function removeNode(node, unwrap) {
               var parent = node.parentNode;
+
               if (!parent) {
                   return; // No parent, nothing to do
               }
@@ -9529,9 +9618,11 @@
 
               if (unwrap) {
                   var frag = document.createDocumentFragment();
+
                   while (node.firstChild) {
                       frag.appendChild(node.firstChild);
                   }
+
                   parent.insertBefore(frag, node);
                   parent.removeChild(node);
               } else {
@@ -9568,7 +9659,7 @@
                   }
 
                   // Disallow dangerous URLs
-                  if (filteredUrlAttrs[lower] && !isDomSafe(value, tag, settings)) {
+                  if (name in filteredUrlAttrs && !isDomSafe(value, tag, settings)) {
                       node.removeAttribute(name);
                       continue;
                   }
@@ -9576,7 +9667,6 @@
                   // Remove attributes not in schema
                   if (schema.isValid(tag, name) === false) {
                       node.removeAttribute(name);
-
                       continue;
                   }
 
@@ -9595,10 +9685,10 @@
               var config = {
                   IN_PLACE: true,
                   RETURN_DOM: true,
-                  FORCE_BODY: true,
                   ALLOW_UNKNOWN_PROTOCOLS: !!settings.allow_script_urls,
                   ALLOWED_TAGS: ['#comment', '#cdata-section', 'body'],
-                  ALLOWED_ATTR: []
+                  ALLOWED_ATTR: [],
+                  PARSER_MEDIA_TYPE: 'text/html'
               };
 
               // Allow any URI when allowing script urls
@@ -9609,23 +9699,9 @@
                   config.ALLOWED_URI_REGEXP = /^(?!(\w+script|mhtml):)/i;
               }
 
-              var attrNames = {};
-
-              each(schema.elements, function (element, name) {
-                  config.ALLOWED_TAGS.push(name);
-
-                  each(element.attributes, function (_, attrName) {
-                      attrNames[attrName] = true;
-                  });
-
-                  if (name === 'script' || name === 'style') {
-                      config.FORCE_BODY = true;
-                  }
-              });
-
-              each(attrNames, function (_, attrName) {
-                  config.ALLOWED_ATTR.push(attrName);
-              });
+              if (schema.isValid('script') || schema.isValid('style')) {
+                  config.FORCE_BODY = true; // Force body to be present for script/style tags
+              }
 
               return config;
           }
@@ -9633,22 +9709,34 @@
           /**
            * Runs DOMPurify on the given HTML or element, using custom hooks.
            * @private
-           * @param {String|Element} html - Input HTML to sanitize.
+           * @param {String|Element} body - Input HTML or Body element to sanitize.
            * @returns {Element} Sanitized DOM fragment.
            */
-          function purify$1(html) {
+          function purify$1(body, mimeType) {
               var purifier = purify();
               purifier.removeAllHooks();
 
               purifier.addHook('uponSanitizeElement', function (node, data) {
-                  processNode(node);
+                  processNode(node, data);
               });
 
               purifier.addHook('uponSanitizeAttribute', function (node, data) {
                   var attrName = data.attrName.toLowerCase(), tag = node.tagName.toLowerCase();
 
-                  if (/-/.test(attrName) || (settings.allow_event_attributes && /^on[a-z]+/i.test(attrName))) {
-                      data.keepAttr = true;
+                  if (/-/.test(attrName)) {
+                      data.forceKeepAttr = true; // may be internal or custom attributes
+                      return;
+                  }
+
+                  if (/^on[a-z]+/i.test(attrName)) {
+                      // If event attributes are allowed, we keep them if they are valid according to the schema
+                      if (settings.allow_event_attributes && schema.isValid(tag, attrName)) {
+                          data.forceKeepAttr = true;
+                          return;
+                      }
+
+                      // Remove event attributes not allowed by schema
+                      node.removeAttribute(data.attrName);
                       return;
                   }
 
@@ -9660,10 +9748,23 @@
 
                   if (!schema.isValid(tag, attrName)) {
                       node.removeAttribute(data.attrName);
+                  } else {
+                      if (isBooleanAttribute(attrName)) {
+                          data.attrValue = attrName;
+                      }
+
+                      data.keepAttr = true;
+                      data.allowedAttributes[attrName] = true;
                   }
               });
 
-              return purifier.sanitize(html, getPurifyConfig());
+              purifier.sanitize(body, getPurifyConfig());
+
+              console.log(purifier.removed);
+
+              purifier.removed = [];
+
+              return body;
           }
 
           /**
@@ -9677,7 +9778,7 @@
                   return body;
               }
 
-              if (settings.purify_html) {
+              if (settings.purify_html !== false) {
                   return purify$1(body);
               }
 
@@ -9689,10 +9790,13 @@
               var node;
 
               while ((node = iterator.nextNode())) {
+                  processNode(node);
+
                   if (node.nodeType === 1) {
-                      processNode(node);
+                      filterAttributes(node);
                   }
               }
+
               return body;
           };
       };
@@ -10609,23 +10713,23 @@
 
   (function (tinymce) {
     /**
-  	 * This class is used to serialize down the DOM tree into a string using a Writer instance.
-  	 *
-  	 *
-  	 * @example
-  	 * new tinymce.html.Serializer().serialize(new tinymce.html.DomParser().parse('<p>text</p>'));
-  	 * @class tinymce.html.Serializer
-  	 * @version 3.4
-  	 */
+     * This class is used to serialize down the DOM tree into a string using a Writer instance.
+     *
+     *
+     * @example
+     * new tinymce.html.Serializer().serialize(new tinymce.html.DomParser().parse('<p>text</p>'));
+     * @class tinymce.html.Serializer
+     * @version 3.4
+     */
 
     /**
-  	 * Constructs a new Serializer instance.
-  	 *
-  	 * @constructor
-  	 * @method Serializer
-  	 * @param {Object} settings Name/value settings object.
-  	 * @param {tinymce.html.Schema} schema Schema instance to use.
-  	 */
+     * Constructs a new Serializer instance.
+     *
+     * @constructor
+     * @method Serializer
+     * @param {Object} settings Name/value settings object.
+     * @param {tinymce.html.Schema} schema Schema instance to use.
+     */
     tinymce.html.Serializer = function (settings, schema) {
       var self = this,
         writer = new tinymce.html.Writer(settings, schema);
@@ -10638,14 +10742,14 @@
 
       var boolAttrMap = schema.getBoolAttrs();
       /**
-  		 * Serializes the specified node into a string.
-  		 *
-  		 * @example
-  		 * new tinymce.html.Serializer().serialize(new tinymce.html.DomParser().parse('<p>text</p>'));
-  		 * @method serialize
-  		 * @param {tinymce.html.Node} node Node instance to serialize.
-  		 * @return {String} String with HTML based on DOM tree.
-  		 */
+       * Serializes the specified node into a string.
+       *
+       * @example
+       * new tinymce.html.Serializer().serialize(new tinymce.html.DomParser().parse('<p>text</p>'));
+       * @method serialize
+       * @param {tinymce.html.Node} node Node instance to serialize.
+       * @return {String} String with HTML based on DOM tree.
+       */
       self.serialize = function (node) {
         var handlers, validate;
 
@@ -10654,12 +10758,12 @@
         handlers = {
           // #text
           3: function (node) {
-            writer.text(node.value, node.raw);
+            writer.text(node.value || '', node.raw);
           },
 
           // #comment
           8: function (node) {
-            writer.comment(node.value);
+            writer.comment(node.value || '');
           },
 
           // Processing instruction
@@ -10669,12 +10773,12 @@
 
           // Doctype
           10: function (node) {
-            writer.doctype(node.value);
+            writer.doctype(node.value || '');
           },
 
           // CDATA
           4: function (node) {
-            writer.cdata(node.value);
+            writer.cdata(node.value || '');
           },
 
           // Document fragment
@@ -10745,10 +10849,19 @@
             writer.start(node.name, attrs, isEmpty);
 
             if (!isEmpty) {
-              if ((node = node.firstChild)) {
+              var child = node.firstChild;
+
+              if (child) {
+                // Pre and textarea elements treat the first newline character as optional and will omit it. As such, if the content starts
+                // with a newline we need to add in an additional newline to prevent the current newline in the value being treated as optional
+                // See https://html.spec.whatwg.org/multipage/syntax.html#element-restrictions
+                if ((name === 'pre' || name === 'textarea') && child.type === 3 && child.value && child.value.charAt(0) === '\n') {
+                  writer.text('\n', true);
+                }
+
                 do {
-                  walk(node);
-                } while ((node = node.next));
+                  walk(child);
+                } while ((child = child.next));
               }
 
               writer.end(name);
@@ -10759,8 +10872,10 @@
         }
 
         // Serialize element and treat all non elements as fragments
-        if (node.type == 1 && !settings.inner) {
+        if (node.type === 1 && !settings.inner) {
           walk(node);
+        } else if (node.type === 3) {
+          handlers[3](node);
         } else {
           handlers[11](node);
         }
@@ -26086,19 +26201,6 @@
         }
       });
 
-      // Remove bogus elements
-      /*htmlParser.addAttributeFilter('data-mce-bogus', function(nodes, name, args) {
-        var i = nodes.length, node;
-
-        while (i--) {
-          node = nodes[i];
-
-          if (node.attributes.map['data-mce-bogus'] === 'all' && !args.cleanup) {
-            node.remove();
-          }
-        }
-      });*/
-
       htmlParser.addNodeFilter('noscript', function (nodes) {
         var i = nodes.length,
           node;
@@ -26209,8 +26311,8 @@
       // Remove internal data attributes
       htmlParser.addAttributeFilter(
         'data-mce-src,data-mce-href,data-mce-style,' +
-        'data-mce-selected,data-mce-expando,' +
-        'data-mce-type,data-mce-resize,data-mce-new',
+        'data-mce-selected,data-mce-expando,data-mce-block,' +
+        'data-mce-type,data-mce-resize,data-mce-placeholder',
 
         function (nodes, name) {
           var i = nodes.length;
