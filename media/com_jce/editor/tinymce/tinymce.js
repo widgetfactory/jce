@@ -47580,6 +47580,9 @@
        */
       function processXML(content) {
         return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+          // lowercase tag name
+          tag = tag.toLowerCase();
+          
           // check if svg is allowed
           if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
             return match;
