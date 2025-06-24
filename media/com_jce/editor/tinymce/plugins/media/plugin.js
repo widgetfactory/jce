@@ -526,7 +526,8 @@
     }
 
     function isSupportedMedia(editor, url, type) {
-
+        url = url || '';
+        
         // Remove query string from URL
         url = stripQuery(url);
         var ext = url.split('.').pop().toLowerCase();
@@ -758,7 +759,7 @@
 
         }
 
-        return false;
+        return value;
     }
 
     /**
