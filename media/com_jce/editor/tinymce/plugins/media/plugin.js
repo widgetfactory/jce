@@ -524,6 +524,7 @@
     }
 
     function isSupportedMedia(editor, url, type) {
+        url = url || '';
 
         // Remove query string from URL
         url = stripQuery(url);
@@ -756,7 +757,7 @@
 
         }
 
-        return false;
+        return value;
     }
 
     /**
