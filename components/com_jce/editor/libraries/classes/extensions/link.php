@@ -198,7 +198,7 @@ class WFLinkExtension extends WFExtension
      *
      * @return Category list object
      */
-    public function getItemId($component, $needles = array())
+    public static function getItemId($component, $needles = array())
     {
         $match = null;
 
