@@ -1536,7 +1536,7 @@
       'mailto': 25
     };
 
-    var safeSvgDataUrlElements = [ 'img', 'video' ];
+    var safeSvgDataUrlElements = ['img', 'video'];
 
     function isNonNullable(value) {
       return value !== null && value !== undefined;
@@ -1548,78 +1548,78 @@
      */
     tinymce.util.URI = function (url, settings) {
       var self = this,
-          baseUri, base_url;
+        baseUri, base_url;
 
-        url = trim(url);
-        settings = self.settings = settings || {};
-        baseUri = settings.base_uri;
+      url = trim(url);
+      settings = self.settings = settings || {};
+      baseUri = settings.base_uri;
 
-        // Strange app protocol that isn't http/https or local anchor
-        // For example: mailto,skype,tel etc.
-        if (/^([\w\-]+):([^\/]{2})/i.test(url) || /^\s*#/.test(url)) {
-          self.source = url;
-          return;
+      // Strange app protocol that isn't http/https or local anchor
+      // For example: mailto,skype,tel etc.
+      if (/^([\w\-]+):([^\/]{2})/i.test(url) || /^\s*#/.test(url)) {
+        self.source = url;
+        return;
+      }
+
+      var isProtocolRelative = url.indexOf('//') === 0;
+
+      // Absolute path with no host, fake host and protocol
+      if (url.indexOf('/') === 0 && !isProtocolRelative) {
+        url = (baseUri ? baseUri.protocol || 'http' : 'http') + '://mce_host' + url;
+      }
+
+      // Relative path http:// or protocol relative //path
+      if (!/^[\w\-]*:?\/\//.test(url)) {
+        base_url = settings.base_uri ? settings.base_uri.path : new tinymce.util.URI(location.href).directory;
+        if (settings.base_uri.protocol === "") {
+          url = '//mce_host' + self.toAbsPath(base_url, url);
+        } else {
+          url = /([^#?]*)([#?]?.*)/.exec(url);
+          url = ((baseUri && baseUri.protocol) || 'http') + '://mce_host' + self.toAbsPath(base_url, url[1]) + url[2];
+        }
+      }
+
+      // Parse URL (Credits goes to Steave, http://blog.stevenlevithan.com/archives/parseuri)
+      url = url.replace(/@@/g, '(mce_at)'); // Zope 3 workaround, they use @@something
+
+      /*jshint maxlen: 255 */
+      /*eslint max-len: 0 */
+      url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
+
+      each(queryParts, function (v, i) {
+        var part = url[i];
+
+        // Zope 3 workaround, they use @@something
+        if (part) {
+          part = part.replace(/\(mce_at\)/g, '@@');
         }
 
-        var isProtocolRelative = url.indexOf('//') === 0;
+        self[v] = part;
+      });
 
-        // Absolute path with no host, fake host and protocol
-        if (url.indexOf('/') === 0 && !isProtocolRelative) {
-          url = (baseUri ? baseUri.protocol || 'http' : 'http') + '://mce_host' + url;
+      if (baseUri) {
+        if (!self.protocol) {
+          self.protocol = baseUri.protocol;
         }
 
-        // Relative path http:// or protocol relative //path
-        if (!/^[\w\-]*:?\/\//.test(url)) {
-          base_url = settings.base_uri ? settings.base_uri.path : new tinymce.util.URI(location.href).directory;
-          if (settings.base_uri.protocol === "") {
-            url = '//mce_host' + self.toAbsPath(base_url, url);
-          } else {
-            url = /([^#?]*)([#?]?.*)/.exec(url);
-            url = ((baseUri && baseUri.protocol) || 'http') + '://mce_host' + self.toAbsPath(base_url, url[1]) + url[2];
-          }
+        if (!self.userInfo) {
+          self.userInfo = baseUri.userInfo;
         }
 
-        // Parse URL (Credits goes to Steave, http://blog.stevenlevithan.com/archives/parseuri)
-        url = url.replace(/@@/g, '(mce_at)'); // Zope 3 workaround, they use @@something
-
-        /*jshint maxlen: 255 */
-        /*eslint max-len: 0 */
-        url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
-
-        each(queryParts, function (v, i) {
-          var part = url[i];
-
-          // Zope 3 workaround, they use @@something
-          if (part) {
-            part = part.replace(/\(mce_at\)/g, '@@');
-          }
-
-          self[v] = part;
-        });
-
-        if (baseUri) {
-          if (!self.protocol) {
-            self.protocol = baseUri.protocol;
-          }
-
-          if (!self.userInfo) {
-            self.userInfo = baseUri.userInfo;
-          }
-
-          if (!self.port && self.host === 'mce_host') {
-            self.port = baseUri.port;
-          }
-
-          if (!self.host || self.host === 'mce_host') {
-            self.host = baseUri.host;
-          }
-
-          self.source = '';
+        if (!self.port && self.host === 'mce_host') {
+          self.port = baseUri.port;
         }
 
-        if (isProtocolRelative) {
-          self.protocol = '';
+        if (!self.host || self.host === 'mce_host') {
+          self.host = baseUri.host;
         }
+
+        self.source = '';
+      }
+
+      if (isProtocolRelative) {
+        self.protocol = '';
+      }
     };
 
     tinymce.util.URI.prototype = {
@@ -1914,6 +1914,16 @@
       }
     };
 
+    var decodeUri = function (encodedUri) {
+      try {
+        // Might throw malformed URI sequence
+        return decodeURIComponent(encodedUri);
+      } catch (ex) {
+        // Fallback to non UTF-8 decoder
+        return unescape(encodedUri);
+      }
+    };
+
     var blockSvgDataUris = function (allowSvgDataUrls, tagName) {
       if (isNonNullable(allowSvgDataUrls)) {
         return !allowSvgDataUrls;
@@ -1924,12 +1934,20 @@
     };
 
     var isInvalidUri = function (settings, uri, tagName) {
-      if (settings.allow_html_data_urls) {
+      // remove all whitespaces from decoded uri to prevent impact on regex matching
+      var decodedUri = decodeUri(uri).replace(/\s/g, '');
+
+      if (settings.allow_script_urls) {
         return false;
-      } else if (/^data:image\//i.test(uri)) {
-        return blockSvgDataUris(settings.allow_svg_data_urls, tagName) && /^data:image\/svg\+xml/i.test(uri);
+        // Ensure we don't have a javascript URI, as that is not safe since it allows arbitrary JavaScript execution
+      } else if (/((java|vb)script|mhtml):/i.test(decodedUri)) {
+        return true;
+      } else if (settings.allow_html_data_urls) {
+        return false;
+      } else if (/^data:image\//i.test(decodedUri)) {
+        return blockSvgDataUris(settings.allow_svg_data_urls, tagName) && /^data:image\/svg\+xml/i.test(decodedUri);
       } else {
-        return /^data:/i.test(uri);
+        return /^data:/i.test(decodedUri);
       }
     };
 
@@ -4239,6 +4257,142 @@
       return lvl >= 2;
     }
 
+    /**
+   * Correct ES5 RGB→HSL conversion (keeps saturation in HSL space)
+   */
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      var max = Math.max(r, g, b),
+        min = Math.min(r, g, b),
+        l = (max + min) / 2,
+        d = max - min,
+        h = 0,
+        s = 0;
+
+      if (d !== 0) {
+        // H
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+          case g: h = ((b - r) / d + 2); break;
+          case b: h = ((r - g) / d + 4); break;
+        }
+        h = h * 60;
+
+        // S (correct for HSL)
+        //   = d / (1 - |2L - 1|)
+        s = d / (1 - Math.abs(2 * l - 1));
+      }
+
+      return [h, s, l];
+    }
+
+    /**
+     * Convert HSL [0–360,0–1,0–1] back to RGB [0–255].
+     */
+    function hslToRgb(h, s, l) {
+      h /= 360;
+      function hue2rgb(p, q, t) {
+        if (t < 0) {
+          t += 1;
+        }
+        if (t > 1) {
+          t -= 1;
+        }
+        if (t < 1 / 6) {
+          return p + (q - p) * 6 * t;
+        }
+        if (t < 1 / 2) {
+          return q;
+        }
+        if (t < 2 / 3) {
+          return p + (q - p) * (2 / 3 - t) * 6;
+        }
+        return p;
+      }
+      var r, g, b;
+      if (s === 0) {
+        r = g = b = l;
+      } else {
+        var q = (l < 0.5) ? (l * (1 + s)) : (l + s - l * s);
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+      }
+      return [
+        Math.round(r * 255),
+        Math.round(g * 255),
+        Math.round(b * 255)
+      ];
+    }
+
+    /**
+     * Compute contrast ratio between two CSS colors.
+     */
+    function getContrastRatio(c1, c2) {
+      var l1 = getLuminance(c1);
+      var l2 = getLuminance(c2);
+      return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    }
+
+    /**
+     * Adjust a foreground color so that its contrast ratio against a background
+     * meets the targetContrast, by tweaking HSL lightness via binary search.
+     *
+     * @param {string} fgColor       - any CSS color string
+     * @param {string} bgColor       - any CSS color string
+     * @param {number} targetContrast - desired contrast ratio, e.g. 2.0
+     * @param {number} iterations    - binary search steps (default 20)
+     * @returns {string}              - new foreground as "#rrggbb"
+     */
+    function adjustContrastColor(fgColor, bgColor, targetContrast, iterations) {
+      if (iterations == null) {
+        iterations = 20;
+      }
+
+      // Early exit if already readable
+      if (getContrastRatio(fgColor, bgColor) >= targetContrast) {
+        return fgColor;
+      }
+
+      // Parse FG to RGBA object via your existing helper
+      var col = getRGBA(fgColor);
+      var r = col.r, g = col.g, b = col.b;
+
+      // Determine whether to lighten (fgLum > bgLum) or darken
+      var lighten = getLuminance(fgColor) > getLuminance(bgColor);
+
+      // Convert FG to HSL
+      var hsl = rgbToHsl(r, g, b);
+      var h = hsl[0], s = hsl[1], origL = hsl[2];
+
+      var low = 0, high = 1, bestL = origL;
+
+      for (var i = 0; i < iterations; i++) {
+        var mid = (low + high) / 2;
+        var testL = lighten ? origL + mid * (1 - origL) : origL - mid * origL;
+        var rgb = hslToRgb(h, s, testL);
+        var hex = '#' +
+          ('0' + rgb[0].toString(16)).slice(-2) +
+          ('0' + rgb[1].toString(16)).slice(-2) +
+          ('0' + rgb[2].toString(16)).slice(-2);
+
+        if (getContrastRatio(hex, bgColor) >= targetContrast) {
+          bestL = testL;
+          high = mid;
+        } else {
+          low = mid;
+        }
+      }
+
+      var finalRgb = hslToRgb(h, s, bestL);
+
+      return '#' +
+        ('0' + finalRgb[0].toString(16)).slice(-2) +
+        ('0' + finalRgb[1].toString(16)).slice(-2) +
+        ('0' + finalRgb[2].toString(16)).slice(-2);
+    }
+
     var resetElm = function () {
       if (previewElm && previewElm.parentNode) {
         previewElm.parentNode.removeChild(previewElm);
@@ -4346,7 +4500,7 @@
             if (value && isReadable(value, bodybg)) {
               value = bodybg;
             } else {
-              value = 'inherit';
+              value = adjustContrastColor(value, elmbg, 2.0);
             }
           }
         }
@@ -4709,7 +4863,7 @@
     return mimes[mime.toLowerCase()] || 'dat';
   }
 
-  function create$1(o, blob, base64, filename) {
+  function create$2(o, blob, base64, filename) {
     return typeof o === 'object' ? toBlobInfo(o) : toBlobInfo({
       id: o,
       name: filename,
@@ -4781,7 +4935,7 @@
   }
 
   tinymce.file.BlobCache = {
-    create: create$1,
+    create: create$2,
     add: add,
     get: get,
     getByUri: getByUri,
@@ -5783,9 +5937,9 @@
       add("img", "src sizes srcset alt usemap ismap width height");
       add("iframe", "src name width height", flowContent);
       add("embed", "src type width height");
-      add("object", "data type typemustmatch name usemap form width height", flowContent, "param");
+      add("object", "data type typemustmatch name usemap form width height", [ flowContent, 'param' ].join(' '));
       add("param", "name value");
-      add("map", "name", flowContent, "area");
+      add("map", "name", [ flowContent, 'area' ].join(' '));
       add("area", "alt coords shape href target rel media hreflang type");
       add("table", "border", "caption colgroup thead tfoot tbody tr" + (type == "html4" ? " col" : ""));
       add("colgroup", "span", "col");
@@ -5795,7 +5949,7 @@
       add("td", "colspan rowspan headers", flowContent);
       add("th", "colspan rowspan headers scope abbr", flowContent);
       add("form", "accept-charset action autocomplete enctype method name novalidate target", flowContent);
-      add("fieldset", "disabled form name", flowContent, "legend");
+      add("fieldset", "disabled form name", [ flowContent, 'legend' ].join(' '));
       add("label", "form for", phrasingContent);
       add("input", "accept alt autocomplete checked dirname disabled form formaction formenctype formmethod formnovalidate " +
         "formtarget height list max maxlength min multiple name pattern readonly required size src step type value width"
@@ -5814,27 +5968,27 @@
       // Extend with HTML5 elements
       if (type != "html4") {
         add("wbr");
-        add("ruby", "", phrasingContent, "rt rp");
+        add("ruby", "", [ phrasingContent, 'rt rp' ].join(' '));
         add("figcaption", "", flowContent);
         add("mark rt rp summary bdi", "", phrasingContent);
         add("canvas", "width height", flowContent);
         add("video", "src crossorigin poster preload autoplay mediagroup loop " +
-          "muted controls width height buffered controlslist playsinline", flowContent, "track source");
-        add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", flowContent, "track source");
+          "muted controls width height buffered controlslist playsinline", [ flowContent, 'track source' ].join(' '));
+        add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", [ flowContent, 'track source' ].join(' '));
         add("picture", "", "img source");
         add("source", "src srcset type media sizes");
         add("track", "kind src srclang label default");
-        add("datalist", "", phrasingContent, "option");
+        add("datalist", "", [ phrasingContent, 'option' ].join(' '));
         add("article section nav aside header footer", "", flowContent);
         add("hgroup", "", "h1 h2 h3 h4 h5 h6");
-        add("figure", "", flowContent, "figcaption");
+        add("figure", "", [ flowContent, 'figcaption' ].join(' '));
         add("time", "datetime", phrasingContent);
         add("dialog", "open", flowContent);
         add("command", "type label icon disabled checked radiogroup command");
         add("output", "for form name", phrasingContent);
         add("progress", "value max", phrasingContent);
         add("meter", "value min max low high optimum", phrasingContent);
-        add("details", "open", flowContent, "summary");
+        add("details", "open", [ flowContent, 'summary' ].join(' '));
         add("keygen", "autofocus challenge disabled form keytype name");
 
         // update with flowContent
@@ -6029,7 +6183,7 @@
         'th tr td li ol ul caption dl dt dd noscript menu isindex option ' +
         'datalist select optgroup figcaption details summary', textBlockElementsMap);
 
-      textInlineElementsMap = createLookupTable('text_inline_elements', 'span strong b em i font strike u var cite ' +
+      textInlineElementsMap = createLookupTable('text_inline_elements', 'span strong b em i font s strike u var cite' +
         'dfn code mark q sup sub samp');
 
       transparentElementsMap = createLookupTable('transparent_elements', 'a ins del canvas map');
@@ -6360,20 +6514,34 @@
         }
 
         // Add default alt attribute for images
-        elements.img.attributesDefault = [{
-          name: 'alt',
-          value: ''
-        }];
+        if (settings.img_default_alt_attribute !== false) {
+          elements.img.attributesDefault = [{
+            name: 'alt',
+            value: ''
+          }];
+        }
+
+        // By default,
+        // - padd the text inline element if it is empty and also a child of an empty root block
+        // - in all other cases, remove the text inline element if it is empty
+        each(textInlineElementsMap, function (_val, name) {
+          if (elements[name]) {          
+            if (settings.padd_empty_block_inline_children) {
+              elements[name].paddInEmptyBlock = true;
+            }
+            elements[name].removeEmpty = true;
+          }
+        });
 
         // Remove these if they are empty by default
-        each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
+        each(split('ol ul blockquote a table tbody'), function (name) {
           if (elements[name]) {
             elements[name].removeEmpty = true;
           }
         });
 
         // Padd these by default
-        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption'), function (name) {
+        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption li summary'), function (name) {
           elements[name].paddEmpty = true;
         });
 
@@ -6411,8 +6579,8 @@
 
       // If the user didn't allow span only allow internal spans
       if (!getElementRule('span')) {
-        //addValidElements('span[!data-mce-type|*]');
-        addValidElements('span[*]');
+        addValidElements('span[!data-mce-type|*]');
+        //addValidElements('span[*]');
       }
 
       /**
@@ -8070,16 +8238,1765 @@
     tinymce.html.Node = Node;
   })(tinymce);
 
+  /*! @license DOMPurify 3.2.6 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.6/LICENSE */
+
+  const {
+    entries,
+    setPrototypeOf,
+    isFrozen,
+    getPrototypeOf,
+    getOwnPropertyDescriptor
+  } = Object;
+  let {
+    freeze,
+    seal,
+    create: create$1
+  } = Object; // eslint-disable-line import/no-mutable-exports
+  let {
+    apply,
+    construct
+  } = typeof Reflect !== 'undefined' && Reflect;
+  if (!freeze) {
+    freeze = function freeze(x) {
+      return x;
+    };
+  }
+  if (!seal) {
+    seal = function seal(x) {
+      return x;
+    };
+  }
+  if (!apply) {
+    apply = function apply(fun, thisValue, args) {
+      return fun.apply(thisValue, args);
+    };
+  }
+  if (!construct) {
+    construct = function construct(Func, args) {
+      return new Func(...args);
+    };
+  }
+  const arrayForEach = unapply(Array.prototype.forEach);
+  const arrayLastIndexOf = unapply(Array.prototype.lastIndexOf);
+  const arrayPop = unapply(Array.prototype.pop);
+  const arrayPush = unapply(Array.prototype.push);
+  const arraySplice = unapply(Array.prototype.splice);
+  const stringToLowerCase = unapply(String.prototype.toLowerCase);
+  const stringToString = unapply(String.prototype.toString);
+  const stringMatch = unapply(String.prototype.match);
+  const stringReplace = unapply(String.prototype.replace);
+  const stringIndexOf = unapply(String.prototype.indexOf);
+  const stringTrim = unapply(String.prototype.trim);
+  const objectHasOwnProperty = unapply(Object.prototype.hasOwnProperty);
+  const regExpTest = unapply(RegExp.prototype.test);
+  const typeErrorCreate = unconstruct(TypeError);
   /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   * Creates a new function that calls the given function with a specified thisArg and arguments.
    *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
+   * @param func - The function to be wrapped and called.
+   * @returns A new function that calls the given function with a specified thisArg and arguments.
+   */
+  function unapply(func) {
+    return function (thisArg) {
+      if (thisArg instanceof RegExp) {
+        thisArg.lastIndex = 0;
+      }
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      return apply(func, thisArg, args);
+    };
+  }
+  /**
+   * Creates a new function that constructs an instance of the given constructor function with the provided arguments.
+   *
+   * @param func - The constructor function to be wrapped and called.
+   * @returns A new function that constructs an instance of the given constructor function with the provided arguments.
+   */
+  function unconstruct(func) {
+    return function () {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+      return construct(func, args);
+    };
+  }
+  /**
+   * Add properties to a lookup table
+   *
+   * @param set - The set to which elements will be added.
+   * @param array - The array containing elements to be added to the set.
+   * @param transformCaseFunc - An optional function to transform the case of each element before adding to the set.
+   * @returns The modified set with added elements.
+   */
+  function addToSet(set, array) {
+    let transformCaseFunc = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : stringToLowerCase;
+    if (setPrototypeOf) {
+      // Make 'in' and truthy checks like Boolean(set.constructor)
+      // independent of any properties defined on Object.prototype.
+      // Prevent prototype setters from intercepting set as a this value.
+      setPrototypeOf(set, null);
+    }
+    let l = array.length;
+    while (l--) {
+      let element = array[l];
+      if (typeof element === 'string') {
+        const lcElement = transformCaseFunc(element);
+        if (lcElement !== element) {
+          // Config presets (e.g. tags.js, attrs.js) are immutable.
+          if (!isFrozen(array)) {
+            array[l] = lcElement;
+          }
+          element = lcElement;
+        }
+      }
+      set[element] = true;
+    }
+    return set;
+  }
+  /**
+   * Clean up an array to harden against CSPP
+   *
+   * @param array - The array to be cleaned.
+   * @returns The cleaned version of the array
+   */
+  function cleanArray(array) {
+    for (let index = 0; index < array.length; index++) {
+      const isPropertyExist = objectHasOwnProperty(array, index);
+      if (!isPropertyExist) {
+        array[index] = null;
+      }
+    }
+    return array;
+  }
+  /**
+   * Shallow clone an object
+   *
+   * @param object - The object to be cloned.
+   * @returns A new object that copies the original.
+   */
+  function clone(object) {
+    const newObject = create$1(null);
+    for (const [property, value] of entries(object)) {
+      const isPropertyExist = objectHasOwnProperty(object, property);
+      if (isPropertyExist) {
+        if (Array.isArray(value)) {
+          newObject[property] = cleanArray(value);
+        } else if (value && typeof value === 'object' && value.constructor === Object) {
+          newObject[property] = clone(value);
+        } else {
+          newObject[property] = value;
+        }
+      }
+    }
+    return newObject;
+  }
+  /**
+   * This method automatically checks if the prop is function or getter and behaves accordingly.
+   *
+   * @param object - The object to look up the getter function in its prototype chain.
+   * @param prop - The property name for which to find the getter function.
+   * @returns The getter function found in the prototype chain or a fallback function.
+   */
+  function lookupGetter(object, prop) {
+    while (object !== null) {
+      const desc = getOwnPropertyDescriptor(object, prop);
+      if (desc) {
+        if (desc.get) {
+          return unapply(desc.get);
+        }
+        if (typeof desc.value === 'function') {
+          return unapply(desc.value);
+        }
+      }
+      object = getPrototypeOf(object);
+    }
+    function fallbackValue() {
+      return null;
+    }
+    return fallbackValue;
+  }
+
+  const html$1 = freeze(['a', 'abbr', 'acronym', 'address', 'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'big', 'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'content', 'data', 'datalist', 'dd', 'decorator', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'main', 'map', 'mark', 'marquee', 'menu', 'menuitem', 'meter', 'nav', 'nobr', 'ol', 'optgroup', 'option', 'output', 'p', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'section', 'select', 'shadow', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr']);
+  const svg$1 = freeze(['svg', 'a', 'altglyph', 'altglyphdef', 'altglyphitem', 'animatecolor', 'animatemotion', 'animatetransform', 'circle', 'clippath', 'defs', 'desc', 'ellipse', 'filter', 'font', 'g', 'glyph', 'glyphref', 'hkern', 'image', 'line', 'lineargradient', 'marker', 'mask', 'metadata', 'mpath', 'path', 'pattern', 'polygon', 'polyline', 'radialgradient', 'rect', 'stop', 'style', 'switch', 'symbol', 'text', 'textpath', 'title', 'tref', 'tspan', 'view', 'vkern']);
+  const svgFilters = freeze(['feBlend', 'feColorMatrix', 'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap', 'feDistantLight', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode', 'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile', 'feTurbulence']);
+  // List of SVG elements that are disallowed by default.
+  // We still need to know them so that we can do namespace
+  // checks properly in case one wants to add them to
+  // allow-list.
+  const svgDisallowed = freeze(['animate', 'color-profile', 'cursor', 'discard', 'font-face', 'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri', 'foreignobject', 'hatch', 'hatchpath', 'mesh', 'meshgradient', 'meshpatch', 'meshrow', 'missing-glyph', 'script', 'set', 'solidcolor', 'unknown', 'use']);
+  const mathMl$1 = freeze(['math', 'menclose', 'merror', 'mfenced', 'mfrac', 'mglyph', 'mi', 'mlabeledtr', 'mmultiscripts', 'mn', 'mo', 'mover', 'mpadded', 'mphantom', 'mroot', 'mrow', 'ms', 'mspace', 'msqrt', 'mstyle', 'msub', 'msup', 'msubsup', 'mtable', 'mtd', 'mtext', 'mtr', 'munder', 'munderover', 'mprescripts']);
+  // Similarly to SVG, we want to know all MathML elements,
+  // even those that we disallow by default.
+  const mathMlDisallowed = freeze(['maction', 'maligngroup', 'malignmark', 'mlongdiv', 'mscarries', 'mscarry', 'msgroup', 'mstack', 'msline', 'msrow', 'semantics', 'annotation', 'annotation-xml', 'mprescripts', 'none']);
+  const text = freeze(['#text']);
+
+  const html = freeze(['accept', 'action', 'align', 'alt', 'autocapitalize', 'autocomplete', 'autopictureinpicture', 'autoplay', 'background', 'bgcolor', 'border', 'capture', 'cellpadding', 'cellspacing', 'checked', 'cite', 'class', 'clear', 'color', 'cols', 'colspan', 'controls', 'controlslist', 'coords', 'crossorigin', 'datetime', 'decoding', 'default', 'dir', 'disabled', 'disablepictureinpicture', 'disableremoteplayback', 'download', 'draggable', 'enctype', 'enterkeyhint', 'face', 'for', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'id', 'inputmode', 'integrity', 'ismap', 'kind', 'label', 'lang', 'list', 'loading', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'minlength', 'multiple', 'muted', 'name', 'nonce', 'noshade', 'novalidate', 'nowrap', 'open', 'optimum', 'pattern', 'placeholder', 'playsinline', 'popover', 'popovertarget', 'popovertargetaction', 'poster', 'preload', 'pubdate', 'radiogroup', 'readonly', 'rel', 'required', 'rev', 'reversed', 'role', 'rows', 'rowspan', 'spellcheck', 'scope', 'selected', 'shape', 'size', 'sizes', 'span', 'srclang', 'start', 'src', 'srcset', 'step', 'style', 'summary', 'tabindex', 'title', 'translate', 'type', 'usemap', 'valign', 'value', 'width', 'wrap', 'xmlns', 'slot']);
+  const svg = freeze(['accent-height', 'accumulate', 'additive', 'alignment-baseline', 'amplitude', 'ascent', 'attributename', 'attributetype', 'azimuth', 'basefrequency', 'baseline-shift', 'begin', 'bias', 'by', 'class', 'clip', 'clippathunits', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cx', 'cy', 'd', 'dx', 'dy', 'diffuseconstant', 'direction', 'display', 'divisor', 'dur', 'edgemode', 'elevation', 'end', 'exponent', 'fill', 'fill-opacity', 'fill-rule', 'filter', 'filterunits', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'fx', 'fy', 'g1', 'g2', 'glyph-name', 'glyphref', 'gradientunits', 'gradienttransform', 'height', 'href', 'id', 'image-rendering', 'in', 'in2', 'intercept', 'k', 'k1', 'k2', 'k3', 'k4', 'kerning', 'keypoints', 'keysplines', 'keytimes', 'lang', 'lengthadjust', 'letter-spacing', 'kernelmatrix', 'kernelunitlength', 'lighting-color', 'local', 'marker-end', 'marker-mid', 'marker-start', 'markerheight', 'markerunits', 'markerwidth', 'maskcontentunits', 'maskunits', 'max', 'mask', 'media', 'method', 'mode', 'min', 'name', 'numoctaves', 'offset', 'operator', 'opacity', 'order', 'orient', 'orientation', 'origin', 'overflow', 'paint-order', 'path', 'pathlength', 'patterncontentunits', 'patterntransform', 'patternunits', 'points', 'preservealpha', 'preserveaspectratio', 'primitiveunits', 'r', 'rx', 'ry', 'radius', 'refx', 'refy', 'repeatcount', 'repeatdur', 'restart', 'result', 'rotate', 'scale', 'seed', 'shape-rendering', 'slope', 'specularconstant', 'specularexponent', 'spreadmethod', 'startoffset', 'stddeviation', 'stitchtiles', 'stop-color', 'stop-opacity', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke', 'stroke-width', 'style', 'surfacescale', 'systemlanguage', 'tabindex', 'tablevalues', 'targetx', 'targety', 'transform', 'transform-origin', 'text-anchor', 'text-decoration', 'text-rendering', 'textlength', 'type', 'u1', 'u2', 'unicode', 'values', 'viewbox', 'visibility', 'version', 'vert-adv-y', 'vert-origin-x', 'vert-origin-y', 'width', 'word-spacing', 'wrap', 'writing-mode', 'xchannelselector', 'ychannelselector', 'x', 'x1', 'x2', 'xmlns', 'y', 'y1', 'y2', 'z', 'zoomandpan']);
+  const mathMl = freeze(['accent', 'accentunder', 'align', 'bevelled', 'close', 'columnsalign', 'columnlines', 'columnspan', 'denomalign', 'depth', 'dir', 'display', 'displaystyle', 'encoding', 'fence', 'frame', 'height', 'href', 'id', 'largeop', 'length', 'linethickness', 'lspace', 'lquote', 'mathbackground', 'mathcolor', 'mathsize', 'mathvariant', 'maxsize', 'minsize', 'movablelimits', 'notation', 'numalign', 'open', 'rowalign', 'rowlines', 'rowspacing', 'rowspan', 'rspace', 'rquote', 'scriptlevel', 'scriptminsize', 'scriptsizemultiplier', 'selection', 'separator', 'separators', 'stretchy', 'subscriptshift', 'supscriptshift', 'symmetric', 'voffset', 'width', 'xmlns']);
+  const xml = freeze(['xlink:href', 'xml:id', 'xlink:title', 'xml:space', 'xmlns:xlink']);
+
+  // eslint-disable-next-line unicorn/better-regex
+  const MUSTACHE_EXPR = seal(/\{\{[\w\W]*|[\w\W]*\}\}/gm); // Specify template detection regex for SAFE_FOR_TEMPLATES mode
+  const ERB_EXPR = seal(/<%[\w\W]*|[\w\W]*%>/gm);
+  const TMPLIT_EXPR = seal(/\$\{[\w\W]*/gm); // eslint-disable-line unicorn/better-regex
+  const DATA_ATTR = seal(/^data-[\-\w.\u00B7-\uFFFF]+$/); // eslint-disable-line no-useless-escape
+  const ARIA_ATTR = seal(/^aria-[\-\w]+$/); // eslint-disable-line no-useless-escape
+  const IS_ALLOWED_URI = seal(/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|matrix):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i // eslint-disable-line no-useless-escape
+  );
+  const IS_SCRIPT_OR_DATA = seal(/^(?:\w+script|data):/i);
+  const ATTR_WHITESPACE = seal(/[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g // eslint-disable-line no-control-regex
+  );
+  const DOCTYPE_NAME = seal(/^html$/i);
+  const CUSTOM_ELEMENT = seal(/^[a-z][.\w]*(-[.\w]+)+$/i);
+
+  var EXPRESSIONS = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    ARIA_ATTR: ARIA_ATTR,
+    ATTR_WHITESPACE: ATTR_WHITESPACE,
+    CUSTOM_ELEMENT: CUSTOM_ELEMENT,
+    DATA_ATTR: DATA_ATTR,
+    DOCTYPE_NAME: DOCTYPE_NAME,
+    ERB_EXPR: ERB_EXPR,
+    IS_ALLOWED_URI: IS_ALLOWED_URI,
+    IS_SCRIPT_OR_DATA: IS_SCRIPT_OR_DATA,
+    MUSTACHE_EXPR: MUSTACHE_EXPR,
+    TMPLIT_EXPR: TMPLIT_EXPR
+  });
+
+  /* eslint-disable @typescript-eslint/indent */
+  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+  const NODE_TYPE = {
+    element: 1,
+    attribute: 2,
+    text: 3,
+    cdataSection: 4,
+    entityReference: 5,
+    // Deprecated
+    entityNode: 6,
+    // Deprecated
+    progressingInstruction: 7,
+    comment: 8,
+    document: 9,
+    documentType: 10,
+    documentFragment: 11,
+    notation: 12 // Deprecated
+  };
+  const getGlobal = function getGlobal() {
+    return typeof window === 'undefined' ? null : window;
+  };
+  /**
+   * Creates a no-op policy for internal use only.
+   * Don't export this function outside this module!
+   * @param trustedTypes The policy factory.
+   * @param purifyHostElement The Script element used to load DOMPurify (to determine policy name suffix).
+   * @return The policy created (or null, if Trusted Types
+   * are not supported or creating the policy failed).
+   */
+  const _createTrustedTypesPolicy = function _createTrustedTypesPolicy(trustedTypes, purifyHostElement) {
+    if (typeof trustedTypes !== 'object' || typeof trustedTypes.createPolicy !== 'function') {
+      return null;
+    }
+    // Allow the callers to control the unique policy name
+    // by adding a data-tt-policy-suffix to the script element with the DOMPurify.
+    // Policy creation with duplicate names throws in Trusted Types.
+    let suffix = null;
+    const ATTR_NAME = 'data-tt-policy-suffix';
+    if (purifyHostElement && purifyHostElement.hasAttribute(ATTR_NAME)) {
+      suffix = purifyHostElement.getAttribute(ATTR_NAME);
+    }
+    const policyName = 'dompurify' + (suffix ? '#' + suffix : '');
+    try {
+      return trustedTypes.createPolicy(policyName, {
+        createHTML(html) {
+          return html;
+        },
+        createScriptURL(scriptUrl) {
+          return scriptUrl;
+        }
+      });
+    } catch (_) {
+      // Policy creation failed (most likely another DOMPurify script has
+      // already run). Skip creating the policy, as this will only cause errors
+      // if TT are enforced.
+      console.warn('TrustedTypes policy ' + policyName + ' could not be created.');
+      return null;
+    }
+  };
+  const _createHooksMap = function _createHooksMap() {
+    return {
+      afterSanitizeAttributes: [],
+      afterSanitizeElements: [],
+      afterSanitizeShadowDOM: [],
+      beforeSanitizeAttributes: [],
+      beforeSanitizeElements: [],
+      beforeSanitizeShadowDOM: [],
+      uponSanitizeAttribute: [],
+      uponSanitizeElement: [],
+      uponSanitizeShadowNode: []
+    };
+  };
+  function createDOMPurify() {
+    let window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
+    const DOMPurify = root => createDOMPurify(root);
+    DOMPurify.version = '3.2.6';
+    DOMPurify.removed = [];
+    if (!window || !window.document || window.document.nodeType !== NODE_TYPE.document || !window.Element) {
+      // Not running in a browser, provide a factory function
+      // so that you can pass your own Window
+      DOMPurify.isSupported = false;
+      return DOMPurify;
+    }
+    let {
+      document
+    } = window;
+    const originalDocument = document;
+    const currentScript = originalDocument.currentScript;
+    const {
+      DocumentFragment,
+      HTMLTemplateElement,
+      Node,
+      Element,
+      NodeFilter,
+      NamedNodeMap = window.NamedNodeMap || window.MozNamedAttrMap,
+      HTMLFormElement,
+      DOMParser,
+      trustedTypes
+    } = window;
+    const ElementPrototype = Element.prototype;
+    const cloneNode = lookupGetter(ElementPrototype, 'cloneNode');
+    const remove = lookupGetter(ElementPrototype, 'remove');
+    const getNextSibling = lookupGetter(ElementPrototype, 'nextSibling');
+    const getChildNodes = lookupGetter(ElementPrototype, 'childNodes');
+    const getParentNode = lookupGetter(ElementPrototype, 'parentNode');
+    // As per issue #47, the web-components registry is inherited by a
+    // new document created via createHTMLDocument. As per the spec
+    // (http://w3c.github.io/webcomponents/spec/custom/#creating-and-passing-registries)
+    // a new empty registry is used when creating a template contents owner
+    // document, so we use that as our parent document to ensure nothing
+    // is inherited.
+    if (typeof HTMLTemplateElement === 'function') {
+      const template = document.createElement('template');
+      if (template.content && template.content.ownerDocument) {
+        document = template.content.ownerDocument;
+      }
+    }
+    let trustedTypesPolicy;
+    let emptyHTML = '';
+    const {
+      implementation,
+      createNodeIterator,
+      createDocumentFragment,
+      getElementsByTagName
+    } = document;
+    const {
+      importNode
+    } = originalDocument;
+    let hooks = _createHooksMap();
+    /**
+     * Expose whether this browser supports running the full DOMPurify.
+     */
+    DOMPurify.isSupported = typeof entries === 'function' && typeof getParentNode === 'function' && implementation && implementation.createHTMLDocument !== undefined;
+    const {
+      MUSTACHE_EXPR,
+      ERB_EXPR,
+      TMPLIT_EXPR,
+      DATA_ATTR,
+      ARIA_ATTR,
+      IS_SCRIPT_OR_DATA,
+      ATTR_WHITESPACE,
+      CUSTOM_ELEMENT
+    } = EXPRESSIONS;
+    let {
+      IS_ALLOWED_URI: IS_ALLOWED_URI$1
+    } = EXPRESSIONS;
+    /**
+     * We consider the elements and attributes below to be safe. Ideally
+     * don't add any new ones but feel free to remove unwanted ones.
+     */
+    /* allowed element names */
+    let ALLOWED_TAGS = null;
+    const DEFAULT_ALLOWED_TAGS = addToSet({}, [...html$1, ...svg$1, ...svgFilters, ...mathMl$1, ...text]);
+    /* Allowed attribute names */
+    let ALLOWED_ATTR = null;
+    const DEFAULT_ALLOWED_ATTR = addToSet({}, [...html, ...svg, ...mathMl, ...xml]);
+    /*
+     * Configure how DOMPurify should handle custom elements and their attributes as well as customized built-in elements.
+     * @property {RegExp|Function|null} tagNameCheck one of [null, regexPattern, predicate]. Default: `null` (disallow any custom elements)
+     * @property {RegExp|Function|null} attributeNameCheck one of [null, regexPattern, predicate]. Default: `null` (disallow any attributes not on the allow list)
+     * @property {boolean} allowCustomizedBuiltInElements allow custom elements derived from built-ins if they pass CUSTOM_ELEMENT_HANDLING.tagNameCheck. Default: `false`.
+     */
+    let CUSTOM_ELEMENT_HANDLING = Object.seal(create$1(null, {
+      tagNameCheck: {
+        writable: true,
+        configurable: false,
+        enumerable: true,
+        value: null
+      },
+      attributeNameCheck: {
+        writable: true,
+        configurable: false,
+        enumerable: true,
+        value: null
+      },
+      allowCustomizedBuiltInElements: {
+        writable: true,
+        configurable: false,
+        enumerable: true,
+        value: false
+      }
+    }));
+    /* Explicitly forbidden tags (overrides ALLOWED_TAGS/ADD_TAGS) */
+    let FORBID_TAGS = null;
+    /* Explicitly forbidden attributes (overrides ALLOWED_ATTR/ADD_ATTR) */
+    let FORBID_ATTR = null;
+    /* Decide if ARIA attributes are okay */
+    let ALLOW_ARIA_ATTR = true;
+    /* Decide if custom data attributes are okay */
+    let ALLOW_DATA_ATTR = true;
+    /* Decide if unknown protocols are okay */
+    let ALLOW_UNKNOWN_PROTOCOLS = false;
+    /* Decide if self-closing tags in attributes are allowed.
+     * Usually removed due to a mXSS issue in jQuery 3.0 */
+    let ALLOW_SELF_CLOSE_IN_ATTR = true;
+    /* Output should be safe for common template engines.
+     * This means, DOMPurify removes data attributes, mustaches and ERB
+     */
+    let SAFE_FOR_TEMPLATES = false;
+    /* Output should be safe even for XML used within HTML and alike.
+     * This means, DOMPurify removes comments when containing risky content.
+     */
+    let SAFE_FOR_XML = true;
+    /* Decide if document with <html>... should be returned */
+    let WHOLE_DOCUMENT = false;
+    /* Track whether config is already set on this instance of DOMPurify. */
+    let SET_CONFIG = false;
+    /* Decide if all elements (e.g. style, script) must be children of
+     * document.body. By default, browsers might move them to document.head */
+    let FORCE_BODY = false;
+    /* Decide if a DOM `HTMLBodyElement` should be returned, instead of a html
+     * string (or a TrustedHTML object if Trusted Types are supported).
+     * If `WHOLE_DOCUMENT` is enabled a `HTMLHtmlElement` will be returned instead
+     */
+    let RETURN_DOM = false;
+    /* Decide if a DOM `DocumentFragment` should be returned, instead of a html
+     * string  (or a TrustedHTML object if Trusted Types are supported) */
+    let RETURN_DOM_FRAGMENT = false;
+    /* Try to return a Trusted Type object instead of a string, return a string in
+     * case Trusted Types are not supported  */
+    let RETURN_TRUSTED_TYPE = false;
+    /* Output should be free from DOM clobbering attacks?
+     * This sanitizes markups named with colliding, clobberable built-in DOM APIs.
+     */
+    let SANITIZE_DOM = true;
+    /* Achieve full DOM Clobbering protection by isolating the namespace of named
+     * properties and JS variables, mitigating attacks that abuse the HTML/DOM spec rules.
+     *
+     * HTML/DOM spec rules that enable DOM Clobbering:
+     *   - Named Access on Window (§7.3.3)
+     *   - DOM Tree Accessors (§3.1.5)
+     *   - Form Element Parent-Child Relations (§4.10.3)
+     *   - Iframe srcdoc / Nested WindowProxies (§4.8.5)
+     *   - HTMLCollection (§4.2.10.2)
+     *
+     * Namespace isolation is implemented by prefixing `id` and `name` attributes
+     * with a constant string, i.e., `user-content-`
+     */
+    let SANITIZE_NAMED_PROPS = false;
+    const SANITIZE_NAMED_PROPS_PREFIX = 'user-content-';
+    /* Keep element content when removing element? */
+    let KEEP_CONTENT = true;
+    /* If a `Node` is passed to sanitize(), then performs sanitization in-place instead
+     * of importing it into a new Document and returning a sanitized copy */
+    let IN_PLACE = false;
+    /* Allow usage of profiles like html, svg and mathMl */
+    let USE_PROFILES = {};
+    /* Tags to ignore content of when KEEP_CONTENT is true */
+    let FORBID_CONTENTS = null;
+    const DEFAULT_FORBID_CONTENTS = addToSet({}, ['annotation-xml', 'audio', 'colgroup', 'desc', 'foreignobject', 'head', 'iframe', 'math', 'mi', 'mn', 'mo', 'ms', 'mtext', 'noembed', 'noframes', 'noscript', 'plaintext', 'script', 'style', 'svg', 'template', 'thead', 'title', 'video', 'xmp']);
+    /* Tags that are safe for data: URIs */
+    let DATA_URI_TAGS = null;
+    const DEFAULT_DATA_URI_TAGS = addToSet({}, ['audio', 'video', 'img', 'source', 'image', 'track']);
+    /* Attributes safe for values like "javascript:" */
+    let URI_SAFE_ATTRIBUTES = null;
+    const DEFAULT_URI_SAFE_ATTRIBUTES = addToSet({}, ['alt', 'class', 'for', 'id', 'label', 'name', 'pattern', 'placeholder', 'role', 'summary', 'title', 'value', 'style', 'xmlns']);
+    const MATHML_NAMESPACE = 'http://www.w3.org/1998/Math/MathML';
+    const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+    const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
+    /* Document namespace */
+    let NAMESPACE = HTML_NAMESPACE;
+    let IS_EMPTY_INPUT = false;
+    /* Allowed XHTML+XML namespaces */
+    let ALLOWED_NAMESPACES = null;
+    const DEFAULT_ALLOWED_NAMESPACES = addToSet({}, [MATHML_NAMESPACE, SVG_NAMESPACE, HTML_NAMESPACE], stringToString);
+    let MATHML_TEXT_INTEGRATION_POINTS = addToSet({}, ['mi', 'mo', 'mn', 'ms', 'mtext']);
+    let HTML_INTEGRATION_POINTS = addToSet({}, ['annotation-xml']);
+    // Certain elements are allowed in both SVG and HTML
+    // namespace. We need to specify them explicitly
+    // so that they don't get erroneously deleted from
+    // HTML namespace.
+    const COMMON_SVG_AND_HTML_ELEMENTS = addToSet({}, ['title', 'style', 'font', 'a', 'script']);
+    /* Parsing of strict XHTML documents */
+    let PARSER_MEDIA_TYPE = null;
+    const SUPPORTED_PARSER_MEDIA_TYPES = ['application/xhtml+xml', 'text/html'];
+    const DEFAULT_PARSER_MEDIA_TYPE = 'text/html';
+    let transformCaseFunc = null;
+    /* Keep a reference to config to pass to hooks */
+    let CONFIG = null;
+    /* Ideally, do not touch anything below this line */
+    /* ______________________________________________ */
+    const formElement = document.createElement('form');
+    const isRegexOrFunction = function isRegexOrFunction(testValue) {
+      return testValue instanceof RegExp || testValue instanceof Function;
+    };
+    /**
+     * _parseConfig
+     *
+     * @param cfg optional config literal
+     */
+    // eslint-disable-next-line complexity
+    const _parseConfig = function _parseConfig() {
+      let cfg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      if (CONFIG && CONFIG === cfg) {
+        return;
+      }
+      /* Shield configuration object from tampering */
+      if (!cfg || typeof cfg !== 'object') {
+        cfg = {};
+      }
+      /* Shield configuration object from prototype pollution */
+      cfg = clone(cfg);
+      PARSER_MEDIA_TYPE =
+      // eslint-disable-next-line unicorn/prefer-includes
+      SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) === -1 ? DEFAULT_PARSER_MEDIA_TYPE : cfg.PARSER_MEDIA_TYPE;
+      // HTML tags and attributes are not case-sensitive, converting to lowercase. Keeping XHTML as is.
+      transformCaseFunc = PARSER_MEDIA_TYPE === 'application/xhtml+xml' ? stringToString : stringToLowerCase;
+      /* Set configuration parameters */
+      ALLOWED_TAGS = objectHasOwnProperty(cfg, 'ALLOWED_TAGS') ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
+      ALLOWED_ATTR = objectHasOwnProperty(cfg, 'ALLOWED_ATTR') ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
+      ALLOWED_NAMESPACES = objectHasOwnProperty(cfg, 'ALLOWED_NAMESPACES') ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
+      URI_SAFE_ATTRIBUTES = objectHasOwnProperty(cfg, 'ADD_URI_SAFE_ATTR') ? addToSet(clone(DEFAULT_URI_SAFE_ATTRIBUTES), cfg.ADD_URI_SAFE_ATTR, transformCaseFunc) : DEFAULT_URI_SAFE_ATTRIBUTES;
+      DATA_URI_TAGS = objectHasOwnProperty(cfg, 'ADD_DATA_URI_TAGS') ? addToSet(clone(DEFAULT_DATA_URI_TAGS), cfg.ADD_DATA_URI_TAGS, transformCaseFunc) : DEFAULT_DATA_URI_TAGS;
+      FORBID_CONTENTS = objectHasOwnProperty(cfg, 'FORBID_CONTENTS') ? addToSet({}, cfg.FORBID_CONTENTS, transformCaseFunc) : DEFAULT_FORBID_CONTENTS;
+      FORBID_TAGS = objectHasOwnProperty(cfg, 'FORBID_TAGS') ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : clone({});
+      FORBID_ATTR = objectHasOwnProperty(cfg, 'FORBID_ATTR') ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : clone({});
+      USE_PROFILES = objectHasOwnProperty(cfg, 'USE_PROFILES') ? cfg.USE_PROFILES : false;
+      ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false; // Default true
+      ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false; // Default true
+      ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false; // Default false
+      ALLOW_SELF_CLOSE_IN_ATTR = cfg.ALLOW_SELF_CLOSE_IN_ATTR !== false; // Default true
+      SAFE_FOR_TEMPLATES = cfg.SAFE_FOR_TEMPLATES || false; // Default false
+      SAFE_FOR_XML = cfg.SAFE_FOR_XML !== false; // Default true
+      WHOLE_DOCUMENT = cfg.WHOLE_DOCUMENT || false; // Default false
+      RETURN_DOM = cfg.RETURN_DOM || false; // Default false
+      RETURN_DOM_FRAGMENT = cfg.RETURN_DOM_FRAGMENT || false; // Default false
+      RETURN_TRUSTED_TYPE = cfg.RETURN_TRUSTED_TYPE || false; // Default false
+      FORCE_BODY = cfg.FORCE_BODY || false; // Default false
+      SANITIZE_DOM = cfg.SANITIZE_DOM !== false; // Default true
+      SANITIZE_NAMED_PROPS = cfg.SANITIZE_NAMED_PROPS || false; // Default false
+      KEEP_CONTENT = cfg.KEEP_CONTENT !== false; // Default true
+      IN_PLACE = cfg.IN_PLACE || false; // Default false
+      IS_ALLOWED_URI$1 = cfg.ALLOWED_URI_REGEXP || IS_ALLOWED_URI;
+      NAMESPACE = cfg.NAMESPACE || HTML_NAMESPACE;
+      MATHML_TEXT_INTEGRATION_POINTS = cfg.MATHML_TEXT_INTEGRATION_POINTS || MATHML_TEXT_INTEGRATION_POINTS;
+      HTML_INTEGRATION_POINTS = cfg.HTML_INTEGRATION_POINTS || HTML_INTEGRATION_POINTS;
+      CUSTOM_ELEMENT_HANDLING = cfg.CUSTOM_ELEMENT_HANDLING || {};
+      if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.tagNameCheck)) {
+        CUSTOM_ELEMENT_HANDLING.tagNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.tagNameCheck;
+      }
+      if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck)) {
+        CUSTOM_ELEMENT_HANDLING.attributeNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck;
+      }
+      if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements === 'boolean') {
+        CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements = cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements;
+      }
+      if (SAFE_FOR_TEMPLATES) {
+        ALLOW_DATA_ATTR = false;
+      }
+      if (RETURN_DOM_FRAGMENT) {
+        RETURN_DOM = true;
+      }
+      /* Parse profile info */
+      if (USE_PROFILES) {
+        ALLOWED_TAGS = addToSet({}, text);
+        ALLOWED_ATTR = [];
+        if (USE_PROFILES.html === true) {
+          addToSet(ALLOWED_TAGS, html$1);
+          addToSet(ALLOWED_ATTR, html);
+        }
+        if (USE_PROFILES.svg === true) {
+          addToSet(ALLOWED_TAGS, svg$1);
+          addToSet(ALLOWED_ATTR, svg);
+          addToSet(ALLOWED_ATTR, xml);
+        }
+        if (USE_PROFILES.svgFilters === true) {
+          addToSet(ALLOWED_TAGS, svgFilters);
+          addToSet(ALLOWED_ATTR, svg);
+          addToSet(ALLOWED_ATTR, xml);
+        }
+        if (USE_PROFILES.mathMl === true) {
+          addToSet(ALLOWED_TAGS, mathMl$1);
+          addToSet(ALLOWED_ATTR, mathMl);
+          addToSet(ALLOWED_ATTR, xml);
+        }
+      }
+      /* Merge configuration parameters */
+      if (cfg.ADD_TAGS) {
+        if (ALLOWED_TAGS === DEFAULT_ALLOWED_TAGS) {
+          ALLOWED_TAGS = clone(ALLOWED_TAGS);
+        }
+        addToSet(ALLOWED_TAGS, cfg.ADD_TAGS, transformCaseFunc);
+      }
+      if (cfg.ADD_ATTR) {
+        if (ALLOWED_ATTR === DEFAULT_ALLOWED_ATTR) {
+          ALLOWED_ATTR = clone(ALLOWED_ATTR);
+        }
+        addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
+      }
+      if (cfg.ADD_URI_SAFE_ATTR) {
+        addToSet(URI_SAFE_ATTRIBUTES, cfg.ADD_URI_SAFE_ATTR, transformCaseFunc);
+      }
+      if (cfg.FORBID_CONTENTS) {
+        if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
+          FORBID_CONTENTS = clone(FORBID_CONTENTS);
+        }
+        addToSet(FORBID_CONTENTS, cfg.FORBID_CONTENTS, transformCaseFunc);
+      }
+      /* Add #text in case KEEP_CONTENT is set to true */
+      if (KEEP_CONTENT) {
+        ALLOWED_TAGS['#text'] = true;
+      }
+      /* Add html, head and body to ALLOWED_TAGS in case WHOLE_DOCUMENT is true */
+      if (WHOLE_DOCUMENT) {
+        addToSet(ALLOWED_TAGS, ['html', 'head', 'body']);
+      }
+      /* Add tbody to ALLOWED_TAGS in case tables are permitted, see #286, #365 */
+      if (ALLOWED_TAGS.table) {
+        addToSet(ALLOWED_TAGS, ['tbody']);
+        delete FORBID_TAGS.tbody;
+      }
+      if (cfg.TRUSTED_TYPES_POLICY) {
+        if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML !== 'function') {
+          throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createHTML" hook.');
+        }
+        if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL !== 'function') {
+          throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createScriptURL" hook.');
+        }
+        // Overwrite existing TrustedTypes policy.
+        trustedTypesPolicy = cfg.TRUSTED_TYPES_POLICY;
+        // Sign local variables required by `sanitize`.
+        emptyHTML = trustedTypesPolicy.createHTML('');
+      } else {
+        // Uninitialized policy, attempt to initialize the internal dompurify policy.
+        if (trustedTypesPolicy === undefined) {
+          trustedTypesPolicy = _createTrustedTypesPolicy(trustedTypes, currentScript);
+        }
+        // If creating the internal policy succeeded sign internal variables.
+        if (trustedTypesPolicy !== null && typeof emptyHTML === 'string') {
+          emptyHTML = trustedTypesPolicy.createHTML('');
+        }
+      }
+      // Prevent further manipulation of configuration.
+      // Not available in IE8, Safari 5, etc.
+      if (freeze) {
+        freeze(cfg);
+      }
+      CONFIG = cfg;
+    };
+    /* Keep track of all possible SVG and MathML tags
+     * so that we can perform the namespace checks
+     * correctly. */
+    const ALL_SVG_TAGS = addToSet({}, [...svg$1, ...svgFilters, ...svgDisallowed]);
+    const ALL_MATHML_TAGS = addToSet({}, [...mathMl$1, ...mathMlDisallowed]);
+    /**
+     * @param element a DOM element whose namespace is being checked
+     * @returns Return false if the element has a
+     *  namespace that a spec-compliant parser would never
+     *  return. Return true otherwise.
+     */
+    const _checkValidNamespace = function _checkValidNamespace(element) {
+      let parent = getParentNode(element);
+      // In JSDOM, if we're inside shadow DOM, then parentNode
+      // can be null. We just simulate parent in this case.
+      if (!parent || !parent.tagName) {
+        parent = {
+          namespaceURI: NAMESPACE,
+          tagName: 'template'
+        };
+      }
+      const tagName = stringToLowerCase(element.tagName);
+      const parentTagName = stringToLowerCase(parent.tagName);
+      if (!ALLOWED_NAMESPACES[element.namespaceURI]) {
+        return false;
+      }
+      if (element.namespaceURI === SVG_NAMESPACE) {
+        // The only way to switch from HTML namespace to SVG
+        // is via <svg>. If it happens via any other tag, then
+        // it should be killed.
+        if (parent.namespaceURI === HTML_NAMESPACE) {
+          return tagName === 'svg';
+        }
+        // The only way to switch from MathML to SVG is via`
+        // svg if parent is either <annotation-xml> or MathML
+        // text integration points.
+        if (parent.namespaceURI === MATHML_NAMESPACE) {
+          return tagName === 'svg' && (parentTagName === 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
+        }
+        // We only allow elements that are defined in SVG
+        // spec. All others are disallowed in SVG namespace.
+        return Boolean(ALL_SVG_TAGS[tagName]);
+      }
+      if (element.namespaceURI === MATHML_NAMESPACE) {
+        // The only way to switch from HTML namespace to MathML
+        // is via <math>. If it happens via any other tag, then
+        // it should be killed.
+        if (parent.namespaceURI === HTML_NAMESPACE) {
+          return tagName === 'math';
+        }
+        // The only way to switch from SVG to MathML is via
+        // <math> and HTML integration points
+        if (parent.namespaceURI === SVG_NAMESPACE) {
+          return tagName === 'math' && HTML_INTEGRATION_POINTS[parentTagName];
+        }
+        // We only allow elements that are defined in MathML
+        // spec. All others are disallowed in MathML namespace.
+        return Boolean(ALL_MATHML_TAGS[tagName]);
+      }
+      if (element.namespaceURI === HTML_NAMESPACE) {
+        // The only way to switch from SVG to HTML is via
+        // HTML integration points, and from MathML to HTML
+        // is via MathML text integration points
+        if (parent.namespaceURI === SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
+          return false;
+        }
+        if (parent.namespaceURI === MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
+          return false;
+        }
+        // We disallow tags that are specific for MathML
+        // or SVG and should never appear in HTML namespace
+        return !ALL_MATHML_TAGS[tagName] && (COMMON_SVG_AND_HTML_ELEMENTS[tagName] || !ALL_SVG_TAGS[tagName]);
+      }
+      // For XHTML and XML documents that support custom namespaces
+      if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
+        return true;
+      }
+      // The code should never reach this place (this means
+      // that the element somehow got namespace that is not
+      // HTML, SVG, MathML or allowed via ALLOWED_NAMESPACES).
+      // Return false just in case.
+      return false;
+    };
+    /**
+     * _forceRemove
+     *
+     * @param node a DOM node
+     */
+    const _forceRemove = function _forceRemove(node) {
+      arrayPush(DOMPurify.removed, {
+        element: node
+      });
+      try {
+        // eslint-disable-next-line unicorn/prefer-dom-node-remove
+        getParentNode(node).removeChild(node);
+      } catch (_) {
+        remove(node);
+      }
+    };
+    /**
+     * _removeAttribute
+     *
+     * @param name an Attribute name
+     * @param element a DOM node
+     */
+    const _removeAttribute = function _removeAttribute(name, element) {
+      try {
+        arrayPush(DOMPurify.removed, {
+          attribute: element.getAttributeNode(name),
+          from: element
+        });
+      } catch (_) {
+        arrayPush(DOMPurify.removed, {
+          attribute: null,
+          from: element
+        });
+      }
+      element.removeAttribute(name);
+      // We void attribute values for unremovable "is" attributes
+      if (name === 'is') {
+        if (RETURN_DOM || RETURN_DOM_FRAGMENT) {
+          try {
+            _forceRemove(element);
+          } catch (_) {}
+        } else {
+          try {
+            element.setAttribute(name, '');
+          } catch (_) {}
+        }
+      }
+    };
+    /**
+     * _initDocument
+     *
+     * @param dirty - a string of dirty markup
+     * @return a DOM, filled with the dirty markup
+     */
+    const _initDocument = function _initDocument(dirty) {
+      /* Create a HTML document */
+      let doc = null;
+      let leadingWhitespace = null;
+      if (FORCE_BODY) {
+        dirty = '<remove></remove>' + dirty;
+      } else {
+        /* If FORCE_BODY isn't used, leading whitespace needs to be preserved manually */
+        const matches = stringMatch(dirty, /^[\r\n\t ]+/);
+        leadingWhitespace = matches && matches[0];
+      }
+      if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && NAMESPACE === HTML_NAMESPACE) {
+        // Root of XHTML doc must contain xmlns declaration (see https://www.w3.org/TR/xhtml1/normative.html#strict)
+        dirty = '<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>' + dirty + '</body></html>';
+      }
+      const dirtyPayload = trustedTypesPolicy ? trustedTypesPolicy.createHTML(dirty) : dirty;
+      /*
+       * Use the DOMParser API by default, fallback later if needs be
+       * DOMParser not work for svg when has multiple root element.
+       */
+      if (NAMESPACE === HTML_NAMESPACE) {
+        try {
+          doc = new DOMParser().parseFromString(dirtyPayload, PARSER_MEDIA_TYPE);
+        } catch (_) {}
+      }
+      /* Use createHTMLDocument in case DOMParser is not available */
+      if (!doc || !doc.documentElement) {
+        doc = implementation.createDocument(NAMESPACE, 'template', null);
+        try {
+          doc.documentElement.innerHTML = IS_EMPTY_INPUT ? emptyHTML : dirtyPayload;
+        } catch (_) {
+          // Syntax error if dirtyPayload is invalid xml
+        }
+      }
+      const body = doc.body || doc.documentElement;
+      if (dirty && leadingWhitespace) {
+        body.insertBefore(document.createTextNode(leadingWhitespace), body.childNodes[0] || null);
+      }
+      /* Work on whole document or just its body */
+      if (NAMESPACE === HTML_NAMESPACE) {
+        return getElementsByTagName.call(doc, WHOLE_DOCUMENT ? 'html' : 'body')[0];
+      }
+      return WHOLE_DOCUMENT ? doc.documentElement : body;
+    };
+    /**
+     * Creates a NodeIterator object that you can use to traverse filtered lists of nodes or elements in a document.
+     *
+     * @param root The root element or node to start traversing on.
+     * @return The created NodeIterator
+     */
+    const _createNodeIterator = function _createNodeIterator(root) {
+      return createNodeIterator.call(root.ownerDocument || root, root,
+      // eslint-disable-next-line no-bitwise
+      NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT | NodeFilter.SHOW_PROCESSING_INSTRUCTION | NodeFilter.SHOW_CDATA_SECTION, null);
+    };
+    /**
+     * _isClobbered
+     *
+     * @param element element to check for clobbering attacks
+     * @return true if clobbered, false if safe
+     */
+    const _isClobbered = function _isClobbered(element) {
+      return element instanceof HTMLFormElement && (typeof element.nodeName !== 'string' || typeof element.textContent !== 'string' || typeof element.removeChild !== 'function' || !(element.attributes instanceof NamedNodeMap) || typeof element.removeAttribute !== 'function' || typeof element.setAttribute !== 'function' || typeof element.namespaceURI !== 'string' || typeof element.insertBefore !== 'function' || typeof element.hasChildNodes !== 'function');
+    };
+    /**
+     * Checks whether the given object is a DOM node.
+     *
+     * @param value object to check whether it's a DOM node
+     * @return true is object is a DOM node
+     */
+    const _isNode = function _isNode(value) {
+      return typeof Node === 'function' && value instanceof Node;
+    };
+    function _executeHooks(hooks, currentNode, data) {
+      arrayForEach(hooks, hook => {
+        hook.call(DOMPurify, currentNode, data, CONFIG);
+      });
+    }
+    /**
+     * _sanitizeElements
+     *
+     * @protect nodeName
+     * @protect textContent
+     * @protect removeChild
+     * @param currentNode to check for permission to exist
+     * @return true if node was killed, false if left alive
+     */
+    const _sanitizeElements = function _sanitizeElements(currentNode) {
+      let content = null;
+      /* Execute a hook if present */
+      _executeHooks(hooks.beforeSanitizeElements, currentNode, null);
+      /* Check if element is clobbered or can clobber */
+      if (_isClobbered(currentNode)) {
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Now let's check the element's type and name */
+      const tagName = transformCaseFunc(currentNode.nodeName);
+      /* Execute a hook if present */
+      _executeHooks(hooks.uponSanitizeElement, currentNode, {
+        tagName,
+        allowedTags: ALLOWED_TAGS
+      });
+      /* Detect mXSS attempts abusing namespace confusion */
+      if (SAFE_FOR_XML && currentNode.hasChildNodes() && !_isNode(currentNode.firstElementChild) && regExpTest(/<[/\w!]/g, currentNode.innerHTML) && regExpTest(/<[/\w!]/g, currentNode.textContent)) {
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Remove any occurrence of processing instructions */
+      if (currentNode.nodeType === NODE_TYPE.progressingInstruction) {
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Remove any kind of possibly harmful comments */
+      if (SAFE_FOR_XML && currentNode.nodeType === NODE_TYPE.comment && regExpTest(/<[/\w]/g, currentNode.data)) {
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Remove element if anything forbids its presence */
+      if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
+        /* Check if we have a custom element to handle */
+        if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName)) {
+          if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
+            return false;
+          }
+          if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(tagName)) {
+            return false;
+          }
+        }
+        /* Keep content except for bad-listed elements */
+        if (KEEP_CONTENT && !FORBID_CONTENTS[tagName]) {
+          const parentNode = getParentNode(currentNode) || currentNode.parentNode;
+          const childNodes = getChildNodes(currentNode) || currentNode.childNodes;
+          if (childNodes && parentNode) {
+            const childCount = childNodes.length;
+            for (let i = childCount - 1; i >= 0; --i) {
+              const childClone = cloneNode(childNodes[i], true);
+              childClone.__removalCount = (currentNode.__removalCount || 0) + 1;
+              parentNode.insertBefore(childClone, getNextSibling(currentNode));
+            }
+          }
+        }
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Check whether element has a valid namespace */
+      if (currentNode instanceof Element && !_checkValidNamespace(currentNode)) {
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Make sure that older browsers don't get fallback-tag mXSS */
+      if ((tagName === 'noscript' || tagName === 'noembed' || tagName === 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
+        _forceRemove(currentNode);
+        return true;
+      }
+      /* Sanitize element content to be template-safe */
+      if (SAFE_FOR_TEMPLATES && currentNode.nodeType === NODE_TYPE.text) {
+        /* Get the element's text content */
+        content = currentNode.textContent;
+        arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
+          content = stringReplace(content, expr, ' ');
+        });
+        if (currentNode.textContent !== content) {
+          arrayPush(DOMPurify.removed, {
+            element: currentNode.cloneNode()
+          });
+          currentNode.textContent = content;
+        }
+      }
+      /* Execute a hook if present */
+      _executeHooks(hooks.afterSanitizeElements, currentNode, null);
+      return false;
+    };
+    /**
+     * _isValidAttribute
+     *
+     * @param lcTag Lowercase tag name of containing element.
+     * @param lcName Lowercase attribute name.
+     * @param value Attribute value.
+     * @return Returns true if `value` is valid, otherwise false.
+     */
+    // eslint-disable-next-line complexity
+    const _isValidAttribute = function _isValidAttribute(lcTag, lcName, value) {
+      /* Make sure attribute cannot clobber */
+      if (SANITIZE_DOM && (lcName === 'id' || lcName === 'name') && (value in document || value in formElement)) {
+        return false;
+      }
+      /* Allow valid data-* attributes: At least one character after "-"
+          (https://html.spec.whatwg.org/multipage/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)
+          XML-compatible (https://html.spec.whatwg.org/multipage/infrastructure.html#xml-compatible and http://www.w3.org/TR/xml/#d0e804)
+          We don't need to check the value; it's always URI safe. */
+      if (ALLOW_DATA_ATTR && !FORBID_ATTR[lcName] && regExpTest(DATA_ATTR, lcName)) ; else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR, lcName)) ; else if (!ALLOWED_ATTR[lcName] || FORBID_ATTR[lcName]) {
+        if (
+        // First condition does a very basic check if a) it's basically a valid custom element tagname AND
+        // b) if the tagName passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
+        // and c) if the attribute name passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.attributeNameCheck
+        _isBasicCustomElement(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) ||
+        // Alternative, second condition checks if it's an `is`-attribute, AND
+        // the value passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
+        lcName === 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value))) ; else {
+          return false;
+        }
+        /* Check value is safe. First, is attr inert? If so, is safe */
+      } else if (URI_SAFE_ATTRIBUTES[lcName]) ; else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value, ATTR_WHITESPACE, ''))) ; else if ((lcName === 'src' || lcName === 'xlink:href' || lcName === 'href') && lcTag !== 'script' && stringIndexOf(value, 'data:') === 0 && DATA_URI_TAGS[lcTag]) ; else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA, stringReplace(value, ATTR_WHITESPACE, ''))) ; else if (value) {
+        return false;
+      } else ;
+      return true;
+    };
+    /**
+     * _isBasicCustomElement
+     * checks if at least one dash is included in tagName, and it's not the first char
+     * for more sophisticated checking see https://github.com/sindresorhus/validate-element-name
+     *
+     * @param tagName name of the tag of the node to sanitize
+     * @returns Returns true if the tag name meets the basic criteria for a custom element, otherwise false.
+     */
+    const _isBasicCustomElement = function _isBasicCustomElement(tagName) {
+      return tagName !== 'annotation-xml' && stringMatch(tagName, CUSTOM_ELEMENT);
+    };
+    /**
+     * _sanitizeAttributes
+     *
+     * @protect attributes
+     * @protect nodeName
+     * @protect removeAttribute
+     * @protect setAttribute
+     *
+     * @param currentNode to sanitize
+     */
+    const _sanitizeAttributes = function _sanitizeAttributes(currentNode) {
+      /* Execute a hook if present */
+      _executeHooks(hooks.beforeSanitizeAttributes, currentNode, null);
+      const {
+        attributes
+      } = currentNode;
+      /* Check if we have attributes; if not we might have a text node */
+      if (!attributes || _isClobbered(currentNode)) {
+        return;
+      }
+      const hookEvent = {
+        attrName: '',
+        attrValue: '',
+        keepAttr: true,
+        allowedAttributes: ALLOWED_ATTR,
+        forceKeepAttr: undefined
+      };
+      let l = attributes.length;
+      /* Go backwards over all attributes; safely remove bad ones */
+      while (l--) {
+        const attr = attributes[l];
+        const {
+          name,
+          namespaceURI,
+          value: attrValue
+        } = attr;
+        const lcName = transformCaseFunc(name);
+        const initValue = attrValue;
+        let value = name === 'value' ? initValue : stringTrim(initValue);
+        /* Execute a hook if present */
+        hookEvent.attrName = lcName;
+        hookEvent.attrValue = value;
+        hookEvent.keepAttr = true;
+        hookEvent.forceKeepAttr = undefined; // Allows developers to see this is a property they can set
+        _executeHooks(hooks.uponSanitizeAttribute, currentNode, hookEvent);
+        value = hookEvent.attrValue;
+        /* Full DOM Clobbering protection via namespace isolation,
+         * Prefix id and name attributes with `user-content-`
+         */
+        if (SANITIZE_NAMED_PROPS && (lcName === 'id' || lcName === 'name')) {
+          // Remove the attribute with this value
+          _removeAttribute(name, currentNode);
+          // Prefix the value and later re-create the attribute with the sanitized value
+          value = SANITIZE_NAMED_PROPS_PREFIX + value;
+        }
+        /* Work around a security issue with comments inside attributes */
+        if (SAFE_FOR_XML && regExpTest(/((--!?|])>)|<\/(style|title)/i, value)) {
+          _removeAttribute(name, currentNode);
+          continue;
+        }
+        /* Did the hooks approve of the attribute? */
+        if (hookEvent.forceKeepAttr) {
+          continue;
+        }
+        /* Did the hooks approve of the attribute? */
+        if (!hookEvent.keepAttr) {
+          _removeAttribute(name, currentNode);
+          continue;
+        }
+        /* Work around a security issue in jQuery 3.0 */
+        if (!ALLOW_SELF_CLOSE_IN_ATTR && regExpTest(/\/>/i, value)) {
+          _removeAttribute(name, currentNode);
+          continue;
+        }
+        /* Sanitize attribute content to be template-safe */
+        if (SAFE_FOR_TEMPLATES) {
+          arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
+            value = stringReplace(value, expr, ' ');
+          });
+        }
+        /* Is `value` valid for this attribute? */
+        const lcTag = transformCaseFunc(currentNode.nodeName);
+        if (!_isValidAttribute(lcTag, lcName, value)) {
+          _removeAttribute(name, currentNode);
+          continue;
+        }
+        /* Handle attributes that require Trusted Types */
+        if (trustedTypesPolicy && typeof trustedTypes === 'object' && typeof trustedTypes.getAttributeType === 'function') {
+          if (namespaceURI) ; else {
+            switch (trustedTypes.getAttributeType(lcTag, lcName)) {
+              case 'TrustedHTML':
+                {
+                  value = trustedTypesPolicy.createHTML(value);
+                  break;
+                }
+              case 'TrustedScriptURL':
+                {
+                  value = trustedTypesPolicy.createScriptURL(value);
+                  break;
+                }
+            }
+          }
+        }
+        /* Handle invalid data-* attribute set by try-catching it */
+        if (value !== initValue) {
+          try {
+            if (namespaceURI) {
+              currentNode.setAttributeNS(namespaceURI, name, value);
+            } else {
+              /* Fallback to setAttribute() for browser-unrecognized namespaces e.g. "x-schema". */
+              currentNode.setAttribute(name, value);
+            }
+            if (_isClobbered(currentNode)) {
+              _forceRemove(currentNode);
+            } else {
+              arrayPop(DOMPurify.removed);
+            }
+          } catch (_) {
+            _removeAttribute(name, currentNode);
+          }
+        }
+      }
+      /* Execute a hook if present */
+      _executeHooks(hooks.afterSanitizeAttributes, currentNode, null);
+    };
+    /**
+     * _sanitizeShadowDOM
+     *
+     * @param fragment to iterate over recursively
+     */
+    const _sanitizeShadowDOM = function _sanitizeShadowDOM(fragment) {
+      let shadowNode = null;
+      const shadowIterator = _createNodeIterator(fragment);
+      /* Execute a hook if present */
+      _executeHooks(hooks.beforeSanitizeShadowDOM, fragment, null);
+      while (shadowNode = shadowIterator.nextNode()) {
+        /* Execute a hook if present */
+        _executeHooks(hooks.uponSanitizeShadowNode, shadowNode, null);
+        /* Sanitize tags and elements */
+        _sanitizeElements(shadowNode);
+        /* Check attributes next */
+        _sanitizeAttributes(shadowNode);
+        /* Deep shadow DOM detected */
+        if (shadowNode.content instanceof DocumentFragment) {
+          _sanitizeShadowDOM(shadowNode.content);
+        }
+      }
+      /* Execute a hook if present */
+      _executeHooks(hooks.afterSanitizeShadowDOM, fragment, null);
+    };
+    // eslint-disable-next-line complexity
+    DOMPurify.sanitize = function (dirty) {
+      let cfg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      let body = null;
+      let importedNode = null;
+      let currentNode = null;
+      let returnNode = null;
+      /* Make sure we have a string to sanitize.
+        DO NOT return early, as this will return the wrong type if
+        the user has requested a DOM object rather than a string */
+      IS_EMPTY_INPUT = !dirty;
+      if (IS_EMPTY_INPUT) {
+        dirty = '<!-->';
+      }
+      /* Stringify, in case dirty is an object */
+      if (typeof dirty !== 'string' && !_isNode(dirty)) {
+        if (typeof dirty.toString === 'function') {
+          dirty = dirty.toString();
+          if (typeof dirty !== 'string') {
+            throw typeErrorCreate('dirty is not a string, aborting');
+          }
+        } else {
+          throw typeErrorCreate('toString is not a function');
+        }
+      }
+      /* Return dirty HTML if DOMPurify cannot run */
+      if (!DOMPurify.isSupported) {
+        return dirty;
+      }
+      /* Assign config vars */
+      if (!SET_CONFIG) {
+        _parseConfig(cfg);
+      }
+      /* Clean up removed elements */
+      DOMPurify.removed = [];
+      /* Check if dirty is correctly typed for IN_PLACE */
+      if (typeof dirty === 'string') {
+        IN_PLACE = false;
+      }
+      if (IN_PLACE) {
+        /* Do some early pre-sanitization to avoid unsafe root nodes */
+        if (dirty.nodeName) {
+          const tagName = transformCaseFunc(dirty.nodeName);
+          if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
+            throw typeErrorCreate('root node is forbidden and cannot be sanitized in-place');
+          }
+        }
+      } else if (dirty instanceof Node) {
+        /* If dirty is a DOM element, append to an empty document to avoid
+           elements being stripped by the parser */
+        body = _initDocument('<!---->');
+        importedNode = body.ownerDocument.importNode(dirty, true);
+        if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
+          /* Node is already a body, use as is */
+          body = importedNode;
+        } else if (importedNode.nodeName === 'HTML') {
+          body = importedNode;
+        } else {
+          // eslint-disable-next-line unicorn/prefer-dom-node-append
+          body.appendChild(importedNode);
+        }
+      } else {
+        /* Exit directly if we have nothing to do */
+        if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT &&
+        // eslint-disable-next-line unicorn/prefer-includes
+        dirty.indexOf('<') === -1) {
+          return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(dirty) : dirty;
+        }
+        /* Initialize the document to work on */
+        body = _initDocument(dirty);
+        /* Check we have a DOM node from the data */
+        if (!body) {
+          return RETURN_DOM ? null : RETURN_TRUSTED_TYPE ? emptyHTML : '';
+        }
+      }
+      /* Remove first element node (ours) if FORCE_BODY is set */
+      if (body && FORCE_BODY) {
+        _forceRemove(body.firstChild);
+      }
+      /* Get node iterator */
+      const nodeIterator = _createNodeIterator(IN_PLACE ? dirty : body);
+      /* Now start iterating over the created document */
+      while (currentNode = nodeIterator.nextNode()) {
+        /* Sanitize tags and elements */
+        _sanitizeElements(currentNode);
+        /* Check attributes next */
+        _sanitizeAttributes(currentNode);
+        /* Shadow DOM detected, sanitize it */
+        if (currentNode.content instanceof DocumentFragment) {
+          _sanitizeShadowDOM(currentNode.content);
+        }
+      }
+      /* If we sanitized `dirty` in-place, return it. */
+      if (IN_PLACE) {
+        return dirty;
+      }
+      /* Return sanitized string or DOM */
+      if (RETURN_DOM) {
+        if (RETURN_DOM_FRAGMENT) {
+          returnNode = createDocumentFragment.call(body.ownerDocument);
+          while (body.firstChild) {
+            // eslint-disable-next-line unicorn/prefer-dom-node-append
+            returnNode.appendChild(body.firstChild);
+          }
+        } else {
+          returnNode = body;
+        }
+        if (ALLOWED_ATTR.shadowroot || ALLOWED_ATTR.shadowrootmode) {
+          /*
+            AdoptNode() is not used because internal state is not reset
+            (e.g. the past names map of a HTMLFormElement), this is safe
+            in theory but we would rather not risk another attack vector.
+            The state that is cloned by importNode() is explicitly defined
+            by the specs.
+          */
+          returnNode = importNode.call(originalDocument, returnNode, true);
+        }
+        return returnNode;
+      }
+      let serializedHTML = WHOLE_DOCUMENT ? body.outerHTML : body.innerHTML;
+      /* Serialize doctype if allowed */
+      if (WHOLE_DOCUMENT && ALLOWED_TAGS['!doctype'] && body.ownerDocument && body.ownerDocument.doctype && body.ownerDocument.doctype.name && regExpTest(DOCTYPE_NAME, body.ownerDocument.doctype.name)) {
+        serializedHTML = '<!DOCTYPE ' + body.ownerDocument.doctype.name + '>\n' + serializedHTML;
+      }
+      /* Sanitize final string template-safe */
+      if (SAFE_FOR_TEMPLATES) {
+        arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
+          serializedHTML = stringReplace(serializedHTML, expr, ' ');
+        });
+      }
+      return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(serializedHTML) : serializedHTML;
+    };
+    DOMPurify.setConfig = function () {
+      let cfg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      _parseConfig(cfg);
+      SET_CONFIG = true;
+    };
+    DOMPurify.clearConfig = function () {
+      CONFIG = null;
+      SET_CONFIG = false;
+    };
+    DOMPurify.isValidAttribute = function (tag, attr, value) {
+      /* Initialize shared config vars if necessary. */
+      if (!CONFIG) {
+        _parseConfig({});
+      }
+      const lcTag = transformCaseFunc(tag);
+      const lcName = transformCaseFunc(attr);
+      return _isValidAttribute(lcTag, lcName, value);
+    };
+    DOMPurify.addHook = function (entryPoint, hookFunction) {
+      if (typeof hookFunction !== 'function') {
+        return;
+      }
+      arrayPush(hooks[entryPoint], hookFunction);
+    };
+    DOMPurify.removeHook = function (entryPoint, hookFunction) {
+      if (hookFunction !== undefined) {
+        const index = arrayLastIndexOf(hooks[entryPoint], hookFunction);
+        return index === -1 ? undefined : arraySplice(hooks[entryPoint], index, 1)[0];
+      }
+      return arrayPop(hooks[entryPoint]);
+    };
+    DOMPurify.removeHooks = function (entryPoint) {
+      hooks[entryPoint] = [];
+    };
+    DOMPurify.removeAllHooks = function () {
+      hooks = _createHooksMap();
+    };
+    return DOMPurify;
+  }
+  var purify = createDOMPurify();
+
+  /*!
+   * DOMPurify v3.x (c) Cure53 — licensed under MPL-2.0 (compatible with GPL-2+).
+   * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
 
+
+  /**
+   * Copyright (c) 2025 Ryan Demmer
+   * Licensed under the GNU General Public License v2.0 or later
+   * Includes modified code from TinyMCE 7.x, licensed under the GNU General Public License v2.0 or later
+   * @code https://github.com/tinymce/tinymce/tree/main/modules/tinymce/src/core/main/ts/api/html/Sanitization.ts
+   * Copyright (c) 2025 Ephox Corporation DBA Tiny Technologies, Inc.
+   *  
+   * See LICENSE.txt
+   */
+
+  /**
+   * tinymce.html.Sanitizer
+   *
+   * A custom HTML sanitizer integrating DOMPurify and schema-based filtering.
+   * Two modes:
+   *  - Purify mode: hooks into DOMPurify for fast DOM transformations.
+   *  - Manual mode: walks the tree with NodeIterator, pruning or unwrapping invalid nodes.
+   *
+   * @param {Object} settings Configuration options (verify_html, purify_html, allow_event_attributes, allow_script_urls, etc.).
+   * @param {tinymce.html.Schema} schema HTML schema defining valid elements and attributes.
+   */
+
+  (function (tinymce) {
+      var each = tinymce.each;
+      var isDomSafe = tinymce.util.URI.isDomSafe;
+      var filteredUrlAttrs = tinymce.makeMap('src,href,data,background,action,formaction,poster,xlink:href');
+
+      /**
+       * Constructs a new Sanitizer instance.
+       * @constructor
+       * @param {Object} settings - Sanitizer settings.
+       * @param {tinymce.html.Schema} schema - HTML schema for validation.
+       */
+      tinymce.html.Sanitizer = function (settings, schema) {
+          var special = schema.getSpecialElements();
+
+          var uid = 0;
+
+          function isBooleanAttribute(name) {
+              var boolAttrMap = schema.getBoolAttrs();
+              return boolAttrMap[name] || boolAttrMap[name.toLowerCase()] || false;
+          }
+
+          function shouldKeepAttribute(attrName, attrValue, tagName) {
+              attrName = attrName.toLowerCase();
+              tagName = tagName.toLowerCase();
+
+
+              // always disallow dangerous URLs
+              if (attrName in filteredUrlAttrs && !isDomSafe(attrValue, tagName, settings)) {
+                  return false;
+              }
+
+              if (!settings.validate) {
+                  return true;
+              }
+
+              // Preserve custom data-* or other dashed attributes including internal attributes eg: data-mce-type
+              if (/-/.test(attrName)) {
+                  return true;
+              }
+
+              // Event handlers: only keep if allowed and defined in schema
+              if (/^on[a-z]+/i.test(attrName)) {
+                  if (settings.allow_event_attributes && schema.isValid(tagName, attrName)) {
+                      return true;
+                  }
+
+                  return false;
+              }
+
+
+
+              // Remove attributes not in schema
+              if (schema.isValid(tagName, attrName)) {
+                  return true;
+              }
+
+              return false;
+          }
+
+          /**
+           * Validates and transforms a single DOM element according to schema rules and internal flags.
+           *
+           * @param {Node} node - The DOM node to process.
+           * @returns {boolean|undefined}
+           *   - `true` to continue traversal without removing this node.
+           *   - `undefined` (or nothing) if the node was removed or replaced.
+           *
+           * Behavior:
+           * 1. Non-element nodes (e.g. text, comments) and the `<body>` tag are left intact (`true` returned).
+           * 2. Custom root (`data-mce-root`) and internal TinyMCE nodes (`data-mce-type`) are preserved.
+           * 3. Bogus nodes (`data-mce-bogus`) are immediately removed via removeNode().
+           * 4. If `settings.validate` is off, no further schema checks occur (`true` returned).
+           * 5. The element’s schema rule is fetched. If none exists, the node is removed.
+           * 6. Forced attributes (`attributesForced`) are applied (overwriting any existing).
+           * 7. Default attributes (`attributesDefault`) are added if missing.
+           * 8. If required attributes (`attributesRequired`) are not present, the node is unwrapped and removed.
+           * 9. If `removeEmptyAttrs` is true and the element has no attributes, it is unwrapped and removed.
+           * 10. If the schema specifies an `outputName` different from the current tag, the element is
+           *    replaced with a new element of that name, preserving its children.
+           * 11. Remaining attributes are filtered via filterAttributes().
+           */
+          function processNode(node, evt) {
+              if (node.nodeType !== 1) {
+                  return;
+              }
+
+              var tag = node.tagName.toLowerCase();
+
+              // skip body tag
+              if (tag === 'body') {
+                  return;
+              }
+
+              // keep custom root nodes
+              if (node.hasAttribute('data-mce-root')) {
+                  if (evt) {
+                      evt.allowedTags[tag] = true;
+                  }
+
+                  return;
+              }
+
+              // keep internal nodes
+              if (node.hasAttribute('data-mce-type')) {
+                  if (evt) {
+                      evt.allowedTags[tag] = true;
+                  }
+
+                  return;
+              }
+
+              // always remove bogus nodes
+              if (node.hasAttribute('data-mce-bogus')) {
+                  removeNode(node);
+                  return;
+              }
+
+              var rule = schema.getElementRule(tag);
+
+              if (settings.validate && !rule) {
+                  if (tag in special) {
+                      // Special elements are always removed
+                      removeNode(node);
+                      return;
+                  } else {
+                      // unwrap others
+                      removeNode(node, true);
+                  }
+              } else {
+                  if (evt) {
+                      evt.allowedTags[tag] = true;
+                  }
+              }
+
+              if (settings.validate && rule) {
+                  // Enforce forced attributes
+                  each(rule.attributesForced, function (attr) {
+                      node.setAttribute(
+                          attr.name,
+                          attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
+                      );
+                  });
+
+                  // Apply default attributes
+                  each(rule.attributesDefault, function (attr) {
+                      if (!node.hasAttribute(attr.name)) {
+                          node.setAttribute(
+                              attr.name,
+                              attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
+                          );
+                      }
+                  });
+
+                  // Unwrap and remove if required attributes are missing
+                  if (
+                      rule.attributesRequired &&
+                      !rule.attributesRequired.some(function (attr) {
+                          return node.hasAttribute(attr.name);
+                      })
+                  ) {
+                      removeNode(node, true);
+                      return;
+                  }
+
+                  // Unwrap and remove if all attributes should be stripped and none remain
+                  if (rule.removeEmptyAttrs && node.attributes.length === 0) {
+                      removeNode(node, true);
+                      return;
+                  }
+
+                  // Rename element if schema defines a different outputName
+                  if (rule.outputName && rule.outputName !== tag) {
+                      var newNode = document.createElement(rule.outputName);
+
+                      while (node.firstChild) {
+                          newNode.appendChild(node.firstChild);
+                      }
+
+                      node.parentNode.replaceChild(newNode, node);
+                      node = newNode;
+                  }
+              }
+          }
+
+          /**
+           * Removes or unwraps a given DOM node based on its “special” status and bogus flag.
+           *
+           * @param {Node}  node   - The DOM node to remove or unwrap.
+           * @param {boolean} unwrap - If true, children of the node are retained and inserted in its place; otherwise, the node is removed wholesale.
+           *
+           * Behavior:
+           * 1. If the node has no parent, the function exits immediately.
+           * 2. If the node’s tag name (lowercased) is in the `special` set, it will always be removed (unwrap forced off).
+           * 3. If the node’s `data-mce-bogus` attribute is not exactly `"all"`, it is treated as bogus and forced to unwrap.
+           * 4. When unwrapping:
+           *    - A `DocumentFragment` is created.
+           *    - All child nodes are moved into the fragment.
+           *    - The fragment is inserted before the original node.
+           *    - The original node is removed from its parent.
+           * 5. Otherwise, the node is simply removed from its parent.
+           */
+          function removeNode(node, unwrap) {
+              var parent = node.parentNode;
+
+              if (!parent) {
+                  return; // No parent, nothing to do
+              }
+
+              // Special elements must be completely removed, never unwrapped
+              if (special[node.tagName.toLowerCase()]) {
+                  unwrap = false;
+              }
+
+              // Bogus content should always be unwrapped so its children remain
+              if (node.hasAttribute('data-mce-bogus') && node.getAttribute('data-mce-bogus') != 'all') {
+                  unwrap = true;
+              }
+
+              if (unwrap) {
+                  var frag = document.createDocumentFragment();
+
+                  while (node.firstChild) {
+                      frag.appendChild(node.firstChild);
+                  }
+
+                  parent.insertBefore(frag, node);
+                  parent.removeChild(node);
+              } else {
+                  parent.removeChild(node);
+              }
+          }
+
+          /**
+           * Filters an element's attributes based on schema and settings.
+           * @private
+           * @param {Element} node - Element whose attributes to filter.
+           */
+          function filterAttributes(node) {
+              var attrs = node.attributes, tag = node.tagName.toLowerCase();
+
+              for (var i = attrs.length - 1; i >= 0; i--) {
+                  var name = attrs[i].name;
+                  var value = attrs[i].value;
+
+                  if (!shouldKeepAttribute(name, value, tag)) {
+
+                      if (node.hasAttribute('data-mce-type') && ['id', 'class', 'style'].includes(name)) {
+                          continue; // always keep id, class, style of internal attributes
+                      }
+
+                      node.removeAttribute(name);
+                  }
+
+                  if (isBooleanAttribute(name)) {
+                      node.setAttribute(name, name);
+                  }
+              }
+          }
+
+          /**
+           * Creates DOMPurify configuration from settings and schema.
+           * @private
+           * @returns {Object} Configuration object.
+           */
+          function getPurifyConfig(mimeType) {
+
+              var config = {
+                  IN_PLACE: true,
+                  RETURN_DOM: true,
+                  ALLOW_UNKNOWN_PROTOCOLS: true,
+                  ALLOWED_TAGS: ['#comment', '#cdata-section', 'body'],
+                  ALLOWED_ATTR: [],
+                  PARSER_MEDIA_TYPE: mimeType
+              };
+
+              // Allow any URI when allowing script urls
+              if (settings.allow_script_urls) {
+                  config.ALLOWED_URI_REGEXP = /.*/;
+                  // Allow anything except javascript (or similar) URIs if all html data urls are allowed
+              } else if (settings.allow_html_data_urls) {
+                  config.ALLOWED_URI_REGEXP = /^(?!(\w+script|mhtml):)/i;
+              }
+
+              if (schema.isValid('script') || schema.isValid('style')) {
+                  config.FORCE_BODY = true; // Force body to be present for script/style tags
+              }
+
+              return config;
+          }
+
+          /**
+           * Runs DOMPurify on the given HTML or element, using custom hooks.
+           * @private
+           * @param {String|Element} body - Input HTML or Body element to sanitize.
+           * @returns {Element} Sanitized DOM fragment.
+           */
+          function purify$1(body, mimeType) {
+              var purifier = purify();
+              purifier.removeAllHooks();
+
+              purifier.addHook('uponSanitizeElement', function (node, data) {
+                  processNode(node, data);
+              });
+
+              purifier.addHook('uponSanitizeAttribute', function (node, data) {
+                  var attrName = data.attrName.toLowerCase(), attrValue = data.attrValue, tag = node.tagName.toLowerCase();
+
+                  data.keepAttr = shouldKeepAttribute(attrName, attrValue, tag);
+
+                  if (data.keepAttr) {
+                      // We need to tell DOMPurify to forcibly keep the attribute if it's an SVG data URI and svg data URIs are allowed
+                      if (settings.allow_svg_data_urls && data.attrValue.startsWith('data:image/svg+xml')) {
+                          data.forceKeepAttr = true;
+                          return;
+                      }
+
+                      if (isBooleanAttribute(attrName)) {
+                          data.attrValue = attrName;
+                      }
+
+                      data.allowedAttributes[attrName] = true;
+                  } else if (node.hasAttribute('data-mce-type') && ['id', 'class', 'style'].includes(attrName)) {
+                      data.forceKeepAttr = true; // always keep id, class, style of internal attributes
+                      return;
+                  }
+              });
+
+              purifier.sanitize(body, getPurifyConfig(mimeType));
+              purifier.removed = [];
+
+              return body;
+          }
+
+          /**
+           * Sanitizes a DOM tree or HTML fragment.
+           * @param {Element} body - Root element to sanitize.
+           * @param {string}  mimeType - MIME type hint (unused).
+           * @returns {Element} The sanitized root element.
+           */
+          this.sanitize = function (body, mimeType) {
+              if (settings.verify_html === false) {
+                  return body;
+              }
+
+              if (settings.purify_html !== false) {
+                  return purify$1(body, mimeType);
+              }
+
+              var iterator = document.createNodeIterator(
+                  body,
+                  NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT
+              );
+
+              var node;
+
+              while ((node = iterator.nextNode())) {
+                  processNode(node);
+
+                  if (node.nodeType === 1) {
+                      filterAttributes(node);
+                  }
+              }
+
+              return body;
+          };
+      };
+  })(tinymce);
+
+  /**
+   * Originally based on TinyMCE 3.x/4.x/5.x
+   * Includes modified code from TinyMCE 7.x, licensed under the GNU General Public License v2.0 or later
+   * @code https://github.com/tinymce/tinymce/tree/main/modules/tinymce/src/core/main/ts/api/html/DomParser.ts
+   * @code https://github.com/tinymce/tinymce/tree/main/modules/tinymce/src/core/main/ts/html/InvalidNodes.ts
+   * @code https://github.com/tinymce/tinymce/tree/main/modules/tinymce/src/core/main/ts/html/ParserFilters.ts
+   *
+   * Copyright (c) Moxiecode Systems AB
+   * Copyright (c) 1999–2025 Ephox Corporation. All rights reserved.
+   * Licensed under the GNU Lesser General Public License v2.1 or later.
+   * See LICENSE.TXT in the original TinyMCE project.
+   *
+   * This version:
+   * Copyright (c) 2025 Ryan Demmer
+   * Relicensed under the GNU General Public License v2.0 or later,
+   * as permitted by Section 3 of the LGPL.
+   *
+   * See LICENSE for GPL terms.
+   */
 
   (function (tinymce) {
     var Node = tinymce.html.Node,
@@ -8087,6 +10004,8 @@
       explode = tinymce.explode,
       extend = tinymce.extend,
       makeMap = tinymce.makeMap;
+
+    var NBSP = '\u00A0';
 
     /**
      * This class parses HTML code into a DOM like structure of nodes it will remove redundant whitespace and make
@@ -8097,7 +10016,6 @@
      * var rootNode = parser.parse('<h1>content</h1>');
      *
      * @class tinymce.html.DomParser
-     * @version 3.4
      */
 
     /**
@@ -8110,24 +10028,171 @@
      */
     tinymce.html.DomParser = function (settings, schema) {
       var self = this,
-        nodeFilters = {},
-        attributeFilters = [],
-        matchedNodes = {},
-        matchedAttributes = {};
+        nodeFilters = [],
+        attributeFilters = [];
 
       settings = settings || {};
       settings.validate = "validate" in settings ? settings.validate : true;
       settings.root_name = settings.root_name || 'body';
       self.schema = schema = schema || new tinymce.html.Schema();
 
+      settings.purify_html = "purify_html" in settings ? settings.purify_html : true;
+
+      var Sanitizer = new tinymce.html.Sanitizer(settings, schema);
+      var DomParser = new DOMParser();
+
+      var hasClosest = function (node, parentName) {
+        var tempNode = node;
+
+        while (tempNode) {
+
+          if (tempNode.name === parentName) {
+            return true;
+          }
+
+          tempNode = tempNode.parent;
+        }
+
+        return false;
+      };
+
+      function isInvalid(node, parent) {
+        parent = parent || node.parent;
+
+        if (!parent) {
+          return false;
+        }
+
+        // Check if the node is a valid child of the parent node. If the child is
+        // unknown we don't collect it since it's probably a custom element
+        if (schema.children[node.name] && !schema.isValidChild(parent.name, node.name)) {
+          return true;
+        }
+
+        // Anchors are a special case and cannot be nested
+        if (node.name === 'a' && hasClosest(parent, 'a')) {
+          return true;
+        }
+
+        // heading element is valid if it is the only one child of summary
+        if (parent.name == 'summary' && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(node.name)) {
+          return !(parent.firstChild === node && parent.lastChild === node);
+        }
+
+        return false;
+      }
+
+      /**
+       * Finds invalid children of a node according to the schema.
+       * Populates the `invalids` array with nodes that are not allowed in their parent.
+       *
+       * @param {Node} node - The root node to validate from.
+       * @param {Array} invalids - Accumulator array for invalid children.
+       */
+      function findInvalidChildren(node, invalids) {
+        if (isInvalid(node)) {
+          invalids.push(node);
+        }
+      }
+
+      var FilterNode = {
+        matchNode: function (nodeFilters, attributeFilters, node, matches) {
+          var name = node.name;
+
+          for (var ni = 0, nl = nodeFilters.length; ni < nl; ni++) {
+            var filter = nodeFilters[ni];
+
+            if (filter.name === name) {
+              var match = matches.nodes[name];
+
+              if (match) {
+                match.nodes.push(node);
+              } else {
+                matches.nodes[name] = { filter, nodes: [node] };
+              }
+            }
+          }
+
+          // Match attribute filters
+          if (node.attributes) {
+            for (var ai = 0, al = attributeFilters.length; ai < al; ai++) {
+              var filter = attributeFilters[ai];
+              var attrName = filter.name;
+
+              if (attrName in node.attributes.map) {
+                var match = matches.attributes[attrName];
+
+                if (match) {
+                  match.nodes.push(node);
+                } else {
+                  matches.attributes[attrName] = { filter, nodes: [node] };
+                }
+              }
+            }
+          }
+        }
+      };
+
+      /**
+       * Executes all node and attribute filters on matching nodes.
+       * Filters are only applied to nodes that still match after tree manipulation.
+       *
+       * @param {Object} matches - Contains { nodes, attributes } records of matched filters.
+       * @param {Object} args - Additional arguments passed to filter callbacks.
+       */
+      function runFilters(matches, args) {
+
+        function run(matchRecord, isAttributeFilter) {
+
+          each(matchRecord, function (match) {
+
+            var originalNodes = match.nodes;
+            var filterName = match.filter.name;
+            var callbacks = match.filter.callbacks;
+
+            // Copy the node array
+            var nodes = originalNodes.slice();
+
+            for (var ci = 0; ci < callbacks.length; ci++) {
+              var callback = callbacks[ci];
+              var validNodes = [];
+
+              for (var i = 0; i < nodes.length; i++) {
+                var node = nodes[i];
+
+                var stillMatches = isAttributeFilter ? node.attr(filterName) !== undefined : node.name === filterName;
+
+                if (stillMatches && node.parent != null) {
+                  validNodes.push(node);
+                }
+              }
+
+              if (validNodes.length > 0) {
+                callback(validNodes, filterName, args);
+              }
+            }
+          });
+        }
+
+        run(matches.nodes, false);
+        run(matches.attributes, true);
+      }
+
+      /**
+       * Attempts to fix or remove invalid children in the DOM tree.
+       * It either unwraps, repositions, or removes invalid nodes depending on schema rules.
+       *
+       * @param {Array} nodes - List of invalid child nodes to process.
+       */
       function fixInvalidChildren(nodes) {
         var ni, node, parent, parents, newParent, currentNode, tempNode, childNode, i;
-        var nonEmptyElements, nonSplitableElements, textBlockElements, specialElements, sibling, nextNode;
+        var nonEmptyElements, nonSplitableElements, textBlockElements, specialElements, whitespaceElements, sibling, nextNode;
 
         nonSplitableElements = makeMap('tr,td,th,tbody,thead,tfoot,table');
         nonEmptyElements = schema.getNonEmptyElements();
         textBlockElements = schema.getTextBlockElements();
         specialElements = schema.getSpecialElements();
+        whitespaceElements = schema.getWhiteSpaceElements();
 
         var removeOrUnwrapInvalidNode = function (node, originalNodeParent) {
           if (specialElements[node.name]) {
@@ -8160,6 +10225,7 @@
           if (textBlockElements[node.name] && node.parent.name == 'li') {
             // Move sibling text blocks after LI element
             sibling = node.next;
+
             while (sibling) {
               if (textBlockElements[sibling.name]) {
                 sibling.name = 'li';
@@ -8193,12 +10259,12 @@
               parents.reverse();
 
               // Clone the related parent and insert that after the moved node
-              newParent = currentNode = self.filterNode(parents[0].clone());
+              newParent = currentNode = parents[0].clone();
 
               // Start cloning and moving children on the left side of the target node
               for (i = 0; i < parents.length - 1; i++) {
                 if (schema.isValidChild(currentNode.name, parents[i].name)) {
-                  tempNode = self.filterNode(parents[i].clone());
+                  tempNode = parents[i].clone();
                   currentNode.append(tempNode);
                 } else {
                   tempNode = currentNode;
@@ -8213,7 +10279,7 @@
                 currentNode = tempNode;
               }
 
-              if (!newParent.isEmpty(nonEmptyElements)) {
+              if (!newParent.isEmpty(nonEmptyElements, whitespaceElements)) {
                 parent.insert(newParent, parents[0], true);
                 parent.insert(node, newParent);
               } else {
@@ -8223,7 +10289,7 @@
               // Check if the element is empty by looking through it's contents and special treatment for <p><br /></p>
               parent = parents[0];
 
-              if (parent.isEmpty(nonEmptyElements) || parent.firstChild === parent.lastChild && parent.firstChild.name === 'br') {
+              if (parent.isEmpty(nonEmptyElements, whitespaceElements) || parent.firstChild === parent.lastChild && parent.firstChild.name === 'br') {
                 parent.empty().remove();
               }
             } else {
@@ -8233,24 +10299,26 @@
             // If it's an LI try to find a UL/OL for it or wrap it
             if (node.name === 'li') {
               sibling = node.prev;
-              if (sibling && (sibling.name === 'ul' || sibling.name === 'ul')) {
+
+              if (sibling && (sibling.name === 'ul' || sibling.name === 'ol')) {
                 sibling.append(node);
                 continue;
               }
 
               sibling = node.next;
-              if (sibling && (sibling.name === 'ul' || sibling.name === 'ul')) {
+
+              if (sibling && (sibling.name === 'ul' || sibling.name === 'ol')) {
                 sibling.insert(node, sibling.firstChild, true);
                 continue;
               }
 
-              node.wrap(self.filterNode(new Node('ul', 1)));
+              node.wrap(new Node('ul', 1));
               continue;
             }
 
             // Try wrapping the element in a DIV
             if (schema.isValidChild(node.parent.name, 'div') && schema.isValidChild('div', node.name)) {
-              node.wrap(self.filterNode(new Node('div', 1)));
+              node.wrap(new Node('div', 1));
             } else {
               // We failed wrapping it, remove or unwrap it
               removeOrUnwrapInvalidNode(node, node.parent);
@@ -8258,46 +10326,6 @@
           }
         }
       }
-
-      /**
-       * Runs the specified node though the element and attributes filters.
-       *
-       * @method filterNode
-       * @param {tinymce.html.Node} Node the node to run filters on.
-       * @return {tinymce.html.Node} The passed in node.
-       */
-      self.filterNode = function (node) {
-        var i, name, list;
-
-        // Run element filters
-        if (name in nodeFilters) {
-          list = matchedNodes[name];
-
-          if (list) {
-            list.push(node);
-          } else {
-            matchedNodes[name] = [node];
-          }
-        }
-
-        // Run attribute filters
-        i = attributeFilters.length;
-        while (i--) {
-          name = attributeFilters[i].name;
-
-          if (name in node.attributes.map) {
-            list = matchedAttributes[name];
-
-            if (list) {
-              list.push(node);
-            } else {
-              matchedAttributes[name] = [node];
-            }
-          }
-        }
-
-        return node;
-      };
 
       /**
        * Adds a node filter function to the parser, the parser will collect the specified nodes by name
@@ -8315,13 +10343,19 @@
        */
       self.addNodeFilter = function (name, callback) {
         each(explode(name), function (name) {
-          var list = nodeFilters[name];
+          var i;
 
-          if (!list) {
-            nodeFilters[name] = list = [];
+          for (i = 0; i < nodeFilters.length; i++) {
+            if (nodeFilters[i].name === name) {
+              nodeFilters[i].callbacks.push(callback);
+              return;
+            }
           }
 
-          list.push(callback);
+          nodeFilters.push({
+            name: name,
+            callbacks: [callback]
+          });
         });
       };
 
@@ -8368,59 +10402,411 @@
        * @return {tinymce.html.Node} Root node containing the tree.
        */
       self.parse = function (html, args) {
-        var parser, rootNode, node, nodes, i, l, fi, fl, list, name, validate;
-        var blockElements, startWhiteSpaceRegExp, invalidChildren = [],
-          isInWhiteSpacePreservedElement;
-        var endWhiteSpaceRegExp, allWhiteSpaceRegExp, isAllWhiteSpaceRegExp, whiteSpaceElements;
-        var children, nonEmptyElements, rootBlockName;
+        var rootNode, validate;
+        var blockElements, startWhiteSpaceRegExp, invalidChildren = [];
+
+        var endWhiteSpaceRegExp, allWhiteSpaceRegExp, whitespaceElements, textRootBlockElements, shortEndedElements, transparentElements;
+        var nonEmptyElements, rootBlockName;
 
         args = args || {};
-        matchedNodes = {};
-        matchedAttributes = {};
         blockElements = extend(makeMap('script,style,head,html,body,title,meta,param'), schema.getBlockElements());
         nonEmptyElements = schema.getNonEmptyElements();
-        children = schema.children;
+        shortEndedElements = schema.getShortEndedElements();
+        transparentElements = schema.getTransparentElements();
         validate = settings.validate;
         rootBlockName = "forced_root_block" in args ? args.forced_root_block : settings.forced_root_block;
 
-        whiteSpaceElements = schema.getWhiteSpaceElements();
+        whitespaceElements = schema.getWhiteSpaceElements();
+        textRootBlockElements = schema.getTextRootBlockElements();
+
         startWhiteSpaceRegExp = /^[ \t\r\n]+/;
         endWhiteSpaceRegExp = /[ \t\r\n]+$/;
         allWhiteSpaceRegExp = /[ \t\r\n]+/g;
-        isAllWhiteSpaceRegExp = /^[ \t\r\n]+$/;
 
-        function addRootBlocks() {
-          var node = rootNode.firstChild,
-            next, rootBlockNode;
+        /**
+         * Checks if any ancestor node preserves whitespace (e.g., <pre>, <code>).
+         * @param {tinymce.html.Node} node - The node to inspect.
+         * @returns {boolean} True if any parent element preserves whitespace.
+         */
+        function hasWhitespaceParent(node) {
+          var temp = node.parent;
+
+          while (temp) {
+            // `whitespaceElements` comes from schema.getWhiteSpaceElements(),
+            // and includes script, style, pre, textarea, etc.
+            if (whitespaceElements[temp.name]) {
+              return true;
+            }
+
+            temp = temp.parent;
+          }
+
+          return false;
+        }
+
+        /**
+         * Determines if the current node resides within an empty text-root block.
+         * Walks up until a text-root block element is found, then tests emptiness.
+         * @param {tinymce.html.Node} node - The node to check.
+         * @returns {boolean} True if that text-root block is empty.
+         */
+        function isTextRootBlockEmpty(node) {
+          var tempNode = node;
+
+          while (tempNode) {
+            if (textRootBlockElements[tempNode.name]) {
+              console.log(tempNode.name, isEmpty(tempNode));
+              return isEmpty(tempNode);
+            }
+
+            tempNode = tempNode.parent;
+          }
+          return false;
+        }
+
+        function isTransparentBlock(node) {
+          return node.type == 1 && node.name in transparentElements && !!node.attr('data-mce-block');
+        }
+
+        /**
+         * Tests whether a node is block-level according to schema rules.
+         * @param {tinymce.html.Node} node - Node to test.
+         * @returns {boolean} True if the node is a block element.
+         */
+        function isBlock(node) {
+          return node.name in blockElements || isTransparentBlock(node);
+        }
+
+        /**
+         * Checks if a node lies at the start or end edge of its block parent.
+         * Helpful for trimming whitespace at block boundaries.
+         * @param {tinymce.html.Node} node - Node to evaluate.
+         * @param {boolean} start - True to test start edge, false for end edge.
+         * @param {tinymce.html.Node} root - Root context node.
+         * @returns {boolean} True if node is at specified edge of block.
+         */
+        function isAtEdgeOfBlock(node, start) {
+          var neighbour = start ? node.prev : node.next;
+
+          if (neighbour || !node.parent) {
+            return false;
+          }
+
+          return isBlock(node.parent) && (node.parent !== rootNode || args.isRootContent === true);
+        }
+
+        /**
+         * Identifies line-break candidates: next to a block boundary or a <br> tag.
+         * @param {tinymce.html.Node} node - Node to test.
+         * @param {Function} isBlockFn - Function to determine block nodes.
+         * @returns {boolean} True if node acts as a line break.
+         */
+        function walkTree(root, preprocessors, postprocessors) {
+          var traverseOrder = [];
+          var node = root, lastNode = root;
+
+          while (node) {
+            var tempNode = node;
+
+            for (var i = 0; i < preprocessors.length; i++) {
+              preprocessors[i](tempNode);
+            }
+
+            if ((!tempNode.parent) && tempNode !== root) {
+              node = lastNode;
+            } else {
+              traverseOrder.push(tempNode);
+            }
+
+            lastNode = node;
+            node = node.walk();
+          }
+
+          for (var i = traverseOrder.length - 1; i >= 0; i--) {
+            var postNode = traverseOrder[i];
+            for (var j = 0; j < postprocessors.length; j++) {
+              postprocessors[j](postNode);
+            }
+          }
+        }
+
+        /**
+         * Pads an empty node: inserts <br> for blocks or a non-breaking space for inline.
+         * @param {tinymce.html.Node} node - The empty node to pad or replace.
+         */
+        function paddEmptyNode(node) {
+          var brPreferred = settings.pad_empty_with_br || args.insert;
+
+          if (brPreferred && isBlock(node)) {
+            var newNode = new Node('br', 1);
+            newNode.shortEnded = true;
+
+            if (args.insert) {
+              newNode.attr('data-mce-bogus', '1');
+            }
+
+            node.empty().append(newNode);
+          } else {
+            var nbspNode = new Node('#text', 3);
+            nbspNode.value = NBSP;
+            node.empty().append(nbspNode);
+          }
+        }
+
+        /**
+         * Checks if node has exactly one child of given name.
+         * @param {tinymce.html.Node} node - Node to inspect.
+         * @param {string} name - Child node name to match.
+         * @returns {boolean} True if only child matches name.
+         */
+        function hasOnlyChild(node, name) {
+          var firstChild = node.firstChild;
+          return !!firstChild && firstChild === node.lastChild && firstChild.name === name;
+        }
+
+        /**
+         * Detects if a node contains a single non-breaking space as its child.
+         * @param {tinymce.html.Node} node - Node to inspect.
+         * @returns {boolean} True if node is padded with &nbsp; only.
+         */
+        function isPaddedWithNbsp(node) {
+          return hasOnlyChild(node, '#text') && node.firstChild && node.firstChild.value === NBSP;
+        }
+
+        /**
+         * Determines if a node is a line break node.
+         * @param {tinymce.html.Node} node - Node to inspect.
+         * @param {boolean} isBlock - Function to check if a node is block-level. 
+         * @returns {boolean} True if node is a line break or <br>.
+         */
+        function isLineBreakNode(node, isBlock) {
+          return node && (isBlock(node) || node.name === 'br');
+        }
+
+        /**
+         * Determines if a node is empty according to schema rules.
+         * @param {tinymce.html.Node} node - Node to inspect.
+         * @returns {boolean} True if node is empty.
+         */
+        function isEmpty(node) {
+          return node.isEmpty(nonEmptyElements, whitespaceElements);
+        }
+
+        /**
+         * Creates pre- and post-processors to normalize whitespace in text nodes.
+         * Removes redundant spaces and pads/unwraps empty inline and block elements as needed.
+         *
+         * @param {Node} root - The root node of the parsed document.
+         * @return {[Function, Function]} Array containing preprocessor and postprocessor functions.
+         */
+        function whitespaceCleaner(root) {
+
+          function preprocess(node) {
+            if (node.type === 3) {
+
+              if (!hasWhitespaceParent(node)) {
+                var text = node.value || '';
+                text = text.replace(allWhiteSpaceRegExp, ' ');
+
+                if (isLineBreakNode(node.prev, isBlock) || isAtEdgeOfBlock(node, true)) {
+                  text = text.replace(startWhiteSpaceRegExp, '');
+                }
+
+                if (text.length === 0) {
+                  node.remove();
+                } else {
+                  node.value = text;
+                }
+              }
+            }
+          }
+
+          function postprocess(node) {
+            if (node.type === 1) {
+              var elementRule = schema.getElementRule(node.name);
+
+              if (validate && elementRule) {
+                var isNodeEmpty = isEmpty(node);
+
+                if (elementRule.paddInEmptyBlock && isNodeEmpty && isTextRootBlockEmpty(node)) {
+                  paddEmptyNode(node);
+                } else if (elementRule.removeEmpty && isNodeEmpty) {
+                  if (isBlock(node)) {
+                    node.remove();
+                  } else {
+                    node.unwrap();
+                  }
+                } else if (elementRule.paddEmpty && (isNodeEmpty || isPaddedWithNbsp(node))) {
+                  paddEmptyNode(node);
+                }
+              }
+            } else if (node.type === 3) {
+              if (!hasWhitespaceParent(node)) {
+                var text = node.value || '';
+
+                if ((node.next && isBlock(node.next)) || isAtEdgeOfBlock(node, false)) {
+                  text = text.replace(endWhiteSpaceRegExp, '');
+                }
+
+                if (text.length === 0) {
+                  node.remove();
+                } else {
+                  node.value = text;
+                }
+              }
+            }
+          }
+
+          return [preprocess, postprocess];
+        }
+
+        /**
+         * Parses and sanitizes an HTML fragment in its proper context.
+         *
+         * 1. Wraps the raw `html` string in a temporary root element (<body> or
+         *    a special element defined by the schema) so that fragments like
+         *    `<tr>…</tr>` parse correctly.
+         * 2. Uses the native DOMParser (with the correct MIME type for `format`)
+         *    to turn that string into a real DOM tree.
+         * 3. Passes the resulting `<body>` element through DomPurify to strip
+         *    unsafe tags/attributes.
+         * 4. Returns either the sanitized body or, if it was a “special” root,
+         *    the first child of that body (so you get back the wrapper element).
+         *
+         * @param {String} html     - The raw HTML to parse.
+         * @param {String} rootName - Tag to use as the fragment root (e.g. 'table', 'tr').
+         * @param {String} format   - Either 'html' or 'xhtml', which picks the parsing MIME type.
+         * @return {Element}        - The sanitized DOM element (body or its firstChild).
+         */
+        function parseAndSanitizeWithContext(html, rootName, format) {
+          var mimeType = format === 'xhtml' ? 'application/xhtml+xml' : 'text/html';
+
+          var specialElements = schema.getSpecialElements();
+
+          // Determine the root element to wrap the HTML in when parsing. If we're dealing with a
+          // special element then we need to wrap it so the internal content is handled appropriately.
+          var isSpecialRoot = specialElements[rootName.toLowerCase()] ? true : false;
+
+          var content = isSpecialRoot ? `<${rootName}>${html}</${rootName}>` : html;
+
+          // If parsing XHTML then the content must contain the xmlns declaration, see https://www.w3.org/TR/xhtml1/normative.html#strict
+          var wrappedHtml = format === 'xhtml' ? `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${content}</body></html>` : `<body>${content}</body>`;
+
+          var body = DomParser.parseFromString(wrappedHtml, mimeType).body;
+
+          // sanitize the body content with DomPurify
+          body = Sanitizer.sanitize(body, mimeType);
+
+          return isSpecialRoot ? body.firstChild : body;
+        }
+
+        /**
+         * Transfers children from a native DOM element to a TinyMCE Node tree,
+         * optionally skipping over disallowed attributes and handling special cases.
+         *
+         * @param {Node} parent - The TinyMCE Node to populate.
+         * @param {Element} nativeParent - The native browser DOM element.
+         * @param {Object} specialElements - A map of element names considered special (e.g., script, textarea).
+         */
+        function transferChildren(parent, nativeParent, specialElements) {
+          var parentName = parent.name;
+
+          // Exclude the special elements where the content is RCDATA as their content needs to be parsed instead of being left as plain text
+          // See: https://html.spec.whatwg.org/multipage/parsing.html#parsing-html-fragments
+          var isSpecial = parentName in specialElements && parentName !== 'title' && parentName !== 'textarea' && parentName !== 'noscript';
+
+          var childNodes = nativeParent.childNodes;
+
+          for (var ni = 0, nl = childNodes.length; ni < nl; ni++) {
+            var nativeChild = childNodes[ni], nodeType = nativeChild.nodeType, nodeName = nativeChild.nodeName.toLowerCase();
+
+            var newNode = new Node(nodeName, nodeType);
+
+            if (nodeType == 1) { // ELEMENT_NODE
+              var attributes = Array.from(nativeChild.attributes);
+
+              if (settings.purify_html) {
+                // DOMPurify will reverse the order of attributes, so we need to reverse it back
+                attributes.reverse();
+              }
+
+              for (var ai = 0, al = attributes.length; ai < al; ai++) {
+                var attr = attributes[ai];
+                newNode.attr(attr.name, attr.value);
+              }
+
+              newNode.shortEnded = nodeName in shortEndedElements || false;
+            }
+
+            if (nodeType == 3) { // TEXT_NODE
+              newNode.value = nativeChild.data;
+
+              if (isSpecial) {
+                newNode.raw = true;
+              }
+            }
+
+            if (nodeType == 8 || nodeType == 4 || nodeType == 7) { // COMMENT_NODE, CDATA_SECTION_NODE, PROCESSING_INSTRUCTION_NODE            
+              var value = nativeChild.data;
+
+              if (nodeType == 8) { // COMMENT_NODE
+                // If conditional comments are not allowed then prefix with a space
+                if (!settings.allow_conditional_comments && value.toLowerCase().indexOf('[if') === 0) {
+                  value = ' ' + value;
+                }
+              }
+
+              newNode.value = value;
+            }
+
+            transferChildren(newNode, nativeChild, specialElements);
+            parent.append(newNode);
+          }
+        }
+
+        /**
+         * Wraps consecutive inline or text nodes into forced block elements.
+         * Ensures top-level content is enclosed in the configured root block (e.g., <p>).
+         * Trims leading and trailing whitespace within each created block for cleanliness.
+         *
+         * @method addRootBlocks
+         * @private
+         */
+        function addRootBlocks(rootNode, rootBlockName) {
+          var node = rootNode.firstChild, rootBlockNode = null;
+
+          function isWrappableNode(node) {
+            return (node.type == 3 && tinymce.trim(node.value)) || (node.type == 1 && node.name !== 'p' && !blockElements[node.name] && !node.attr('data-mce-type'));
+          }
 
           // Removes whitespace at beginning and end of block so:
           // <p> x </p> -> <p>x</p>
-          function trim(rootBlockNode) {
-            if (rootBlockNode) {
-              node = rootBlockNode.firstChild;
-              if (node && node.type == 3) {
+          function trim(rootBlock) {
+            if (rootBlock) {
+              node = rootBlock.firstChild;
+              if (node && node.type === 3) {
                 node.value = node.value.replace(startWhiteSpaceRegExp, '');
               }
 
-              node = rootBlockNode.lastChild;
-              if (node && node.type == 3) {
+              node = rootBlock.lastChild;
+              if (node && node.type === 3) {
                 node.value = node.value.replace(endWhiteSpaceRegExp, '');
               }
             }
           }
 
-          // Check if rootBlock is valid within rootNode for example if P is valid in H1 if H1 is the contentEditabe root
+          // Check if rootBlock is valid within rootNode for example if P is valid in H1 if H1 is the contentEditable root
           if (!schema.isValidChild(rootNode.name, rootBlockName.toLowerCase())) {
             return;
           }
 
           while (node) {
-            next = node.next;
+            var next = node.next;
 
-            if ((node.type == 3 && tinymce.trim(node.value)) || (node.type == 1 && node.name !== 'p' && !blockElements[node.name] && !node.attr('data-mce-type'))) {
+            if (isWrappableNode(node)) {
               if (!rootBlockNode) {
                 // Create a new root block element
-                rootBlockNode = createNode(rootBlockName, 1);
+                rootBlockNode = new Node(rootBlockName, 1);
                 rootBlockNode.attr(settings.forced_root_block_attrs);
                 rootNode.insert(rootBlockNode, node);
                 rootBlockNode.append(node);
@@ -8438,342 +10824,64 @@
           trim(rootBlockNode);
         }
 
-        function createNode(name, type) {
-          var node = new Node(name, type),
-            list;
+        var element = parseAndSanitizeWithContext(html, settings.root_name, args.format);
 
-          if (name in nodeFilters) {
-            list = matchedNodes[name];
+        rootNode = new Node(args.context || settings.root_name, 11);
 
-            if (list) {
-              list.push(node);
-            } else {
-              matchedNodes[name] = [node];
-            }
-          }
+        transferChildren(rootNode, element, schema.getSpecialElements());
 
-          return node;
-        }
+        // empty element to prevent memory leak
+        element.innerHTML = '';
 
-        function removeWhitespaceBefore(node) {
-          var textNode, textNodeNext, textVal, sibling, blockElements = schema.getBlockElements();
+        // Run whitespace and filter passes
+        var [whitespacePre, whitespacePost] = whitespaceCleaner();
 
-          for (textNode = node.prev; textNode && textNode.type === 3;) {
-            textVal = textNode.value.replace(endWhiteSpaceRegExp, '');
+        var invalidFinder = validate ? function (node) {
+          findInvalidChildren(node, invalidChildren);
+        } : function () { };
 
-            // Found a text node with non whitespace then trim that and break
-            if (textVal.length > 0) {
-              textNode.value = textVal;
-              return;
-            }
+        var matches = { nodes: {}, attributes: {} };
 
-            textNodeNext = textNode.next;
+        var matchFinder = function (node) {
+          FilterNode.matchNode(nodeFilters, attributeFilters, node, matches);
+        };
 
-            // Fix for bug #7543 where bogus nodes would produce empty
-            // text nodes and these would be removed if a nested list was before it
-            if (textNodeNext) {
-              if (textNodeNext.type == 3 && textNodeNext.value.length) {
-                textNode = textNode.prev;
-                continue;
-              }
+        walkTree(rootNode, [whitespacePre, matchFinder], [whitespacePost, invalidFinder]);
 
-              if (!blockElements[textNodeNext.name] && textNodeNext.name != 'script' && textNodeNext.name != 'style') {
-                textNode = textNode.prev;
-                continue;
-              }
-            }
-
-            sibling = textNode.prev;
-            textNode.remove();
-            textNode = sibling;
-          }
-        }
-
-        function cloneAndExcludeBlocks(input) {
-          var name, output = {};
-
-          for (name in input) {
-            if (name !== 'li' && name != 'p') {
-              output[name] = input[name];
-            }
-          }
-
-          return output;
-        }
-
-        parser = new tinymce.html.SaxParser({
-          validate: validate,
-          allow_script_urls: settings.allow_script_urls,
-          allow_conditional_comments: settings.allow_conditional_comments,
-          allow_event_attributes: settings.allow_event_attributes,
-
-          // Exclude P and LI from DOM parsing since it's treated better by the DOM parser
-          self_closing_elements: cloneAndExcludeBlocks(schema.getSelfClosingElements()),
-
-          cdata: function (text) {
-            node.append(createNode('#cdata', 4)).value = text;
-          },
-
-          text: function (text, raw) {
-            var textNode;
-
-            // Trim all redundant whitespace on non white space elements
-            if (!isInWhiteSpacePreservedElement) {
-              text = text.replace(allWhiteSpaceRegExp, ' ');
-
-              if (node.lastChild && blockElements[node.lastChild.name]) {
-                text = text.replace(startWhiteSpaceRegExp, '');
-              }
-            }
-
-            // Do we need to create the node
-            if (text.length !== 0) {
-              textNode = createNode('#text', 3);
-              textNode.raw = !!raw;
-              node.append(textNode).value = text;
-            }
-          },
-
-          comment: function (text) {
-            node.append(createNode('#comment', 8)).value = text;
-          },
-
-          pi: function (name, text) {
-            node.append(createNode(name, 7)).value = text;
-            removeWhitespaceBefore(node);
-          },
-
-          doctype: function (text) {
-            var newNode;
-
-            newNode = node.append(createNode('#doctype', 10));
-            newNode.value = text;
-            removeWhitespaceBefore(node);
-          },
-
-          start: function (name, attrs, empty) {
-            var newNode, attrFiltersLen, elementRule, attrName, parent;
-
-            elementRule = validate ? schema.getElementRule(name) : {};
-
-            if (elementRule) {
-              newNode = createNode(elementRule.outputName || name, 1);
-              newNode.attributes = attrs;
-              newNode.shortEnded = empty;
-
-              node.append(newNode);
-
-              // Check if node is valid child of the parent node is the child is
-              // unknown we don't collect it since it's probably a custom element
-              parent = children[node.name];
-              if (parent && children[newNode.name] && !parent[newNode.name]) {
-                invalidChildren.push(newNode);
-              }
-
-              attrFiltersLen = attributeFilters.length;
-
-              while (attrFiltersLen--) {
-                attrName = attributeFilters[attrFiltersLen].name;
-
-                if (attrName in attrs.map) {
-                  list = matchedAttributes[attrName];
-
-                  if (list) {
-                    list.push(newNode);
-                  } else {
-                    matchedAttributes[attrName] = [newNode];
-                  }
-                }
-              }
-
-              // Trim whitespace before block
-              if (blockElements[name]) {
-                removeWhitespaceBefore(newNode);
-              }
-
-              // Change current node if the element wasn't empty i.e not <br /> or <img />
-              if (!empty) {
-                node = newNode;
-              }
-
-              // Check if we are inside a whitespace preserved element
-              if (!isInWhiteSpacePreservedElement && whiteSpaceElements[name]) {
-                isInWhiteSpacePreservedElement = true;
-              }
-            }
-          },
-
-          end: function (name) {
-            var textNode, elementRule, text, sibling, tempNode;
-
-            elementRule = validate ? schema.getElementRule(name) : {};
-
-            if (elementRule) {
-              if (blockElements[name]) {
-                if (!isInWhiteSpacePreservedElement) {
-                  // Trim whitespace of the first node in a block
-                  textNode = node.firstChild;
-                  if (textNode && textNode.type === 3) {
-                    text = textNode.value.replace(startWhiteSpaceRegExp, '');
-
-                    // Any characters left after trim or should we remove it
-                    if (text.length > 0) {
-                      textNode.value = text;
-                      textNode = textNode.next;
-                    } else {
-                      sibling = textNode.next;
-                      textNode.remove();
-                      textNode = sibling;
-
-                      // Remove any pure whitespace siblings
-                      while (textNode && textNode.type === 3) {
-                        text = textNode.value;
-                        sibling = textNode.next;
-
-                        if (text.length === 0 || isAllWhiteSpaceRegExp.test(text)) {
-                          textNode.remove();
-                          textNode = sibling;
-                        }
-
-                        textNode = sibling;
-                      }
-                    }
-                  }
-
-                  // Trim whitespace of the last node in a block
-                  textNode = node.lastChild;
-                  if (textNode && textNode.type === 3) {
-                    text = textNode.value.replace(endWhiteSpaceRegExp, '');
-
-                    // Any characters left after trim or should we remove it
-                    if (text.length > 0) {
-                      textNode.value = text;
-                      textNode = textNode.prev;
-                    } else {
-                      sibling = textNode.prev;
-                      textNode.remove();
-                      textNode = sibling;
-
-                      // Remove any pure whitespace siblings
-                      while (textNode && textNode.type === 3) {
-                        text = textNode.value;
-                        sibling = textNode.prev;
-
-                        if (text.length === 0 || isAllWhiteSpaceRegExp.test(text)) {
-                          textNode.remove();
-                          textNode = sibling;
-                        }
-
-                        textNode = sibling;
-                      }
-                    }
-                  }
-                }
-
-                // Trim start white space
-                // Removed due to: #5424
-                /*textNode = node.prev;
-                if (textNode && textNode.type === 3) {
-                  text = textNode.value.replace(startWhiteSpaceRegExp, '');
-
-                  if (text.length > 0)
-                    textNode.value = text;
-                  else
-                    textNode.remove();
-                }*/
-              }
-
-              // Check if we exited a whitespace preserved element
-              if (isInWhiteSpacePreservedElement && whiteSpaceElements[name]) {
-                isInWhiteSpacePreservedElement = false;
-              }
-
-              // Handle empty nodes
-              if (elementRule.removeEmpty || elementRule.paddEmpty) {
-                if (node.isEmpty(nonEmptyElements)) {
-                  if (elementRule.paddEmpty) {
-                    node.empty().append(new Node('#text', '3')).value = '\u00a0';
-                  } else {
-                    // Leave nodes that have a name like <a name="name">
-                    if (!node.attributes.map.name && !node.attributes.map.id) {
-                      tempNode = node.parent;
-
-                      if (blockElements[node.name]) {
-                        node.empty().remove();
-                      } else {
-                        node.unwrap();
-                      }
-
-                      node = tempNode;
-                      return;
-                    }
-                  }
-                }
-              }
-
-              node = node.parent;
-            }
-          }
-        }, schema);
-
-        rootNode = node = new Node(args.context || settings.root_name, 11);
-
-        parser.parse(html);
+        // Reverse collected invalid children for bottom-up cleanup
+        invalidChildren.reverse();
 
         // Fix invalid children or report invalid children in a contextual parsing
         if (validate && invalidChildren.length) {
-          if (!args.context) {
-            fixInvalidChildren(invalidChildren);
+          if (args.context) {
+            var topLevelChildren = [];
+            var otherChildren = [];
+
+            for (var i = 0; i < invalidChildren.length; i++) {
+              var child = invalidChildren[i];
+              if (child.parent === rootNode) {
+                topLevelChildren.push(child);
+              } else {
+                otherChildren.push(child);
+              }
+            }
+
+            fixInvalidChildren(otherChildren);
+
+            args.invalid = topLevelChildren.length > 0;
           } else {
-            args.invalid = true;
+            fixInvalidChildren(invalidChildren);
           }
         }
 
         // Wrap nodes in the root into block elements if the root is body
         if (rootBlockName && (rootNode.name == 'body' || args.isRootContent)) {
-          addRootBlocks();
+          addRootBlocks(rootNode, rootBlockName);
         }
 
         // Run filters only when the contents is valid
         if (!args.invalid) {
-          // Run node filters
-          for (name in matchedNodes) {
-            list = nodeFilters[name];
-            nodes = matchedNodes[name];
-
-            // Remove already removed children
-            fi = nodes.length;
-            while (fi--) {
-              if (!nodes[fi].parent) {
-                nodes.splice(fi, 1);
-              }
-            }
-
-            for (i = 0, l = list.length; i < l; i++) {
-              list[i](nodes, name, args);
-            }
-          }
-
-          // Run attribute filters
-          for (i = 0, l = attributeFilters.length; i < l; i++) {
-            list = attributeFilters[i];
-
-            if (list.name in matchedAttributes) {
-              nodes = matchedAttributes[list.name];
-
-              // Remove already removed children
-              fi = nodes.length;
-              while (fi--) {
-                if (!nodes[fi].parent) {
-                  nodes.splice(fi, 1);
-                }
-              }
-
-              for (fi = 0, fl = list.callbacks.length; fi < fl; fi++) {
-                list.callbacks[fi](nodes, list.name, args);
-              }
-            }
-          }
+          runFilters(matches, args);
         }
 
         return rootNode;
@@ -8786,37 +10894,37 @@
         self.addNodeFilter('br', function (nodes) {
           var i, l = nodes.length,
             node, blockElements = extend({}, schema.getBlockElements());
-          var nonEmptyElements = schema.getNonEmptyElements(),
-            parent, lastParent, prev, prevName;
+          var nonEmptyElements = schema.getNonEmptyElements(), whitespaceElements = schema.getWhiteSpaceElements(), transparentElements = schema.getTransparentElements(),
+            parent, prev, prevName;
           var textNode, elementRule;
 
           // Remove brs from body element as well
           blockElements.body = 1;
+
+          function isBlock(node) {
+            return node.name in blockElements || node.name in transparentElements;
+          }
 
           // Must loop forwards since it will otherwise remove all brs in <p>a<br><br><br></p>
           for (i = 0; i < l; i++) {
             node = nodes[i];
             parent = node.parent;
 
-            if (blockElements[node.parent.name] && node === parent.lastChild) {
+            if (parent && isBlock(parent) && node === parent.lastChild) {
               // Loop all nodes to the left of the current node and check for other BR elements
               // excluding bookmarks since they are invisible
               prev = node.prev;
+
               while (prev) {
                 prevName = prev.name;
 
                 // Ignore bookmarks
-                if (prevName !== "span" || prev.attr('data-mce-type') !== 'bookmark') {
-                  // Found a non BR element
-                  if (prevName !== "br") {
-                    break;
-                  }
-
+                if (prevName !== 'span' || prev.attr('data-mce-type') !== 'bookmark') {
                   // Found another br it's a <br><br> structure then don't remove anything
                   if (prevName === 'br') {
                     node = null;
-                    break;
                   }
+                  break;
                 }
 
                 prev = prev.prev;
@@ -8832,7 +10940,7 @@
                 node.remove();
 
                 // Is the parent to be considered empty after we removed the BR
-                if (parent.isEmpty(nonEmptyElements)) {
+                if (parent.isEmpty(nonEmptyElements, whitespaceElements)) {
                   elementRule = schema.getElementRule(parent.name);
 
                   // Remove or padd the element depending on schema rule
@@ -8848,7 +10956,7 @@
             } else {
               // Replaces BR elements inside inline elements like <p><b><i><br></i></b></p>
               // so they become <p><b><i>&nbsp;</i></b></p>
-              lastParent = node;
+              let lastParent = node;
               while (parent && parent.firstChild === lastParent && parent.lastChild === lastParent) {
                 lastParent = parent;
 
@@ -8860,9 +10968,30 @@
               }
 
               if (lastParent === parent) {
-                textNode = new Node('#text', 3);
+                var textNode = new Node('#text', 3);
                 textNode.value = '\u00a0';
                 node.replace(textNode);
+              }
+            }
+          }
+        });
+      }
+
+      if (settings.fix_list_elements) {
+        self.addNodeFilter('ul,ol', function (nodes) {
+          let i = nodes.length, node, parentNode;
+
+          while (i--) {
+            node = nodes[i];
+            parentNode = node.parent;
+
+            if (parentNode && (parentNode.name === 'ul' || parentNode.name === 'ol')) {
+              if (node.prev && node.prev.name === 'li') {
+                node.prev.append(node);
+              } else {
+                const li = new Node('li', 1);
+                li.attr('style', 'list-style-type: none');
+                node.wrap(li);
               }
             }
           }
@@ -8939,11 +11068,13 @@
               valid = false;
 
               validClassesMap = validClasses['*'];
+
               if (validClassesMap && validClassesMap[className]) {
                 valid = true;
               }
 
               validClassesMap = validClasses[node.name];
+
               if (!valid && validClassesMap && validClassesMap[className]) {
                 valid = true;
               }
@@ -9090,8 +11221,7 @@
 
                   sortedAttrs.push({
                     name: attrName,
-                    value: attrValue,
-                    "boolean": boolAttrMap[attrName] ? true : false
+                    value: attrValue
                   });
                 }
               }
@@ -9105,13 +11235,18 @@
 
                   sortedAttrs.push({
                     name: attrName,
-                    value: attrValue,
-                    "boolean": boolAttrMap[attrName] ? true : false
+                    value: attrValue
                   });
                 }
               }
 
               attrs = sortedAttrs;
+            }
+
+            if (attrs) {
+              for (i = 0, l = attrs.length; i < l; i++) {
+                attrs[i]['boolean'] = attrs[i].name in boolAttrMap ? true : false;
+              }
             }
 
             writer.start(node.name, attrs, isEmpty);
@@ -9224,13 +11359,18 @@
             attr = attrs[i];
 
             // treat as boolean attribute
-            if (attr.name === attr.value) {
+            if (attr.name == attr.value) {
               attr["boolean"] = true;
             }
 
-            if (attr["boolean"] && settings.schema == 'html5-strict') {
+            if (attr["boolean"]) {
+              if (settings.schema == 'html5-strict') {
                 // boolean attributes in HTML5 are written without a value
                 html.push(' ', attr.name);
+              } else {
+                // boolean attributes in HTML4 are written with a value
+                html.push(' ', attr.name, '="', encode('' + attr.name, true), '"');
+              }
             } else {
               html.push(' ', attr.name, '="', encode('' + attr.value, true), '"');
             }
@@ -24147,6 +26287,8 @@
       settings.entity_encoding = settings.entity_encoding || 'named';
       settings.remove_trailing_brs = "remove_trailing_brs" in settings ? settings.remove_trailing_brs : true;
 
+      settings.element_format = settings.element_format || 'xhtml';
+
       var tempAttrs = ['data-mce-selected'];
 
       /**
@@ -24307,9 +26449,11 @@
       // Force script into CDATA sections and remove the mce- prefix also add comments around styles
       htmlParser.addNodeFilter('script,style', function (nodes, name) {
         var i = nodes.length,
-          node, value, type;
+          node, firstChild, value, type;
 
         function trim(value) {
+          /* jshint maxlen:255 */
+          /* eslint max-len:0 */
           return value.replace(/(<!--\[CDATA\[|\]\]-->)/g, '\n')
             .replace(/^[\r\n]*|[\r\n]*$/g, '')
             .replace(/^\s*((<!--)?(\s*\/\/)?\s*<!\[CDATA\[|(<!--\s*)?\/\*\s*<!\[CDATA\[\s*\*\/|(\/\/)?\s*<!--|\/\*\s*<!--\s*\*\/)\s*[\r\n]*/gi, '')
@@ -24318,7 +26462,8 @@
 
         while (i--) {
           node = nodes[i];
-          value = node.firstChild ? node.firstChild.value : '';
+          firstChild = node.firstChild;
+          value = firstChild ? firstChild.value : '';
 
           if (name === "script") {
             // Remove mce- prefix from script elements and remove default type since the user specified
@@ -24329,14 +26474,13 @@
               node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
             }
 
-            if (value.length > 0) {
-              //node.firstChild.value = '// <![CDATA[\n' + trim(value) + '\n// ]]>';
-              node.firstChild.value = trim(value);
+            if (settings.element_format === 'xhtml' && firstChild && value.length > 0) {
+              firstChild.value = '// <![CDATA[\n' + trim(value) + '\n// ]]>';
             }
+
           } else {
-            if (value.length > 0) {
-              //node.firstChild.value = '<!--\n' + trim(value) + '\n-->';
-              node.firstChild.value = trim(value);
+            if (settings.element_format === 'xhtml' && firstChild && value.length > 0) {
+              firstChild.value = '<!--\n' + trim(value) + '\n-->';
             }
           }
         }
