@@ -173,7 +173,7 @@ class JoomlalinksWeblinks extends CMSObject
 
         $case = '';
 
-        if ((int) $wf->getParam('links.joomlalinks.weblinks_alias', 1)) {
+        if ((int) $wf->getParam('links.joomlalinks.weblinks_alias', 0)) {
             //sqlsrv changes
             $case_when1 = ' CASE WHEN ';
             $case_when1 .= $dbquery->charLength('a.alias', '!=', '0');
