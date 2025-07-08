@@ -1917,7 +1917,7 @@
     var blockSvgDataUris = function (allowSvgDataUrls, tagName) {
       if (isNonNullable(allowSvgDataUrls)) {
         return !allowSvgDataUrls;
-      } else {      
+      } else {
         // Only allow SVGs by default on images/videos since the browser won't execute scripts on those elements
         return isNonNullable(tagName) ? tinymce.inArray(safeSvgDataUrlElements, tagName) == -1 : true;
       }
@@ -4709,7 +4709,7 @@
     return mimes[mime.toLowerCase()] || 'dat';
   }
 
-  function create$2(o, blob, base64, filename) {
+  function create$1(o, blob, base64, filename) {
     return typeof o === 'object' ? toBlobInfo(o) : toBlobInfo({
       id: o,
       name: filename,
@@ -4781,7 +4781,7 @@
   }
 
   tinymce.file.BlobCache = {
-    create: create$2,
+    create: create$1,
     add: add,
     get: get,
     getByUri: getByUri,
@@ -5996,6 +5996,7 @@
       }
 
       settings = settings || {};
+
       schemaItems = compileSchema(settings.schema);
 
       // Allow all elements and attributes if verify_html is set to false
@@ -6350,8 +6351,8 @@
           children[name] = element.children;
         });
 
-        // Switch these on HTML4
-        if (settings.schema === "html4") {
+        // Switch these in HTML4
+        if (settings.schema === "html4" || settings.prefer_strong_and_em) {
           each(split('strong/b em/i'), function (item) {
             item = split(item, '/');
             elements[item[1]].outputName = item[0];
@@ -8067,1739 +8068,6 @@
     });
 
     tinymce.html.Node = Node;
-  })(tinymce);
-
-  /*! @license DOMPurify 3.2.5 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.5/LICENSE */
-
-  const {
-    entries,
-    setPrototypeOf,
-    isFrozen,
-    getPrototypeOf,
-    getOwnPropertyDescriptor
-  } = Object;
-  let {
-    freeze,
-    seal,
-    create: create$1
-  } = Object; // eslint-disable-line import/no-mutable-exports
-  let {
-    apply,
-    construct
-  } = typeof Reflect !== 'undefined' && Reflect;
-  if (!freeze) {
-    freeze = function freeze(x) {
-      return x;
-    };
-  }
-  if (!seal) {
-    seal = function seal(x) {
-      return x;
-    };
-  }
-  if (!apply) {
-    apply = function apply(fun, thisValue, args) {
-      return fun.apply(thisValue, args);
-    };
-  }
-  if (!construct) {
-    construct = function construct(Func, args) {
-      return new Func(...args);
-    };
-  }
-  const arrayForEach = unapply(Array.prototype.forEach);
-  const arrayLastIndexOf = unapply(Array.prototype.lastIndexOf);
-  const arrayPop = unapply(Array.prototype.pop);
-  const arrayPush = unapply(Array.prototype.push);
-  const arraySplice = unapply(Array.prototype.splice);
-  const stringToLowerCase = unapply(String.prototype.toLowerCase);
-  const stringToString = unapply(String.prototype.toString);
-  const stringMatch = unapply(String.prototype.match);
-  const stringReplace = unapply(String.prototype.replace);
-  const stringIndexOf = unapply(String.prototype.indexOf);
-  const stringTrim = unapply(String.prototype.trim);
-  const objectHasOwnProperty = unapply(Object.prototype.hasOwnProperty);
-  const regExpTest = unapply(RegExp.prototype.test);
-  const typeErrorCreate = unconstruct(TypeError);
-  /**
-   * Creates a new function that calls the given function with a specified thisArg and arguments.
-   *
-   * @param func - The function to be wrapped and called.
-   * @returns A new function that calls the given function with a specified thisArg and arguments.
-   */
-  function unapply(func) {
-    return function (thisArg) {
-      if (thisArg instanceof RegExp) {
-        thisArg.lastIndex = 0;
-      }
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-      return apply(func, thisArg, args);
-    };
-  }
-  /**
-   * Creates a new function that constructs an instance of the given constructor function with the provided arguments.
-   *
-   * @param func - The constructor function to be wrapped and called.
-   * @returns A new function that constructs an instance of the given constructor function with the provided arguments.
-   */
-  function unconstruct(func) {
-    return function () {
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
-      return construct(func, args);
-    };
-  }
-  /**
-   * Add properties to a lookup table
-   *
-   * @param set - The set to which elements will be added.
-   * @param array - The array containing elements to be added to the set.
-   * @param transformCaseFunc - An optional function to transform the case of each element before adding to the set.
-   * @returns The modified set with added elements.
-   */
-  function addToSet(set, array) {
-    let transformCaseFunc = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : stringToLowerCase;
-    if (setPrototypeOf) {
-      // Make 'in' and truthy checks like Boolean(set.constructor)
-      // independent of any properties defined on Object.prototype.
-      // Prevent prototype setters from intercepting set as a this value.
-      setPrototypeOf(set, null);
-    }
-    let l = array.length;
-    while (l--) {
-      let element = array[l];
-      if (typeof element === 'string') {
-        const lcElement = transformCaseFunc(element);
-        if (lcElement !== element) {
-          // Config presets (e.g. tags.js, attrs.js) are immutable.
-          if (!isFrozen(array)) {
-            array[l] = lcElement;
-          }
-          element = lcElement;
-        }
-      }
-      set[element] = true;
-    }
-    return set;
-  }
-  /**
-   * Clean up an array to harden against CSPP
-   *
-   * @param array - The array to be cleaned.
-   * @returns The cleaned version of the array
-   */
-  function cleanArray(array) {
-    for (let index = 0; index < array.length; index++) {
-      const isPropertyExist = objectHasOwnProperty(array, index);
-      if (!isPropertyExist) {
-        array[index] = null;
-      }
-    }
-    return array;
-  }
-  /**
-   * Shallow clone an object
-   *
-   * @param object - The object to be cloned.
-   * @returns A new object that copies the original.
-   */
-  function clone(object) {
-    const newObject = create$1(null);
-    for (const [property, value] of entries(object)) {
-      const isPropertyExist = objectHasOwnProperty(object, property);
-      if (isPropertyExist) {
-        if (Array.isArray(value)) {
-          newObject[property] = cleanArray(value);
-        } else if (value && typeof value === 'object' && value.constructor === Object) {
-          newObject[property] = clone(value);
-        } else {
-          newObject[property] = value;
-        }
-      }
-    }
-    return newObject;
-  }
-  /**
-   * This method automatically checks if the prop is function or getter and behaves accordingly.
-   *
-   * @param object - The object to look up the getter function in its prototype chain.
-   * @param prop - The property name for which to find the getter function.
-   * @returns The getter function found in the prototype chain or a fallback function.
-   */
-  function lookupGetter(object, prop) {
-    while (object !== null) {
-      const desc = getOwnPropertyDescriptor(object, prop);
-      if (desc) {
-        if (desc.get) {
-          return unapply(desc.get);
-        }
-        if (typeof desc.value === 'function') {
-          return unapply(desc.value);
-        }
-      }
-      object = getPrototypeOf(object);
-    }
-    function fallbackValue() {
-      return null;
-    }
-    return fallbackValue;
-  }
-
-  const html$1 = freeze(['a', 'abbr', 'acronym', 'address', 'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'big', 'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'content', 'data', 'datalist', 'dd', 'decorator', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'main', 'map', 'mark', 'marquee', 'menu', 'menuitem', 'meter', 'nav', 'nobr', 'ol', 'optgroup', 'option', 'output', 'p', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'section', 'select', 'shadow', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr']);
-  const svg$1 = freeze(['svg', 'a', 'altglyph', 'altglyphdef', 'altglyphitem', 'animatecolor', 'animatemotion', 'animatetransform', 'circle', 'clippath', 'defs', 'desc', 'ellipse', 'filter', 'font', 'g', 'glyph', 'glyphref', 'hkern', 'image', 'line', 'lineargradient', 'marker', 'mask', 'metadata', 'mpath', 'path', 'pattern', 'polygon', 'polyline', 'radialgradient', 'rect', 'stop', 'style', 'switch', 'symbol', 'text', 'textpath', 'title', 'tref', 'tspan', 'view', 'vkern']);
-  const svgFilters = freeze(['feBlend', 'feColorMatrix', 'feComponentTransfer', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap', 'feDistantLight', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode', 'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting', 'feSpotLight', 'feTile', 'feTurbulence']);
-  // List of SVG elements that are disallowed by default.
-  // We still need to know them so that we can do namespace
-  // checks properly in case one wants to add them to
-  // allow-list.
-  const svgDisallowed = freeze(['animate', 'color-profile', 'cursor', 'discard', 'font-face', 'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri', 'foreignobject', 'hatch', 'hatchpath', 'mesh', 'meshgradient', 'meshpatch', 'meshrow', 'missing-glyph', 'script', 'set', 'solidcolor', 'unknown', 'use']);
-  const mathMl$1 = freeze(['math', 'menclose', 'merror', 'mfenced', 'mfrac', 'mglyph', 'mi', 'mlabeledtr', 'mmultiscripts', 'mn', 'mo', 'mover', 'mpadded', 'mphantom', 'mroot', 'mrow', 'ms', 'mspace', 'msqrt', 'mstyle', 'msub', 'msup', 'msubsup', 'mtable', 'mtd', 'mtext', 'mtr', 'munder', 'munderover', 'mprescripts']);
-  // Similarly to SVG, we want to know all MathML elements,
-  // even those that we disallow by default.
-  const mathMlDisallowed = freeze(['maction', 'maligngroup', 'malignmark', 'mlongdiv', 'mscarries', 'mscarry', 'msgroup', 'mstack', 'msline', 'msrow', 'semantics', 'annotation', 'annotation-xml', 'mprescripts', 'none']);
-  const text = freeze(['#text']);
-
-  const html = freeze(['accept', 'action', 'align', 'alt', 'autocapitalize', 'autocomplete', 'autopictureinpicture', 'autoplay', 'background', 'bgcolor', 'border', 'capture', 'cellpadding', 'cellspacing', 'checked', 'cite', 'class', 'clear', 'color', 'cols', 'colspan', 'controls', 'controlslist', 'coords', 'crossorigin', 'datetime', 'decoding', 'default', 'dir', 'disabled', 'disablepictureinpicture', 'disableremoteplayback', 'download', 'draggable', 'enctype', 'enterkeyhint', 'face', 'for', 'headers', 'height', 'hidden', 'high', 'href', 'hreflang', 'id', 'inputmode', 'integrity', 'ismap', 'kind', 'label', 'lang', 'list', 'loading', 'loop', 'low', 'max', 'maxlength', 'media', 'method', 'min', 'minlength', 'multiple', 'muted', 'name', 'nonce', 'noshade', 'novalidate', 'nowrap', 'open', 'optimum', 'pattern', 'placeholder', 'playsinline', 'popover', 'popovertarget', 'popovertargetaction', 'poster', 'preload', 'pubdate', 'radiogroup', 'readonly', 'rel', 'required', 'rev', 'reversed', 'role', 'rows', 'rowspan', 'spellcheck', 'scope', 'selected', 'shape', 'size', 'sizes', 'span', 'srclang', 'start', 'src', 'srcset', 'step', 'style', 'summary', 'tabindex', 'title', 'translate', 'type', 'usemap', 'valign', 'value', 'width', 'wrap', 'xmlns', 'slot']);
-  const svg = freeze(['accent-height', 'accumulate', 'additive', 'alignment-baseline', 'amplitude', 'ascent', 'attributename', 'attributetype', 'azimuth', 'basefrequency', 'baseline-shift', 'begin', 'bias', 'by', 'class', 'clip', 'clippathunits', 'clip-path', 'clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cx', 'cy', 'd', 'dx', 'dy', 'diffuseconstant', 'direction', 'display', 'divisor', 'dur', 'edgemode', 'elevation', 'end', 'exponent', 'fill', 'fill-opacity', 'fill-rule', 'filter', 'filterunits', 'flood-color', 'flood-opacity', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'fx', 'fy', 'g1', 'g2', 'glyph-name', 'glyphref', 'gradientunits', 'gradienttransform', 'height', 'href', 'id', 'image-rendering', 'in', 'in2', 'intercept', 'k', 'k1', 'k2', 'k3', 'k4', 'kerning', 'keypoints', 'keysplines', 'keytimes', 'lang', 'lengthadjust', 'letter-spacing', 'kernelmatrix', 'kernelunitlength', 'lighting-color', 'local', 'marker-end', 'marker-mid', 'marker-start', 'markerheight', 'markerunits', 'markerwidth', 'maskcontentunits', 'maskunits', 'max', 'mask', 'media', 'method', 'mode', 'min', 'name', 'numoctaves', 'offset', 'operator', 'opacity', 'order', 'orient', 'orientation', 'origin', 'overflow', 'paint-order', 'path', 'pathlength', 'patterncontentunits', 'patterntransform', 'patternunits', 'points', 'preservealpha', 'preserveaspectratio', 'primitiveunits', 'r', 'rx', 'ry', 'radius', 'refx', 'refy', 'repeatcount', 'repeatdur', 'restart', 'result', 'rotate', 'scale', 'seed', 'shape-rendering', 'slope', 'specularconstant', 'specularexponent', 'spreadmethod', 'startoffset', 'stddeviation', 'stitchtiles', 'stop-color', 'stop-opacity', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke', 'stroke-width', 'style', 'surfacescale', 'systemlanguage', 'tabindex', 'tablevalues', 'targetx', 'targety', 'transform', 'transform-origin', 'text-anchor', 'text-decoration', 'text-rendering', 'textlength', 'type', 'u1', 'u2', 'unicode', 'values', 'viewbox', 'visibility', 'version', 'vert-adv-y', 'vert-origin-x', 'vert-origin-y', 'width', 'word-spacing', 'wrap', 'writing-mode', 'xchannelselector', 'ychannelselector', 'x', 'x1', 'x2', 'xmlns', 'y', 'y1', 'y2', 'z', 'zoomandpan']);
-  const mathMl = freeze(['accent', 'accentunder', 'align', 'bevelled', 'close', 'columnsalign', 'columnlines', 'columnspan', 'denomalign', 'depth', 'dir', 'display', 'displaystyle', 'encoding', 'fence', 'frame', 'height', 'href', 'id', 'largeop', 'length', 'linethickness', 'lspace', 'lquote', 'mathbackground', 'mathcolor', 'mathsize', 'mathvariant', 'maxsize', 'minsize', 'movablelimits', 'notation', 'numalign', 'open', 'rowalign', 'rowlines', 'rowspacing', 'rowspan', 'rspace', 'rquote', 'scriptlevel', 'scriptminsize', 'scriptsizemultiplier', 'selection', 'separator', 'separators', 'stretchy', 'subscriptshift', 'supscriptshift', 'symmetric', 'voffset', 'width', 'xmlns']);
-  const xml = freeze(['xlink:href', 'xml:id', 'xlink:title', 'xml:space', 'xmlns:xlink']);
-
-  // eslint-disable-next-line unicorn/better-regex
-  const MUSTACHE_EXPR = seal(/\{\{[\w\W]*|[\w\W]*\}\}/gm); // Specify template detection regex for SAFE_FOR_TEMPLATES mode
-  const ERB_EXPR = seal(/<%[\w\W]*|[\w\W]*%>/gm);
-  const TMPLIT_EXPR = seal(/\$\{[\w\W]*/gm); // eslint-disable-line unicorn/better-regex
-  const DATA_ATTR = seal(/^data-[\-\w.\u00B7-\uFFFF]+$/); // eslint-disable-line no-useless-escape
-  const ARIA_ATTR = seal(/^aria-[\-\w]+$/); // eslint-disable-line no-useless-escape
-  const IS_ALLOWED_URI = seal(/^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i // eslint-disable-line no-useless-escape
-  );
-  const IS_SCRIPT_OR_DATA = seal(/^(?:\w+script|data):/i);
-  const ATTR_WHITESPACE = seal(/[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g // eslint-disable-line no-control-regex
-  );
-  const DOCTYPE_NAME = seal(/^html$/i);
-  const CUSTOM_ELEMENT = seal(/^[a-z][.\w]*(-[.\w]+)+$/i);
-
-  var EXPRESSIONS = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    ARIA_ATTR: ARIA_ATTR,
-    ATTR_WHITESPACE: ATTR_WHITESPACE,
-    CUSTOM_ELEMENT: CUSTOM_ELEMENT,
-    DATA_ATTR: DATA_ATTR,
-    DOCTYPE_NAME: DOCTYPE_NAME,
-    ERB_EXPR: ERB_EXPR,
-    IS_ALLOWED_URI: IS_ALLOWED_URI,
-    IS_SCRIPT_OR_DATA: IS_SCRIPT_OR_DATA,
-    MUSTACHE_EXPR: MUSTACHE_EXPR,
-    TMPLIT_EXPR: TMPLIT_EXPR
-  });
-
-  /* eslint-disable @typescript-eslint/indent */
-  // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
-  const NODE_TYPE = {
-    element: 1,
-    attribute: 2,
-    text: 3,
-    cdataSection: 4,
-    entityReference: 5,
-    // Deprecated
-    entityNode: 6,
-    // Deprecated
-    progressingInstruction: 7,
-    comment: 8,
-    document: 9,
-    documentType: 10,
-    documentFragment: 11,
-    notation: 12 // Deprecated
-  };
-  const getGlobal = function getGlobal() {
-    return typeof window === 'undefined' ? null : window;
-  };
-  /**
-   * Creates a no-op policy for internal use only.
-   * Don't export this function outside this module!
-   * @param trustedTypes The policy factory.
-   * @param purifyHostElement The Script element used to load DOMPurify (to determine policy name suffix).
-   * @return The policy created (or null, if Trusted Types
-   * are not supported or creating the policy failed).
-   */
-  const _createTrustedTypesPolicy = function _createTrustedTypesPolicy(trustedTypes, purifyHostElement) {
-    if (typeof trustedTypes !== 'object' || typeof trustedTypes.createPolicy !== 'function') {
-      return null;
-    }
-    // Allow the callers to control the unique policy name
-    // by adding a data-tt-policy-suffix to the script element with the DOMPurify.
-    // Policy creation with duplicate names throws in Trusted Types.
-    let suffix = null;
-    const ATTR_NAME = 'data-tt-policy-suffix';
-    if (purifyHostElement && purifyHostElement.hasAttribute(ATTR_NAME)) {
-      suffix = purifyHostElement.getAttribute(ATTR_NAME);
-    }
-    const policyName = 'dompurify' + (suffix ? '#' + suffix : '');
-    try {
-      return trustedTypes.createPolicy(policyName, {
-        createHTML(html) {
-          return html;
-        },
-        createScriptURL(scriptUrl) {
-          return scriptUrl;
-        }
-      });
-    } catch (_) {
-      // Policy creation failed (most likely another DOMPurify script has
-      // already run). Skip creating the policy, as this will only cause errors
-      // if TT are enforced.
-      console.warn('TrustedTypes policy ' + policyName + ' could not be created.');
-      return null;
-    }
-  };
-  const _createHooksMap = function _createHooksMap() {
-    return {
-      afterSanitizeAttributes: [],
-      afterSanitizeElements: [],
-      afterSanitizeShadowDOM: [],
-      beforeSanitizeAttributes: [],
-      beforeSanitizeElements: [],
-      beforeSanitizeShadowDOM: [],
-      uponSanitizeAttribute: [],
-      uponSanitizeElement: [],
-      uponSanitizeShadowNode: []
-    };
-  };
-  function createDOMPurify() {
-    let window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
-    const DOMPurify = root => createDOMPurify(root);
-    DOMPurify.version = '3.2.5';
-    DOMPurify.removed = [];
-    if (!window || !window.document || window.document.nodeType !== NODE_TYPE.document || !window.Element) {
-      // Not running in a browser, provide a factory function
-      // so that you can pass your own Window
-      DOMPurify.isSupported = false;
-      return DOMPurify;
-    }
-    let {
-      document
-    } = window;
-    const originalDocument = document;
-    const currentScript = originalDocument.currentScript;
-    const {
-      DocumentFragment,
-      HTMLTemplateElement,
-      Node,
-      Element,
-      NodeFilter,
-      NamedNodeMap = window.NamedNodeMap || window.MozNamedAttrMap,
-      HTMLFormElement,
-      DOMParser,
-      trustedTypes
-    } = window;
-    const ElementPrototype = Element.prototype;
-    const cloneNode = lookupGetter(ElementPrototype, 'cloneNode');
-    const remove = lookupGetter(ElementPrototype, 'remove');
-    const getNextSibling = lookupGetter(ElementPrototype, 'nextSibling');
-    const getChildNodes = lookupGetter(ElementPrototype, 'childNodes');
-    const getParentNode = lookupGetter(ElementPrototype, 'parentNode');
-    // As per issue #47, the web-components registry is inherited by a
-    // new document created via createHTMLDocument. As per the spec
-    // (http://w3c.github.io/webcomponents/spec/custom/#creating-and-passing-registries)
-    // a new empty registry is used when creating a template contents owner
-    // document, so we use that as our parent document to ensure nothing
-    // is inherited.
-    if (typeof HTMLTemplateElement === 'function') {
-      const template = document.createElement('template');
-      if (template.content && template.content.ownerDocument) {
-        document = template.content.ownerDocument;
-      }
-    }
-    let trustedTypesPolicy;
-    let emptyHTML = '';
-    const {
-      implementation,
-      createNodeIterator,
-      createDocumentFragment,
-      getElementsByTagName
-    } = document;
-    const {
-      importNode
-    } = originalDocument;
-    let hooks = _createHooksMap();
-    /**
-     * Expose whether this browser supports running the full DOMPurify.
-     */
-    DOMPurify.isSupported = typeof entries === 'function' && typeof getParentNode === 'function' && implementation && implementation.createHTMLDocument !== undefined;
-    const {
-      MUSTACHE_EXPR,
-      ERB_EXPR,
-      TMPLIT_EXPR,
-      DATA_ATTR,
-      ARIA_ATTR,
-      IS_SCRIPT_OR_DATA,
-      ATTR_WHITESPACE,
-      CUSTOM_ELEMENT
-    } = EXPRESSIONS;
-    let {
-      IS_ALLOWED_URI: IS_ALLOWED_URI$1
-    } = EXPRESSIONS;
-    /**
-     * We consider the elements and attributes below to be safe. Ideally
-     * don't add any new ones but feel free to remove unwanted ones.
-     */
-    /* allowed element names */
-    let ALLOWED_TAGS = null;
-    const DEFAULT_ALLOWED_TAGS = addToSet({}, [...html$1, ...svg$1, ...svgFilters, ...mathMl$1, ...text]);
-    /* Allowed attribute names */
-    let ALLOWED_ATTR = null;
-    const DEFAULT_ALLOWED_ATTR = addToSet({}, [...html, ...svg, ...mathMl, ...xml]);
-    /*
-     * Configure how DOMPurify should handle custom elements and their attributes as well as customized built-in elements.
-     * @property {RegExp|Function|null} tagNameCheck one of [null, regexPattern, predicate]. Default: `null` (disallow any custom elements)
-     * @property {RegExp|Function|null} attributeNameCheck one of [null, regexPattern, predicate]. Default: `null` (disallow any attributes not on the allow list)
-     * @property {boolean} allowCustomizedBuiltInElements allow custom elements derived from built-ins if they pass CUSTOM_ELEMENT_HANDLING.tagNameCheck. Default: `false`.
-     */
-    let CUSTOM_ELEMENT_HANDLING = Object.seal(create$1(null, {
-      tagNameCheck: {
-        writable: true,
-        configurable: false,
-        enumerable: true,
-        value: null
-      },
-      attributeNameCheck: {
-        writable: true,
-        configurable: false,
-        enumerable: true,
-        value: null
-      },
-      allowCustomizedBuiltInElements: {
-        writable: true,
-        configurable: false,
-        enumerable: true,
-        value: false
-      }
-    }));
-    /* Explicitly forbidden tags (overrides ALLOWED_TAGS/ADD_TAGS) */
-    let FORBID_TAGS = null;
-    /* Explicitly forbidden attributes (overrides ALLOWED_ATTR/ADD_ATTR) */
-    let FORBID_ATTR = null;
-    /* Decide if ARIA attributes are okay */
-    let ALLOW_ARIA_ATTR = true;
-    /* Decide if custom data attributes are okay */
-    let ALLOW_DATA_ATTR = true;
-    /* Decide if unknown protocols are okay */
-    let ALLOW_UNKNOWN_PROTOCOLS = false;
-    /* Decide if self-closing tags in attributes are allowed.
-     * Usually removed due to a mXSS issue in jQuery 3.0 */
-    let ALLOW_SELF_CLOSE_IN_ATTR = true;
-    /* Output should be safe for common template engines.
-     * This means, DOMPurify removes data attributes, mustaches and ERB
-     */
-    let SAFE_FOR_TEMPLATES = false;
-    /* Output should be safe even for XML used within HTML and alike.
-     * This means, DOMPurify removes comments when containing risky content.
-     */
-    let SAFE_FOR_XML = true;
-    /* Decide if document with <html>... should be returned */
-    let WHOLE_DOCUMENT = false;
-    /* Track whether config is already set on this instance of DOMPurify. */
-    let SET_CONFIG = false;
-    /* Decide if all elements (e.g. style, script) must be children of
-     * document.body. By default, browsers might move them to document.head */
-    let FORCE_BODY = false;
-    /* Decide if a DOM `HTMLBodyElement` should be returned, instead of a html
-     * string (or a TrustedHTML object if Trusted Types are supported).
-     * If `WHOLE_DOCUMENT` is enabled a `HTMLHtmlElement` will be returned instead
-     */
-    let RETURN_DOM = false;
-    /* Decide if a DOM `DocumentFragment` should be returned, instead of a html
-     * string  (or a TrustedHTML object if Trusted Types are supported) */
-    let RETURN_DOM_FRAGMENT = false;
-    /* Try to return a Trusted Type object instead of a string, return a string in
-     * case Trusted Types are not supported  */
-    let RETURN_TRUSTED_TYPE = false;
-    /* Output should be free from DOM clobbering attacks?
-     * This sanitizes markups named with colliding, clobberable built-in DOM APIs.
-     */
-    let SANITIZE_DOM = true;
-    /* Achieve full DOM Clobbering protection by isolating the namespace of named
-     * properties and JS variables, mitigating attacks that abuse the HTML/DOM spec rules.
-     *
-     * HTML/DOM spec rules that enable DOM Clobbering:
-     *   - Named Access on Window (§7.3.3)
-     *   - DOM Tree Accessors (§3.1.5)
-     *   - Form Element Parent-Child Relations (§4.10.3)
-     *   - Iframe srcdoc / Nested WindowProxies (§4.8.5)
-     *   - HTMLCollection (§4.2.10.2)
-     *
-     * Namespace isolation is implemented by prefixing `id` and `name` attributes
-     * with a constant string, i.e., `user-content-`
-     */
-    let SANITIZE_NAMED_PROPS = false;
-    const SANITIZE_NAMED_PROPS_PREFIX = 'user-content-';
-    /* Keep element content when removing element? */
-    let KEEP_CONTENT = true;
-    /* If a `Node` is passed to sanitize(), then performs sanitization in-place instead
-     * of importing it into a new Document and returning a sanitized copy */
-    let IN_PLACE = false;
-    /* Allow usage of profiles like html, svg and mathMl */
-    let USE_PROFILES = {};
-    /* Tags to ignore content of when KEEP_CONTENT is true */
-    let FORBID_CONTENTS = null;
-    const DEFAULT_FORBID_CONTENTS = addToSet({}, ['annotation-xml', 'audio', 'colgroup', 'desc', 'foreignobject', 'head', 'iframe', 'math', 'mi', 'mn', 'mo', 'ms', 'mtext', 'noembed', 'noframes', 'noscript', 'plaintext', 'script', 'style', 'svg', 'template', 'thead', 'title', 'video', 'xmp']);
-    /* Tags that are safe for data: URIs */
-    let DATA_URI_TAGS = null;
-    const DEFAULT_DATA_URI_TAGS = addToSet({}, ['audio', 'video', 'img', 'source', 'image', 'track']);
-    /* Attributes safe for values like "javascript:" */
-    let URI_SAFE_ATTRIBUTES = null;
-    const DEFAULT_URI_SAFE_ATTRIBUTES = addToSet({}, ['alt', 'class', 'for', 'id', 'label', 'name', 'pattern', 'placeholder', 'role', 'summary', 'title', 'value', 'style', 'xmlns']);
-    const MATHML_NAMESPACE = 'http://www.w3.org/1998/Math/MathML';
-    const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
-    const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
-    /* Document namespace */
-    let NAMESPACE = HTML_NAMESPACE;
-    let IS_EMPTY_INPUT = false;
-    /* Allowed XHTML+XML namespaces */
-    let ALLOWED_NAMESPACES = null;
-    const DEFAULT_ALLOWED_NAMESPACES = addToSet({}, [MATHML_NAMESPACE, SVG_NAMESPACE, HTML_NAMESPACE], stringToString);
-    let MATHML_TEXT_INTEGRATION_POINTS = addToSet({}, ['mi', 'mo', 'mn', 'ms', 'mtext']);
-    let HTML_INTEGRATION_POINTS = addToSet({}, ['annotation-xml']);
-    // Certain elements are allowed in both SVG and HTML
-    // namespace. We need to specify them explicitly
-    // so that they don't get erroneously deleted from
-    // HTML namespace.
-    const COMMON_SVG_AND_HTML_ELEMENTS = addToSet({}, ['title', 'style', 'font', 'a', 'script']);
-    /* Parsing of strict XHTML documents */
-    let PARSER_MEDIA_TYPE = null;
-    const SUPPORTED_PARSER_MEDIA_TYPES = ['application/xhtml+xml', 'text/html'];
-    const DEFAULT_PARSER_MEDIA_TYPE = 'text/html';
-    let transformCaseFunc = null;
-    /* Keep a reference to config to pass to hooks */
-    let CONFIG = null;
-    /* Ideally, do not touch anything below this line */
-    /* ______________________________________________ */
-    const formElement = document.createElement('form');
-    const isRegexOrFunction = function isRegexOrFunction(testValue) {
-      return testValue instanceof RegExp || testValue instanceof Function;
-    };
-    /**
-     * _parseConfig
-     *
-     * @param cfg optional config literal
-     */
-    // eslint-disable-next-line complexity
-    const _parseConfig = function _parseConfig() {
-      let cfg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      if (CONFIG && CONFIG === cfg) {
-        return;
-      }
-      /* Shield configuration object from tampering */
-      if (!cfg || typeof cfg !== 'object') {
-        cfg = {};
-      }
-      /* Shield configuration object from prototype pollution */
-      cfg = clone(cfg);
-      PARSER_MEDIA_TYPE =
-      // eslint-disable-next-line unicorn/prefer-includes
-      SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) === -1 ? DEFAULT_PARSER_MEDIA_TYPE : cfg.PARSER_MEDIA_TYPE;
-      // HTML tags and attributes are not case-sensitive, converting to lowercase. Keeping XHTML as is.
-      transformCaseFunc = PARSER_MEDIA_TYPE === 'application/xhtml+xml' ? stringToString : stringToLowerCase;
-      /* Set configuration parameters */
-      ALLOWED_TAGS = objectHasOwnProperty(cfg, 'ALLOWED_TAGS') ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
-      ALLOWED_ATTR = objectHasOwnProperty(cfg, 'ALLOWED_ATTR') ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
-      ALLOWED_NAMESPACES = objectHasOwnProperty(cfg, 'ALLOWED_NAMESPACES') ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
-      URI_SAFE_ATTRIBUTES = objectHasOwnProperty(cfg, 'ADD_URI_SAFE_ATTR') ? addToSet(clone(DEFAULT_URI_SAFE_ATTRIBUTES), cfg.ADD_URI_SAFE_ATTR, transformCaseFunc) : DEFAULT_URI_SAFE_ATTRIBUTES;
-      DATA_URI_TAGS = objectHasOwnProperty(cfg, 'ADD_DATA_URI_TAGS') ? addToSet(clone(DEFAULT_DATA_URI_TAGS), cfg.ADD_DATA_URI_TAGS, transformCaseFunc) : DEFAULT_DATA_URI_TAGS;
-      FORBID_CONTENTS = objectHasOwnProperty(cfg, 'FORBID_CONTENTS') ? addToSet({}, cfg.FORBID_CONTENTS, transformCaseFunc) : DEFAULT_FORBID_CONTENTS;
-      FORBID_TAGS = objectHasOwnProperty(cfg, 'FORBID_TAGS') ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : {};
-      FORBID_ATTR = objectHasOwnProperty(cfg, 'FORBID_ATTR') ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : {};
-      USE_PROFILES = objectHasOwnProperty(cfg, 'USE_PROFILES') ? cfg.USE_PROFILES : false;
-      ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false; // Default true
-      ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false; // Default true
-      ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false; // Default false
-      ALLOW_SELF_CLOSE_IN_ATTR = cfg.ALLOW_SELF_CLOSE_IN_ATTR !== false; // Default true
-      SAFE_FOR_TEMPLATES = cfg.SAFE_FOR_TEMPLATES || false; // Default false
-      SAFE_FOR_XML = cfg.SAFE_FOR_XML !== false; // Default true
-      WHOLE_DOCUMENT = cfg.WHOLE_DOCUMENT || false; // Default false
-      RETURN_DOM = cfg.RETURN_DOM || false; // Default false
-      RETURN_DOM_FRAGMENT = cfg.RETURN_DOM_FRAGMENT || false; // Default false
-      RETURN_TRUSTED_TYPE = cfg.RETURN_TRUSTED_TYPE || false; // Default false
-      FORCE_BODY = cfg.FORCE_BODY || false; // Default false
-      SANITIZE_DOM = cfg.SANITIZE_DOM !== false; // Default true
-      SANITIZE_NAMED_PROPS = cfg.SANITIZE_NAMED_PROPS || false; // Default false
-      KEEP_CONTENT = cfg.KEEP_CONTENT !== false; // Default true
-      IN_PLACE = cfg.IN_PLACE || false; // Default false
-      IS_ALLOWED_URI$1 = cfg.ALLOWED_URI_REGEXP || IS_ALLOWED_URI;
-      NAMESPACE = cfg.NAMESPACE || HTML_NAMESPACE;
-      MATHML_TEXT_INTEGRATION_POINTS = cfg.MATHML_TEXT_INTEGRATION_POINTS || MATHML_TEXT_INTEGRATION_POINTS;
-      HTML_INTEGRATION_POINTS = cfg.HTML_INTEGRATION_POINTS || HTML_INTEGRATION_POINTS;
-      CUSTOM_ELEMENT_HANDLING = cfg.CUSTOM_ELEMENT_HANDLING || {};
-      if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.tagNameCheck)) {
-        CUSTOM_ELEMENT_HANDLING.tagNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.tagNameCheck;
-      }
-      if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck)) {
-        CUSTOM_ELEMENT_HANDLING.attributeNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck;
-      }
-      if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements === 'boolean') {
-        CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements = cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements;
-      }
-      if (SAFE_FOR_TEMPLATES) {
-        ALLOW_DATA_ATTR = false;
-      }
-      if (RETURN_DOM_FRAGMENT) {
-        RETURN_DOM = true;
-      }
-      /* Parse profile info */
-      if (USE_PROFILES) {
-        ALLOWED_TAGS = addToSet({}, text);
-        ALLOWED_ATTR = [];
-        if (USE_PROFILES.html === true) {
-          addToSet(ALLOWED_TAGS, html$1);
-          addToSet(ALLOWED_ATTR, html);
-        }
-        if (USE_PROFILES.svg === true) {
-          addToSet(ALLOWED_TAGS, svg$1);
-          addToSet(ALLOWED_ATTR, svg);
-          addToSet(ALLOWED_ATTR, xml);
-        }
-        if (USE_PROFILES.svgFilters === true) {
-          addToSet(ALLOWED_TAGS, svgFilters);
-          addToSet(ALLOWED_ATTR, svg);
-          addToSet(ALLOWED_ATTR, xml);
-        }
-        if (USE_PROFILES.mathMl === true) {
-          addToSet(ALLOWED_TAGS, mathMl$1);
-          addToSet(ALLOWED_ATTR, mathMl);
-          addToSet(ALLOWED_ATTR, xml);
-        }
-      }
-      /* Merge configuration parameters */
-      if (cfg.ADD_TAGS) {
-        if (ALLOWED_TAGS === DEFAULT_ALLOWED_TAGS) {
-          ALLOWED_TAGS = clone(ALLOWED_TAGS);
-        }
-        addToSet(ALLOWED_TAGS, cfg.ADD_TAGS, transformCaseFunc);
-      }
-      if (cfg.ADD_ATTR) {
-        if (ALLOWED_ATTR === DEFAULT_ALLOWED_ATTR) {
-          ALLOWED_ATTR = clone(ALLOWED_ATTR);
-        }
-        addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
-      }
-      if (cfg.ADD_URI_SAFE_ATTR) {
-        addToSet(URI_SAFE_ATTRIBUTES, cfg.ADD_URI_SAFE_ATTR, transformCaseFunc);
-      }
-      if (cfg.FORBID_CONTENTS) {
-        if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
-          FORBID_CONTENTS = clone(FORBID_CONTENTS);
-        }
-        addToSet(FORBID_CONTENTS, cfg.FORBID_CONTENTS, transformCaseFunc);
-      }
-      /* Add #text in case KEEP_CONTENT is set to true */
-      if (KEEP_CONTENT) {
-        ALLOWED_TAGS['#text'] = true;
-      }
-      /* Add html, head and body to ALLOWED_TAGS in case WHOLE_DOCUMENT is true */
-      if (WHOLE_DOCUMENT) {
-        addToSet(ALLOWED_TAGS, ['html', 'head', 'body']);
-      }
-      /* Add tbody to ALLOWED_TAGS in case tables are permitted, see #286, #365 */
-      if (ALLOWED_TAGS.table) {
-        addToSet(ALLOWED_TAGS, ['tbody']);
-        delete FORBID_TAGS.tbody;
-      }
-      if (cfg.TRUSTED_TYPES_POLICY) {
-        if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML !== 'function') {
-          throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createHTML" hook.');
-        }
-        if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL !== 'function') {
-          throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createScriptURL" hook.');
-        }
-        // Overwrite existing TrustedTypes policy.
-        trustedTypesPolicy = cfg.TRUSTED_TYPES_POLICY;
-        // Sign local variables required by `sanitize`.
-        emptyHTML = trustedTypesPolicy.createHTML('');
-      } else {
-        // Uninitialized policy, attempt to initialize the internal dompurify policy.
-        if (trustedTypesPolicy === undefined) {
-          trustedTypesPolicy = _createTrustedTypesPolicy(trustedTypes, currentScript);
-        }
-        // If creating the internal policy succeeded sign internal variables.
-        if (trustedTypesPolicy !== null && typeof emptyHTML === 'string') {
-          emptyHTML = trustedTypesPolicy.createHTML('');
-        }
-      }
-      // Prevent further manipulation of configuration.
-      // Not available in IE8, Safari 5, etc.
-      if (freeze) {
-        freeze(cfg);
-      }
-      CONFIG = cfg;
-    };
-    /* Keep track of all possible SVG and MathML tags
-     * so that we can perform the namespace checks
-     * correctly. */
-    const ALL_SVG_TAGS = addToSet({}, [...svg$1, ...svgFilters, ...svgDisallowed]);
-    const ALL_MATHML_TAGS = addToSet({}, [...mathMl$1, ...mathMlDisallowed]);
-    /**
-     * @param element a DOM element whose namespace is being checked
-     * @returns Return false if the element has a
-     *  namespace that a spec-compliant parser would never
-     *  return. Return true otherwise.
-     */
-    const _checkValidNamespace = function _checkValidNamespace(element) {
-      let parent = getParentNode(element);
-      // In JSDOM, if we're inside shadow DOM, then parentNode
-      // can be null. We just simulate parent in this case.
-      if (!parent || !parent.tagName) {
-        parent = {
-          namespaceURI: NAMESPACE,
-          tagName: 'template'
-        };
-      }
-      const tagName = stringToLowerCase(element.tagName);
-      const parentTagName = stringToLowerCase(parent.tagName);
-      if (!ALLOWED_NAMESPACES[element.namespaceURI]) {
-        return false;
-      }
-      if (element.namespaceURI === SVG_NAMESPACE) {
-        // The only way to switch from HTML namespace to SVG
-        // is via <svg>. If it happens via any other tag, then
-        // it should be killed.
-        if (parent.namespaceURI === HTML_NAMESPACE) {
-          return tagName === 'svg';
-        }
-        // The only way to switch from MathML to SVG is via`
-        // svg if parent is either <annotation-xml> or MathML
-        // text integration points.
-        if (parent.namespaceURI === MATHML_NAMESPACE) {
-          return tagName === 'svg' && (parentTagName === 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
-        }
-        // We only allow elements that are defined in SVG
-        // spec. All others are disallowed in SVG namespace.
-        return Boolean(ALL_SVG_TAGS[tagName]);
-      }
-      if (element.namespaceURI === MATHML_NAMESPACE) {
-        // The only way to switch from HTML namespace to MathML
-        // is via <math>. If it happens via any other tag, then
-        // it should be killed.
-        if (parent.namespaceURI === HTML_NAMESPACE) {
-          return tagName === 'math';
-        }
-        // The only way to switch from SVG to MathML is via
-        // <math> and HTML integration points
-        if (parent.namespaceURI === SVG_NAMESPACE) {
-          return tagName === 'math' && HTML_INTEGRATION_POINTS[parentTagName];
-        }
-        // We only allow elements that are defined in MathML
-        // spec. All others are disallowed in MathML namespace.
-        return Boolean(ALL_MATHML_TAGS[tagName]);
-      }
-      if (element.namespaceURI === HTML_NAMESPACE) {
-        // The only way to switch from SVG to HTML is via
-        // HTML integration points, and from MathML to HTML
-        // is via MathML text integration points
-        if (parent.namespaceURI === SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
-          return false;
-        }
-        if (parent.namespaceURI === MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
-          return false;
-        }
-        // We disallow tags that are specific for MathML
-        // or SVG and should never appear in HTML namespace
-        return !ALL_MATHML_TAGS[tagName] && (COMMON_SVG_AND_HTML_ELEMENTS[tagName] || !ALL_SVG_TAGS[tagName]);
-      }
-      // For XHTML and XML documents that support custom namespaces
-      if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
-        return true;
-      }
-      // The code should never reach this place (this means
-      // that the element somehow got namespace that is not
-      // HTML, SVG, MathML or allowed via ALLOWED_NAMESPACES).
-      // Return false just in case.
-      return false;
-    };
-    /**
-     * _forceRemove
-     *
-     * @param node a DOM node
-     */
-    const _forceRemove = function _forceRemove(node) {
-      arrayPush(DOMPurify.removed, {
-        element: node
-      });
-      try {
-        // eslint-disable-next-line unicorn/prefer-dom-node-remove
-        getParentNode(node).removeChild(node);
-      } catch (_) {
-        remove(node);
-      }
-    };
-    /**
-     * _removeAttribute
-     *
-     * @param name an Attribute name
-     * @param element a DOM node
-     */
-    const _removeAttribute = function _removeAttribute(name, element) {
-      try {
-        arrayPush(DOMPurify.removed, {
-          attribute: element.getAttributeNode(name),
-          from: element
-        });
-      } catch (_) {
-        arrayPush(DOMPurify.removed, {
-          attribute: null,
-          from: element
-        });
-      }
-      element.removeAttribute(name);
-      // We void attribute values for unremovable "is" attributes
-      if (name === 'is') {
-        if (RETURN_DOM || RETURN_DOM_FRAGMENT) {
-          try {
-            _forceRemove(element);
-          } catch (_) {}
-        } else {
-          try {
-            element.setAttribute(name, '');
-          } catch (_) {}
-        }
-      }
-    };
-    /**
-     * _initDocument
-     *
-     * @param dirty - a string of dirty markup
-     * @return a DOM, filled with the dirty markup
-     */
-    const _initDocument = function _initDocument(dirty) {
-      /* Create a HTML document */
-      let doc = null;
-      let leadingWhitespace = null;
-      if (FORCE_BODY) {
-        dirty = '<remove></remove>' + dirty;
-      } else {
-        /* If FORCE_BODY isn't used, leading whitespace needs to be preserved manually */
-        const matches = stringMatch(dirty, /^[\r\n\t ]+/);
-        leadingWhitespace = matches && matches[0];
-      }
-      if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && NAMESPACE === HTML_NAMESPACE) {
-        // Root of XHTML doc must contain xmlns declaration (see https://www.w3.org/TR/xhtml1/normative.html#strict)
-        dirty = '<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>' + dirty + '</body></html>';
-      }
-      const dirtyPayload = trustedTypesPolicy ? trustedTypesPolicy.createHTML(dirty) : dirty;
-      /*
-       * Use the DOMParser API by default, fallback later if needs be
-       * DOMParser not work for svg when has multiple root element.
-       */
-      if (NAMESPACE === HTML_NAMESPACE) {
-        try {
-          doc = new DOMParser().parseFromString(dirtyPayload, PARSER_MEDIA_TYPE);
-        } catch (_) {}
-      }
-      /* Use createHTMLDocument in case DOMParser is not available */
-      if (!doc || !doc.documentElement) {
-        doc = implementation.createDocument(NAMESPACE, 'template', null);
-        try {
-          doc.documentElement.innerHTML = IS_EMPTY_INPUT ? emptyHTML : dirtyPayload;
-        } catch (_) {
-          // Syntax error if dirtyPayload is invalid xml
-        }
-      }
-      const body = doc.body || doc.documentElement;
-      if (dirty && leadingWhitespace) {
-        body.insertBefore(document.createTextNode(leadingWhitespace), body.childNodes[0] || null);
-      }
-      /* Work on whole document or just its body */
-      if (NAMESPACE === HTML_NAMESPACE) {
-        return getElementsByTagName.call(doc, WHOLE_DOCUMENT ? 'html' : 'body')[0];
-      }
-      return WHOLE_DOCUMENT ? doc.documentElement : body;
-    };
-    /**
-     * Creates a NodeIterator object that you can use to traverse filtered lists of nodes or elements in a document.
-     *
-     * @param root The root element or node to start traversing on.
-     * @return The created NodeIterator
-     */
-    const _createNodeIterator = function _createNodeIterator(root) {
-      return createNodeIterator.call(root.ownerDocument || root, root,
-      // eslint-disable-next-line no-bitwise
-      NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT | NodeFilter.SHOW_PROCESSING_INSTRUCTION | NodeFilter.SHOW_CDATA_SECTION, null);
-    };
-    /**
-     * _isClobbered
-     *
-     * @param element element to check for clobbering attacks
-     * @return true if clobbered, false if safe
-     */
-    const _isClobbered = function _isClobbered(element) {
-      return element instanceof HTMLFormElement && (typeof element.nodeName !== 'string' || typeof element.textContent !== 'string' || typeof element.removeChild !== 'function' || !(element.attributes instanceof NamedNodeMap) || typeof element.removeAttribute !== 'function' || typeof element.setAttribute !== 'function' || typeof element.namespaceURI !== 'string' || typeof element.insertBefore !== 'function' || typeof element.hasChildNodes !== 'function');
-    };
-    /**
-     * Checks whether the given object is a DOM node.
-     *
-     * @param value object to check whether it's a DOM node
-     * @return true is object is a DOM node
-     */
-    const _isNode = function _isNode(value) {
-      return typeof Node === 'function' && value instanceof Node;
-    };
-    function _executeHooks(hooks, currentNode, data) {
-      arrayForEach(hooks, hook => {
-        hook.call(DOMPurify, currentNode, data, CONFIG);
-      });
-    }
-    /**
-     * _sanitizeElements
-     *
-     * @protect nodeName
-     * @protect textContent
-     * @protect removeChild
-     * @param currentNode to check for permission to exist
-     * @return true if node was killed, false if left alive
-     */
-    const _sanitizeElements = function _sanitizeElements(currentNode) {
-      let content = null;
-      /* Execute a hook if present */
-      _executeHooks(hooks.beforeSanitizeElements, currentNode, null);
-      /* Check if element is clobbered or can clobber */
-      if (_isClobbered(currentNode)) {
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Now let's check the element's type and name */
-      const tagName = transformCaseFunc(currentNode.nodeName);
-      /* Execute a hook if present */
-      _executeHooks(hooks.uponSanitizeElement, currentNode, {
-        tagName,
-        allowedTags: ALLOWED_TAGS
-      });
-      /* Detect mXSS attempts abusing namespace confusion */
-      if (currentNode.hasChildNodes() && !_isNode(currentNode.firstElementChild) && regExpTest(/<[/\w!]/g, currentNode.innerHTML) && regExpTest(/<[/\w!]/g, currentNode.textContent)) {
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Remove any occurrence of processing instructions */
-      if (currentNode.nodeType === NODE_TYPE.progressingInstruction) {
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Remove any kind of possibly harmful comments */
-      if (SAFE_FOR_XML && currentNode.nodeType === NODE_TYPE.comment && regExpTest(/<[/\w]/g, currentNode.data)) {
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Remove element if anything forbids its presence */
-      if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
-        /* Check if we have a custom element to handle */
-        if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName)) {
-          if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
-            return false;
-          }
-          if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(tagName)) {
-            return false;
-          }
-        }
-        /* Keep content except for bad-listed elements */
-        if (KEEP_CONTENT && !FORBID_CONTENTS[tagName]) {
-          const parentNode = getParentNode(currentNode) || currentNode.parentNode;
-          const childNodes = getChildNodes(currentNode) || currentNode.childNodes;
-          if (childNodes && parentNode) {
-            const childCount = childNodes.length;
-            for (let i = childCount - 1; i >= 0; --i) {
-              const childClone = cloneNode(childNodes[i], true);
-              childClone.__removalCount = (currentNode.__removalCount || 0) + 1;
-              parentNode.insertBefore(childClone, getNextSibling(currentNode));
-            }
-          }
-        }
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Check whether element has a valid namespace */
-      if (currentNode instanceof Element && !_checkValidNamespace(currentNode)) {
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Make sure that older browsers don't get fallback-tag mXSS */
-      if ((tagName === 'noscript' || tagName === 'noembed' || tagName === 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
-        _forceRemove(currentNode);
-        return true;
-      }
-      /* Sanitize element content to be template-safe */
-      if (SAFE_FOR_TEMPLATES && currentNode.nodeType === NODE_TYPE.text) {
-        /* Get the element's text content */
-        content = currentNode.textContent;
-        arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
-          content = stringReplace(content, expr, ' ');
-        });
-        if (currentNode.textContent !== content) {
-          arrayPush(DOMPurify.removed, {
-            element: currentNode.cloneNode()
-          });
-          currentNode.textContent = content;
-        }
-      }
-      /* Execute a hook if present */
-      _executeHooks(hooks.afterSanitizeElements, currentNode, null);
-      return false;
-    };
-    /**
-     * _isValidAttribute
-     *
-     * @param lcTag Lowercase tag name of containing element.
-     * @param lcName Lowercase attribute name.
-     * @param value Attribute value.
-     * @return Returns true if `value` is valid, otherwise false.
-     */
-    // eslint-disable-next-line complexity
-    const _isValidAttribute = function _isValidAttribute(lcTag, lcName, value) {
-      /* Make sure attribute cannot clobber */
-      if (SANITIZE_DOM && (lcName === 'id' || lcName === 'name') && (value in document || value in formElement)) {
-        return false;
-      }
-      /* Allow valid data-* attributes: At least one character after "-"
-          (https://html.spec.whatwg.org/multipage/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)
-          XML-compatible (https://html.spec.whatwg.org/multipage/infrastructure.html#xml-compatible and http://www.w3.org/TR/xml/#d0e804)
-          We don't need to check the value; it's always URI safe. */
-      if (ALLOW_DATA_ATTR && !FORBID_ATTR[lcName] && regExpTest(DATA_ATTR, lcName)) ; else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR, lcName)) ; else if (!ALLOWED_ATTR[lcName] || FORBID_ATTR[lcName]) {
-        if (
-        // First condition does a very basic check if a) it's basically a valid custom element tagname AND
-        // b) if the tagName passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
-        // and c) if the attribute name passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.attributeNameCheck
-        _isBasicCustomElement(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) ||
-        // Alternative, second condition checks if it's an `is`-attribute, AND
-        // the value passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
-        lcName === 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value))) ; else {
-          return false;
-        }
-        /* Check value is safe. First, is attr inert? If so, is safe */
-      } else if (URI_SAFE_ATTRIBUTES[lcName]) ; else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value, ATTR_WHITESPACE, ''))) ; else if ((lcName === 'src' || lcName === 'xlink:href' || lcName === 'href') && lcTag !== 'script' && stringIndexOf(value, 'data:') === 0 && DATA_URI_TAGS[lcTag]) ; else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA, stringReplace(value, ATTR_WHITESPACE, ''))) ; else if (value) {
-        return false;
-      } else ;
-      return true;
-    };
-    /**
-     * _isBasicCustomElement
-     * checks if at least one dash is included in tagName, and it's not the first char
-     * for more sophisticated checking see https://github.com/sindresorhus/validate-element-name
-     *
-     * @param tagName name of the tag of the node to sanitize
-     * @returns Returns true if the tag name meets the basic criteria for a custom element, otherwise false.
-     */
-    const _isBasicCustomElement = function _isBasicCustomElement(tagName) {
-      return tagName !== 'annotation-xml' && stringMatch(tagName, CUSTOM_ELEMENT);
-    };
-    /**
-     * _sanitizeAttributes
-     *
-     * @protect attributes
-     * @protect nodeName
-     * @protect removeAttribute
-     * @protect setAttribute
-     *
-     * @param currentNode to sanitize
-     */
-    const _sanitizeAttributes = function _sanitizeAttributes(currentNode) {
-      /* Execute a hook if present */
-      _executeHooks(hooks.beforeSanitizeAttributes, currentNode, null);
-      const {
-        attributes
-      } = currentNode;
-      /* Check if we have attributes; if not we might have a text node */
-      if (!attributes || _isClobbered(currentNode)) {
-        return;
-      }
-      const hookEvent = {
-        attrName: '',
-        attrValue: '',
-        keepAttr: true,
-        allowedAttributes: ALLOWED_ATTR,
-        forceKeepAttr: undefined
-      };
-      let l = attributes.length;
-      /* Go backwards over all attributes; safely remove bad ones */
-      while (l--) {
-        const attr = attributes[l];
-        const {
-          name,
-          namespaceURI,
-          value: attrValue
-        } = attr;
-        const lcName = transformCaseFunc(name);
-        let value = name === 'value' ? attrValue : stringTrim(attrValue);
-        /* Execute a hook if present */
-        hookEvent.attrName = lcName;
-        hookEvent.attrValue = value;
-        hookEvent.keepAttr = true;
-        hookEvent.forceKeepAttr = undefined; // Allows developers to see this is a property they can set
-        _executeHooks(hooks.uponSanitizeAttribute, currentNode, hookEvent);
-        value = hookEvent.attrValue;
-        /* Full DOM Clobbering protection via namespace isolation,
-         * Prefix id and name attributes with `user-content-`
-         */
-        if (SANITIZE_NAMED_PROPS && (lcName === 'id' || lcName === 'name')) {
-          // Remove the attribute with this value
-          _removeAttribute(name, currentNode);
-          // Prefix the value and later re-create the attribute with the sanitized value
-          value = SANITIZE_NAMED_PROPS_PREFIX + value;
-        }
-        /* Work around a security issue with comments inside attributes */
-        if (SAFE_FOR_XML && regExpTest(/((--!?|])>)|<\/(style|title)/i, value)) {
-          _removeAttribute(name, currentNode);
-          continue;
-        }
-        /* Did the hooks approve of the attribute? */
-        if (hookEvent.forceKeepAttr) {
-          continue;
-        }
-        /* Remove attribute */
-        _removeAttribute(name, currentNode);
-        /* Did the hooks approve of the attribute? */
-        if (!hookEvent.keepAttr) {
-          continue;
-        }
-        /* Work around a security issue in jQuery 3.0 */
-        if (!ALLOW_SELF_CLOSE_IN_ATTR && regExpTest(/\/>/i, value)) {
-          _removeAttribute(name, currentNode);
-          continue;
-        }
-        /* Sanitize attribute content to be template-safe */
-        if (SAFE_FOR_TEMPLATES) {
-          arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
-            value = stringReplace(value, expr, ' ');
-          });
-        }
-        /* Is `value` valid for this attribute? */
-        const lcTag = transformCaseFunc(currentNode.nodeName);
-        if (!_isValidAttribute(lcTag, lcName, value)) {
-          continue;
-        }
-        /* Handle attributes that require Trusted Types */
-        if (trustedTypesPolicy && typeof trustedTypes === 'object' && typeof trustedTypes.getAttributeType === 'function') {
-          if (namespaceURI) ; else {
-            switch (trustedTypes.getAttributeType(lcTag, lcName)) {
-              case 'TrustedHTML':
-                {
-                  value = trustedTypesPolicy.createHTML(value);
-                  break;
-                }
-              case 'TrustedScriptURL':
-                {
-                  value = trustedTypesPolicy.createScriptURL(value);
-                  break;
-                }
-            }
-          }
-        }
-        /* Handle invalid data-* attribute set by try-catching it */
-        try {
-          if (namespaceURI) {
-            currentNode.setAttributeNS(namespaceURI, name, value);
-          } else {
-            /* Fallback to setAttribute() for browser-unrecognized namespaces e.g. "x-schema". */
-            currentNode.setAttribute(name, value);
-          }
-          if (_isClobbered(currentNode)) {
-            _forceRemove(currentNode);
-          } else {
-            arrayPop(DOMPurify.removed);
-          }
-        } catch (_) {}
-      }
-      /* Execute a hook if present */
-      _executeHooks(hooks.afterSanitizeAttributes, currentNode, null);
-    };
-    /**
-     * _sanitizeShadowDOM
-     *
-     * @param fragment to iterate over recursively
-     */
-    const _sanitizeShadowDOM = function _sanitizeShadowDOM(fragment) {
-      let shadowNode = null;
-      const shadowIterator = _createNodeIterator(fragment);
-      /* Execute a hook if present */
-      _executeHooks(hooks.beforeSanitizeShadowDOM, fragment, null);
-      while (shadowNode = shadowIterator.nextNode()) {
-        /* Execute a hook if present */
-        _executeHooks(hooks.uponSanitizeShadowNode, shadowNode, null);
-        /* Sanitize tags and elements */
-        _sanitizeElements(shadowNode);
-        /* Check attributes next */
-        _sanitizeAttributes(shadowNode);
-        /* Deep shadow DOM detected */
-        if (shadowNode.content instanceof DocumentFragment) {
-          _sanitizeShadowDOM(shadowNode.content);
-        }
-      }
-      /* Execute a hook if present */
-      _executeHooks(hooks.afterSanitizeShadowDOM, fragment, null);
-    };
-    // eslint-disable-next-line complexity
-    DOMPurify.sanitize = function (dirty) {
-      let cfg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      let body = null;
-      let importedNode = null;
-      let currentNode = null;
-      let returnNode = null;
-      /* Make sure we have a string to sanitize.
-        DO NOT return early, as this will return the wrong type if
-        the user has requested a DOM object rather than a string */
-      IS_EMPTY_INPUT = !dirty;
-      if (IS_EMPTY_INPUT) {
-        dirty = '<!-->';
-      }
-      /* Stringify, in case dirty is an object */
-      if (typeof dirty !== 'string' && !_isNode(dirty)) {
-        if (typeof dirty.toString === 'function') {
-          dirty = dirty.toString();
-          if (typeof dirty !== 'string') {
-            throw typeErrorCreate('dirty is not a string, aborting');
-          }
-        } else {
-          throw typeErrorCreate('toString is not a function');
-        }
-      }
-      /* Return dirty HTML if DOMPurify cannot run */
-      if (!DOMPurify.isSupported) {
-        return dirty;
-      }
-      /* Assign config vars */
-      if (!SET_CONFIG) {
-        _parseConfig(cfg);
-      }
-      /* Clean up removed elements */
-      DOMPurify.removed = [];
-      /* Check if dirty is correctly typed for IN_PLACE */
-      if (typeof dirty === 'string') {
-        IN_PLACE = false;
-      }
-      if (IN_PLACE) {
-        /* Do some early pre-sanitization to avoid unsafe root nodes */
-        if (dirty.nodeName) {
-          const tagName = transformCaseFunc(dirty.nodeName);
-          if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
-            throw typeErrorCreate('root node is forbidden and cannot be sanitized in-place');
-          }
-        }
-      } else if (dirty instanceof Node) {
-        /* If dirty is a DOM element, append to an empty document to avoid
-           elements being stripped by the parser */
-        body = _initDocument('<!---->');
-        importedNode = body.ownerDocument.importNode(dirty, true);
-        if (importedNode.nodeType === NODE_TYPE.element && importedNode.nodeName === 'BODY') {
-          /* Node is already a body, use as is */
-          body = importedNode;
-        } else if (importedNode.nodeName === 'HTML') {
-          body = importedNode;
-        } else {
-          // eslint-disable-next-line unicorn/prefer-dom-node-append
-          body.appendChild(importedNode);
-        }
-      } else {
-        /* Exit directly if we have nothing to do */
-        if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT &&
-        // eslint-disable-next-line unicorn/prefer-includes
-        dirty.indexOf('<') === -1) {
-          return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(dirty) : dirty;
-        }
-        /* Initialize the document to work on */
-        body = _initDocument(dirty);
-        /* Check we have a DOM node from the data */
-        if (!body) {
-          return RETURN_DOM ? null : RETURN_TRUSTED_TYPE ? emptyHTML : '';
-        }
-      }
-      /* Remove first element node (ours) if FORCE_BODY is set */
-      if (body && FORCE_BODY) {
-        _forceRemove(body.firstChild);
-      }
-      /* Get node iterator */
-      const nodeIterator = _createNodeIterator(IN_PLACE ? dirty : body);
-      /* Now start iterating over the created document */
-      while (currentNode = nodeIterator.nextNode()) {
-        /* Sanitize tags and elements */
-        _sanitizeElements(currentNode);
-        /* Check attributes next */
-        _sanitizeAttributes(currentNode);
-        /* Shadow DOM detected, sanitize it */
-        if (currentNode.content instanceof DocumentFragment) {
-          _sanitizeShadowDOM(currentNode.content);
-        }
-      }
-      /* If we sanitized `dirty` in-place, return it. */
-      if (IN_PLACE) {
-        return dirty;
-      }
-      /* Return sanitized string or DOM */
-      if (RETURN_DOM) {
-        if (RETURN_DOM_FRAGMENT) {
-          returnNode = createDocumentFragment.call(body.ownerDocument);
-          while (body.firstChild) {
-            // eslint-disable-next-line unicorn/prefer-dom-node-append
-            returnNode.appendChild(body.firstChild);
-          }
-        } else {
-          returnNode = body;
-        }
-        if (ALLOWED_ATTR.shadowroot || ALLOWED_ATTR.shadowrootmode) {
-          /*
-            AdoptNode() is not used because internal state is not reset
-            (e.g. the past names map of a HTMLFormElement), this is safe
-            in theory but we would rather not risk another attack vector.
-            The state that is cloned by importNode() is explicitly defined
-            by the specs.
-          */
-          returnNode = importNode.call(originalDocument, returnNode, true);
-        }
-        return returnNode;
-      }
-      let serializedHTML = WHOLE_DOCUMENT ? body.outerHTML : body.innerHTML;
-      /* Serialize doctype if allowed */
-      if (WHOLE_DOCUMENT && ALLOWED_TAGS['!doctype'] && body.ownerDocument && body.ownerDocument.doctype && body.ownerDocument.doctype.name && regExpTest(DOCTYPE_NAME, body.ownerDocument.doctype.name)) {
-        serializedHTML = '<!DOCTYPE ' + body.ownerDocument.doctype.name + '>\n' + serializedHTML;
-      }
-      /* Sanitize final string template-safe */
-      if (SAFE_FOR_TEMPLATES) {
-        arrayForEach([MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR], expr => {
-          serializedHTML = stringReplace(serializedHTML, expr, ' ');
-        });
-      }
-      return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(serializedHTML) : serializedHTML;
-    };
-    DOMPurify.setConfig = function () {
-      let cfg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      _parseConfig(cfg);
-      SET_CONFIG = true;
-    };
-    DOMPurify.clearConfig = function () {
-      CONFIG = null;
-      SET_CONFIG = false;
-    };
-    DOMPurify.isValidAttribute = function (tag, attr, value) {
-      /* Initialize shared config vars if necessary. */
-      if (!CONFIG) {
-        _parseConfig({});
-      }
-      const lcTag = transformCaseFunc(tag);
-      const lcName = transformCaseFunc(attr);
-      return _isValidAttribute(lcTag, lcName, value);
-    };
-    DOMPurify.addHook = function (entryPoint, hookFunction) {
-      if (typeof hookFunction !== 'function') {
-        return;
-      }
-      arrayPush(hooks[entryPoint], hookFunction);
-    };
-    DOMPurify.removeHook = function (entryPoint, hookFunction) {
-      if (hookFunction !== undefined) {
-        const index = arrayLastIndexOf(hooks[entryPoint], hookFunction);
-        return index === -1 ? undefined : arraySplice(hooks[entryPoint], index, 1)[0];
-      }
-      return arrayPop(hooks[entryPoint]);
-    };
-    DOMPurify.removeHooks = function (entryPoint) {
-      hooks[entryPoint] = [];
-    };
-    DOMPurify.removeAllHooks = function () {
-      hooks = _createHooksMap();
-    };
-    return DOMPurify;
-  }
-  var purify = createDOMPurify();
-
-  /*!
-   * DOMPurify v3.x (c) Cure53 — licensed under MPL-2.0 (compatible with GPL-2+).
-   * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
-   */
-
-
-  /**
-   * Copyright (c) 2025 Ryan Demmer
-   * Licensed under the GNU General Public License v2.0 or later
-   * Includes modified code from TinyMCE 7.x, licensed under the GNU General Public License v2.0 or later
-   * @code https://github.com/tinymce/tinymce/tree/main/modules/tinymce/src/core/main/ts/api/html/Sanitization.ts
-   * Copyright (c) 2025 Ephox Corporation DBA Tiny Technologies, Inc.
-   *  
-   * See LICENSE.txt
-   */
-
-  /**
-   * tinymce.html.Sanitizer
-   *
-   * A custom HTML sanitizer integrating DOMPurify and schema-based filtering.
-   * Two modes:
-   *  - Purify mode: hooks into DOMPurify for fast DOM transformations.
-   *  - Manual mode: walks the tree with NodeIterator, pruning or unwrapping invalid nodes.
-   *
-   * @param {Object} settings Configuration options (verify_html, purify_html, allow_event_attributes, allow_script_urls, etc.).
-   * @param {tinymce.html.Schema} schema HTML schema defining valid elements and attributes.
-   */
-
-  (function (tinymce) {
-      var each = tinymce.each;
-      var isDomSafe = tinymce.util.URI.isDomSafe;
-      var filteredUrlAttrs = tinymce.makeMap('src,href,data,background,formaction,poster,xlink:href');
-
-      /**
-       * Constructs a new Sanitizer instance.
-       * @constructor
-       * @param {Object} settings - Sanitizer settings.
-       * @param {tinymce.html.Schema} schema - HTML schema for validation.
-       */
-      tinymce.html.Sanitizer = function (settings, schema) {
-          var special = schema.getSpecialElements();
-
-          var uid = 0;
-
-          function isBooleanAttribute(name) {
-              var boolAttrMap = schema.getBoolAttrs();
-              return boolAttrMap[name] || boolAttrMap[name.toLowerCase()] || false;
-          }
-
-          /**
-           * Validates and transforms a single DOM element according to schema rules and internal flags.
-           *
-           * @param {Node} node - The DOM node to process.
-           * @returns {boolean|undefined}
-           *   - `true` to continue traversal without removing this node.
-           *   - `undefined` (or nothing) if the node was removed or replaced.
-           *
-           * Behavior:
-           * 1. Non-element nodes (e.g. text, comments) and the `<body>` tag are left intact (`true` returned).
-           * 2. Custom root (`data-mce-root`) and internal TinyMCE nodes (`data-mce-type`) are preserved.
-           * 3. Bogus nodes (`data-mce-bogus`) are immediately removed via removeNode().
-           * 4. If `settings.validate` is off, no further schema checks occur (`true` returned).
-           * 5. The element’s schema rule is fetched. If none exists, the node is removed.
-           * 6. Forced attributes (`attributesForced`) are applied (overwriting any existing).
-           * 7. Default attributes (`attributesDefault`) are added if missing.
-           * 8. If required attributes (`attributesRequired`) are not present, the node is unwrapped and removed.
-           * 9. If `removeEmptyAttrs` is true and the element has no attributes, it is unwrapped and removed.
-           * 10. If the schema specifies an `outputName` different from the current tag, the element is
-           *    replaced with a new element of that name, preserving its children.
-           * 11. Remaining attributes are filtered via filterAttributes().
-           */
-          function processNode(node, evt) {
-              if (node.nodeType !== 1) {
-                  return;
-              }
-
-              var tag = node.tagName.toLowerCase();
-
-              // skip body tag
-              if (tag === 'body') {
-                  return;
-              }
-
-              if (node.hasAttribute('data-mce-root')) {
-                  if (evt) {
-                      evt.allowedTags[tag] = true;
-                  }
-
-                  return;
-              }
-
-              // keep custom root nodes
-              if (node.hasAttribute('data-mce-root')) {
-                  return;
-              }
-
-              // keep internal nodes
-              if (node.hasAttribute('data-mce-type')) {
-                  return;
-              }
-
-              // always remove bogus nodes
-              if (node.hasAttribute('data-mce-bogus')) {
-                  removeNode(node);
-                  return;
-              }
-
-              var rule = schema.getElementRule(tag);
-
-              if (settings.validate && !rule) {
-                  if (tag in special) {
-                      // Special elements are always removed
-                      removeNode(node);
-                      return;
-                  } else {
-                      // unwrap others
-                      removeNode(node, true);
-                  }
-              } else {
-                  if (evt) {
-                      evt.allowedTags[tag] = true;
-                  }
-              }
-
-              if (settings.validate && rule) {
-                  // Enforce forced attributes
-                  each(rule.attributesForced, function (attr) {
-                      node.setAttribute(
-                          attr.name,
-                          attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
-                      );
-                  });
-
-                  // Apply default attributes
-                  each(rule.attributesDefault, function (attr) {
-                      if (!node.hasAttribute(attr.name)) {
-                          node.setAttribute(
-                              attr.name,
-                              attr.value === '{$uid}' ? 'mce_' + uid++ : attr.value
-                          );
-                      }
-                  });
-
-                  // Unwrap and remove if required attributes are missing
-                  if (
-                      rule.attributesRequired &&
-                      !rule.attributesRequired.some(function (attr) {
-                          return node.hasAttribute(attr.name);
-                      })
-                  ) {
-                      removeNode(node, true);
-                      return;
-                  }
-
-                  // Unwrap and remove if all attributes should be stripped and none remain
-                  if (rule.removeEmptyAttrs && node.attributes.length === 0) {
-                      removeNode(node, true);
-                      return;
-                  }
-
-                  // Rename element if schema defines a different outputName
-                  if (rule.outputName && rule.outputName !== tag) {
-                      var newNode = document.createElement(rule.outputName);
-
-                      while (node.firstChild) {
-                          newNode.appendChild(node.firstChild);
-                      }
-
-                      node.parentNode.replaceChild(newNode, node);
-                      node = newNode;
-                  }
-              }
-          }
-
-          /**
-           * Removes or unwraps a given DOM node based on its “special” status and bogus flag.
-           *
-           * @param {Node}  node   - The DOM node to remove or unwrap.
-           * @param {boolean} unwrap - If true, children of the node are retained and inserted in its place; otherwise, the node is removed wholesale.
-           *
-           * Behavior:
-           * 1. If the node has no parent, the function exits immediately.
-           * 2. If the node’s tag name (lowercased) is in the `special` set, it will always be removed (unwrap forced off).
-           * 3. If the node’s `data-mce-bogus` attribute is not exactly `"all"`, it is treated as bogus and forced to unwrap.
-           * 4. When unwrapping:
-           *    - A `DocumentFragment` is created.
-           *    - All child nodes are moved into the fragment.
-           *    - The fragment is inserted before the original node.
-           *    - The original node is removed from its parent.
-           * 5. Otherwise, the node is simply removed from its parent.
-           */
-          function removeNode(node, unwrap) {
-              var parent = node.parentNode;
-
-              if (!parent) {
-                  return; // No parent, nothing to do
-              }
-
-              // Special elements must be completely removed, never unwrapped
-              if (special[node.tagName.toLowerCase()]) {
-                  unwrap = false;
-              }
-
-              // Bogus content should always be unwrapped so its children remain
-              if (node.getAttribute('data-mce-bogus') != 'all') {
-                  unwrap = true;
-              }
-
-              if (unwrap) {
-                  var frag = document.createDocumentFragment();
-
-                  while (node.firstChild) {
-                      frag.appendChild(node.firstChild);
-                  }
-
-                  parent.insertBefore(frag, node);
-                  parent.removeChild(node);
-              } else {
-                  parent.removeChild(node);
-              }
-          }
-
-          /**
-           * Filters an element's attributes based on schema and settings.
-           * @private
-           * @param {Element} node - Element whose attributes to filter.
-           */
-          function filterAttributes(node) {
-              var attrs = node.attributes, tag = node.tagName.toLowerCase();
-
-              for (var i = attrs.length - 1; i >= 0; i--) {
-                  var name = attrs[i].name;
-                  var lower = name.toLowerCase();
-                  var value = attrs[i].value;
-
-                  // Preserve custom data-* or other dashed attributes including internal attributes eg: data-mce-type
-                  if (/-/.test(lower)) {
-                      continue;
-                  }
-
-                  // Event handlers: only keep if allowed and defined in schema
-                  if (/^on[a-z]+/i.test(lower)) {
-                      if (settings.allow_event_attributes && schema.isValid(tag, name)) {
-                          continue;
-                      }
-
-                      node.removeAttribute(name);
-                      continue;
-                  }
-
-                  // Disallow dangerous URLs
-                  if (name in filteredUrlAttrs && !isDomSafe(value, tag, settings)) {
-                      node.removeAttribute(name);
-                      continue;
-                  }
-
-                  // Remove attributes not in schema
-                  if (schema.isValid(tag, name) === false) {
-                      node.removeAttribute(name);
-                      continue;
-                  }
-
-                  if (isBooleanAttribute(name)) {
-                      node.setAttribute(name, name);
-                  }
-              }
-          }
-
-          /**
-           * Creates DOMPurify configuration from settings and schema.
-           * @private
-           * @returns {Object} Configuration object.
-           */
-          function getPurifyConfig() {
-              var config = {
-                  IN_PLACE: true,
-                  RETURN_DOM: true,
-                  ALLOW_UNKNOWN_PROTOCOLS: !!settings.allow_script_urls,
-                  ALLOWED_TAGS: ['#comment', '#cdata-section', 'body'],
-                  ALLOWED_ATTR: [],
-                  PARSER_MEDIA_TYPE: 'text/html'
-              };
-
-              // Allow any URI when allowing script urls
-              if (settings.allow_script_urls) {
-                  config.ALLOWED_URI_REGEXP = /.*/;
-                  // Allow anything except javascript (or similar) URIs if all html data urls are allowed
-              } else if (settings.allow_html_data_urls) {
-                  config.ALLOWED_URI_REGEXP = /^(?!(\w+script|mhtml):)/i;
-              }
-
-              if (schema.isValid('script') || schema.isValid('style')) {
-                  config.FORCE_BODY = true; // Force body to be present for script/style tags
-              }
-
-              return config;
-          }
-
-          /**
-           * Runs DOMPurify on the given HTML or element, using custom hooks.
-           * @private
-           * @param {String|Element} body - Input HTML or Body element to sanitize.
-           * @returns {Element} Sanitized DOM fragment.
-           */
-          function purify$1(body, mimeType) {
-              var purifier = purify();
-              purifier.removeAllHooks();
-
-              purifier.addHook('uponSanitizeElement', function (node, data) {
-                  processNode(node, data);
-              });
-
-              purifier.addHook('uponSanitizeAttribute', function (node, data) {
-                  var attrName = data.attrName.toLowerCase(), tag = node.tagName.toLowerCase();
-
-                  if (/-/.test(attrName)) {
-                      data.forceKeepAttr = true; // may be internal or custom attributes
-                      return;
-                  }
-
-                  if (/^on[a-z]+/i.test(attrName)) {
-                      // If event attributes are allowed, we keep them if they are valid according to the schema
-                      if (settings.allow_event_attributes && schema.isValid(tag, attrName)) {
-                          data.forceKeepAttr = true;
-                          return;
-                      }
-
-                      // Remove event attributes not allowed by schema
-                      node.removeAttribute(data.attrName);
-                      return;
-                  }
-
-                  // We need to tell DOMPurify to forcibly keep the attribute if it's an SVG data URI and svg data URIs are allowed
-                  if (settings.allow_svg_data_urls && data.attrValue.startsWith('data:image/svg+xml')) {
-                      data.forceKeepAttr = true;
-                      return;
-                  }
-
-                  if (!schema.isValid(tag, attrName)) {
-                      node.removeAttribute(data.attrName);
-                  } else {
-                      if (isBooleanAttribute(attrName)) {
-                          data.attrValue = attrName;
-                      }
-
-                      data.keepAttr = true;
-                      data.allowedAttributes[attrName] = true;
-                  }
-              });
-
-              purifier.sanitize(body, getPurifyConfig());
-
-              console.log(purifier.removed);
-
-              purifier.removed = [];
-
-              return body;
-          }
-
-          /**
-           * Sanitizes a DOM tree or HTML fragment.
-           * @param {Element} body - Root element to sanitize.
-           * @param {string}  mimeType - MIME type hint (unused).
-           * @returns {Element} The sanitized root element.
-           */
-          this.sanitize = function (body, mimeType) {
-              if (settings.verify_html === false) {
-                  return body;
-              }
-
-              if (settings.purify_html !== false) {
-                  return purify$1(body);
-              }
-
-              var iterator = document.createNodeIterator(
-                  body,
-                  NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT
-              );
-
-              var node;
-
-              while ((node = iterator.nextNode())) {
-                  processNode(node);
-
-                  if (node.nodeType === 1) {
-                      filterAttributes(node);
-                  }
-              }
-
-              return body;
-          };
-      };
   })(tinymce);
 
   /**
@@ -18868,6 +17136,14 @@
       });
 
       editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
+          if (e.isDefaultPrevented()) {
+              return;
+          }
+          
+          if (!e.dataTransfer) {
+              return;
+          }
+          
           draggingInternallyState = true;
 
           if (e.altKey) {
@@ -24607,13 +22883,16 @@
 
   (function (tinymce) {
     // Shorten names
-    var is = tinymce.is,
-      isIE = tinymce.isIE,
-      each = tinymce.each,
+    var each = tinymce.each,
       extend = tinymce.extend,
       TreeWalker = tinymce.dom.TreeWalker,
       BookmarkManager = tinymce.dom.BookmarkManager,
-      ControlSelection = tinymce.dom.ControlSelection;
+      ControlSelection = tinymce.dom.ControlSelection,
+      RangeUtils = tinymce.dom.RangeUtils,
+      CaretPosition = tinymce.caret.CaretPosition,
+      Zwsp = tinymce.text.Zwsp,
+      ScrollIntoView = tinymce.dom.ScrollIntoView,
+      Env = tinymce.util.Env;
 
 
     function isRestricted(element) {
@@ -24725,10 +23004,6 @@
         }
       });
 
-      /*if (tinymce.isIE && !tinymce.isIE11 && dom.boxModel) {
-        this._fixIESelection();
-      }*/
-
       // Prevent leaks
       tinymce.addUnload(self.destroy, self);
     };
@@ -24736,17 +23011,26 @@
     tinymce.dom.Selection.prototype = {
 
       /**
-       * Move the selection cursor range to the specified node and offset.
-       * @param node Node to put the cursor in.
-       * @param offset Offset from the start of the node to put the cursor at.
-       */
+     * Move the selection cursor range to the specified node and offset.
+     * If there is no node specified it will move it to the first suitable location within the body.
+     *
+     * @method setCursorLocation
+     * @param {Node} node Optional node to put the cursor in.
+     * @param {Number} offset Optional offset from the start of the node to put the cursor at.
+     */
       setCursorLocation: function (node, offset) {
-        var self = this;
-        var r = self.dom.createRng();
-        r.setStart(node, offset);
-        r.setEnd(node, offset);
-        self.setRng(r);
-        self.collapse(false);
+        var self = this,
+          rng = self.dom.createRng();
+
+        if (!node) {
+          self._moveEndPoint(rng, self.editor.getBody(), true);
+          self.setRng(rng);
+        } else {
+          rng.setStart(node, offset);
+          rng.setEnd(node, offset);
+          self.setRng(rng);
+          self.collapse(false);
+        }
       },
 
       getContextualFragment: function (rng, frag) {
@@ -24765,7 +23049,8 @@
           return frag;
         }
 
-        var tableCells = dom.select('td.mceSelected, th.mceSelected', node);
+        // Clone table cells parent
+        var tableCells = dom.select('td[data-mce-selected], th[data-mce-selected], td.mceSelected, th.mceSelected', node);
 
         if (tableCells.length) {
           var table = dom.getParent(node, 'table');
@@ -24820,71 +23105,72 @@
        * Returns the selected contents using the DOM serializer passed in to this class.
        *
        * @method getContent
-       * @param {Object} s Optional settings class with for example output format text or html.
+       * @param {Object} args Optional settings class with for example output format text or html.
        * @return {String} Selected contents in for example HTML format.
        * @example
        * // Alerts the currently selected contents
        * alert(tinymce.activeEditor.selection.getContent());
        *
        * // Alerts the currently selected contents as plain text
-       * alert(tinymce.activeEditor.selection.getContent({format : 'text'}));
+       * alert(tinymce.activeEditor.selection.getContent({format: 'text'}));
        */
-      getContent: function (s) {
+      getContent: function (args) {
         var self = this,
-          r = self.getRng(),
-          e = self.dom.create("body"),
-          se = self.getSel(),
-          wb, wa, frag;
+          rng = self.getRng(),
+          tmpElm = self.dom.create("body");
+        var se = self.getSel(),
+          whiteSpaceBefore, whiteSpaceAfter, fragment;
 
-        s = s || {};
-        wb = wa = '';
-        s.get = true;
-        s.format = s.format || 'html';
-        s.forced_root_block = '';
-        self.onBeforeGetContent.dispatch(self, s);
+        args = args || {};
+        whiteSpaceBefore = whiteSpaceAfter = '';
+        args.get = true;
+        args.format = args.format || 'html';
+        args.selection = true;
 
-        if (s.format == 'text') {
-          return self.isCollapsed() ? '' : (r.text || (se.toString ? se.toString() : ''));
+        self.onBeforeGetContent.dispatch(self, args);
+
+        if (args.format === 'text') {
+          return self.isCollapsed() ? '' : Zwsp.trim(rng.text || (se.toString ? se.toString() : ''));
         }
 
-        if (r.cloneContents) {
-          frag = r.cloneContents();
+        if (rng.cloneContents) {
+          fragment = rng.cloneContents();
 
-          if (frag) {
+          if (fragment) {
 
             // internal content selection for cut/copy
-            if (s.contextual) {
-              frag = self.getContextualFragment(r, frag);
+            if (args.contextual) {
+              fragment = self.getContextualFragment(rng, fragment);
             }
 
-            e.appendChild(frag);
+            tmpElm.appendChild(fragment);
           }
-        } else if (is(r.item) || is(r.htmlText)) {
+        } else if (rng.item !== undefined || rng.htmlText !== undefined) {
           // IE will produce invalid markup if elements are present that
           // it doesn't understand like custom elements or HTML5 elements.
           // Adding a BR in front of the contents and then remoiving it seems to fix it though.
-          e.innerHTML = '<br>' + (r.item ? r.item(0).outerHTML : r.htmlText);
-          e.removeChild(e.firstChild);
+          tmpElm.innerHTML = '<br>' + (rng.item ? rng.item(0).outerHTML : rng.htmlText);
+          tmpElm.removeChild(tmpElm.firstChild);
         } else {
-          e.innerHTML = r.toString();
+          tmpElm.innerHTML = rng.toString();
         }
 
         // Keep whitespace before and after
-        if (/^\s/.test(e.innerHTML)) {
-          wb = ' ';
+        if (/^\s/.test(tmpElm.innerHTML)) {
+          whiteSpaceBefore = ' ';
         }
 
-        if (/\s+$/.test(e.innerHTML)) {
-          wa = ' ';
+        if (/\s+$/.test(tmpElm.innerHTML)) {
+          whiteSpaceAfter = ' ';
         }
 
-        s.getInner = true;
+        args.getInner = true;
 
-        s.content = self.isCollapsed() ? '' : wb + self.serializer.serialize(e, s) + wa;
+        args.content = self.isCollapsed() ? '' : whiteSpaceBefore + self.serializer.serialize(tmpElm, args) + whiteSpaceAfter;
 
-        self.onGetContent.dispatch(self, s);
+        self.onGetContent.dispatch(self, args);
 
-        return s.content;
+        return args.content;
       },
 
       /**
@@ -24902,12 +23188,14 @@
       setContent: function (content, args) {
         var self = this,
           rng = self.getRng(),
-          caretNode, doc = self.win.document;
+          caretNode, doc = self.win.document,
+          frag, temp;
 
         args = args || {
           format: 'html'
         };
         args.set = true;
+        args.selection = true;
         args.content = content;
 
         // Dispatch before set content event
@@ -24931,7 +23219,19 @@
             if (doc.body.childNodes.length === 0) {
               doc.body.innerHTML = content;
             } else {
-              rng.insertNode(rng.createContextualFragment(content));
+              // createContextualFragment doesn't exists in IE 9 DOMRanges
+              if (rng.createContextualFragment) {
+                rng.insertNode(rng.createContextualFragment(content));
+              } else {
+                // Fake createContextualFragment call in IE 9
+                frag = doc.createDocumentFragment();
+                temp = doc.createElement('div');
+
+                frag.appendChild(temp);
+                temp.outerHTML = content;
+
+                rng.insertNode(frag);
+              }
             }
           }
 
@@ -24997,7 +23297,6 @@
           checkRng = rng.duplicate();
           checkRng.collapse(1);
           startElement = checkRng.parentElement();
-
           if (startElement.ownerDocument !== self.dom.doc) {
             startElement = self.dom.getRoot();
           }
@@ -25005,7 +23304,6 @@
           // Check if range parent is inside the start element, then return the inner parent element
           // This will fix issues when a single element is selected, IE would otherwise return the wrong start element
           parentElement = node = rng.parentElement();
-
           while ((node = node.parentNode)) {
             if (node == startElement) {
               startElement = parentElement;
@@ -25123,7 +23421,7 @@
        * Selects the specified element. This will place the start and end of the selection range around the element.
        *
        * @method select
-       * @param {Element} node HMTL DOM element to select.
+       * @param {Element} node HTML DOM element to select.
        * @param {Boolean} content Optional bool state if the contents should be selected or not on non IE browser.
        * @return {Element} Selected element the same element as the one that got passed in.
        * @example
@@ -25136,33 +23434,8 @@
           rng = dom.createRng(),
           idx;
 
-        function setPoint(node, start) {
-          var walker = new TreeWalker(node, node);
-
-          do {
-            // Text node
-            if (node.nodeType == 3 && tinymce.trim(node.nodeValue).length !== 0) {
-              if (start) {
-                rng.setStart(node, 0);
-              } else {
-                rng.setEnd(node, node.nodeValue.length);
-              }
-
-              return;
-            }
-
-            // BR element
-            if (node.nodeName == 'BR') {
-              if (start) {
-                rng.setStartBefore(node);
-              } else {
-                rng.setEndBefore(node);
-              }
-
-              return;
-            }
-          } while ((node = (start ? walker.next() : walker.prev())));
-        }
+        // Clear stored range set by FocusManager
+        self.lastFocusBookmark = null;
 
         if (node) {
           if (!content && self.controlSelection.controlSelect(node)) {
@@ -25175,8 +23448,8 @@
 
           // Find first/last text node or BR element
           if (content) {
-            setPoint(node, 1);
-            setPoint(node);
+            self._moveEndPoint(rng, node, true);
+            self._moveEndPoint(rng, node);
           }
 
           self.setRng(rng);
@@ -25189,31 +23462,32 @@
        * Returns true/false if the selection range is collapsed or not. Collapsed means if it's a caret or a larger selection.
        *
        * @method isCollapsed
-       * @return {Boolean} true/false state if the selection range is collapsed or not. Collapsed means if it's a caret or a larger selection.
+       * @return {Boolean} true/false state if the selection range is collapsed or not.
+       * Collapsed means if it's a caret or a larger selection.
        */
       isCollapsed: function () {
         var self = this,
-          r = self.getRng(),
-          s = self.getSel();
+          rng = self.getRng(),
+          sel = self.getSel();
 
-        if (!r || r.item) {
+        if (!rng || rng.item) {
           return false;
         }
 
-        if (r.compareEndPoints) {
-          return r.compareEndPoints('StartToEnd', r) === 0;
+        if (rng.compareEndPoints) {
+          return rng.compareEndPoints('StartToEnd', rng) === 0;
         }
 
-        return !s || r.collapsed;
+        return !sel || rng.collapsed;
       },
 
       /**
        * Collapse the selection to start or end of range.
        *
        * @method collapse
-       * @param {Boolean} to_start Optional boolean state if to collapse to end or not. Defaults to start.
+       * @param {Boolean} toStart Optional boolean state if to collapse to end or not. Defaults to false.
        */
-      collapse: function (to_start) {
+      collapse: function (toStart) {
         var self = this,
           rng = self.getRng(),
           node;
@@ -25225,7 +23499,7 @@
           rng.moveToElementText(node);
         }
 
-        rng.collapse(!!to_start);
+        rng.collapse(!!toStart);
         self.setRng(rng);
       },
 
@@ -25236,9 +23510,9 @@
        * @return {Selection} Internal browser selection object.
        */
       getSel: function () {
-        var w = this.win;
+        var win = this.win;
 
-        return w.getSelection ? w.getSelection() : w.document.selection;
+        return win.getSelection ? win.getSelection() : win.document.selection;
       },
 
       /**
@@ -25252,7 +23526,7 @@
        */
       getRng: function (w3c) {
         var self = this,
-          selection, rng, elm, doc, ieRng, evt;
+          selection, rng, elm, doc, evt;
 
         function tryCompareBoundaryPoints(how, sourceRange, destinationRange) {
           try {
@@ -25310,33 +23584,6 @@
 
         self.onGetSelectionRange.dispatch(self, evt);
 
-        if (evt.range !== rng) {
-          return evt.range;
-        }
-
-        // We have W3C ranges and it's IE then fake control selection since IE9 doesn't handle that correctly yet
-        // IE 11 doesn't support the selection object so we check for that as well
-        if (isIE && rng && rng.setStart && doc.selection) {
-          try {
-            // IE will sometimes throw an exception here
-            ieRng = doc.selection.createRange();
-          } catch (ex) {
-            // Ignore
-          }
-
-          if (ieRng && ieRng.item) {
-            elm = ieRng.item(0);
-            rng = doc.createRange();
-            rng.setStartBefore(elm);
-            rng.setEndAfter(elm);
-          }
-        }
-
-        // Firefox throws an error in restricted ranges, such as when clicking in a video element, so reset rng
-        if (rng && isRestricted(rng.startContainer)) {
-          rng = null;
-        }
-
         // No range found then create an empty one
         // This can occur when the editor is placed in a hidden container element on Gecko
         // Or on IE when there was an exception
@@ -25375,7 +23622,7 @@
        */
       setRng: function (rng, forward) {
         var self = this,
-          sel, node, doc = self.win.document;
+          sel, node, evt;
 
         if (!rng) {
           return;
@@ -25407,11 +23654,7 @@
 
           try {
             sel.removeAllRanges();
-
-            if (doc.contains(rng.startContainer)) {
-              sel.addRange(rng);
-            }
-            
+            sel.addRange(rng);
           } catch (ex) {
             // IE might throw errors here if the editor is within a hidden container and selection is changed
           }
@@ -25427,7 +23670,7 @@
         }
 
         // WebKit egde case selecting images works better using setBaseAndExtent when the image is floated
-        if (!rng.collapsed && rng.startContainer === rng.endContainer && sel.setBaseAndExtent && !tinymce.isIE) {
+        if (!rng.collapsed && rng.startContainer === rng.endContainer && sel.setBaseAndExtent) {
           if (rng.endOffset - rng.startOffset < 2) {
             if (rng.startContainer.hasChildNodes()) {
               node = rng.startContainer.childNodes[rng.startOffset];
@@ -25460,18 +23703,18 @@
        * Sets the current selection to the specified DOM element.
        *
        * @method setNode
-       * @param {Element} n Element to set as the contents of the selection.
+       * @param {Element} elm Element to set as the contents of the selection.
        * @return {Element} Returns the element that got passed in.
        * @example
        * // Inserts a DOM node at current selection/caret location
-       * tinymce.activeEditor.selection.setNode(tinymce.activeEditor.dom.create('img', {src : 'some.gif', title : 'some title'}));
+       * tinymce.activeEditor.selection.setNode(tinymce.activeEditor.dom.create('img', {src: 'some.gif', title: 'some title'}));
        */
-      setNode: function (n) {
+      setNode: function (elm) {
         var self = this;
 
-        self.setContent(self.dom.getOuterHTML(n));
+        self.setContent(self.dom.getOuterHTML(elm));
 
-        return n;
+        return elm;
       },
 
       /**
@@ -25559,68 +23802,35 @@
         return elm;
       },
 
-      getSelectedBlocks: function (st, en) {
+      getSelectedBlocks: function (startElm, endElm) {
         var self = this,
           dom = self.dom,
-          sb, eb, n, bl = [];
+          node, root, selectedBlocks = [];
 
-        sb = dom.getParent(st || self.getStart(), dom.isBlock);
-        eb = dom.getParent(en || self.getEnd(), dom.isBlock);
+        root = dom.getRoot();
+        startElm = dom.getParent(startElm || self.getStart(), dom.isBlock);
+        endElm = dom.getParent(endElm || self.getEnd(), dom.isBlock);
 
-        if (sb) {
-          bl.push(sb);
+        if (startElm && startElm != root) {
+          selectedBlocks.push(startElm);
         }
 
-        if (sb && eb && sb != eb) {
-          n = sb;
+        if (startElm && endElm && startElm != endElm) {
+          node = startElm;
 
-          var walker = new TreeWalker(sb, dom.getRoot());
-          while ((n = walker.next()) && n != eb) {
-            if (dom.isBlock(n)) {
-              bl.push(n);
+          var walker = new TreeWalker(startElm, root);
+          while ((node = walker.next()) && node != endElm) {
+            if (dom.isBlock(node)) {
+              selectedBlocks.push(node);
             }
           }
         }
 
-        if (eb && sb != eb) {
-          bl.push(eb);
+        if (endElm && startElm != endElm && endElm != root) {
+          selectedBlocks.push(endElm);
         }
 
-        return bl;
-      },
-
-      getSelectedNodes: function (start, end) {
-        var self = this,
-          startNode, endNode, node, nodes = [], rng = self.getRng();
-
-        startNode = start || rng.startContainer;
-        endNode = end || rng.endContainer;
-
-        if (startNode) {
-          nodes.push(startNode);
-        }
-
-        if (startNode && endNode && startNode != endNode) {
-          node = startNode;
-
-          var walker = new TreeWalker(startNode, self.dom.getRoot());
-
-          while ((node = walker.next()) && node != endNode) {
-
-            // check for parent node that is an element...
-            if (node.parentNode !== self.dom.getRoot()) {
-              continue;
-            }
-
-            nodes.push(node);
-          }
-        }
-
-        if (endNode && startNode != endNode) {
-          nodes.push(endNode);
-        }
-
-        return nodes;
+        return selectedBlocks;
       },
 
       isForward: function () {
@@ -25629,7 +23839,7 @@
           anchorRange, focusRange;
 
         // No support for selection direction then always return true
-        if (!sel || sel.anchorNode == null || sel.focusNode == null) {
+        if (!sel || !sel.anchorNode || !sel.focusNode) {
           return true;
         }
 
@@ -25646,180 +23856,18 @@
 
       normalize: function () {
         var self = this,
-          rng, normalized, collapsed;
+          rng = self.getRng();
 
-        function normalizeEndPoint(start) {
-          var container, offset, walker, dom = self.dom,
-            body = dom.getRoot(),
-            node, nonEmptyElementsMap;
-
-          function hasBrBeforeAfter(node, left) {
-            var walker = new TreeWalker(node, dom.getParent(node.parentNode, dom.isBlock) || body);
-
-            while ((node = walker[left ? 'prev' : 'next']())) {
-              if (node.nodeName === "BR") {
-                return true;
-              }
-            }
-          }
-
-          // Walks the dom left/right to find a suitable text node to move the endpoint into
-          // It will only walk within the current parent block or body and will stop if it hits a block or a BR/IMG
-          function findTextNodeRelative(left, startNode) {
-            var walker, lastInlineElement;
-
-            startNode = startNode || container;
-            walker = new TreeWalker(startNode, dom.getParent(startNode.parentNode, dom.isBlock) || body);
-
-            // Walk left until we hit a text node we can move to or a block/br/img
-            while ((node = walker[left ? 'prev' : 'next']())) {
-              // Found text node that has a length
-              if (node.nodeType === 3 && node.nodeValue.length > 0) {
-                container = node;
-                offset = left ? node.nodeValue.length : 0;
-                normalized = true;
-                return;
-              }
-
-              // Break if we find a block or a BR/IMG/INPUT etc
-              if (dom.isBlock(node) || nonEmptyElementsMap[node.nodeName.toLowerCase()]) {
-                return;
-              }
-
-              lastInlineElement = node;
-            }
-
-            // Only fetch the last inline element when in caret mode for now
-            if (collapsed && lastInlineElement) {
-              container = lastInlineElement;
-              normalized = true;
-              offset = 0;
-            }
-          }
-
-          container = rng[(start ? 'start' : 'end') + 'Container'];
-          offset = rng[(start ? 'start' : 'end') + 'Offset'];
-          nonEmptyElementsMap = dom.schema.getNonEmptyElements();
-
-          // If the container is a document move it to the body element
-          if (container.nodeType === 9) {
-            container = dom.getRoot();
-            offset = 0;
-          }
-
-          // If the container is body try move it into the closest text node or position
-          if (container === body) {
-            // If start is before/after a image, table etc
-            if (start) {
-              node = container.childNodes[offset > 0 ? offset - 1 : 0];
-              if (node) {
-                if (nonEmptyElementsMap[node.nodeName] || node.nodeName == "TABLE") {
-                  return;
-                }
-              }
-            }
-
-            // Resolve the index
-            if (container.hasChildNodes()) {
-              container = container.childNodes[Math.min(!start && offset > 0 ? offset - 1 : offset, container.childNodes.length - 1)];
-              offset = 0;
-
-              // Don't walk into elements that doesn't have any child nodes like a IMG
-              if (container.hasChildNodes() && !/TABLE/.test(container.nodeName)) {
-                // Walk the DOM to find a text node to place the caret at or a BR
-                node = container;
-                walker = new TreeWalker(container, body);
-
-                do {
-                  // Found a text node use that position
-                  if (node.nodeType === 3 && node.nodeValue.length > 0) {
-                    offset = start ? 0 : node.nodeValue.length;
-                    container = node;
-                    normalized = true;
-                    break;
-                  }
-
-                  // Found a BR/IMG element that we can place the caret before
-                  if (nonEmptyElementsMap[node.nodeName.toLowerCase()]) {
-                    offset = dom.nodeIndex(node);
-                    container = node.parentNode;
-
-                    // Put caret after image when moving the end point
-                    if (node.nodeName == "IMG" && !start) {
-                      offset++;
-                    }
-
-                    normalized = true;
-                    break;
-                  }
-                } while ((node = (start ? walker.next() : walker.prev())));
-              }
-            }
-          }
-
-          // Lean the caret to the left if possible
-          if (collapsed) {
-            // So this: <b>x</b><i>|x</i>
-            // Becomes: <b>x|</b><i>x</i>
-            // Seems that only gecko has issues with this
-            if (container.nodeType === 3 && offset === 0) {
-              findTextNodeRelative(true);
-            }
-
-            // Lean left into empty inline elements when the caret is before a BR
-            // So this: <i><b></b><i>|<br></i>
-            // Becomes: <i><b>|</b><i><br></i>
-            // Seems that only gecko has issues with this
-            if (container.nodeType === 1) {
-              node = container.childNodes[offset];
-              if (node && node.nodeName === 'BR' && !hasBrBeforeAfter(node) && !hasBrBeforeAfter(node, true)) {
-                findTextNodeRelative(true, container.childNodes[offset]);
-              }
-            }
-          }
-
-          // Lean the start of the selection right if possible
-          // So this: x[<b>x]</b>
-          // Becomes: x<b>[x]</b>
-          if (start && !collapsed && container.nodeType === 3 && offset === container.nodeValue.length) {
-            findTextNodeRelative(false);
-          }
-
-          // Set endpoint if it was normalized
-          if (normalized) {
-            rng['set' + (start ? 'Start' : 'End')](container, offset);
-          }
-        }
-
-        // Normalize only on non IE browsers for now
-        if (tinymce.isIE) {
-          return;
-        }
-
-        rng = self.getRng();
-        collapsed = rng.collapsed;
-
-        // Normalize the end points
-        normalizeEndPoint(true);
-
-        if (!collapsed) {
-          normalizeEndPoint();
-        }
-
-        // Set the selection if it was normalized
-        if (normalized) {
-          // If it was collapsed then make sure it still is
-          if (collapsed) {
-            rng.collapse(true);
-          }
-
-          //console.log(self.dom.dumpRng(rng));
+        if (Env.range && new RangeUtils(self.dom).normalize(rng)) {
           self.setRng(rng, self.isForward());
         }
+
+        return rng;
       },
 
       /**
-       * Executes callback of the current selection matches the specified selector or not and passes the state and args to the callback.
+       * Executes callback when the current selection starts/stops matching the specified selector. The current
+       * state will be passed to the callback as it's first argument.
        *
        * @method selectorChanged
        * @param {String} selector CSS selector to check for.
@@ -25890,36 +23938,78 @@
 
       getScrollContainer: function () {
         var scrollContainer, node = this.dom.getRoot();
-    
+
         while (node && node.nodeName != 'BODY') {
           if (node.scrollHeight > node.clientHeight) {
             scrollContainer = node;
             break;
           }
-    
+
           node = node.parentNode;
         }
-    
+
         return scrollContainer;
       },
 
       scrollIntoView: function (elm, alignToTop) {
-        tinymce.dom.ScrollIntoView(this.editor, elm, alignToTop);
+        ScrollIntoView(this.editor, elm, alignToTop);
       },
 
       placeCaretAt: function (clientX, clientY) {
-        this.setRng(tinymce.dom.RangeUtils.getCaretRangeFromPoint(clientX, clientY, this.editor.getDoc()));
+        this.setRng(RangeUtils.getCaretRangeFromPoint(clientX, clientY, this.editor.getDoc()));
       },
 
-      destroy: function (manual) {
-        var self = this;
+      _moveEndPoint: function (rng, node, start) {
+        var root = node,
+          walker = new TreeWalker(node, root);
+        var nonEmptyElementsMap = this.dom.schema.getNonEmptyElements();
 
-        self.win = null;
+        do {
+          // Text node
+          if (node.nodeType == 3 && tinymce.trim(node.nodeValue).length !== 0) {
+            if (start) {
+              rng.setStart(node, 0);
+            } else {
+              rng.setEnd(node, node.nodeValue.length);
+            }
 
-        // Manual destroy then remove unload handler
-        if (!manual) {
-          tinymce.removeUnload(self.destroy);
+            return;
+          }
+
+          // BR/IMG/INPUT elements but not table cells
+          if (nonEmptyElementsMap[node.nodeName] && !/^(TD|TH)$/.test(node.nodeName)) {
+            if (start) {
+              rng.setStartBefore(node);
+            } else {
+              if (node.nodeName == 'BR') {
+                rng.setEndBefore(node);
+              } else {
+                rng.setEndAfter(node);
+              }
+            }
+
+            return;
+          }
+        } while ((node = (start ? walker.next() : walker.prev())));
+
+        // Failed to find any text node or other suitable location then move to the root of body
+        if (root.nodeName == 'BODY') {
+          if (start) {
+            rng.setStart(root, 0);
+          } else {
+            rng.setEnd(root, root.childNodes.length);
+          }
         }
+      },
+
+      getBoundingClientRect: function () {
+        var rng = this.getRng();
+        return rng.collapsed ? CaretPosition.fromRangeStart(rng).getClientRects()[0] : rng.getBoundingClientRect();
+      },
+
+      destroy: function () {
+        this.win = null;
+        this.controlSelection.destroy();
       },
 
       // IE has an issue where you can't select/move the caret by clicking outside the body if the document is in standards mode
@@ -33843,9 +31933,9 @@
                       node = root;
                   }
 
-                  if (node.nodeType !== 1 || node.getAttribute('data-mce-bogus')) {
+                  /*if (node.nodeType !== 1 || node.getAttribute('data-mce-bogus')) {
                       node = node.parentNode;
-                  }
+                  }*/
 
                   // Get parents and add them to object
                   parents = [];
@@ -45080,7 +43170,8 @@
   (function (tinymce) {
 
     var CaretWalker = tinymce.caret.CaretWalker, CaretPosition = tinymce.caret.CaretPosition, CaretContainer = tinymce.caret.CaretContainer, CaretUtils = tinymce.caret.CaretUtils,
-      CaretContainerRemove = tinymce.caret.CaretContainerRemove, FakeCaret = tinymce.caret.FakeCaret, LineWalker = tinymce.caret.LineWalker, LineUtils = tinymce.caret.LineUtils;
+      CaretContainerRemove = tinymce.caret.CaretContainerRemove, FakeCaret = tinymce.caret.FakeCaret, LineWalker = tinymce.caret.LineWalker, LineUtils = tinymce.caret.LineUtils,
+      ClientRect = tinymce.geom.ClientRect;
 
     var NodeType = tinymce.dom.NodeType, RangeUtils = tinymce.dom.RangeUtils;
     var VK = tinymce.VK, Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
@@ -45114,6 +43205,11 @@
     }
 
     tinymce.SelectionOverrides = function (editor) {
+      editor.onShowCaret = new Dispatcher();
+      editor.onBeforeObjectSelected = new Dispatcher();
+      editor.onObjectSelected = new Dispatcher();
+      editor.onContentEditableSelect = new Dispatcher();
+
       var rootNode = editor.getBody(),
         caretWalker = new CaretWalker(rootNode);
       var getNextVisualCaretPosition = curry(getVisualCaretPosition, caretWalker.next);
@@ -45121,11 +43217,6 @@
         fakeCaret = new FakeCaret(editor.getBody(), isBlock),
         realSelectionId = 'sel-' + editor.dom.uniqueId(),
         selectedContentEditableNode;
-
-      editor.onShowCaret = new Dispatcher();
-      editor.onBeforeObjectSelected = new Dispatcher();
-      editor.onObjectSelected = new Dispatcher();
-      editor.onContentEditableSelect = new Dispatcher();
 
       function isFakeSelectionElement(elm) {
         return editor.dom.hasClass(elm, 'mce-offscreen-selection');
@@ -45173,7 +43264,7 @@
       }
 
       function selectNode(node) {
-        var evt = {
+         var evt = {
           target: node
         };
 
@@ -45412,7 +43503,6 @@
 
         // TODO: Should render caret before/after depending on where you click on the page forces after now
         ceRoot = editor.dom.getParent(caretPosition.getNode(), Fun.or(isContentEditableFalse, isContentEditableTrue));
-
         if (isContentEditableFalse(ceRoot)) {
           return showCaret(1, ceRoot, false);
         }
@@ -45447,7 +43537,6 @@
         }
 
         prevCaretPosition = getPrevVisualCaretPosition(CaretPosition.before(node));
-
         if (!prevCaretPosition) {
           nextCaretPosition = getNextVisualCaretPosition(CaretPosition.after(node));
         }
@@ -45567,7 +43656,6 @@
         }
 
         peekCaretPosition = direction == -1 ? caretWalker.prev(caretPosition) : caretWalker.next(caretPosition);
-
         if (beforeFn(peekCaretPosition)) {
           if (direction === -1) {
             return mergeTextBlocks(direction, caretPosition, peekCaretPosition);
@@ -45609,7 +43697,7 @@
           return null;
         }
 
-        /*function isXYWithinRange(clientX, clientY, range) {
+        function isXYWithinRange(clientX, clientY, range) {
           if (range.collapsed) {
             return false;
           }
@@ -45617,7 +43705,7 @@
           return Arr.reduce(range.getClientRects(), function (state, rect) {
             return state || ClientRect.containsXY(rect, clientX, clientY);
           }, false);
-        }*/
+        }
 
         // Some browsers (Chrome) lets you place the caret after a cE=false
         // Make sure we render the caret container in this case
@@ -45629,11 +43717,10 @@
           }
         });
 
-        editor.onClick.add(function (editor, e) {
+         editor.onClick.add(function (editor, e) {
           var contentEditableRoot;
 
           contentEditableRoot = getContentEditableRoot(e.target);
-
           if (contentEditableRoot) {
             // Prevent clicks on links in a cE=false element
             if (isContentEditableFalse(contentEditableRoot)) {
@@ -45674,16 +43761,14 @@
           editor.dom.bind(editor.getBody(), 'touchend', function (e) {
             var contentEditableRoot = getContentEditableRoot(e.target);
 
-            if (contentEditableRoot) {
-              if (isContentEditableFalse(contentEditableRoot)) {
-                if (!moved) {
-                  e.preventDefault();
-                  setContentEditableSelection(selectNode(contentEditableRoot));
-                }
-              }
+            if (isContentEditableFalse(contentEditableRoot)) {
+              if (!moved) {
+                e.preventDefault();
+                setContentEditableSelection(selectNode(contentEditableRoot));
 
-              // fire fake event
-              editor.onContentEditableSelect.dispatch(editor, e);
+                // fire fake event
+                editor.onContentEditableSelect.dispatch(editor, e);
+              }
             }
           });
         }
@@ -45727,16 +43812,6 @@
 
         handleTouchSelect(editor);
 
-        /*function isXYWithinRange(clientX, clientY, range) {
-          if (range.collapsed) {
-            return false;
-          }
-
-          return Arr.reduce(range.getClientRects(), function (state, rect) {
-            return state || CaretUtils.containsXY(rect, clientX, clientY);
-          }, false);
-        }*/
-
         editor.onMouseDown.add(function (editor, e) {
           var contentEditableRoot;
 
@@ -45746,18 +43821,14 @@
             if (isContentEditableFalse(contentEditableRoot)) {
               e.preventDefault();
               setContentEditableSelection(selectNode(contentEditableRoot));
-            } else {
-              /*if (!isXYWithinRange(e.clientX, e.clientY, editor.selection.getRng())) {
-                editor.selection.placeCaretAt(e.clientX, e.clientY);
-              }*/
 
-              if (!editor.selection.isCollapsed()) {
+              // fire fake event
+              editor.onContentEditableSelect.dispatch(editor, e);
+            } else {
+              if (!isXYWithinRange(e.clientX, e.clientY, editor.selection.getRng())) {
                 editor.selection.placeCaretAt(e.clientX, e.clientY);
               }
             }
-
-            // fire fake event
-            editor.onContentEditableSelect.dispatch(editor, e);
           } else {
             // Remove needs to be called here since the mousedown might alter the selection without calling selection.setRng
             // and therefore not fire the AfterSetSelectionRange event.
@@ -45765,7 +43836,6 @@
             hideFakeCaret();
 
             var caretInfo = LineUtils.closestCaret(rootNode, e.clientX, e.clientY);
-
             if (caretInfo) {
               if (!hasBetterMouseTarget(e.target, caretInfo.node)) {
                 e.preventDefault();
@@ -45900,7 +43970,6 @@
         editor.selection.onSetSelectionRange.add(function (sel, e) {
           var rng;
 
-
           rng = setContentEditableSelection(e.range);
 
           if (rng) {
@@ -45913,10 +43982,6 @@
 
           if (!isRangeInCaretContainer(rng)) {
             hideFakeCaret();
-          }
-
-          if (rng.startContainer.parentNode == rootNode) {
-            return;
           }
 
           if (!isFakeSelectionElement(rng.startContainer.parentNode)) {
@@ -45935,8 +44000,7 @@
           var clipboardData = e.clipboardData;
 
           // Make sure we get proper html/text for the fake cE=false selection
-          if (!e.isDefaultPrevented() && clipboardData) {
-
+          if (!e.isDefaultPrevented() && e.clipboardData) {
             var realSelectionElement = getRealSelectionElement();
 
             if (realSelectionElement) {
@@ -45951,6 +44015,26 @@
         DragDropOverrides.init(editor);
       }
 
+      /*function addCss() {
+        var styles = editor.contentStyles,
+          rootClass = '.mceContentBody';
+
+        styles.push(fakeCaret.getCss());
+        styles.push(
+          rootClass + ' .mce-offscreen-selection {' +
+          'position: absolute;' +
+          'left: -9999999999px;' +
+          'max-width: 1000000px;' +
+          '}' +
+          rootClass + ' *[contentEditable=false] {' +
+          'cursor: default;' +
+          '}' +
+          rootClass + ' *[contentEditable=true] {' +
+          'cursor: text;' +
+          '}'
+        );
+      }*/
+
       function isWithinCaretContainer(node) {
         return (
           CaretContainer.isCaretContainer(node) ||
@@ -45964,8 +44048,7 @@
       }
 
       function setContentEditableSelection(range) {
-        var node,
-          dom = editor.dom,
+        var node, dom = editor.dom,
           $realSelectionContainer, sel,
           startContainer, startOffset, endOffset, caretPosition, targetClone;
 
@@ -45978,8 +44061,7 @@
             caretPosition = getNormalizedRangeEndPoint(1, range);
 
             if (isContentEditableFalse(caretPosition.getNode())) {
-              //return showCaret(1, caretPosition.getNode(), !caretPosition.isAtEnd());
-              return showCaret(1, caretPosition.getNode(), false);
+              return showCaret(1, caretPosition.getNode(), !caretPosition.isAtEnd());
             }
 
             if (isContentEditableFalse(caretPosition.getNode(true))) {
@@ -46026,6 +44108,8 @@
           return null;
         }
 
+        targetClone = evt.target;
+
         $realSelectionContainer = dom.get(realSelectionId);
 
         if (!$realSelectionContainer) {
@@ -46033,9 +44117,8 @@
           dom.add(editor.getBody(), $realSelectionContainer);
         }
 
-        range = dom.createRng();
+        range = editor.dom.createRng();
 
-        //dom.empty($realSelectionContainer);
         $realSelectionContainer.innerHTML = '';
 
         $realSelectionContainer.appendChild(document.createTextNode('\u00a0'));
@@ -46064,7 +44147,6 @@
       function removeContentEditableSelection() {
         if (selectedContentEditableNode) {
           selectedContentEditableNode.removeAttribute('data-mce-selected');
-
           editor.dom.remove(realSelectionId);
 
           selectedContentEditableNode = null;
@@ -46072,17 +44154,8 @@
       }
 
       function destroy() {
-        var dom = editor.dom,
-          $realSelectionContainer;
-        
         fakeCaret.destroy();
         selectedContentEditableNode = null;
-
-        $realSelectionContainer = dom.get(realSelectionId);
-
-        if ($realSelectionContainer) {
-          dom.remove($realSelectionContainer);
-        }
       }
 
       function hideFakeCaret() {
@@ -46090,6 +44163,7 @@
       }
 
       registerEvents();
+      //addCss();
 
       return {
         showBlockCaretContainer: showBlockCaretContainer,
