@@ -25,7 +25,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="article_alias" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS_DESC">
+            <field name="article_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -45,7 +45,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="weblinks_alias" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS_DESC">
+            <field name="weblinks_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -61,7 +61,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="tags_alias" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS_DESC">
+            <field name="tags_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>

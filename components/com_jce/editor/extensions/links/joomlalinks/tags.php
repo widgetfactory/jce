@@ -99,7 +99,7 @@ class JoomlalinksTags extends CMSObject
         $query = $db->getQuery(true);
         $query->select('a.id, a.title, a.alias');
 
-        if ($wf->getParam('links.joomlalinks.tag_alias', 1)) {
+        if ($wf->getParam('links.joomlalinks.tag_alias', 0)) {
             $case_when_item_alias = ' CASE WHEN ';
             $case_when_item_alias .= $query->charLength('a.alias', '!=', '0');
             $case_when_item_alias .= ' THEN ';

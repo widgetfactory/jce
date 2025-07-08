@@ -236,7 +236,7 @@ class JoomlalinksContent extends CMSObject
 
         $case = '';
 
-        if ($wf->getParam('links.joomlalinks.article_alias', 1)) {
+        if ($wf->getParam('links.joomlalinks.article_alias', 0)) {
             //sqlsrv changes
             $case_when1 = ' CASE WHEN ';
             $case_when1 .= $query->charLength('a.alias', '!=', '0');
