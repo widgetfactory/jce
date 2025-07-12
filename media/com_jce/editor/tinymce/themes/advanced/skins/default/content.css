@@ -118,6 +118,7 @@ body {
 }
 .mceContentBody *[contentEditable=false]:not([data-mce-object]) {
   cursor: default;
+  max-width: 99.8%;
 }
 .mceContentBody *[contentEditable=true] {
   cursor: text;
