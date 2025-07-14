@@ -6110,11 +6110,13 @@
       if (type != "html4") {
         addAttrs("input button select textarea", "autofocus");
         addAttrs("input textarea", "placeholder");
-        addAttrs("a", "download");
+        addAttrs("a", "download referrerpolicy");
         addAttrs("link script img", "crossorigin");
-        addAttrs("iframe", "sandbox seamless allowfullscreen allow referrerpolicy loading"); // Excluded: srcdoc
+        addAttrs("iframe", "sandbox seamless allowfullscreen allow loading"); // Excluded: srcdoc
 
-        addAttrs("img", "loading decoding");
+        addAttrs("a img iframe", "referrerpolicy");
+
+        addAttrs("img", "loading decoding elementtiming fetchpriority");
 
         addAttrs("link", "as disabled imagesizes imagesrcset title");
 
