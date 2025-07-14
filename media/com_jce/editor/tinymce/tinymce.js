@@ -3960,8 +3960,8 @@
       };
 
       // Normalize selection for example <b>a</b><i>|a</i> becomes <b>a|</b><i>a</i> except for Ctrl+A since it selects everything
-      editor.onKeyUp.add(normalize);
-      editor.onMouseUp.add(normalize);
+      editor.onKeyUp.addToTop(normalize);
+      editor.onMouseUp.addToTop(normalize);
     }
 
     function inlineBoundary() {
@@ -6042,11 +6042,13 @@
       if (type != "html4") {
         addAttrs("input button select textarea", "autofocus");
         addAttrs("input textarea", "placeholder");
-        addAttrs("a", "download");
+        addAttrs("a", "download referrerpolicy");
         addAttrs("link script img", "crossorigin");
-        addAttrs("iframe", "sandbox seamless allowfullscreen allow referrerpolicy loading"); // Excluded: srcdoc
+        addAttrs("iframe", "sandbox seamless allowfullscreen allow loading"); // Excluded: srcdoc
 
-        addAttrs("img", "loading decoding");
+        addAttrs("a img iframe", "referrerpolicy");
+
+        addAttrs("img", "loading decoding elementtiming fetchpriority");
 
         addAttrs("link", "as disabled imagesizes imagesrcset title");
 
@@ -15155,7 +15157,18 @@
    */
   (function (tinymce) {
   	var each = tinymce.each,
-  		TreeWalker = tinymce.dom.TreeWalker;
+  		TreeWalker = tinymce.dom.TreeWalker,
+  		NodeType = tinymce.dom.NodeType,
+  		CaretContainer = tinymce.caret.CaretContainer,
+  		Arr = tinymce.util.Arr;
+
+  	var isContentEditableTrue = NodeType.isContentEditableTrue,
+  		isContentEditableFalse = NodeType.isContentEditableFalse,
+  		isCaretContainer = CaretContainer.isCaretContainer;
+
+  	function hasCeProperty(node) {
+  		return isContentEditableTrue(node) || isContentEditableFalse(node);
+  	}
 
   	function getEndChild(container, index) {
   		var childNodes = container.childNodes;
@@ -15171,10 +15184,35 @@
   		return childNodes[index] || container;
   	}
 
+  	function findParent(node, rootNode, predicate) {
+  		while (node && node !== rootNode) {
+  			if (predicate(node)) {
+  				return node;
+  			}
+
+  			node = node.parentNode;
+  		}
+
+  		return null;
+  	}
+
+  	function hasParent(node, rootNode, predicate) {
+  		return findParent(node, rootNode, predicate) !== null;
+  	}
+
+  	function isFormatterCaret(node) {
+  		return node.id === '_mce_caret';
+  	}
+
+  	function isCeFalseCaretContainer(node, rootNode) {
+  		return isCaretContainer(node) && hasParent(node, rootNode, isFormatterCaret) === false;
+  	}
+
   	tinymce.dom.RangeUtils = function (dom) {
   		/**
   		 * Walks the specified range like object and executes the callback for each sibling collection it finds.
   		 *
+  		 * @private
   		 * @method walk
   		 * @param {Object} rng Range like object.
   		 * @param {function} callback Callback function to execute for each sibling collection.
@@ -15187,9 +15225,9 @@
   				ancestor, startPoint,
   				endPoint, node, parent, siblings, nodes;
 
-  			// Handle table cell and column selection
-  			nodes = dom.select('td.mceSelected,th.mceSelected,div.mceSelected');
-
+  			// Handle table cell selection the table plugin enables
+  			// you to fake select table cells and perform formatting actions on them
+  			nodes = dom.select('td[data-mce-selected],th[data-mce-selected]');
   			if (nodes.length > 0) {
   				each(nodes, function (node) {
   					callback([node]);
@@ -15229,6 +15267,7 @@
   			 * @private
   			 * @param {Node} node Node to collect siblings from.
   			 * @param {String} name Name of the sibling to check for.
+  			 * @param {Node} end_node
   			 * @return {Array} Array of collected siblings.
   			 */
   			function collectSiblings(node, name, end_node) {
@@ -15400,12 +15439,17 @@
   		 * @return {Boolean} True/false if the specified range was normalized or not.
   		 */
   		this.normalize = function (rng) {
-  			var normalized, collapsed;
+  			var normalized = false,
+  				collapsed;
 
   			function normalizeEndPoint(start) {
   				var container, offset, walker, body = dom.getRoot(),
   					node, nonEmptyElementsMap;
   				var directionLeft, isAfterNode;
+
+  				function isTableCell(node) {
+  					return node && /^(TD|TH|CAPTION)$/.test(node.nodeName);
+  				}
 
   				function hasBrBeforeAfter(node, left) {
   					var walker = new TreeWalker(node, dom.getParent(node.parentNode, dom.isBlock) || body);
@@ -15415,6 +15459,18 @@
   							return true;
   						}
   					}
+  				}
+
+  				function hasContentEditableFalseParent(node) {
+  					while (node && node != body) {
+  						if (isContentEditableFalse(node)) {
+  							return true;
+  						}
+
+  						node = node.parentNode;
+  					}
+
+  					return false;
   				}
 
   				function isPrevNode(node, name) {
@@ -15442,7 +15498,7 @@
   					walker = new TreeWalker(startNode, parentBlockContainer);
   					while ((node = walker[left ? 'prev' : 'next']())) {
   						// Break if we hit a non content editable node
-  						if (dom.getContentEditableParent(node) === "false") {
+  						if (dom.getContentEditableParent(node) === "false" || isCeFalseCaretContainer(node, dom.getRoot())) {
   							return;
   						}
 
@@ -15476,6 +15532,10 @@
   				nonEmptyElementsMap = dom.schema.getNonEmptyElements();
   				directionLeft = start;
 
+  				if (isCaretContainer(container)) {
+  					return;
+  				}
+
   				if (container.nodeType == 1 && offset > container.childNodes.length - 1) {
   					directionLeft = false;
   				}
@@ -15492,6 +15552,10 @@
   					if (directionLeft) {
   						node = container.childNodes[offset > 0 ? offset - 1 : 0];
   						if (node) {
+  							if (isCaretContainer(node)) {
+  								return;
+  							}
+
   							if (nonEmptyElementsMap[node.nodeName] || node.nodeName == "TABLE") {
   								return;
   							}
@@ -15504,6 +15568,15 @@
   						container = container.childNodes[offset];
   						offset = 0;
 
+  						// Don't normalize non collapsed selections like <p>[a</p><table></table>]
+  						if (!collapsed && container === body.lastChild && container.nodeName === 'TABLE') {
+  							return;
+  						}
+
+  						if (hasContentEditableFalseParent(container) || isCaretContainer(container)) {
+  							return;
+  						}
+
   						// Don't walk into elements that doesn't have any child nodes like a IMG
   						if (container.hasChildNodes() && !/TABLE/.test(container.nodeName)) {
   							// Walk the DOM to find a text node to place the caret at or a BR
@@ -15511,6 +15584,11 @@
   							walker = new TreeWalker(container, body);
 
   							do {
+  								if (isContentEditableFalse(node) || isCaretContainer(node)) {
+  									normalized = false;
+  									break;
+  								}
+
   								// Found a text node use that position
   								if (node.nodeType === 3 && node.nodeValue.length > 0) {
   									offset = directionLeft ? 0 : node.nodeValue.length;
@@ -15520,7 +15598,7 @@
   								}
 
   								// Found a BR/IMG element that we can place the caret before
-  								if (nonEmptyElementsMap[node.nodeName.toLowerCase()]) {
+  								if (nonEmptyElementsMap[node.nodeName.toLowerCase()] && !isTableCell(node)) {
   									offset = dom.nodeIndex(node);
   									container = node.parentNode;
 
@@ -15629,41 +15707,80 @@
   	};
 
   	/**
+  	 * Finds the closest selection rect tries to get the range from that.
+  	 */
+  	function findClosestIeRange(clientX, clientY, doc) {
+  		var element, rng, rects;
+
+  		element = doc.elementFromPoint(clientX, clientY);
+  		rng = doc.body.createTextRange();
+
+  		if (!element || element.tagName == 'HTML') {
+  			element = doc.body;
+  		}
+
+  		rng.moveToElementText(element);
+  		rects = Arr.toArray(rng.getClientRects());
+
+  		rects = rects.sort(function (a, b) {
+  			a = Math.abs(Math.max(a.top - clientY, a.bottom - clientY));
+  			b = Math.abs(Math.max(b.top - clientY, b.bottom - clientY));
+
+  			return a - b;
+  		});
+
+  		if (rects.length > 0) {
+  			clientY = (rects[0].bottom + rects[0].top) / 2;
+
+  			try {
+  				rng.moveToPoint(clientX, clientY);
+  				rng.collapse(true);
+
+  				return rng;
+  			} catch (ex) {
+  				// At least we tried
+  			}
+  		}
+
+  		return null;
+  	}
+
+  	function moveOutOfContentEditableFalse(rng, rootNode) {
+  		var parentElement = rng && rng.parentElement ? rng.parentElement() : null;
+  		return isContentEditableFalse(findParent(parentElement, rootNode, hasCeProperty)) ? null : rng;
+  	}
+
+  	/**
   	 * Gets the caret range for the given x/y location.
   	 *
   	 * @static
   	 * @method getCaretRangeFromPoint
-  	 * @param {Number} x X coordinate for range
-  	 * @param {Number} y Y coordinate for range
+  	 * @param {Number} clientX X coordinate for range
+  	 * @param {Number} clientY Y coordinate for range
   	 * @param {Document} doc Document that x/y are relative to
   	 * @returns {Range} caret range
   	 */
-  	tinymce.dom.RangeUtils.getCaretRangeFromPoint = function (x, y, doc) {
+  	tinymce.dom.RangeUtils.getCaretRangeFromPoint = function (clientX, clientY, doc) {
   		var rng, point;
 
   		if (doc.caretPositionFromPoint) {
-  			point = doc.caretPositionFromPoint(x, y);
-
-  			// if point is null
-  			if (!point) {
-  				return null;
-  			}
-
+  			point = doc.caretPositionFromPoint(clientX, clientY);
   			rng = doc.createRange();
   			rng.setStart(point.offsetNode, point.offset);
   			rng.collapse(true);
   		} else if (doc.caretRangeFromPoint) {
-  			rng = doc.caretRangeFromPoint(x, y);
+  			rng = doc.caretRangeFromPoint(clientX, clientY);
   		} else if (doc.body.createTextRange) {
   			rng = doc.body.createTextRange();
 
   			try {
-  				rng.moveToPoint(x, y);
+  				rng.moveToPoint(clientX, clientY);
   				rng.collapse(true);
   			} catch (ex) {
-  				// Append to top or bottom depending on drop location
-  				rng.collapse(y < doc.body.clientHeight);
+  				rng = findClosestIeRange(clientX, clientY, doc);
   			}
+
+  			return moveOutOfContentEditableFalse(rng, doc.body);
   		}
 
   		return rng;
@@ -19616,7 +19733,6 @@
   (function (tinymce) {
     var NodeType = tinymce.dom.NodeType, DOMUtils = tinymce.DOM;
     var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
-
     var isText = NodeType.isText,
       isBogus = NodeType.isBogus,
       nodeIndex = DOMUtils.nodeIndex;
@@ -20243,7 +20359,7 @@
       resolveIndex = RangeUtils.getNode;
 
     function createRange(doc) {
-      return "createRange" in doc ? doc.createRange() : DOMUtils.createRng();
+      return "createRange" in doc ? doc.createRange() : DOMUtils.DOM.createRng();
     }
 
     function isWhiteSpace(chr) {
@@ -20270,6 +20386,24 @@
       var clientRects = [],
         beforeNode, node;
 
+      // Hack for older WebKit versions that doesn't
+      // support getBoundingClientRect on BR elements
+      function getBrClientRect(brNode) {
+        var doc = brNode.ownerDocument,
+          rng = createRange(doc),
+          nbsp = doc.createTextNode('\u00a0'),
+          parentNode = brNode.parentNode,
+          clientRect;
+
+        parentNode.insertBefore(nbsp, brNode);
+        rng.setStart(nbsp, 0);
+        rng.setEnd(nbsp, 1);
+        clientRect = ClientRect.clone(rng.getBoundingClientRect());
+        parentNode.removeChild(nbsp);
+
+        return clientRect;
+      }
+
       function getBoundingClientRect(item) {
         var clientRect, clientRects;
 
@@ -20278,6 +20412,10 @@
           clientRect = ClientRect.clone(clientRects[0]);
         } else {
           clientRect = ClientRect.clone(item.getBoundingClientRect());
+        }
+
+        if (isBr(item) && clientRect.left === 0) {
+          return getBrClientRect(item);
         }
 
         return clientRect;
@@ -21093,7 +21231,6 @@
 
       return null;
     }
-
     tinymce.caret.CaretWalker = function (rootNode) {
       return {
         /**
@@ -21191,7 +21328,7 @@
         var contentEditableFalseNodes, node, sibling, i, data;
 
         contentEditableFalseNodes = DOM.select('*[contentEditable=false]', rootNode);
-
+        
         for (i = 0; i < contentEditableFalseNodes.length; i++) {
           node = contentEditableFalseNodes[i];
 
@@ -21269,26 +21406,19 @@
         }
 
         if ($lastVisualCaret) {
-          DOM.remove($lastVisualCaret);
+          $lastVisualCaret.remove();
           $lastVisualCaret = null;
         }
 
         clearInterval(cursorInterval);
       }
 
-      var hasFocus = function () {
-        return rootNode.ownerDocument.activeElement === rootNode;
-      };
-
       function startBlink() {
         cursorInterval = setInterval(function () {
           var caret = DOM.select('div.mce-visual-caret', rootNode)[0];
 
-          if (hasFocus()) {
-            DOM.toggleClass(caret, 'mce-visual-caret-hidden');
-          } else {
-            DOM.addClass(caret, 'mce-visual-caret-hidden');
-          }
+          DOM.toggleClass(caret, 'mce-visual-caret-hidden');
+          
         }, 500);
       }
 
@@ -25723,6 +25853,10 @@
         evt = { range: rng };
 
         self.onGetSelectionRange.dispatch(self, evt);
+
+        if (evt.range !== rng) {
+          return evt.range; // If the range was modified by the event handler
+        }
 
         // No range found then create an empty one
         // This can occur when the editor is placed in a hidden container element on Gecko
@@ -36484,7 +36618,8 @@
   		focus: 'onFocus',
   		focusin: 'onFocusIn',
   		focusout: 'onFocusOut',
-  		input: 'onInput'
+  		input: 'onInput',
+  		compositionstart: 'onCompositionStart'
   	};
 
   	/**
@@ -37330,7 +37465,15 @@
   			 * @event onInput
   			 * @param {tinymce.Editor} sender Editor instance.
   			 */
-  			'onInput'
+  			'onInput',
+
+  			/**
+  			 * Fires when a composition event starts, such as when the user starts typing in an input method editor (IME).
+  			 * 
+  			 * @event onCompositionStart
+  			 * @param {tinymce.Editor} sender Editor instance.
+  			 */
+  			'onCompositionStart'
 
   		], function (name) {
   			self[name] = new tinymce.util.Dispatcher(self);
@@ -44275,7 +44418,8 @@
   (function (tinymce) {
     var TreeWalker = tinymce.dom.TreeWalker,
       RangeUtils = tinymce.dom.RangeUtils,
-      NodeType = tinymce.dom.NodeType;
+      NodeType = tinymce.dom.NodeType,
+      CaretContainer = tinymce.caret.CaretContainer;
 
     /**
        * Contains logic for handling the enter key to split/generate block elements.
@@ -44289,13 +44433,11 @@
       var nonEmptyElementsMap = schema.getNonEmptyElements(),
         moveCaretBeforeOnEnterElementsMap = schema.getMoveCaretBeforeOnEnterElements();
 
-      var isIE = tinymce.isIE && tinymce.isIE < 11;
-
       editor.onNewBlock = new tinymce.util.Dispatcher();
 
       function handleEnterKey(evt) {
         var rng = selection.getRng(true),
-          tmpRng, editableRoot, container, offset, parentBlock, documentMode, shiftKey,
+          tmpRng, editableRoot, container, offset, parentBlock, shiftKey,
           newBlock, fragment, containerBlock, parentBlockName, containerBlockName, newBlockName, isAfterLastNodeInContainer;
 
         // Returns true if the block can be split into two blocks or not
@@ -44311,39 +44453,6 @@
 
         function isTableCell(node) {
           return node && /^(TD|TH|CAPTION)$/.test(node.nodeName);
-        }
-
-        function isBogus(node) {
-          return !!node && node.nodeType === 1 && node.hasAttribute('data-mce-bogus');
-        }
-
-        function trimBogusBr(elm) {
-          var brs = elm.getElementsByTagName('br');
-          var lastBr = brs[brs.length - 1];
-          if (isBogus(lastBr)) {
-            lastBr.parentNode.removeChild(lastBr);
-          }
-        }
-
-        function isCaretContainerBlock(node) {
-          if (!!node && node.nodeType === 3) {
-            node = node.parentNode;
-          }
-
-          return (!!node && node.nodeType === 1) && node.hasAttribute('data-mce-caret');
-        }
-
-        function showCaretContainerBlock(caretContainer) {
-          if (caretContainer && caretContainer.hasAttribute('data-mce-caret')) {
-            trimBogusBr(caretContainer);
-            caretContainer.removeAttribute('data-mce-caret');
-            caretContainer.removeAttribute('data-mce-bogus');
-            caretContainer.removeAttribute('style');
-            caretContainer.removeAttribute('_moz_abspos');
-            return caretContainer;
-          }
-
-          return null;
         }
 
         // Renders empty block on IE
@@ -44414,15 +44523,6 @@
             return;
           }
 
-          // Old IE versions doesn't properly render blocks with br elements in them
-          // For example <p><br></p> wont be rendered correctly in a contentEditable area
-          // until you remove the br producing <p></p>
-          if (isIE && parentBlock && parentBlock.firstChild) {
-            if (parentBlock.firstChild == parentBlock.lastChild && parentBlock.firstChild.tagName == 'BR') {
-              dom.remove(parentBlock.firstChild);
-            }
-          }
-
           if (/^(LI|DT|DD)$/.test(root.nodeName)) {
             var firstChild = firstNonWhiteSpaceNodeSibling(root.firstChild);
 
@@ -44436,9 +44536,7 @@
           // Normalize whitespace to remove empty text nodes. Fix for: #6904
           // Gecko will be able to place the caret in empty text nodes but it won't render propery
           // Older IE versions will sometimes crash so for now ignore all IE versions
-          if (!isIE) {
-            root.normalize();
-          }
+          root.normalize();
 
           if (root.hasChildNodes()) {
             walker = new TreeWalker(root, root);
@@ -44467,12 +44565,6 @@
           } else {
             if (root.nodeName == 'BR') {
               if (root.nextSibling && dom.isBlock(root.nextSibling)) {
-                // Trick on older IE versions to render the caret before the BR between two lists
-                if (!documentMode || documentMode < 9) {
-                  tempElm = dom.create('br');
-                  root.parentNode.insertBefore(tempElm, root);
-                }
-
                 rng.setStartBefore(root);
                 rng.setEndBefore(root);
               } else {
@@ -44502,7 +44594,7 @@
 
         function emptyBlock(elm) {
           // BR is needed in empty blocks on non IE browsers
-          elm.innerHTML = !isIE ? '<br data-mce-bogus="1">' : '';
+          elm.innerHTML = '<br data-mce-bogus="1">';
         }
 
         // Creates a new block element by cloning the current one or creating a new one if the name is specified
@@ -44541,12 +44633,13 @@
                 }
               }
             } while ((node = node.parentNode) && node != editableRoot);
+          } else {
+            dom.setAttrib(block, 'style', null); // wipe out any styles that came over with the block
+            dom.setAttrib(block, 'class', null);
           }
 
           // BR is needed in empty blocks on non IE browsers
-          if (!isIE) {
-            caretNode.innerHTML = '<br data-mce-bogus="1">';
-          }
+          caretNode.innerHTML = '<br data-mce-bogus="1">';
 
           return block;
         }
@@ -44801,15 +44894,13 @@
         function addBrToBlockIfNeeded(block) {
           var lastChild;
 
-          // IE will render the blocks correctly other browsers needs a BR
-          if (!isIE) {
-            block.normalize(); // Remove empty text nodes that got left behind by the extract
 
-            // Check if the block is empty or contains a floated last child
-            lastChild = block.lastChild;
-            if (!lastChild || (/^(left|right)$/gi.test(dom.getStyle(lastChild, 'float', true)))) {
-              dom.add(block, 'br');
-            }
+          block.normalize(); // Remove empty text nodes that got left behind by the extract
+
+          // Check if the block is empty or contains a floated last child
+          lastChild = block.lastChild;
+          if (!lastChild || (/^(left|right)$/gi.test(dom.getStyle(lastChild, 'float', true)))) {
+            dom.add(block, 'br');
           }
         }
 
@@ -44857,7 +44948,6 @@
         }
 
         newBlockName = newBlockName ? newBlockName.toUpperCase() : '';
-        documentMode = dom.doc.documentMode;
         shiftKey = evt.shiftKey;
 
         // Resolve node index
@@ -44951,8 +45041,8 @@
         newBlockName = newBlockName || 'P';
 
         // Insert new block before/after the parent block depending on caret location
-        if (isCaretContainerBlock(parentBlock)) {
-          newBlock = showCaretContainerBlock(parentBlock);
+        if (CaretContainer.isCaretContainerBlock(parentBlock)) {
+          newBlock = CaretContainer.showCaretContainerBlock(parentBlock);
           if (dom.isEmpty(parentBlock)) {
             emptyBlock(parentBlock);
           }
@@ -44997,6 +45087,7 @@
         // Allow custom handling of new blocks
         editor.onNewBlock.dispatch(editor, newBlock);
 
+        undoManager.typing = false;
         undoManager.add();
       }
 
@@ -45865,6 +45956,7 @@
           var contentEditableRoot;
 
           contentEditableRoot = getContentEditableRoot(e.target);
+
           if (contentEditableRoot) {
             // Prevent clicks on links in a cE=false element
             if (isContentEditableFalse(contentEditableRoot)) {
@@ -46020,7 +46112,7 @@
               override(e, backspace);
               break;
 
-            default:
+            default:          
               if (isContentEditableFalse(editor.selection.getNode()) && isContentKey(e)) {
                 e.preventDefault();
               }
@@ -46081,10 +46173,15 @@
         }
 
         // Must be added to "top" since undoManager needs to be executed after
-        editor.dom.bind(editor.getBody(), 'keyup compositionstart', function (e) {
+        editor.onCompositionStart.addToTop(function (editor, e) {
           handleBlockContainer(e);
           handleEmptyBackspaceDelete(e);
-        }, true);
+        });
+
+        editor.onKeyUp.addToTop(function (editor, e) {
+          handleBlockContainer(e);
+          handleEmptyBackspaceDelete(e);
+        });
 
         editor.onCut.add(function () {
           var node = editor.selection.getNode();
@@ -46150,7 +46247,12 @@
             if (realSelectionElement) {
               e.preventDefault();
               clipboardData.clearData();
-              clipboardData.setData('text/html', realSelectionElement.outerHTML);
+
+              var html = realSelectionElement.outerHTML || '';
+
+              clipboardData.setData('text/html', html);
+              // set internal html data
+              clipboardData.setData('x-tinymce/html', html);
               clipboardData.setData('text/plain', realSelectionElement.outerText);
             }
           }
