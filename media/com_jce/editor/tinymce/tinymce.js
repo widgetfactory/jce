@@ -4828,6 +4828,100 @@
     };
   })(tinymce);
 
+  /* eslint-disable no-misleading-character-class */
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * This class contains logic for detecting extending characters.
+   *
+   * @private
+   * @class tinymce.text.ExtendingChar
+   * @example
+   * var isExtending = ExtendingChar.isExtendingChar('a');
+   */
+  (function (tinymce) {
+    // Generated from: http://www.unicode.org/Public/UNIDATA/DerivedCoreProperties.txt
+    // Only includes the characters in that fit into UCS-2 16 bit
+    var extendingChars = new RegExp(
+      "[\u0300-\u036F\u0483-\u0487\u0488-\u0489\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C5\u05C7\u0610-\u061A" +
+      "\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7-\u06E8\u06EA-\u06ED\u0711\u0730-\u074A\u07A6-\u07B0" +
+      "\u07EB-\u07F3\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u082D\u0859-\u085B\u08E3-\u0902\u093A\u093C" +
+      "\u0941-\u0948\u094D\u0951-\u0957\u0962-\u0963\u0981\u09BC\u09BE\u09C1-\u09C4\u09CD\u09D7\u09E2-\u09E3" +
+      "\u0A01-\u0A02\u0A3C\u0A41-\u0A42\u0A47-\u0A48\u0A4B-\u0A4D\u0A51\u0A70-\u0A71\u0A75\u0A81-\u0A82\u0ABC" +
+      "\u0AC1-\u0AC5\u0AC7-\u0AC8\u0ACD\u0AE2-\u0AE3\u0B01\u0B3C\u0B3E\u0B3F\u0B41-\u0B44\u0B4D\u0B56\u0B57" +
+      "\u0B62-\u0B63\u0B82\u0BBE\u0BC0\u0BCD\u0BD7\u0C00\u0C3E-\u0C40\u0C46-\u0C48\u0C4A-\u0C4D\u0C55-\u0C56" +
+      "\u0C62-\u0C63\u0C81\u0CBC\u0CBF\u0CC2\u0CC6\u0CCC-\u0CCD\u0CD5-\u0CD6\u0CE2-\u0CE3\u0D01\u0D3E\u0D41-\u0D44" +
+      "\u0D4D\u0D57\u0D62-\u0D63\u0DCA\u0DCF\u0DD2-\u0DD4\u0DD6\u0DDF\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\u0EB1\u0EB4-\u0EB9" +
+      "\u0EBB-\u0EBC\u0EC8-\u0ECD\u0F18-\u0F19\u0F35\u0F37\u0F39\u0F71-\u0F7E\u0F80-\u0F84\u0F86-\u0F87\u0F8D-\u0F97" +
+      "\u0F99-\u0FBC\u0FC6\u102D-\u1030\u1032-\u1037\u1039-\u103A\u103D-\u103E\u1058-\u1059\u105E-\u1060\u1071-\u1074" +
+      "\u1082\u1085-\u1086\u108D\u109D\u135D-\u135F\u1712-\u1714\u1732-\u1734\u1752-\u1753\u1772-\u1773\u17B4-\u17B5" +
+      "\u17B7-\u17BD\u17C6\u17C9-\u17D3\u17DD\u180B-\u180D\u18A9\u1920-\u1922\u1927-\u1928\u1932\u1939-\u193B\u1A17-\u1A18" +
+      "\u1A1B\u1A56\u1A58-\u1A5E\u1A60\u1A62\u1A65-\u1A6C\u1A73-\u1A7C\u1A7F\u1AB0-\u1ABD\u1ABE\u1B00-\u1B03\u1B34" +
+      "\u1B36-\u1B3A\u1B3C\u1B42\u1B6B-\u1B73\u1B80-\u1B81\u1BA2-\u1BA5\u1BA8-\u1BA9\u1BAB-\u1BAD\u1BE6\u1BE8-\u1BE9" +
+      "\u1BED\u1BEF-\u1BF1\u1C2C-\u1C33\u1C36-\u1C37\u1CD0-\u1CD2\u1CD4-\u1CE0\u1CE2-\u1CE8\u1CED\u1CF4\u1CF8-\u1CF9" +
+      "\u1DC0-\u1DF5\u1DFC-\u1DFF\u200C-\u200D\u20D0-\u20DC\u20DD-\u20E0\u20E1\u20E2-\u20E4\u20E5-\u20F0\u2CEF-\u2CF1" +
+      "\u2D7F\u2DE0-\u2DFF\u302A-\u302D\u302E-\u302F\u3099-\u309A\uA66F\uA670-\uA672\uA674-\uA67D\uA69E-\uA69F\uA6F0-\uA6F1" +
+      "\uA802\uA806\uA80B\uA825-\uA826\uA8C4\uA8E0-\uA8F1\uA926-\uA92D\uA947-\uA951\uA980-\uA982\uA9B3\uA9B6-\uA9B9\uA9BC" +
+      "\uA9E5\uAA29-\uAA2E\uAA31-\uAA32\uAA35-\uAA36\uAA43\uAA4C\uAA7C\uAAB0\uAAB2-\uAAB4\uAAB7-\uAAB8\uAABE-\uAABF\uAAC1" +
+      "\uAAEC-\uAAED\uAAF6\uABE5\uABE8\uABED\uFB1E\uFE00-\uFE0F\uFE20-\uFE2F\uFF9E-\uFF9F]"
+    );
+
+    function isExtendingChar(ch) {
+      return typeof ch == "string" && ch.charCodeAt(0) >= 768 && extendingChars.test(ch);
+    }
+
+    tinymce.text.ExtendingChar = {
+      isExtendingChar: isExtendingChar
+    };
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * Utility functions for working with zero width space
+   * characters used as character containers etc.
+   *
+   * @private
+   * @class tinymce.text.Zwsp
+   * @example
+   * var isZwsp = Zwsp.isZwsp('\uFEFF');
+   * var abc = Zwsp.trim('a\uFEFFc');
+   */
+  (function (tinymce) {
+    // This is technically not a ZWSP but a ZWNBSP or a BYTE ORDER MARK it used to be a ZWSP
+    var ZWSP = '\uFEFF';
+
+    var isZwsp = function (chr) {
+      return chr === ZWSP;
+    };
+
+    var trim = function (text) {
+      return text.replace(new RegExp(ZWSP, 'g'), '');
+    };
+
+    tinymce.text.Zwsp = {
+      isZwsp: isZwsp,
+      ZWSP: ZWSP,
+      trim: trim
+    };
+  })(tinymce);
+
   /**
    * Copyright (c) Moxiecode Systems AB. All rights reserved.
    * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
@@ -14956,6 +15050,111 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+  (function (tinymce) {    
+      var ZWSP = '\uFEFF';
+
+      function getTemporaryNodeSelector(tempAttrs) {
+          return "" + (tempAttrs.length === 0 ? '' : tempAttrs.map(function (attr) {
+              return "[" + attr + "]";
+          }).join(',') + ",") + "[data-mce-bogus=\"all\"]";
+      }
+
+      function getTemporaryNodes(body, tempAttrs) {
+          return body.querySelectorAll(getTemporaryNodeSelector(tempAttrs));
+      }
+
+      function createCommentWalker(body) {
+          return document.createTreeWalker(body, NodeFilter.SHOW_COMMENT, null, false);
+      }
+
+      function hasComments(body) {
+          return createCommentWalker(body).nextNode() !== null;
+      }
+
+      function hasTemporaryNodes(body, tempAttrs) {
+          return body.querySelector(getTemporaryNodeSelector(tempAttrs)) !== null;
+      }
+
+      function trimTemporaryNodes(body, tempAttrs) {
+          tinymce.each(getTemporaryNodes(body, tempAttrs), function (elm) {
+              if (elm.getAttribute('data-mce-bogus') === 'all') {
+                  if (elm && elm.parentNode) {
+                      elm.parentNode.removeChild(elm);
+                  }
+              } else {
+                  tinymce.each(tempAttrs, function (attr) {
+                      if (elm.hasAttribute(attr)) {
+                          elm.removeAttribute(attr);
+                      }
+                  });
+              }
+          });
+      }
+
+      function removeCommentsContainingZwsp(body) {
+          var walker = createCommentWalker(body);
+          var nextNode = walker.nextNode();
+          while (nextNode !== null) {
+              var comment = walker.currentNode;
+              nextNode = walker.nextNode();
+              if (typeof comment.nodeValue === 'string' && comment.nodeValue.indexOf(ZWSP) !== -1) {
+                  if (comment && comment.parentNode) {
+                      comment.parentNode.removeChild(comment);
+                  }
+              }
+          }
+      }
+
+      function deepClone(body) {
+          return body.cloneNode(true);
+      }
+
+      function trim(body, tempAttrs) {
+          var trimmed = body;
+
+          if (hasComments(body)) {
+              trimmed = deepClone(body);
+              removeCommentsContainingZwsp(trimmed);
+              if (hasTemporaryNodes(trimmed, tempAttrs)) {
+                  trimTemporaryNodes(trimmed, tempAttrs);
+              }
+          } else if (hasTemporaryNodes(body, tempAttrs)) {
+              trimmed = deepClone(body);
+              trimTemporaryNodes(trimmed, tempAttrs);
+          }
+
+          return trimmed;
+      }
+
+
+      /**
+       * Constucts a new DOM serializer class.
+       *
+       * @constructor
+       * @method Serializer
+       * @param {Object} settings Serializer settings object.
+       * @param {tinymce.dom.DOMUtils} dom DOMUtils instance reference.
+       * @param {tinymce.html.Schema} schema Optional schema reference.
+       */
+      tinymce.dom.TrimBody = {
+          trim: trim,
+          hasComments: hasComments,
+          hasTemporaryNodes: hasTemporaryNodes,
+          trimTemporaryNodes: trimTemporaryNodes,
+          removeCommentsContainingZwsp: removeCommentsContainingZwsp
+      };
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
   /**
    * Contains various node validation functions.
    *
@@ -15142,6 +15341,701 @@
        * @param {Array} Array of client rects with a extra node property.
        */
       getClientRects: getClientRects
+    };
+
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * This module calculates an absolute coordinate inside the editor body for both local and global mouse events.
+   *
+   * @private
+   * @class tinymce.dom.MousePosition
+   */
+  (function (tinymce) {
+      var getAbsolutePosition = function (elm) {
+        var doc, docElem, win, clientRect;
+
+        clientRect = elm.getBoundingClientRect();
+        doc = elm.ownerDocument;
+        docElem = doc.documentElement;
+        win = doc.defaultView;
+
+        return {
+          top: clientRect.top + win.pageYOffset - docElem.clientTop,
+          left: clientRect.left + win.pageXOffset - docElem.clientLeft
+        };
+      };
+
+      var getBodyPosition = function (editor) {
+        return editor.inline ? getAbsolutePosition(editor.getBody()) : { left: 0, top: 0 };
+      };
+
+      var getScrollPosition = function (editor) {
+        var body = editor.getBody();
+        return editor.inline ? { left: body.scrollLeft, top: body.scrollTop } : { left: 0, top: 0 };
+      };
+
+      var getBodyScroll = function (editor) {
+        var body = editor.getBody(), docElm = editor.getDoc().documentElement;
+        var inlineScroll = { left: body.scrollLeft, top: body.scrollTop };
+        var iframeScroll = { left: body.scrollLeft || docElm.scrollLeft, top: body.scrollTop || docElm.scrollTop };
+
+        return editor.inline ? inlineScroll : iframeScroll;
+      };
+
+      var getMousePosition = function (editor, event) {
+        if (event.target.ownerDocument !== editor.getDoc()) {
+          var iframePosition = getAbsolutePosition(editor.getContentAreaContainer());
+          var scrollPosition = getBodyScroll(editor);
+
+          return {
+            left: event.pageX - iframePosition.left + scrollPosition.left,
+            top: event.pageY - iframePosition.top + scrollPosition.top
+          };
+        }
+
+        return {
+          left: event.pageX,
+          top: event.pageY
+        };
+      };
+
+      var calculatePosition = function (bodyPosition, scrollPosition, mousePosition) {
+        return {
+          pageX: (mousePosition.left - bodyPosition.left) + scrollPosition.left,
+          pageY: (mousePosition.top - bodyPosition.top) + scrollPosition.top
+        };
+      };
+
+      var calc = function (editor, event) {
+        return calculatePosition(getBodyPosition(editor), getScrollPosition(editor), getMousePosition(editor, event));
+      };
+
+      tinymce.dom.MousePosition = {
+        calc: calc
+      };
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * This module creates or resolves xpath like string representation of a CaretPositions.
+   *
+   * The format is a / separated list of chunks with:
+   * <element|text()>[index|after|before]
+   *
+   * For example:
+   *  p[0]/b[0]/text()[0],1 = <p><b>a|c</b></p>
+   *  p[0]/img[0],before = <p>|<img></p>
+   *  p[0]/img[0],after = <p><img>|</p>
+   *
+   * @private
+   * @static
+   * @class tinymce.caret.CaretBookmark
+   * @example
+   * var bookmark = CaretBookmark.create(rootElm, CaretPosition.before(rootElm.firstChild));
+   * var caretPosition = CaretBookmark.resolve(bookmark);
+   */
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType, DOMUtils = tinymce.DOM;
+    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
+    var isText = NodeType.isText,
+      isBogus = NodeType.isBogus,
+      nodeIndex = DOMUtils.nodeIndex;
+
+    function normalizedParent(node) {
+      var parentNode = node.parentNode;
+
+      if (isBogus(parentNode)) {
+        return normalizedParent(parentNode);
+      }
+
+      return parentNode;
+    }
+
+    function getChildNodes(node) {
+      if (!node) {
+        return [];
+      }
+
+      return Arr.reduce(node.childNodes, function (result, node) {
+        if (isBogus(node) && node.nodeName != 'BR') {
+          result = result.concat(getChildNodes(node));
+        } else {
+          result.push(node);
+        }
+
+        return result;
+      }, []);
+    }
+
+    function normalizedTextOffset(textNode, offset) {
+      while ((textNode = textNode.previousSibling)) {
+        if (!isText(textNode)) {
+          break;
+        }
+
+        offset += textNode.data.length;
+      }
+
+      return offset;
+    }
+
+    function equal(targetValue) {
+      return function (value) {
+        return targetValue === value;
+      };
+    }
+
+    function normalizedNodeIndex(node) {
+      var nodes, index, numTextFragments;
+
+      nodes = getChildNodes(normalizedParent(node));
+      index = Arr.findIndex(nodes, equal(node), node);
+      nodes = nodes.slice(0, index + 1);
+      numTextFragments = Arr.reduce(nodes, function (result, node, i) {
+        if (isText(node) && isText(nodes[i - 1])) {
+          result++;
+        }
+
+        return result;
+      }, 0);
+
+      nodes = Arr.filter(nodes, NodeType.matchNodeNames(node.nodeName));
+      index = Arr.findIndex(nodes, equal(node), node);
+
+      return index - numTextFragments;
+    }
+
+    function createPathItem(node) {
+      var name;
+
+      if (isText(node)) {
+        name = 'text()';
+      } else {
+        name = node.nodeName.toLowerCase();
+      }
+
+      return name + '[' + normalizedNodeIndex(node) + ']';
+    }
+
+    function parentsUntil(rootNode, node, predicate) {
+      var parents = [];
+
+      for (node = node.parentNode; node != rootNode; node = node.parentNode) {
+
+        parents.push(node);
+      }
+
+      return parents;
+    }
+
+    function create(rootNode, caretPosition) {
+      var container, offset, path = [],
+        outputOffset, childNodes, parents;
+
+      container = caretPosition.container();
+      offset = caretPosition.offset();
+
+      if (isText(container)) {
+        outputOffset = normalizedTextOffset(container, offset);
+      } else {
+        childNodes = container.childNodes;
+        if (offset >= childNodes.length) {
+          outputOffset = 'after';
+          offset = childNodes.length - 1;
+        } else {
+          outputOffset = 'before';
+        }
+
+        container = childNodes[offset];
+      }
+
+      path.push(createPathItem(container));
+      parents = parentsUntil(rootNode, container);
+      parents = Arr.filter(parents, Fun.negate(NodeType.isBogus));
+      path = path.concat(Arr.map(parents, function (node) {
+        return createPathItem(node);
+      }));
+
+      return path.reverse().join('/') + ',' + outputOffset;
+    }
+
+    function resolvePathItem(node, name, index) {
+      var nodes = getChildNodes(node);
+
+      nodes = Arr.filter(nodes, function (node, index) {
+        return !isText(node) || !isText(nodes[index - 1]);
+      });
+
+      nodes = Arr.filter(nodes, NodeType.matchNodeNames(name));
+      return nodes[index];
+    }
+
+    function findTextPosition(container, offset) {
+      var node = container,
+        targetOffset = 0,
+        dataLen;
+
+      while (isText(node)) {
+        dataLen = node.data.length;
+
+        if (offset >= targetOffset && offset <= targetOffset + dataLen) {
+          container = node;
+          offset = offset - targetOffset;
+          break;
+        }
+
+        if (!isText(node.nextSibling)) {
+          container = node;
+          offset = dataLen;
+          break;
+        }
+
+        targetOffset += dataLen;
+        node = node.nextSibling;
+      }
+
+      if (offset > container.data.length) {
+        offset = container.data.length;
+      }
+
+      return new tinymce.caret.CaretPosition(container, offset);
+    }
+
+    function resolve(rootNode, path) {
+      var parts, container, offset;
+
+      if (!path) {
+        return null;
+      }
+
+      parts = path.split(',');
+      path = parts[0].split('/');
+      offset = parts.length > 1 ? parts[1] : 'before';
+
+      container = Arr.reduce(path, function (result, value) {
+        value = /([\w\-\(\)]+)\[([0-9]+)\]/.exec(value);
+        if (!value) {
+          return null;
+        }
+
+        if (value[1] === 'text()') {
+          value[1] = '#text';
+        }
+
+        return resolvePathItem(result, value[1], parseInt(value[2], 10));
+      }, rootNode);
+
+      if (!container) {
+        return null;
+      }
+
+      if (!isText(container)) {
+        if (offset === 'after') {
+          offset = nodeIndex(container) + 1;
+        } else {
+          offset = nodeIndex(container);
+        }
+
+        return new tinymce.caret.CaretPosition(container.parentNode, offset);
+      }
+
+      return findTextPosition(container, parseInt(offset, 10));
+    }
+
+    tinymce.caret.CaretBookmark = {
+      /**
+       * Create a xpath bookmark location for the specified caret position.
+       *
+       * @method create
+       * @param {Node} rootNode Root node to create bookmark within.
+       * @param {tinymce.caret.CaretPosition} caretPosition Caret position within the root node.
+       * @return {String} String xpath like location of caret position.
+       */
+      create: create,
+
+      /**
+       * Resolves a xpath like bookmark location to the a caret position.
+       *
+       * @method resolve
+       * @param {Node} rootNode Root node to resolve xpath bookmark within.
+       * @param {String} bookmark Bookmark string to resolve.
+       * @return {tinymce.caret.CaretPosition} Caret position resolved from xpath like bookmark.
+       */
+      resolve: resolve
+    };
+
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * This module handles caret containers. A caret container is a node that
+   * holds the caret for positional purposes.
+   *
+   * @private
+   * @class tinymce.caret.CaretContainer
+   */
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType, Zwsp = tinymce.text.Zwsp;
+
+    var isElement = NodeType.isElement,
+      isText = NodeType.isText;
+
+    function isCaretContainerBlock(node) {
+      if (isText(node)) {
+        node = node.parentNode;
+      }
+
+      return isElement(node) && node.hasAttribute('data-mce-caret');
+    }
+
+    function isCaretContainerInline(node) {
+      return isText(node) && Zwsp.isZwsp(node.data);
+    }
+
+    function isCaretContainer(node) {
+      return isCaretContainerBlock(node) || isCaretContainerInline(node);
+    }
+
+    var hasContent = function (node) {
+      return node.firstChild !== node.lastChild || !NodeType.isBr(node.firstChild);
+    };
+
+    function insertInline(node, before) {
+      var doc, sibling, textNode, parentNode;
+
+      doc = node.ownerDocument;
+      textNode = doc.createTextNode(Zwsp.ZWSP);
+      parentNode = node.parentNode;
+
+      if (!before) {
+        sibling = node.nextSibling;
+        if (isText(sibling)) {
+          if (isCaretContainer(sibling)) {
+            return sibling;
+          }
+
+          if (startsWithCaretContainer(sibling)) {
+            sibling.splitText(1);
+            return sibling;
+          }
+        }
+
+        if (node.nextSibling) {
+          parentNode.insertBefore(textNode, node.nextSibling);
+        } else {
+          parentNode.appendChild(textNode);
+        }
+      } else {
+        sibling = node.previousSibling;
+        if (isText(sibling)) {
+          if (isCaretContainer(sibling)) {
+            return sibling;
+          }
+
+          if (endsWithCaretContainer(sibling)) {
+            return sibling.splitText(sibling.data.length - 1);
+          }
+        }
+
+        parentNode.insertBefore(textNode, node);
+      }
+
+      return textNode;
+    }
+
+    function createBogusBr() {
+      var br = document.createElement('br');
+      br.setAttribute('data-mce-bogus', '1');
+      return br;
+    }
+
+    function insertBlock(blockName, node, before) {
+      var doc, blockNode, parentNode;
+
+      doc = node.ownerDocument;
+      blockNode = doc.createElement(blockName);
+      blockNode.setAttribute('data-mce-caret', before ? 'before' : 'after');
+      blockNode.setAttribute('data-mce-bogus', 'all');
+      blockNode.appendChild(createBogusBr());
+      parentNode = node.parentNode;
+
+      if (!before) {
+        if (node.nextSibling) {
+          parentNode.insertBefore(blockNode, node.nextSibling);
+        } else {
+          parentNode.appendChild(blockNode);
+        }
+      } else {
+        parentNode.insertBefore(blockNode, node);
+      }
+
+      return blockNode;
+    }
+
+    function startsWithCaretContainer(node) {
+      return isText(node) && node.data[0] == Zwsp.ZWSP;
+    }
+
+    function endsWithCaretContainer(node) {
+      return isText(node) && node.data[node.data.length - 1] == Zwsp.ZWSP;
+    }
+
+    function trimBogusBr(elm) {
+      var brs = elm.getElementsByTagName('br');
+      var lastBr = brs[brs.length - 1];
+      if (NodeType.isBogus(lastBr)) {
+        lastBr.parentNode.removeChild(lastBr);
+      }
+    }
+
+    function showCaretContainerBlock(caretContainer) {
+      if (caretContainer && caretContainer.hasAttribute('data-mce-caret')) {
+        trimBogusBr(caretContainer);
+        caretContainer.removeAttribute('data-mce-caret');
+        caretContainer.removeAttribute('data-mce-bogus');
+        caretContainer.removeAttribute('style');
+        caretContainer.removeAttribute('_moz_abspos');
+        return caretContainer;
+      }
+
+      return null;
+    }
+
+    tinymce.caret.CaretContainer = {
+      isCaretContainer: isCaretContainer,
+      isCaretContainerBlock: isCaretContainerBlock,
+      isCaretContainerInline: isCaretContainerInline,
+      showCaretContainerBlock: showCaretContainerBlock,
+      insertInline: insertInline,
+      insertBlock: insertBlock,
+      hasContent: hasContent,
+      startsWithCaretContainer: startsWithCaretContainer,
+      endsWithCaretContainer: endsWithCaretContainer
+    };
+
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * This module contains logic for handling caret candidates. A caret candidate is
+   * for example text nodes, images, input elements, cE=false elements etc.
+   *
+   * @private
+   * @class tinymce.caret.CaretCandidate
+   */
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType, CaretContainer = tinymce.caret.CaretContainer;
+    var Arr = tinymce.util.Arr;
+
+    var isContentEditableTrue = NodeType.isContentEditableTrue,
+      isContentEditableFalse = NodeType.isContentEditableFalse,
+      isBr = NodeType.isBr,
+      isText = NodeType.isText,
+      isInvalidTextElement = NodeType.matchNodeNames('script style textarea'),
+      isAtomicInline = NodeType.matchNodeNames('img input textarea hr iframe video audio object'),
+      isTable = NodeType.matchNodeNames('table'),
+      isCaretContainer = CaretContainer.isCaretContainer;
+
+    function isCaretCandidate(node) {
+      if (isCaretContainer(node)) {
+        return false;
+      }
+
+      if (isText(node)) {
+        if (isInvalidTextElement(node.parentNode)) {
+          return false;
+        }
+
+        return true;
+      }
+
+      return isAtomicInline(node) || isBr(node) || isTable(node) || isContentEditableFalse(node);
+    }
+
+    function isInEditable(node, rootNode) {
+      for (node = node.parentNode; node && node != rootNode; node = node.parentNode) {
+        if (isContentEditableFalse(node)) {
+          return false;
+        }
+
+        if (isContentEditableTrue(node)) {
+          return true;
+        }
+      }
+
+      return true;
+    }
+
+    function isAtomicContentEditableFalse(node) {
+      if (!isContentEditableFalse(node)) {
+        return false;
+      }
+
+      return Arr.reduce(node.getElementsByTagName('*'), function (result, elm) {
+        return result || isContentEditableTrue(elm);
+      }, false) !== true;
+    }
+
+    function isAtomic(node) {
+      return isAtomicInline(node) || isAtomicContentEditableFalse(node);
+    }
+
+    function isEditableCaretCandidate(node, rootNode) {
+      return isCaretCandidate(node) && isInEditable(node, rootNode);
+    }
+
+    tinymce.caret.CaretCandidate = {
+      isCaretCandidate: isCaretCandidate,
+      isInEditable: isInEditable,
+      isAtomic: isAtomic,
+      isEditableCaretCandidate: isEditableCaretCandidate
+    };
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType, Zwsp = tinymce.text.Zwsp, CaretContainer = tinymce.caret.CaretContainer, CaretPosition = tinymce.caret.CaretPosition;
+    var Arr = tinymce.util.Arr;
+
+    var isElement = NodeType.isElement;
+    var isText = NodeType.isText;
+
+    var removeNode = function (node) {
+      var parentNode = node.parentNode;
+      if (parentNode) {
+        parentNode.removeChild(node);
+      }
+    };
+
+    var getNodeValue = function (node) {
+      try {
+        return node.nodeValue;
+      } catch (ex) {
+        // IE sometimes produces "Invalid argument" on nodes
+        return "";
+      }
+    };
+
+    var setNodeValue = function (node, text) {
+      if (text.length === 0) {
+        removeNode(node);
+      } else {
+        node.nodeValue = text;
+      }
+    };
+
+    var trimCount = function (text) {
+      var trimmedText = Zwsp.trim(text);
+      return {
+        count: text.length - trimmedText.length,
+        text: trimmedText
+      };
+    };
+
+    var removeUnchanged = function (caretContainer, pos) {
+      remove(caretContainer);
+      return pos;
+    };
+
+    var removeTextAndReposition = function (caretContainer, pos) {
+      var before = trimCount(caretContainer.data.substr(0, pos.offset()));
+      var after = trimCount(caretContainer.data.substr(pos.offset()));
+      var text = before.text + after.text;
+
+      if (text.length > 0) {
+        setNodeValue(caretContainer, text);
+        return new CaretPosition(caretContainer, pos.offset() - before.count);
+      } else {
+        return pos;
+      }
+    };
+
+    var removeElementAndReposition = function (caretContainer, pos) {
+      var parentNode = pos.container();
+      var newPosition = Arr.indexOf(parentNode.childNodes, caretContainer).map(function (index) {
+        return index < pos.offset() ? new CaretPosition(parentNode, pos.offset() - 1) : pos;
+      }).getOr(pos);
+      remove(caretContainer);
+      return newPosition;
+    };
+
+    var removeTextCaretContainer = function (caretContainer, pos) {
+      return pos.container() === caretContainer ? removeTextAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
+    };
+
+    var removeElementCaretContainer = function (caretContainer, pos) {
+      return pos.container() === caretContainer.parentNode ? removeElementAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
+    };
+
+    var removeAndReposition = function (container, pos) {
+      return CaretPosition.isTextPosition(pos) ? removeTextCaretContainer(container, pos) : removeElementCaretContainer(container, pos);
+    };
+
+    var remove = function (caretContainerNode) {
+      if (isElement(caretContainerNode) && CaretContainer.isCaretContainer(caretContainerNode)) {
+        if (CaretContainer.hasContent(caretContainerNode)) {
+          caretContainerNode.removeAttribute('data-mce-caret');
+        } else {
+          removeNode(caretContainerNode);
+        }
+      }
+
+      if (isText(caretContainerNode)) {
+        var text = Zwsp.trim(getNodeValue(caretContainerNode));
+        setNodeValue(caretContainerNode, text);
+      }
+    };
+
+    tinymce.caret.CaretContainerRemove = {
+      removeAndReposition: removeAndReposition,
+      remove: remove
     };
 
   })(tinymce);
@@ -15821,234 +16715,384 @@
    */
 
   /**
-   * This module calculates an absolute coordinate inside the editor body for both local and global mouse events.
+   * This module contains logic for creating caret positions within a document a caretposition
+   * is similar to a DOMRange object but it doesn't have two endpoints and is also more lightweight
+   * since it's now updated live when the DOM changes.
    *
    * @private
-   * @class tinymce.dom.MousePosition
-   */
-  (function (tinymce) {
-      var getAbsolutePosition = function (elm) {
-        var doc, docElem, win, clientRect;
-
-        clientRect = elm.getBoundingClientRect();
-        doc = elm.ownerDocument;
-        docElem = doc.documentElement;
-        win = doc.defaultView;
-
-        return {
-          top: clientRect.top + win.pageYOffset - docElem.clientTop,
-          left: clientRect.left + win.pageXOffset - docElem.clientLeft
-        };
-      };
-
-      var getBodyPosition = function (editor) {
-        return editor.inline ? getAbsolutePosition(editor.getBody()) : { left: 0, top: 0 };
-      };
-
-      var getScrollPosition = function (editor) {
-        var body = editor.getBody();
-        return editor.inline ? { left: body.scrollLeft, top: body.scrollTop } : { left: 0, top: 0 };
-      };
-
-      var getBodyScroll = function (editor) {
-        var body = editor.getBody(), docElm = editor.getDoc().documentElement;
-        var inlineScroll = { left: body.scrollLeft, top: body.scrollTop };
-        var iframeScroll = { left: body.scrollLeft || docElm.scrollLeft, top: body.scrollTop || docElm.scrollTop };
-
-        return editor.inline ? inlineScroll : iframeScroll;
-      };
-
-      var getMousePosition = function (editor, event) {
-        if (event.target.ownerDocument !== editor.getDoc()) {
-          var iframePosition = getAbsolutePosition(editor.getContentAreaContainer());
-          var scrollPosition = getBodyScroll(editor);
-
-          return {
-            left: event.pageX - iframePosition.left + scrollPosition.left,
-            top: event.pageY - iframePosition.top + scrollPosition.top
-          };
-        }
-
-        return {
-          left: event.pageX,
-          top: event.pageY
-        };
-      };
-
-      var calculatePosition = function (bodyPosition, scrollPosition, mousePosition) {
-        return {
-          pageX: (mousePosition.left - bodyPosition.left) + scrollPosition.left,
-          pageY: (mousePosition.top - bodyPosition.top) + scrollPosition.top
-        };
-      };
-
-      var calc = function (editor, event) {
-        return calculatePosition(getBodyPosition(editor), getScrollPosition(editor), getMousePosition(editor, event));
-      };
-
-      tinymce.dom.MousePosition = {
-        calc: calc
-      };
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  (function (tinymce) {    
-      var ZWSP = '\uFEFF';
-
-      function getTemporaryNodeSelector(tempAttrs) {
-          return "" + (tempAttrs.length === 0 ? '' : tempAttrs.map(function (attr) {
-              return "[" + attr + "]";
-          }).join(',') + ",") + "[data-mce-bogus=\"all\"]";
-      }
-
-      function getTemporaryNodes(body, tempAttrs) {
-          return body.querySelectorAll(getTemporaryNodeSelector(tempAttrs));
-      }
-
-      function createCommentWalker(body) {
-          return document.createTreeWalker(body, NodeFilter.SHOW_COMMENT, null, false);
-      }
-
-      function hasComments(body) {
-          return createCommentWalker(body).nextNode() !== null;
-      }
-
-      function hasTemporaryNodes(body, tempAttrs) {
-          return body.querySelector(getTemporaryNodeSelector(tempAttrs)) !== null;
-      }
-
-      function trimTemporaryNodes(body, tempAttrs) {
-          tinymce.each(getTemporaryNodes(body, tempAttrs), function (elm) {
-              if (elm.getAttribute('data-mce-bogus') === 'all') {
-                  if (elm && elm.parentNode) {
-                      elm.parentNode.removeChild(elm);
-                  }
-              } else {
-                  tinymce.each(tempAttrs, function (attr) {
-                      if (elm.hasAttribute(attr)) {
-                          elm.removeAttribute(attr);
-                      }
-                  });
-              }
-          });
-      }
-
-      function removeCommentsContainingZwsp(body) {
-          var walker = createCommentWalker(body);
-          var nextNode = walker.nextNode();
-          while (nextNode !== null) {
-              var comment = walker.currentNode;
-              nextNode = walker.nextNode();
-              if (typeof comment.nodeValue === 'string' && comment.nodeValue.indexOf(ZWSP) !== -1) {
-                  if (comment && comment.parentNode) {
-                      comment.parentNode.removeChild(comment);
-                  }
-              }
-          }
-      }
-
-      function deepClone(body) {
-          return body.cloneNode(true);
-      }
-
-      function trim(body, tempAttrs) {
-          var trimmed = body;
-
-          if (hasComments(body)) {
-              trimmed = deepClone(body);
-              removeCommentsContainingZwsp(trimmed);
-              if (hasTemporaryNodes(trimmed, tempAttrs)) {
-                  trimTemporaryNodes(trimmed, tempAttrs);
-              }
-          } else if (hasTemporaryNodes(body, tempAttrs)) {
-              trimmed = deepClone(body);
-              trimTemporaryNodes(trimmed, tempAttrs);
-          }
-
-          return trimmed;
-      }
-
-
-      /**
-       * Constucts a new DOM serializer class.
-       *
-       * @constructor
-       * @method Serializer
-       * @param {Object} settings Serializer settings object.
-       * @param {tinymce.dom.DOMUtils} dom DOMUtils instance reference.
-       * @param {tinymce.html.Schema} schema Optional schema reference.
-       */
-      tinymce.dom.TrimBody = {
-          trim: trim,
-          hasComments: hasComments,
-          hasTemporaryNodes: hasTemporaryNodes,
-          trimTemporaryNodes: trimTemporaryNodes,
-          removeCommentsContainingZwsp: removeCommentsContainingZwsp
-      };
-  })(tinymce);
-
-  /* eslint-disable no-misleading-character-class */
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * This class contains logic for detecting extending characters.
-   *
-   * @private
-   * @class tinymce.text.ExtendingChar
+   * @class tinymce.caret.CaretPosition
    * @example
-   * var isExtending = ExtendingChar.isExtendingChar('a');
+   * var caretPos1 = new CaretPosition(container, offset);
+   * var caretPos2 = CaretPosition.fromRangeStart(someRange);
    */
-  (function (tinymce) {
-    // Generated from: http://www.unicode.org/Public/UNIDATA/DerivedCoreProperties.txt
-    // Only includes the characters in that fit into UCS-2 16 bit
-    var extendingChars = new RegExp(
-      "[\u0300-\u036F\u0483-\u0487\u0488-\u0489\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C5\u05C7\u0610-\u061A" +
-      "\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E4\u06E7-\u06E8\u06EA-\u06ED\u0711\u0730-\u074A\u07A6-\u07B0" +
-      "\u07EB-\u07F3\u0816-\u0819\u081B-\u0823\u0825-\u0827\u0829-\u082D\u0859-\u085B\u08E3-\u0902\u093A\u093C" +
-      "\u0941-\u0948\u094D\u0951-\u0957\u0962-\u0963\u0981\u09BC\u09BE\u09C1-\u09C4\u09CD\u09D7\u09E2-\u09E3" +
-      "\u0A01-\u0A02\u0A3C\u0A41-\u0A42\u0A47-\u0A48\u0A4B-\u0A4D\u0A51\u0A70-\u0A71\u0A75\u0A81-\u0A82\u0ABC" +
-      "\u0AC1-\u0AC5\u0AC7-\u0AC8\u0ACD\u0AE2-\u0AE3\u0B01\u0B3C\u0B3E\u0B3F\u0B41-\u0B44\u0B4D\u0B56\u0B57" +
-      "\u0B62-\u0B63\u0B82\u0BBE\u0BC0\u0BCD\u0BD7\u0C00\u0C3E-\u0C40\u0C46-\u0C48\u0C4A-\u0C4D\u0C55-\u0C56" +
-      "\u0C62-\u0C63\u0C81\u0CBC\u0CBF\u0CC2\u0CC6\u0CCC-\u0CCD\u0CD5-\u0CD6\u0CE2-\u0CE3\u0D01\u0D3E\u0D41-\u0D44" +
-      "\u0D4D\u0D57\u0D62-\u0D63\u0DCA\u0DCF\u0DD2-\u0DD4\u0DD6\u0DDF\u0E31\u0E34-\u0E3A\u0E47-\u0E4E\u0EB1\u0EB4-\u0EB9" +
-      "\u0EBB-\u0EBC\u0EC8-\u0ECD\u0F18-\u0F19\u0F35\u0F37\u0F39\u0F71-\u0F7E\u0F80-\u0F84\u0F86-\u0F87\u0F8D-\u0F97" +
-      "\u0F99-\u0FBC\u0FC6\u102D-\u1030\u1032-\u1037\u1039-\u103A\u103D-\u103E\u1058-\u1059\u105E-\u1060\u1071-\u1074" +
-      "\u1082\u1085-\u1086\u108D\u109D\u135D-\u135F\u1712-\u1714\u1732-\u1734\u1752-\u1753\u1772-\u1773\u17B4-\u17B5" +
-      "\u17B7-\u17BD\u17C6\u17C9-\u17D3\u17DD\u180B-\u180D\u18A9\u1920-\u1922\u1927-\u1928\u1932\u1939-\u193B\u1A17-\u1A18" +
-      "\u1A1B\u1A56\u1A58-\u1A5E\u1A60\u1A62\u1A65-\u1A6C\u1A73-\u1A7C\u1A7F\u1AB0-\u1ABD\u1ABE\u1B00-\u1B03\u1B34" +
-      "\u1B36-\u1B3A\u1B3C\u1B42\u1B6B-\u1B73\u1B80-\u1B81\u1BA2-\u1BA5\u1BA8-\u1BA9\u1BAB-\u1BAD\u1BE6\u1BE8-\u1BE9" +
-      "\u1BED\u1BEF-\u1BF1\u1C2C-\u1C33\u1C36-\u1C37\u1CD0-\u1CD2\u1CD4-\u1CE0\u1CE2-\u1CE8\u1CED\u1CF4\u1CF8-\u1CF9" +
-      "\u1DC0-\u1DF5\u1DFC-\u1DFF\u200C-\u200D\u20D0-\u20DC\u20DD-\u20E0\u20E1\u20E2-\u20E4\u20E5-\u20F0\u2CEF-\u2CF1" +
-      "\u2D7F\u2DE0-\u2DFF\u302A-\u302D\u302E-\u302F\u3099-\u309A\uA66F\uA670-\uA672\uA674-\uA67D\uA69E-\uA69F\uA6F0-\uA6F1" +
-      "\uA802\uA806\uA80B\uA825-\uA826\uA8C4\uA8E0-\uA8F1\uA926-\uA92D\uA947-\uA951\uA980-\uA982\uA9B3\uA9B6-\uA9B9\uA9BC" +
-      "\uA9E5\uAA29-\uAA2E\uAA31-\uAA32\uAA35-\uAA36\uAA43\uAA4C\uAA7C\uAAB0\uAAB2-\uAAB4\uAAB7-\uAAB8\uAABE-\uAABF\uAAC1" +
-      "\uAAEC-\uAAED\uAAF6\uABE5\uABE8\uABED\uFB1E\uFE00-\uFE0F\uFE20-\uFE2F\uFF9E-\uFF9F]"
-    );
 
-    function isExtendingChar(ch) {
-      return typeof ch == "string" && ch.charCodeAt(0) >= 768 && extendingChars.test(ch);
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType,
+      DOMUtils = tinymce.DOM,
+      CaretCandidate = tinymce.caret.CaretCandidate,
+      RangeUtils = tinymce.dom.RangeUtils,
+      ClientRect = tinymce.geom.ClientRect,
+      ExtendingChar = tinymce.text.ExtendingChar,
+      Fun = tinymce.util.Fun;
+
+    var isElement = NodeType.isElement,
+      isCaretCandidate = CaretCandidate.isCaretCandidate,
+      isBlock = NodeType.matchStyleValues('display', 'block table'),
+      isFloated = NodeType.matchStyleValues('float', 'left right'),
+      isValidElementCaretCandidate = Fun.and(isElement, isCaretCandidate, Fun.negate(isFloated)),
+      isNotPre = Fun.negate(NodeType.matchStyleValues('white-space', 'pre pre-line pre-wrap')),
+      isText = NodeType.isText,
+      isBr = NodeType.isBr,
+      nodeIndex = DOMUtils.nodeIndex,
+      resolveIndex = RangeUtils.getNode;
+
+    function createRange(doc) {
+      return "createRange" in doc ? doc.createRange() : DOMUtils.DOM.createRng();
     }
 
-    tinymce.text.ExtendingChar = {
-      isExtendingChar: isExtendingChar
+    function isWhiteSpace(chr) {
+      return chr && /[\r\n\t ]/.test(chr);
+    }
+
+    function isHiddenWhiteSpaceRange(range) {
+      var container = range.startContainer,
+        offset = range.startOffset,
+        text;
+
+      if (isWhiteSpace(range.toString()) && isNotPre(container.parentNode)) {
+        text = container.data;
+
+        if (isWhiteSpace(text[offset - 1]) || isWhiteSpace(text[offset + 1])) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function getCaretPositionClientRects(caretPosition) {
+      var clientRects = [],
+        beforeNode, node;
+
+      // Hack for older WebKit versions that doesn't
+      // support getBoundingClientRect on BR elements
+      function getBrClientRect(brNode) {
+        var doc = brNode.ownerDocument,
+          rng = createRange(doc),
+          nbsp = doc.createTextNode('\u00a0'),
+          parentNode = brNode.parentNode,
+          clientRect;
+
+        parentNode.insertBefore(nbsp, brNode);
+        rng.setStart(nbsp, 0);
+        rng.setEnd(nbsp, 1);
+        clientRect = ClientRect.clone(rng.getBoundingClientRect());
+        parentNode.removeChild(nbsp);
+
+        return clientRect;
+      }
+
+      function getBoundingClientRect(item) {
+        var clientRect, clientRects;
+
+        clientRects = item.getClientRects();
+        if (clientRects.length > 0) {
+          clientRect = ClientRect.clone(clientRects[0]);
+        } else {
+          clientRect = ClientRect.clone(item.getBoundingClientRect());
+        }
+
+        if (isBr(item) && clientRect.left === 0) {
+          return getBrClientRect(item);
+        }
+
+        return clientRect;
+      }
+
+      function collapseAndInflateWidth(clientRect, toStart) {
+        clientRect = ClientRect.collapse(clientRect, toStart);
+        clientRect.width = 1;
+        clientRect.right = clientRect.left + 1;
+
+        return clientRect;
+      }
+
+      function addUniqueAndValidRect(clientRect) {
+        if (clientRect.height === 0) {
+          return;
+        }
+
+        if (clientRects.length > 0) {
+          if (ClientRect.isEqual(clientRect, clientRects[clientRects.length - 1])) {
+            return;
+          }
+        }
+
+        clientRects.push(clientRect);
+      }
+
+      function addCharacterOffset(container, offset) {
+        var range = createRange(container.ownerDocument);
+
+        if (offset < container.data.length) {
+          if (ExtendingChar.isExtendingChar(container.data[offset])) {
+            return clientRects;
+          }
+
+          // WebKit returns two client rects for a position after an extending
+          // character a\uxxx|b so expand on "b" and collapse to start of "b" box
+          if (ExtendingChar.isExtendingChar(container.data[offset - 1])) {
+            range.setStart(container, offset);
+            range.setEnd(container, offset + 1);
+
+            if (!isHiddenWhiteSpaceRange(range)) {
+              addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(range), false));
+              return clientRects;
+            }
+          }
+        }
+
+        if (offset > 0) {
+          range.setStart(container, offset - 1);
+          range.setEnd(container, offset);
+
+          if (!isHiddenWhiteSpaceRange(range)) {
+            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(range), false));
+          }
+        }
+
+        if (offset < container.data.length) {
+          range.setStart(container, offset);
+          range.setEnd(container, offset + 1);
+
+          if (!isHiddenWhiteSpaceRange(range)) {
+            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(range), true));
+          }
+        }
+      }
+
+      if (isText(caretPosition.container())) {
+        addCharacterOffset(caretPosition.container(), caretPosition.offset());
+        return clientRects;
+      }
+
+      if (isElement(caretPosition.container())) {
+        if (caretPosition.isAtEnd()) {
+          node = resolveIndex(caretPosition.container(), caretPosition.offset());
+          if (isText(node)) {
+            addCharacterOffset(node, node.data.length);
+          }
+
+          if (isValidElementCaretCandidate(node) && !isBr(node)) {
+            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(node), false));
+          }
+        } else {
+          node = resolveIndex(caretPosition.container(), caretPosition.offset());
+          if (isText(node)) {
+            addCharacterOffset(node, 0);
+          }
+
+          if (isValidElementCaretCandidate(node) && caretPosition.isAtEnd()) {
+            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(node), false));
+            return clientRects;
+          }
+
+          beforeNode = resolveIndex(caretPosition.container(), caretPosition.offset() - 1);
+          if (isValidElementCaretCandidate(beforeNode) && !isBr(beforeNode)) {
+            if (isBlock(beforeNode) || isBlock(node) || !isValidElementCaretCandidate(node)) {
+              addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(beforeNode), false));
+            }
+          }
+
+          if (isValidElementCaretCandidate(node)) {
+            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(node), true));
+          }
+        }
+      }
+
+      return clientRects;
+    }
+
+    /**
+     * Represents a location within the document by a container and an offset.
+     *
+     * @constructor
+     * @param {Node} container Container node.
+     * @param {Number} offset Offset within that container node.
+     * @param {Array} clientRects Optional client rects array for the position.
+     */
+    function CaretPosition(container, offset, clientRects) {
+      function isAtStart() {
+        if (isText(container)) {
+          return offset === 0;
+        }
+
+        return offset === 0;
+      }
+
+      function isAtEnd() {
+        if (isText(container)) {
+          return offset >= container.data.length;
+        }
+
+        return offset >= container.childNodes.length;
+      }
+
+      function toRange() {
+        var range;
+
+        range = createRange(container.ownerDocument);
+        range.setStart(container, offset);
+        range.setEnd(container, offset);
+
+        return range;
+      }
+
+      function getClientRects() {
+        if (!clientRects) {
+          clientRects = getCaretPositionClientRects(new CaretPosition(container, offset));
+        }
+
+        return clientRects;
+      }
+
+      function isVisible() {
+        return getClientRects().length > 0;
+      }
+
+      function isEqual(caretPosition) {
+        return caretPosition && container === caretPosition.container() && offset === caretPosition.offset();
+      }
+
+      function getNode(before) {
+        return resolveIndex(container, before ? offset - 1 : offset);
+      }
+
+      return {
+        /**
+         * Returns the container node.
+         *
+         * @method container
+         * @return {Node} Container node.
+         */
+        container: Fun.constant(container),
+
+        /**
+         * Returns the offset within the container node.
+         *
+         * @method offset
+         * @return {Number} Offset within the container node.
+         */
+        offset: Fun.constant(offset),
+
+        /**
+         * Returns a range out of a the caret position.
+         *
+         * @method toRange
+         * @return {DOMRange} range for the caret position.
+         */
+        toRange: toRange,
+
+        /**
+         * Returns the client rects for the caret position. Might be multiple rects between
+         * block elements.
+         *
+         * @method getClientRects
+         * @return {Array} Array of client rects.
+         */
+        getClientRects: getClientRects,
+
+        /**
+         * Returns true if the caret location is visible/displayed on screen.
+         *
+         * @method isVisible
+         * @return {Boolean} true/false if the position is visible or not.
+         */
+        isVisible: isVisible,
+
+        /**
+         * Returns true if the caret location is at the beginning of text node or container.
+         *
+         * @method isVisible
+         * @return {Boolean} true/false if the position is at the beginning.
+         */
+        isAtStart: isAtStart,
+
+        /**
+         * Returns true if the caret location is at the end of text node or container.
+         *
+         * @method isVisible
+         * @return {Boolean} true/false if the position is at the end.
+         */
+        isAtEnd: isAtEnd,
+
+        /**
+         * Compares the caret position to another caret position. This will only compare the
+         * container and offset not it's visual position.
+         *
+         * @method isEqual
+         * @param {tinymce.caret.CaretPosition} caretPosition Caret position to compare with.
+         * @return {Boolean} true if the caret positions are equal.
+         */
+        isEqual: isEqual,
+
+        /**
+         * Returns the closest resolved node from a node index. That means if you have an offset after the
+         * last node in a container it will return that last node.
+         *
+         * @method getNode
+         * @return {Node} Node that is closest to the index.
+         */
+        getNode: getNode
+      };
+    }
+
+    /**
+     * Creates a caret position from the start of a range.
+     *
+     * @method fromRangeStart
+     * @param {DOMRange} range DOM Range to create caret position from.
+     * @return {tinymce.caret.CaretPosition} Caret position from the start of DOM range.
+     */
+    CaretPosition.fromRangeStart = function (range) {
+      return new CaretPosition(range.startContainer, range.startOffset);
     };
+
+    /**
+     * Creates a caret position from the end of a range.
+     *
+     * @method fromRangeEnd
+     * @param {DOMRange} range DOM Range to create caret position from.
+     * @return {tinymce.caret.CaretPosition} Caret position from the end of DOM range.
+     */
+    CaretPosition.fromRangeEnd = function (range) {
+      return new CaretPosition(range.endContainer, range.endOffset);
+    };
+
+    /**
+     * Creates a caret position from a node and places the offset after it.
+     *
+     * @method after
+     * @param {Node} node Node to get caret position from.
+     * @return {tinymce.caret.CaretPosition} Caret position from the node.
+     */
+    CaretPosition.after = function (node) {
+      return new CaretPosition(node.parentNode, nodeIndex(node) + 1);
+    };
+
+    /**
+     * Creates a caret position from a node and places the offset before it.
+     *
+     * @method before
+     * @param {Node} node Node to get caret position from.
+     * @return {tinymce.caret.CaretPosition} Caret position from the node.
+     */
+    CaretPosition.before = function (node) {
+      return new CaretPosition(node.parentNode, nodeIndex(node));
+    };
+
+    tinymce.caret.CaretPosition = CaretPosition;
+
   })(tinymce);
 
   /**
@@ -16062,32 +17106,1051 @@
    */
 
   /**
-   * Utility functions for working with zero width space
-   * characters used as character containers etc.
+   * Utility functions shared by the caret logic.
    *
    * @private
-   * @class tinymce.text.Zwsp
-   * @example
-   * var isZwsp = Zwsp.isZwsp('\uFEFF');
-   * var abc = Zwsp.trim('a\uFEFFc');
+   * @class tinymce.caret.CaretUtils
    */
   (function (tinymce) {
-    // This is technically not a ZWSP but a ZWNBSP or a BYTE ORDER MARK it used to be a ZWSP
-    var ZWSP = '\uFEFF';
+    var NodeType = tinymce.dom.NodeType,
+      TreeWalker = tinymce.dom.TreeWalker,
+      CaretContainer = tinymce.caret.CaretContainer,
+      CaretCandidate = tinymce.caret.CaretCandidate,
+      Fun = tinymce.util.Fun;
 
-    var isZwsp = function (chr) {
-      return chr === ZWSP;
+    var isContentEditableTrue = NodeType.isContentEditableTrue,
+      isContentEditableFalse = NodeType.isContentEditableFalse,
+      isBlockLike = NodeType.matchStyleValues('display', 'block table table-cell table-caption'),
+      isCaretContainer = CaretContainer.isCaretContainer,
+      isCaretContainerBlock = CaretContainer.isCaretContainerBlock,
+      curry = Fun.curry,
+      isElement = NodeType.isElement,
+      isCaretCandidate = CaretCandidate.isCaretCandidate;
+
+    function isForwards(direction) {
+      return direction > 0;
+    }
+
+    function isBackwards(direction) {
+      return direction < 0;
+    }
+
+    function skipCaretContainers(walk, shallow) {
+      var node;
+
+      while ((node = walk(shallow))) {
+        if (!isCaretContainerBlock(node)) {
+          return node;
+        }
+      }
+
+      return null;
+    }
+
+    function findNode(node, direction, predicateFn, rootNode, shallow) {
+      var walker = new TreeWalker(node, rootNode);
+
+      if (isBackwards(direction)) {
+        if (isContentEditableFalse(node) || isCaretContainerBlock(node)) {
+          node = skipCaretContainers(walker.prev, true);
+          if (predicateFn(node)) {
+            return node;
+          }
+        }
+
+        while ((node = skipCaretContainers(walker.prev, shallow))) {
+          if (predicateFn(node)) {
+            return node;
+          }
+        }
+      }
+
+      if (isForwards(direction)) {
+        if (isContentEditableFalse(node) || isCaretContainerBlock(node)) {
+          node = skipCaretContainers(walker.next, true);
+          if (predicateFn(node)) {
+            return node;
+          }
+        }
+
+        while ((node = skipCaretContainers(walker.next, shallow))) {
+          if (predicateFn(node)) {
+            return node;
+          }
+        }
+      }
+
+      return null;
+    }
+
+    function getEditingHost(node, rootNode) {
+      for (node = node.parentNode; node && node != rootNode; node = node.parentNode) {
+        if (isContentEditableTrue(node)) {
+          return node;
+        }
+      }
+
+      return rootNode;
+    }
+
+    function getParentBlock(node, rootNode) {
+      while (node && node != rootNode) {
+        if (isBlockLike(node)) {
+          return node;
+        }
+
+        node = node.parentNode;
+      }
+
+      return null;
+    }
+
+    function isInSameBlock(caretPosition1, caretPosition2, rootNode) {
+      return getParentBlock(caretPosition1.container(), rootNode) == getParentBlock(caretPosition2.container(), rootNode);
+    }
+
+    function isInSameEditingHost(caretPosition1, caretPosition2, rootNode) {
+      return getEditingHost(caretPosition1.container(), rootNode) == getEditingHost(caretPosition2.container(), rootNode);
+    }
+
+    function getChildNodeAtRelativeOffset(relativeOffset, caretPosition) {
+      var container, offset;
+
+      if (!caretPosition) {
+        return null;
+      }
+
+      container = caretPosition.container();
+      offset = caretPosition.offset();
+
+      if (!isElement(container)) {
+        return null;
+      }
+
+      return container.childNodes[offset + relativeOffset];
+    }
+
+    function beforeAfter(before, node) {
+      var range = node.ownerDocument.createRange();
+
+      if (before) {
+        range.setStartBefore(node);
+        range.setEndBefore(node);
+      } else {
+        range.setStartAfter(node);
+        range.setEndAfter(node);
+      }
+
+      return range;
+    }
+
+    function isNodesInSameBlock(rootNode, node1, node2) {
+      return getParentBlock(node1, rootNode) == getParentBlock(node2, rootNode);
+    }
+
+    function lean(left, rootNode, node) {
+      var sibling, siblingName;
+
+      if (left) {
+        siblingName = 'previousSibling';
+      } else {
+        siblingName = 'nextSibling';
+      }
+
+      while (node && node != rootNode) {
+        sibling = node[siblingName];
+
+        if (isCaretContainer(sibling)) {
+          sibling = sibling[siblingName];
+        }
+
+        if (isContentEditableFalse(sibling)) {
+          if (isNodesInSameBlock(rootNode, sibling, node)) {
+            return sibling;
+          }
+
+          break;
+        }
+
+        if (isCaretCandidate(sibling)) {
+          break;
+        }
+
+        node = node.parentNode;
+      }
+
+      return null;
+    }
+
+    var before = curry(beforeAfter, true);
+    var after = curry(beforeAfter, false);
+
+    function normalizeRange(direction, rootNode, range) {
+      var node, container, offset, location;
+      var leanLeft = curry(lean, true, rootNode);
+      var leanRight = curry(lean, false, rootNode);
+
+      container = range.startContainer;
+      offset = range.startOffset;
+
+      if (CaretContainer.isCaretContainerBlock(container)) {
+        if (!isElement(container)) {
+          container = container.parentNode;
+        }
+
+        location = container.getAttribute('data-mce-caret');
+
+        if (location == 'before') {
+          node = container.nextSibling;
+          if (isContentEditableFalse(node)) {
+            return before(node);
+          }
+        }
+
+        if (location == 'after') {
+          node = container.previousSibling;
+          if (isContentEditableFalse(node)) {
+            return after(node);
+          }
+        }
+      }
+
+      if (!range.collapsed) {
+        return range;
+      }
+
+      if (NodeType.isText(container)) {
+        if (isCaretContainer(container)) {
+          if (direction === 1) {
+            node = leanRight(container);
+            if (node) {
+              return before(node);
+            }
+
+            node = leanLeft(container);
+            if (node) {
+              return after(node);
+            }
+          }
+
+          if (direction === -1) {
+            node = leanLeft(container);
+            if (node) {
+              return after(node);
+            }
+
+            node = leanRight(container);
+            if (node) {
+              return before(node);
+            }
+          }
+
+          return range;
+        }
+
+        if (CaretContainer.endsWithCaretContainer(container) && offset >= container.data.length - 1) {
+          if (direction === 1) {
+            node = leanRight(container);
+            if (node) {
+              return before(node);
+            }
+          }
+
+          return range;
+        }
+
+        if (CaretContainer.startsWithCaretContainer(container) && offset <= 1) {
+          if (direction === -1) {
+            node = leanLeft(container);
+            if (node) {
+              return after(node);
+            }
+          }
+
+          return range;
+        }
+
+        if (offset === container.data.length) {
+          node = leanRight(container);
+          if (node) {
+            return before(node);
+          }
+
+          return range;
+        }
+
+        if (offset === 0) {
+          node = leanLeft(container);
+          if (node) {
+            return after(node);
+          }
+
+          return range;
+        }
+      }
+
+      return range;
+    }
+
+    function isNextToContentEditableFalse(relativeOffset, caretPosition) {
+      return isContentEditableFalse(getChildNodeAtRelativeOffset(relativeOffset, caretPosition));
+    }
+
+    tinymce.caret.CaretUtils = {
+      isForwards: isForwards,
+      isBackwards: isBackwards,
+      findNode: findNode,
+      getEditingHost: getEditingHost,
+      getParentBlock: getParentBlock,
+      isInSameBlock: isInSameBlock,
+      isInSameEditingHost: isInSameEditingHost,
+      isBeforeContentEditableFalse: curry(isNextToContentEditableFalse, 0),
+      isAfterContentEditableFalse: curry(isNextToContentEditableFalse, -1),
+      normalizeRange: normalizeRange
     };
 
-    var trim = function (text) {
-      return text.replace(new RegExp(ZWSP, 'g'), '');
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+  /**
+   * This module contains logic for moving around a virtual caret in logical order within a DOM element.
+   *
+   * It ignores the most obvious invalid caret locations such as within a script element or within a
+   * contentEditable=false element but it will return locations that isn't possible to render visually.
+   *
+   * @private
+   * @class tinymce.caret.CaretWalker
+   * @example
+   * var caretWalker = new CaretWalker(rootElm);
+   *
+   * var prevLogicalCaretPosition = caretWalker.prev(CaretPosition.fromRangeStart(range));
+   * var nextLogicalCaretPosition = caretWalker.next(CaretPosition.fromRangeEnd(range));
+   */
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType,
+      CaretPosition = tinymce.caret.CaretPosition,
+      CaretUtils = tinymce.caret.CaretUtils,
+      CaretCandidate = tinymce.caret.CaretCandidate,
+      Arr = tinymce.util.Arr,
+      Fun = tinymce.util.Fun;
+
+    var isContentEditableFalse = NodeType.isContentEditableFalse,
+      isText = NodeType.isText,
+      isElement = NodeType.isElement,
+      isBr = NodeType.isBr,
+      isForwards = CaretUtils.isForwards,
+      isBackwards = CaretUtils.isBackwards,
+      isCaretCandidate = CaretCandidate.isCaretCandidate,
+      isAtomic = CaretCandidate.isAtomic,
+      isEditableCaretCandidate = CaretCandidate.isEditableCaretCandidate;
+
+    function getParents(node, rootNode) {
+      var parents = [];
+
+      while (node && node != rootNode) {
+        parents.push(node);
+        node = node.parentNode;
+      }
+
+      return parents;
+    }
+
+    function nodeAtIndex(container, offset) {
+      if (container.hasChildNodes() && offset < container.childNodes.length) {
+        return container.childNodes[offset];
+      }
+
+      return null;
+    }
+
+    function getCaretCandidatePosition(direction, node) {
+      if (isForwards(direction)) {
+        if (isCaretCandidate(node.previousSibling) && !isText(node.previousSibling)) {
+          return CaretPosition.before(node);
+        }
+
+        if (isText(node)) {
+          return CaretPosition(node, 0);
+        }
+      }
+
+      if (isBackwards(direction)) {
+        if (isCaretCandidate(node.nextSibling) && !isText(node.nextSibling)) {
+          return CaretPosition.after(node);
+        }
+
+        if (isText(node)) {
+          return CaretPosition(node, node.data.length);
+        }
+      }
+
+      if (isBackwards(direction)) {
+        if (isBr(node)) {
+          return CaretPosition.before(node);
+        }
+
+        return CaretPosition.after(node);
+      }
+
+      return CaretPosition.before(node);
+    }
+
+    // Jumps over BR elements <p>|<br></p><p>a</p> -> <p><br></p><p>|a</p>
+    function isBrBeforeBlock(node, rootNode) {
+      var next;
+
+      if (!NodeType.isBr(node)) {
+        return false;
+      }
+
+      next = findCaretPosition(1, CaretPosition.after(node), rootNode);
+      if (!next) {
+        return false;
+      }
+
+      return !CaretUtils.isInSameBlock(CaretPosition.before(node), CaretPosition.before(next), rootNode);
+    }
+
+    function findCaretPosition(direction, startCaretPosition, rootNode) {
+      var container, offset, node, nextNode, innerNode,
+        rootContentEditableFalseElm, caretPosition;
+
+      if (!isElement(rootNode) || !startCaretPosition) {
+        return null;
+      }
+
+      caretPosition = startCaretPosition;
+      container = caretPosition.container();
+      offset = caretPosition.offset();
+
+      if (isText(container)) {
+        if (isBackwards(direction) && offset > 0) {
+          return CaretPosition(container, --offset);
+        }
+
+        if (isForwards(direction) && offset < container.length) {
+          return CaretPosition(container, ++offset);
+        }
+
+        node = container;
+      } else {
+        if (isBackwards(direction) && offset > 0) {
+          nextNode = nodeAtIndex(container, offset - 1);
+          if (isCaretCandidate(nextNode)) {
+            if (!isAtomic(nextNode)) {
+              innerNode = CaretUtils.findNode(nextNode, direction, isEditableCaretCandidate, nextNode);
+              if (innerNode) {
+                if (isText(innerNode)) {
+                  return CaretPosition(innerNode, innerNode.data.length);
+                }
+
+                return CaretPosition.after(innerNode);
+              }
+            }
+
+            if (isText(nextNode)) {
+              return CaretPosition(nextNode, nextNode.data.length);
+            }
+
+            return CaretPosition.before(nextNode);
+          }
+        }
+
+        if (isForwards(direction) && offset < container.childNodes.length) {
+          nextNode = nodeAtIndex(container, offset);
+          if (isCaretCandidate(nextNode)) {
+            if (isBrBeforeBlock(nextNode, rootNode)) {
+              return findCaretPosition(direction, CaretPosition.after(nextNode), rootNode);
+            }
+
+            if (!isAtomic(nextNode)) {
+              innerNode = CaretUtils.findNode(nextNode, direction, isEditableCaretCandidate, nextNode);
+              if (innerNode) {
+                if (isText(innerNode)) {
+                  return CaretPosition(innerNode, 0);
+                }
+
+                return CaretPosition.before(innerNode);
+              }
+            }
+
+            if (isText(nextNode)) {
+              return CaretPosition(nextNode, 0);
+            }
+
+            return CaretPosition.after(nextNode);
+          }
+        }
+
+        node = caretPosition.getNode();
+      }
+
+      if ((isForwards(direction) && caretPosition.isAtEnd()) || (isBackwards(direction) && caretPosition.isAtStart())) {
+        node = CaretUtils.findNode(node, direction, Fun.constant(true), rootNode, true);
+        if (isEditableCaretCandidate(node)) {
+          return getCaretCandidatePosition(direction, node);
+        }
+      }
+
+      nextNode = CaretUtils.findNode(node, direction, isEditableCaretCandidate, rootNode);
+
+      rootContentEditableFalseElm = Arr.last(Arr.filter(getParents(container, rootNode), isContentEditableFalse));
+      if (rootContentEditableFalseElm && (!nextNode || !rootContentEditableFalseElm.contains(nextNode))) {
+        if (isForwards(direction)) {
+          caretPosition = CaretPosition.after(rootContentEditableFalseElm);
+        } else {
+          caretPosition = CaretPosition.before(rootContentEditableFalseElm);
+        }
+
+        return caretPosition;
+      }
+
+      if (nextNode) {
+        return getCaretCandidatePosition(direction, nextNode);
+      }
+
+      return null;
+    }
+    tinymce.caret.CaretWalker = function (rootNode) {
+      return {
+        /**
+         * Returns the next logical caret position from the specificed input
+         * caretPoisiton or null if there isn't any more positions left for example
+         * at the end specified root element.
+         *
+         * @method next
+         * @param {tinymce.caret.CaretPosition} caretPosition Caret position to start from.
+         * @return {tinymce.caret.CaretPosition} CaretPosition or null if no position was found.
+         */
+        next: function (caretPosition) {
+          return findCaretPosition(1, caretPosition, rootNode);
+        },
+
+        /**
+         * Returns the previous logical caret position from the specificed input
+         * caretPoisiton or null if there isn't any more positions left for example
+         * at the end specified root element.
+         *
+         * @method prev
+         * @param {tinymce.caret.CaretPosition} caretPosition Caret position to start from.
+         * @return {tinymce.caret.CaretPosition} CaretPosition or null if no position was found.
+         */
+        prev: function (caretPosition) {
+          return findCaretPosition(-1, caretPosition, rootNode);
+        }
+      };
     };
 
-    tinymce.text.Zwsp = {
-      isZwsp: isZwsp,
-      ZWSP: ZWSP,
-      trim: trim
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+  /**
+   * This module contains logic for rendering a fake visual caret.
+   *
+   * @private
+   * @class tinymce.caret.FakeCaret
+   */
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType,
+      DOM = tinymce.DOM,
+      ClientRect = tinymce.geom.ClientRect,
+      CaretContainer = tinymce.caret.CaretContainer,
+      CaretContainerRemove = tinymce.caret.CaretContainerRemove;
+
+    var isContentEditableFalse = NodeType.isContentEditableFalse;
+
+    tinymce.caret.FakeCaret = function (rootNode, isBlock) {
+      var cursorInterval, $lastVisualCaret, caretContainerNode;
+
+      function getAbsoluteClientRect(node, before) {
+        var clientRect = ClientRect.collapse(node.getBoundingClientRect(), before),
+          docElm, scrollX, scrollY, margin, rootRect;
+
+        if (rootNode.tagName == 'BODY') {
+          docElm = rootNode.ownerDocument.documentElement;
+          scrollX = rootNode.scrollLeft || docElm.scrollLeft;
+          scrollY = rootNode.scrollTop || docElm.scrollTop;
+        } else {
+          rootRect = rootNode.getBoundingClientRect();
+          scrollX = rootNode.scrollLeft - rootRect.left;
+          scrollY = rootNode.scrollTop - rootRect.top;
+        }
+
+        clientRect.left += scrollX;
+        clientRect.right += scrollX;
+        clientRect.top += scrollY;
+        clientRect.bottom += scrollY;
+        clientRect.width = 1;
+
+        margin = node.offsetWidth - node.clientWidth;
+
+        if (margin > 0) {
+          if (before) {
+            margin *= -1;
+          }
+
+          clientRect.left += margin;
+          clientRect.right += margin;
+        }
+
+        return clientRect;
+      }
+
+      function trimInlineCaretContainers() {
+        var contentEditableFalseNodes, node, sibling, i, data;
+
+        contentEditableFalseNodes = DOM.select('*[contentEditable=false]', rootNode);
+        
+        for (i = 0; i < contentEditableFalseNodes.length; i++) {
+          node = contentEditableFalseNodes[i];
+
+          sibling = node.previousSibling;
+          if (CaretContainer.endsWithCaretContainer(sibling)) {
+            data = sibling.data;
+
+            if (data.length == 1) {
+              sibling.parentNode.removeChild(sibling);
+            } else {
+              sibling.deleteData(data.length - 1, 1);
+            }
+          }
+
+          sibling = node.nextSibling;
+          if (CaretContainer.startsWithCaretContainer(sibling)) {
+            data = sibling.data;
+
+            if (data.length == 1) {
+              sibling.parentNode.removeChild(sibling);
+            } else {
+              sibling.deleteData(0, 1);
+            }
+          }
+        }
+
+        return null;
+      }
+
+      function show(before, node) {
+        var clientRect, rng;
+
+        hide();
+
+        if (isBlock(node)) {
+          caretContainerNode = CaretContainer.insertBlock('p', node, before);
+          clientRect = getAbsoluteClientRect(node, before);
+          DOM.setStyle(caretContainerNode, 'top', clientRect.top);
+
+          $lastVisualCaret = DOM.add(rootNode, 'div', { 'class': 'mce-visual-caret', 'data-mce-bogus': 'all', 'style': clientRect });
+
+          if (before) {
+            DOM.addClass($lastVisualCaret, 'mce-visual-caret-before');
+          }
+
+          startBlink();
+
+          rng = node.ownerDocument.createRange();
+          rng.setStart(caretContainerNode, 0);
+          rng.setEnd(caretContainerNode, 0);
+        } else {
+          caretContainerNode = CaretContainer.insertInline(node, before);
+          rng = node.ownerDocument.createRange();
+
+          if (isContentEditableFalse(caretContainerNode.nextSibling)) {
+            rng.setStart(caretContainerNode, 0);
+            rng.setEnd(caretContainerNode, 0);
+          } else {
+            rng.setStart(caretContainerNode, 1);
+            rng.setEnd(caretContainerNode, 1);
+          }
+
+          return rng;
+        }
+
+        return rng;
+      }
+
+      function hide() {
+        trimInlineCaretContainers();
+
+        if (caretContainerNode) {
+          CaretContainerRemove.remove(caretContainerNode);
+          caretContainerNode = null;
+        }
+
+        if ($lastVisualCaret) {
+          $lastVisualCaret.remove();
+          $lastVisualCaret = null;
+        }
+
+        clearInterval(cursorInterval);
+      }
+
+      function startBlink() {
+        cursorInterval = setInterval(function () {
+          var caret = DOM.select('div.mce-visual-caret', rootNode)[0];
+
+          DOM.toggleClass(caret, 'mce-visual-caret-hidden');
+          
+        }, 500);
+      }
+
+      function destroy() {
+        clearInterval(cursorInterval);
+      }
+
+      function getCss() {
+        return (
+          '.mce-visual-caret {' +
+          'position: absolute;' +
+          'background-color: black;' +
+          'background-color: currentcolor;' +
+          '}' +
+          '.mce-visual-caret-hidden {' +
+          'display: none;' +
+          '}' +
+          '*[data-mce-caret] {' +
+          'position: absolute;' +
+          'left: -1000px;' +
+          'right: auto;' +
+          'top: 0;' +
+          'margin: 0;' +
+          'padding: 0;' +
+          '}'
+        );
+      }
+
+      return {
+        show: show,
+        hide: hide,
+        getCss: getCss,
+        destroy: destroy
+      };
     };
+
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * Utility functions for working with lines.
+   *
+   * @private
+   * @class tinymce.caret.LineUtils
+   */
+  (function (tinymce) {
+    var NodeType = tinymce.dom.NodeType,
+      Fun = tinymce.util.Fun, Arr = tinymce.util.Arr,
+      Dimensions = tinymce.dom.Dimensions,
+      ClientRect = tinymce.geom.ClientRect,
+      CaretUtils = tinymce.caret.CaretUtils,
+      CaretCandidate = tinymce.caret.CaretCandidate;
+
+    var isContentEditableFalse = NodeType.isContentEditableFalse,
+      findNode = CaretUtils.findNode,
+      curry = Fun.curry;
+
+    function distanceToRectLeft(clientRect, clientX) {
+      return Math.abs(clientRect.left - clientX);
+    }
+
+    function distanceToRectRight(clientRect, clientX) {
+      return Math.abs(clientRect.right - clientX);
+    }
+
+    function findClosestClientRect(clientRects, clientX) {
+      function isInside(clientX, clientRect) {
+        return clientX >= clientRect.left && clientX <= clientRect.right;
+      }
+
+      return Arr.reduce(clientRects, function (oldClientRect, clientRect) {
+        var oldDistance, newDistance;
+
+        oldDistance = Math.min(distanceToRectLeft(oldClientRect, clientX), distanceToRectRight(oldClientRect, clientX));
+        newDistance = Math.min(distanceToRectLeft(clientRect, clientX), distanceToRectRight(clientRect, clientX));
+
+        if (isInside(clientX, clientRect)) {
+          return clientRect;
+        }
+
+        if (isInside(clientX, oldClientRect)) {
+          return oldClientRect;
+        }
+
+        // cE=false has higher priority
+        if (newDistance == oldDistance && isContentEditableFalse(clientRect.node)) {
+          return clientRect;
+        }
+
+        if (newDistance < oldDistance) {
+          return clientRect;
+        }
+
+        return oldClientRect;
+      });
+    }
+
+    function walkUntil(direction, rootNode, predicateFn, node) {
+      while ((node = findNode(node, direction, CaretCandidate.isEditableCaretCandidate, rootNode))) {
+        if (predicateFn(node)) {
+          return;
+        }
+      }
+    }
+
+    function findLineNodeRects(rootNode, targetNodeRect) {
+      var clientRects = [];
+
+      function collect(checkPosFn, node) {
+        var lineRects;
+
+        lineRects = Arr.filter(Dimensions.getClientRects(node), function (clientRect) {
+          return !checkPosFn(clientRect, targetNodeRect);
+        });
+
+        clientRects = clientRects.concat(lineRects);
+
+        return lineRects.length === 0;
+      }
+
+      clientRects.push(targetNodeRect);
+      walkUntil(-1, rootNode, curry(collect, ClientRect.isAbove), targetNodeRect.node);
+      walkUntil(1, rootNode, curry(collect, ClientRect.isBelow), targetNodeRect.node);
+
+      return clientRects;
+    }
+
+    function getContentEditableFalseChildren(rootNode) {
+      return Arr.filter(Arr.toArray(rootNode.getElementsByTagName('*')), isContentEditableFalse);
+    }
+
+    function caretInfo(clientRect, clientX) {
+      return {
+        node: clientRect.node,
+        before: distanceToRectLeft(clientRect, clientX) < distanceToRectRight(clientRect, clientX)
+      };
+    }
+
+    function closestCaret(rootNode, clientX, clientY) {
+      var contentEditableFalseNodeRects, closestNodeRect;
+
+      contentEditableFalseNodeRects = Dimensions.getClientRects(getContentEditableFalseChildren(rootNode));
+      contentEditableFalseNodeRects = Arr.filter(contentEditableFalseNodeRects, function (clientRect) {
+        return clientY >= clientRect.top && clientY <= clientRect.bottom;
+      });
+
+      closestNodeRect = findClosestClientRect(contentEditableFalseNodeRects, clientX);
+      if (closestNodeRect) {
+        closestNodeRect = findClosestClientRect(findLineNodeRects(rootNode, closestNodeRect), clientX);
+        if (closestNodeRect && isContentEditableFalse(closestNodeRect.node)) {
+          return caretInfo(closestNodeRect, clientX);
+        }
+      }
+
+      return null;
+    }
+
+    tinymce.caret.LineUtils = {
+      findClosestClientRect: findClosestClientRect,
+      findLineNodeRects: findLineNodeRects,
+      closestCaret: closestCaret
+    };
+
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * This module lets you walk the document line by line
+   * returing nodes and client rects for each line.
+   *
+   * @private
+   * @class tinymce.caret.LineWalker
+   */
+  (function (tinymce) {
+    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr,
+      Dimensions = tinymce.dom.Dimensions,
+      ClientRect = tinymce.geom.ClientRect,
+      CaretUtils = tinymce.caret.CaretUtils,
+      CaretCandidate = tinymce.caret.CaretCandidate,
+      CaretWalker = tinymce.caret.CaretWalker,
+      CaretPosition = tinymce.caret.CaretPosition;
+
+    var curry = Fun.curry;
+
+    function findUntil(direction, rootNode, predicateFn, node) {
+      while ((node = CaretUtils.findNode(node, direction, CaretCandidate.isEditableCaretCandidate, rootNode))) {
+        if (predicateFn(node)) {
+          return;
+        }
+      }
+    }
+
+    function walkUntil(direction, isAboveFn, isBeflowFn, rootNode, predicateFn, caretPosition) {
+      var line = 0,
+        node, result = [],
+        targetClientRect;
+
+      function add(node) {
+        var i, clientRect, clientRects;
+
+        clientRects = Dimensions.getClientRects(node);
+        if (direction == -1) {
+          clientRects = clientRects.reverse();
+        }
+
+        for (i = 0; i < clientRects.length; i++) {
+          clientRect = clientRects[i];
+          if (isBeflowFn(clientRect, targetClientRect)) {
+            continue;
+          }
+
+          if (result.length > 0 && isAboveFn(clientRect, Arr.last(result))) {
+            line++;
+          }
+
+          clientRect.line = line;
+
+          if (predicateFn(clientRect)) {
+            return true;
+          }
+
+          result.push(clientRect);
+        }
+      }
+
+      targetClientRect = Arr.last(caretPosition.getClientRects());
+      if (!targetClientRect) {
+        return result;
+      }
+
+      node = caretPosition.getNode();
+      add(node);
+      findUntil(direction, rootNode, add, node);
+
+      return result;
+    }
+
+    function aboveLineNumber(lineNumber, clientRect) {
+      return clientRect.line > lineNumber;
+    }
+
+    function isLine(lineNumber, clientRect) {
+      return clientRect.line === lineNumber;
+    }
+
+    var upUntil = curry(walkUntil, -1, ClientRect.isAbove, ClientRect.isBelow);
+    var downUntil = curry(walkUntil, 1, ClientRect.isBelow, ClientRect.isAbove);
+
+    function positionsUntil(direction, rootNode, predicateFn, node) {
+      var caretWalker = new CaretWalker(rootNode),
+        walkFn, isBelowFn, isAboveFn,
+        caretPosition, result = [],
+        line = 0,
+        clientRect, targetClientRect;
+
+      function getClientRect(caretPosition) {
+        if (direction == 1) {
+          return Arr.last(caretPosition.getClientRects());
+        }
+
+        return Arr.last(caretPosition.getClientRects());
+      }
+
+      if (direction == 1) {
+        walkFn = caretWalker.next;
+        isBelowFn = ClientRect.isBelow;
+        isAboveFn = ClientRect.isAbove;
+        caretPosition = CaretPosition.after(node);
+      } else {
+        walkFn = caretWalker.prev;
+        isBelowFn = ClientRect.isAbove;
+        isAboveFn = ClientRect.isBelow;
+        caretPosition = CaretPosition.before(node);
+      }
+
+      targetClientRect = getClientRect(caretPosition);
+
+      do {
+        if (!caretPosition.isVisible()) {
+          continue;
+        }
+
+        clientRect = getClientRect(caretPosition);
+
+        if (isAboveFn(clientRect, targetClientRect)) {
+          continue;
+        }
+
+        if (result.length > 0 && isBelowFn(clientRect, Arr.last(result))) {
+          line++;
+        }
+
+        clientRect = ClientRect.clone(clientRect);
+        clientRect.position = caretPosition;
+        clientRect.line = line;
+
+        if (predicateFn(clientRect)) {
+          return result;
+        }
+
+        result.push(clientRect);
+      } while ((caretPosition = walkFn(caretPosition)));
+
+      return result;
+    }
+
+    tinymce.caret.LineWalker = {
+      upUntil: upUntil,
+      downUntil: downUntil,
+
+      /**
+       * Find client rects with line and caret position until the predicate returns true.
+       *
+       * @method positionsUntil
+       * @param {Number} direction Direction forward/backward 1/-1.
+       * @param {DOMNode} rootNode Root node to walk within.
+       * @param {function} predicateFn Gets the client rect as it's input.
+       * @param {DOMNode} node Node to start walking from.
+       * @return {Array} Array of client rects with line and position properties.
+       */
+      positionsUntil: positionsUntil,
+
+      isAboveLine: curry(aboveLineNumber),
+      isLine: curry(isLine)
+    };
+
   })(tinymce);
 
   /**
@@ -19701,2069 +21764,6 @@
         setup$1(editor, pasteBin);
       });
   };
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * This module creates or resolves xpath like string representation of a CaretPositions.
-   *
-   * The format is a / separated list of chunks with:
-   * <element|text()>[index|after|before]
-   *
-   * For example:
-   *  p[0]/b[0]/text()[0],1 = <p><b>a|c</b></p>
-   *  p[0]/img[0],before = <p>|<img></p>
-   *  p[0]/img[0],after = <p><img>|</p>
-   *
-   * @private
-   * @static
-   * @class tinymce.caret.CaretBookmark
-   * @example
-   * var bookmark = CaretBookmark.create(rootElm, CaretPosition.before(rootElm.firstChild));
-   * var caretPosition = CaretBookmark.resolve(bookmark);
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType, DOMUtils = tinymce.DOM;
-    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
-    var isText = NodeType.isText,
-      isBogus = NodeType.isBogus,
-      nodeIndex = DOMUtils.nodeIndex;
-
-    function normalizedParent(node) {
-      var parentNode = node.parentNode;
-
-      if (isBogus(parentNode)) {
-        return normalizedParent(parentNode);
-      }
-
-      return parentNode;
-    }
-
-    function getChildNodes(node) {
-      if (!node) {
-        return [];
-      }
-
-      return Arr.reduce(node.childNodes, function (result, node) {
-        if (isBogus(node) && node.nodeName != 'BR') {
-          result = result.concat(getChildNodes(node));
-        } else {
-          result.push(node);
-        }
-
-        return result;
-      }, []);
-    }
-
-    function normalizedTextOffset(textNode, offset) {
-      while ((textNode = textNode.previousSibling)) {
-        if (!isText(textNode)) {
-          break;
-        }
-
-        offset += textNode.data.length;
-      }
-
-      return offset;
-    }
-
-    function equal(targetValue) {
-      return function (value) {
-        return targetValue === value;
-      };
-    }
-
-    function normalizedNodeIndex(node) {
-      var nodes, index, numTextFragments;
-
-      nodes = getChildNodes(normalizedParent(node));
-      index = Arr.findIndex(nodes, equal(node), node);
-      nodes = nodes.slice(0, index + 1);
-      numTextFragments = Arr.reduce(nodes, function (result, node, i) {
-        if (isText(node) && isText(nodes[i - 1])) {
-          result++;
-        }
-
-        return result;
-      }, 0);
-
-      nodes = Arr.filter(nodes, NodeType.matchNodeNames(node.nodeName));
-      index = Arr.findIndex(nodes, equal(node), node);
-
-      return index - numTextFragments;
-    }
-
-    function createPathItem(node) {
-      var name;
-
-      if (isText(node)) {
-        name = 'text()';
-      } else {
-        name = node.nodeName.toLowerCase();
-      }
-
-      return name + '[' + normalizedNodeIndex(node) + ']';
-    }
-
-    function parentsUntil(rootNode, node, predicate) {
-      var parents = [];
-
-      for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-
-        parents.push(node);
-      }
-
-      return parents;
-    }
-
-    function create(rootNode, caretPosition) {
-      var container, offset, path = [],
-        outputOffset, childNodes, parents;
-
-      container = caretPosition.container();
-      offset = caretPosition.offset();
-
-      if (isText(container)) {
-        outputOffset = normalizedTextOffset(container, offset);
-      } else {
-        childNodes = container.childNodes;
-        if (offset >= childNodes.length) {
-          outputOffset = 'after';
-          offset = childNodes.length - 1;
-        } else {
-          outputOffset = 'before';
-        }
-
-        container = childNodes[offset];
-      }
-
-      path.push(createPathItem(container));
-      parents = parentsUntil(rootNode, container);
-      parents = Arr.filter(parents, Fun.negate(NodeType.isBogus));
-      path = path.concat(Arr.map(parents, function (node) {
-        return createPathItem(node);
-      }));
-
-      return path.reverse().join('/') + ',' + outputOffset;
-    }
-
-    function resolvePathItem(node, name, index) {
-      var nodes = getChildNodes(node);
-
-      nodes = Arr.filter(nodes, function (node, index) {
-        return !isText(node) || !isText(nodes[index - 1]);
-      });
-
-      nodes = Arr.filter(nodes, NodeType.matchNodeNames(name));
-      return nodes[index];
-    }
-
-    function findTextPosition(container, offset) {
-      var node = container,
-        targetOffset = 0,
-        dataLen;
-
-      while (isText(node)) {
-        dataLen = node.data.length;
-
-        if (offset >= targetOffset && offset <= targetOffset + dataLen) {
-          container = node;
-          offset = offset - targetOffset;
-          break;
-        }
-
-        if (!isText(node.nextSibling)) {
-          container = node;
-          offset = dataLen;
-          break;
-        }
-
-        targetOffset += dataLen;
-        node = node.nextSibling;
-      }
-
-      if (offset > container.data.length) {
-        offset = container.data.length;
-      }
-
-      return new tinymce.caret.CaretPosition(container, offset);
-    }
-
-    function resolve(rootNode, path) {
-      var parts, container, offset;
-
-      if (!path) {
-        return null;
-      }
-
-      parts = path.split(',');
-      path = parts[0].split('/');
-      offset = parts.length > 1 ? parts[1] : 'before';
-
-      container = Arr.reduce(path, function (result, value) {
-        value = /([\w\-\(\)]+)\[([0-9]+)\]/.exec(value);
-        if (!value) {
-          return null;
-        }
-
-        if (value[1] === 'text()') {
-          value[1] = '#text';
-        }
-
-        return resolvePathItem(result, value[1], parseInt(value[2], 10));
-      }, rootNode);
-
-      if (!container) {
-        return null;
-      }
-
-      if (!isText(container)) {
-        if (offset === 'after') {
-          offset = nodeIndex(container) + 1;
-        } else {
-          offset = nodeIndex(container);
-        }
-
-        return new tinymce.caret.CaretPosition(container.parentNode, offset);
-      }
-
-      return findTextPosition(container, parseInt(offset, 10));
-    }
-
-    tinymce.caret.CaretBookmark = {
-      /**
-       * Create a xpath bookmark location for the specified caret position.
-       *
-       * @method create
-       * @param {Node} rootNode Root node to create bookmark within.
-       * @param {tinymce.caret.CaretPosition} caretPosition Caret position within the root node.
-       * @return {String} String xpath like location of caret position.
-       */
-      create: create,
-
-      /**
-       * Resolves a xpath like bookmark location to the a caret position.
-       *
-       * @method resolve
-       * @param {Node} rootNode Root node to resolve xpath bookmark within.
-       * @param {String} bookmark Bookmark string to resolve.
-       * @return {tinymce.caret.CaretPosition} Caret position resolved from xpath like bookmark.
-       */
-      resolve: resolve
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * This module handles caret containers. A caret container is a node that
-   * holds the caret for positional purposes.
-   *
-   * @private
-   * @class tinymce.caret.CaretContainer
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType, Zwsp = tinymce.text.Zwsp;
-
-    var isElement = NodeType.isElement,
-      isText = NodeType.isText;
-
-    function isCaretContainerBlock(node) {
-      if (isText(node)) {
-        node = node.parentNode;
-      }
-
-      return isElement(node) && node.hasAttribute('data-mce-caret');
-    }
-
-    function isCaretContainerInline(node) {
-      return isText(node) && Zwsp.isZwsp(node.data);
-    }
-
-    function isCaretContainer(node) {
-      return isCaretContainerBlock(node) || isCaretContainerInline(node);
-    }
-
-    var hasContent = function (node) {
-      return node.firstChild !== node.lastChild || !NodeType.isBr(node.firstChild);
-    };
-
-    function insertInline(node, before) {
-      var doc, sibling, textNode, parentNode;
-
-      doc = node.ownerDocument;
-      textNode = doc.createTextNode(Zwsp.ZWSP);
-      parentNode = node.parentNode;
-
-      if (!before) {
-        sibling = node.nextSibling;
-        if (isText(sibling)) {
-          if (isCaretContainer(sibling)) {
-            return sibling;
-          }
-
-          if (startsWithCaretContainer(sibling)) {
-            sibling.splitText(1);
-            return sibling;
-          }
-        }
-
-        if (node.nextSibling) {
-          parentNode.insertBefore(textNode, node.nextSibling);
-        } else {
-          parentNode.appendChild(textNode);
-        }
-      } else {
-        sibling = node.previousSibling;
-        if (isText(sibling)) {
-          if (isCaretContainer(sibling)) {
-            return sibling;
-          }
-
-          if (endsWithCaretContainer(sibling)) {
-            return sibling.splitText(sibling.data.length - 1);
-          }
-        }
-
-        parentNode.insertBefore(textNode, node);
-      }
-
-      return textNode;
-    }
-
-    function createBogusBr() {
-      var br = document.createElement('br');
-      br.setAttribute('data-mce-bogus', '1');
-      return br;
-    }
-
-    function insertBlock(blockName, node, before) {
-      var doc, blockNode, parentNode;
-
-      doc = node.ownerDocument;
-      blockNode = doc.createElement(blockName);
-      blockNode.setAttribute('data-mce-caret', before ? 'before' : 'after');
-      blockNode.setAttribute('data-mce-bogus', 'all');
-      blockNode.appendChild(createBogusBr());
-      parentNode = node.parentNode;
-
-      if (!before) {
-        if (node.nextSibling) {
-          parentNode.insertBefore(blockNode, node.nextSibling);
-        } else {
-          parentNode.appendChild(blockNode);
-        }
-      } else {
-        parentNode.insertBefore(blockNode, node);
-      }
-
-      return blockNode;
-    }
-
-    function startsWithCaretContainer(node) {
-      return isText(node) && node.data[0] == Zwsp.ZWSP;
-    }
-
-    function endsWithCaretContainer(node) {
-      return isText(node) && node.data[node.data.length - 1] == Zwsp.ZWSP;
-    }
-
-    function trimBogusBr(elm) {
-      var brs = elm.getElementsByTagName('br');
-      var lastBr = brs[brs.length - 1];
-      if (NodeType.isBogus(lastBr)) {
-        lastBr.parentNode.removeChild(lastBr);
-      }
-    }
-
-    function showCaretContainerBlock(caretContainer) {
-      if (caretContainer && caretContainer.hasAttribute('data-mce-caret')) {
-        trimBogusBr(caretContainer);
-        caretContainer.removeAttribute('data-mce-caret');
-        caretContainer.removeAttribute('data-mce-bogus');
-        caretContainer.removeAttribute('style');
-        caretContainer.removeAttribute('_moz_abspos');
-        return caretContainer;
-      }
-
-      return null;
-    }
-
-    tinymce.caret.CaretContainer = {
-      isCaretContainer: isCaretContainer,
-      isCaretContainerBlock: isCaretContainerBlock,
-      isCaretContainerInline: isCaretContainerInline,
-      showCaretContainerBlock: showCaretContainerBlock,
-      insertInline: insertInline,
-      insertBlock: insertBlock,
-      hasContent: hasContent,
-      startsWithCaretContainer: startsWithCaretContainer,
-      endsWithCaretContainer: endsWithCaretContainer
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * This module contains logic for handling caret candidates. A caret candidate is
-   * for example text nodes, images, input elements, cE=false elements etc.
-   *
-   * @private
-   * @class tinymce.caret.CaretCandidate
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType, CaretContainer = tinymce.caret.CaretContainer;
-    var Arr = tinymce.util.Arr;
-
-    var isContentEditableTrue = NodeType.isContentEditableTrue,
-      isContentEditableFalse = NodeType.isContentEditableFalse,
-      isBr = NodeType.isBr,
-      isText = NodeType.isText,
-      isInvalidTextElement = NodeType.matchNodeNames('script style textarea'),
-      isAtomicInline = NodeType.matchNodeNames('img input textarea hr iframe video audio object'),
-      isTable = NodeType.matchNodeNames('table'),
-      isCaretContainer = CaretContainer.isCaretContainer;
-
-    function isCaretCandidate(node) {
-      if (isCaretContainer(node)) {
-        return false;
-      }
-
-      if (isText(node)) {
-        if (isInvalidTextElement(node.parentNode)) {
-          return false;
-        }
-
-        return true;
-      }
-
-      return isAtomicInline(node) || isBr(node) || isTable(node) || isContentEditableFalse(node);
-    }
-
-    function isInEditable(node, rootNode) {
-      for (node = node.parentNode; node && node != rootNode; node = node.parentNode) {
-        if (isContentEditableFalse(node)) {
-          return false;
-        }
-
-        if (isContentEditableTrue(node)) {
-          return true;
-        }
-      }
-
-      return true;
-    }
-
-    function isAtomicContentEditableFalse(node) {
-      if (!isContentEditableFalse(node)) {
-        return false;
-      }
-
-      return Arr.reduce(node.getElementsByTagName('*'), function (result, elm) {
-        return result || isContentEditableTrue(elm);
-      }, false) !== true;
-    }
-
-    function isAtomic(node) {
-      return isAtomicInline(node) || isAtomicContentEditableFalse(node);
-    }
-
-    function isEditableCaretCandidate(node, rootNode) {
-      return isCaretCandidate(node) && isInEditable(node, rootNode);
-    }
-
-    tinymce.caret.CaretCandidate = {
-      isCaretCandidate: isCaretCandidate,
-      isInEditable: isInEditable,
-      isAtomic: isAtomic,
-      isEditableCaretCandidate: isEditableCaretCandidate
-    };
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType, Zwsp = tinymce.text.Zwsp, CaretContainer = tinymce.caret.CaretContainer, CaretPosition = tinymce.caret.CaretPosition;
-    var Arr = tinymce.util.Arr;
-
-    var isElement = NodeType.isElement;
-    var isText = NodeType.isText;
-
-    var removeNode = function (node) {
-      var parentNode = node.parentNode;
-      if (parentNode) {
-        parentNode.removeChild(node);
-      }
-    };
-
-    var getNodeValue = function (node) {
-      try {
-        return node.nodeValue;
-      } catch (ex) {
-        // IE sometimes produces "Invalid argument" on nodes
-        return "";
-      }
-    };
-
-    var setNodeValue = function (node, text) {
-      if (text.length === 0) {
-        removeNode(node);
-      } else {
-        node.nodeValue = text;
-      }
-    };
-
-    var trimCount = function (text) {
-      var trimmedText = Zwsp.trim(text);
-      return {
-        count: text.length - trimmedText.length,
-        text: trimmedText
-      };
-    };
-
-    var removeUnchanged = function (caretContainer, pos) {
-      remove(caretContainer);
-      return pos;
-    };
-
-    var removeTextAndReposition = function (caretContainer, pos) {
-      var before = trimCount(caretContainer.data.substr(0, pos.offset()));
-      var after = trimCount(caretContainer.data.substr(pos.offset()));
-      var text = before.text + after.text;
-
-      if (text.length > 0) {
-        setNodeValue(caretContainer, text);
-        return new CaretPosition(caretContainer, pos.offset() - before.count);
-      } else {
-        return pos;
-      }
-    };
-
-    var removeElementAndReposition = function (caretContainer, pos) {
-      var parentNode = pos.container();
-      var newPosition = Arr.indexOf(parentNode.childNodes, caretContainer).map(function (index) {
-        return index < pos.offset() ? new CaretPosition(parentNode, pos.offset() - 1) : pos;
-      }).getOr(pos);
-      remove(caretContainer);
-      return newPosition;
-    };
-
-    var removeTextCaretContainer = function (caretContainer, pos) {
-      return pos.container() === caretContainer ? removeTextAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
-    };
-
-    var removeElementCaretContainer = function (caretContainer, pos) {
-      return pos.container() === caretContainer.parentNode ? removeElementAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
-    };
-
-    var removeAndReposition = function (container, pos) {
-      return CaretPosition.isTextPosition(pos) ? removeTextCaretContainer(container, pos) : removeElementCaretContainer(container, pos);
-    };
-
-    var remove = function (caretContainerNode) {
-      if (isElement(caretContainerNode) && CaretContainer.isCaretContainer(caretContainerNode)) {
-        if (CaretContainer.hasContent(caretContainerNode)) {
-          caretContainerNode.removeAttribute('data-mce-caret');
-        } else {
-          removeNode(caretContainerNode);
-        }
-      }
-
-      if (isText(caretContainerNode)) {
-        var text = Zwsp.trim(getNodeValue(caretContainerNode));
-        setNodeValue(caretContainerNode, text);
-      }
-    };
-
-    tinymce.caret.CaretContainerRemove = {
-      removeAndReposition: removeAndReposition,
-      remove: remove
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * This module contains logic for creating caret positions within a document a caretposition
-   * is similar to a DOMRange object but it doesn't have two endpoints and is also more lightweight
-   * since it's now updated live when the DOM changes.
-   *
-   * @private
-   * @class tinymce.caret.CaretPosition
-   * @example
-   * var caretPos1 = new CaretPosition(container, offset);
-   * var caretPos2 = CaretPosition.fromRangeStart(someRange);
-   */
-
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType,
-      DOMUtils = tinymce.DOM,
-      CaretCandidate = tinymce.caret.CaretCandidate,
-      RangeUtils = tinymce.dom.RangeUtils,
-      ClientRect = tinymce.geom.ClientRect,
-      ExtendingChar = tinymce.text.ExtendingChar,
-      Fun = tinymce.util.Fun;
-
-    var isElement = NodeType.isElement,
-      isCaretCandidate = CaretCandidate.isCaretCandidate,
-      isBlock = NodeType.matchStyleValues('display', 'block table'),
-      isFloated = NodeType.matchStyleValues('float', 'left right'),
-      isValidElementCaretCandidate = Fun.and(isElement, isCaretCandidate, Fun.negate(isFloated)),
-      isNotPre = Fun.negate(NodeType.matchStyleValues('white-space', 'pre pre-line pre-wrap')),
-      isText = NodeType.isText,
-      isBr = NodeType.isBr,
-      nodeIndex = DOMUtils.nodeIndex,
-      resolveIndex = RangeUtils.getNode;
-
-    function createRange(doc) {
-      return "createRange" in doc ? doc.createRange() : DOMUtils.DOM.createRng();
-    }
-
-    function isWhiteSpace(chr) {
-      return chr && /[\r\n\t ]/.test(chr);
-    }
-
-    function isHiddenWhiteSpaceRange(range) {
-      var container = range.startContainer,
-        offset = range.startOffset,
-        text;
-
-      if (isWhiteSpace(range.toString()) && isNotPre(container.parentNode)) {
-        text = container.data;
-
-        if (isWhiteSpace(text[offset - 1]) || isWhiteSpace(text[offset + 1])) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    function getCaretPositionClientRects(caretPosition) {
-      var clientRects = [],
-        beforeNode, node;
-
-      // Hack for older WebKit versions that doesn't
-      // support getBoundingClientRect on BR elements
-      function getBrClientRect(brNode) {
-        var doc = brNode.ownerDocument,
-          rng = createRange(doc),
-          nbsp = doc.createTextNode('\u00a0'),
-          parentNode = brNode.parentNode,
-          clientRect;
-
-        parentNode.insertBefore(nbsp, brNode);
-        rng.setStart(nbsp, 0);
-        rng.setEnd(nbsp, 1);
-        clientRect = ClientRect.clone(rng.getBoundingClientRect());
-        parentNode.removeChild(nbsp);
-
-        return clientRect;
-      }
-
-      function getBoundingClientRect(item) {
-        var clientRect, clientRects;
-
-        clientRects = item.getClientRects();
-        if (clientRects.length > 0) {
-          clientRect = ClientRect.clone(clientRects[0]);
-        } else {
-          clientRect = ClientRect.clone(item.getBoundingClientRect());
-        }
-
-        if (isBr(item) && clientRect.left === 0) {
-          return getBrClientRect(item);
-        }
-
-        return clientRect;
-      }
-
-      function collapseAndInflateWidth(clientRect, toStart) {
-        clientRect = ClientRect.collapse(clientRect, toStart);
-        clientRect.width = 1;
-        clientRect.right = clientRect.left + 1;
-
-        return clientRect;
-      }
-
-      function addUniqueAndValidRect(clientRect) {
-        if (clientRect.height === 0) {
-          return;
-        }
-
-        if (clientRects.length > 0) {
-          if (ClientRect.isEqual(clientRect, clientRects[clientRects.length - 1])) {
-            return;
-          }
-        }
-
-        clientRects.push(clientRect);
-      }
-
-      function addCharacterOffset(container, offset) {
-        var range = createRange(container.ownerDocument);
-
-        if (offset < container.data.length) {
-          if (ExtendingChar.isExtendingChar(container.data[offset])) {
-            return clientRects;
-          }
-
-          // WebKit returns two client rects for a position after an extending
-          // character a\uxxx|b so expand on "b" and collapse to start of "b" box
-          if (ExtendingChar.isExtendingChar(container.data[offset - 1])) {
-            range.setStart(container, offset);
-            range.setEnd(container, offset + 1);
-
-            if (!isHiddenWhiteSpaceRange(range)) {
-              addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(range), false));
-              return clientRects;
-            }
-          }
-        }
-
-        if (offset > 0) {
-          range.setStart(container, offset - 1);
-          range.setEnd(container, offset);
-
-          if (!isHiddenWhiteSpaceRange(range)) {
-            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(range), false));
-          }
-        }
-
-        if (offset < container.data.length) {
-          range.setStart(container, offset);
-          range.setEnd(container, offset + 1);
-
-          if (!isHiddenWhiteSpaceRange(range)) {
-            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(range), true));
-          }
-        }
-      }
-
-      if (isText(caretPosition.container())) {
-        addCharacterOffset(caretPosition.container(), caretPosition.offset());
-        return clientRects;
-      }
-
-      if (isElement(caretPosition.container())) {
-        if (caretPosition.isAtEnd()) {
-          node = resolveIndex(caretPosition.container(), caretPosition.offset());
-          if (isText(node)) {
-            addCharacterOffset(node, node.data.length);
-          }
-
-          if (isValidElementCaretCandidate(node) && !isBr(node)) {
-            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(node), false));
-          }
-        } else {
-          node = resolveIndex(caretPosition.container(), caretPosition.offset());
-          if (isText(node)) {
-            addCharacterOffset(node, 0);
-          }
-
-          if (isValidElementCaretCandidate(node) && caretPosition.isAtEnd()) {
-            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(node), false));
-            return clientRects;
-          }
-
-          beforeNode = resolveIndex(caretPosition.container(), caretPosition.offset() - 1);
-          if (isValidElementCaretCandidate(beforeNode) && !isBr(beforeNode)) {
-            if (isBlock(beforeNode) || isBlock(node) || !isValidElementCaretCandidate(node)) {
-              addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(beforeNode), false));
-            }
-          }
-
-          if (isValidElementCaretCandidate(node)) {
-            addUniqueAndValidRect(collapseAndInflateWidth(getBoundingClientRect(node), true));
-          }
-        }
-      }
-
-      return clientRects;
-    }
-
-    /**
-     * Represents a location within the document by a container and an offset.
-     *
-     * @constructor
-     * @param {Node} container Container node.
-     * @param {Number} offset Offset within that container node.
-     * @param {Array} clientRects Optional client rects array for the position.
-     */
-    function CaretPosition(container, offset, clientRects) {
-      function isAtStart() {
-        if (isText(container)) {
-          return offset === 0;
-        }
-
-        return offset === 0;
-      }
-
-      function isAtEnd() {
-        if (isText(container)) {
-          return offset >= container.data.length;
-        }
-
-        return offset >= container.childNodes.length;
-      }
-
-      function toRange() {
-        var range;
-
-        range = createRange(container.ownerDocument);
-        range.setStart(container, offset);
-        range.setEnd(container, offset);
-
-        return range;
-      }
-
-      function getClientRects() {
-        if (!clientRects) {
-          clientRects = getCaretPositionClientRects(new CaretPosition(container, offset));
-        }
-
-        return clientRects;
-      }
-
-      function isVisible() {
-        return getClientRects().length > 0;
-      }
-
-      function isEqual(caretPosition) {
-        return caretPosition && container === caretPosition.container() && offset === caretPosition.offset();
-      }
-
-      function getNode(before) {
-        return resolveIndex(container, before ? offset - 1 : offset);
-      }
-
-      return {
-        /**
-         * Returns the container node.
-         *
-         * @method container
-         * @return {Node} Container node.
-         */
-        container: Fun.constant(container),
-
-        /**
-         * Returns the offset within the container node.
-         *
-         * @method offset
-         * @return {Number} Offset within the container node.
-         */
-        offset: Fun.constant(offset),
-
-        /**
-         * Returns a range out of a the caret position.
-         *
-         * @method toRange
-         * @return {DOMRange} range for the caret position.
-         */
-        toRange: toRange,
-
-        /**
-         * Returns the client rects for the caret position. Might be multiple rects between
-         * block elements.
-         *
-         * @method getClientRects
-         * @return {Array} Array of client rects.
-         */
-        getClientRects: getClientRects,
-
-        /**
-         * Returns true if the caret location is visible/displayed on screen.
-         *
-         * @method isVisible
-         * @return {Boolean} true/false if the position is visible or not.
-         */
-        isVisible: isVisible,
-
-        /**
-         * Returns true if the caret location is at the beginning of text node or container.
-         *
-         * @method isVisible
-         * @return {Boolean} true/false if the position is at the beginning.
-         */
-        isAtStart: isAtStart,
-
-        /**
-         * Returns true if the caret location is at the end of text node or container.
-         *
-         * @method isVisible
-         * @return {Boolean} true/false if the position is at the end.
-         */
-        isAtEnd: isAtEnd,
-
-        /**
-         * Compares the caret position to another caret position. This will only compare the
-         * container and offset not it's visual position.
-         *
-         * @method isEqual
-         * @param {tinymce.caret.CaretPosition} caretPosition Caret position to compare with.
-         * @return {Boolean} true if the caret positions are equal.
-         */
-        isEqual: isEqual,
-
-        /**
-         * Returns the closest resolved node from a node index. That means if you have an offset after the
-         * last node in a container it will return that last node.
-         *
-         * @method getNode
-         * @return {Node} Node that is closest to the index.
-         */
-        getNode: getNode
-      };
-    }
-
-    /**
-     * Creates a caret position from the start of a range.
-     *
-     * @method fromRangeStart
-     * @param {DOMRange} range DOM Range to create caret position from.
-     * @return {tinymce.caret.CaretPosition} Caret position from the start of DOM range.
-     */
-    CaretPosition.fromRangeStart = function (range) {
-      return new CaretPosition(range.startContainer, range.startOffset);
-    };
-
-    /**
-     * Creates a caret position from the end of a range.
-     *
-     * @method fromRangeEnd
-     * @param {DOMRange} range DOM Range to create caret position from.
-     * @return {tinymce.caret.CaretPosition} Caret position from the end of DOM range.
-     */
-    CaretPosition.fromRangeEnd = function (range) {
-      return new CaretPosition(range.endContainer, range.endOffset);
-    };
-
-    /**
-     * Creates a caret position from a node and places the offset after it.
-     *
-     * @method after
-     * @param {Node} node Node to get caret position from.
-     * @return {tinymce.caret.CaretPosition} Caret position from the node.
-     */
-    CaretPosition.after = function (node) {
-      return new CaretPosition(node.parentNode, nodeIndex(node) + 1);
-    };
-
-    /**
-     * Creates a caret position from a node and places the offset before it.
-     *
-     * @method before
-     * @param {Node} node Node to get caret position from.
-     * @return {tinymce.caret.CaretPosition} Caret position from the node.
-     */
-    CaretPosition.before = function (node) {
-      return new CaretPosition(node.parentNode, nodeIndex(node));
-    };
-
-    tinymce.caret.CaretPosition = CaretPosition;
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * Utility functions shared by the caret logic.
-   *
-   * @private
-   * @class tinymce.caret.CaretUtils
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType,
-      TreeWalker = tinymce.dom.TreeWalker,
-      CaretContainer = tinymce.caret.CaretContainer,
-      CaretCandidate = tinymce.caret.CaretCandidate,
-      Fun = tinymce.util.Fun;
-
-    var isContentEditableTrue = NodeType.isContentEditableTrue,
-      isContentEditableFalse = NodeType.isContentEditableFalse,
-      isBlockLike = NodeType.matchStyleValues('display', 'block table table-cell table-caption'),
-      isCaretContainer = CaretContainer.isCaretContainer,
-      isCaretContainerBlock = CaretContainer.isCaretContainerBlock,
-      curry = Fun.curry,
-      isElement = NodeType.isElement,
-      isCaretCandidate = CaretCandidate.isCaretCandidate;
-
-    function isForwards(direction) {
-      return direction > 0;
-    }
-
-    function isBackwards(direction) {
-      return direction < 0;
-    }
-
-    function skipCaretContainers(walk, shallow) {
-      var node;
-
-      while ((node = walk(shallow))) {
-        if (!isCaretContainerBlock(node)) {
-          return node;
-        }
-      }
-
-      return null;
-    }
-
-    function findNode(node, direction, predicateFn, rootNode, shallow) {
-      var walker = new TreeWalker(node, rootNode);
-
-      if (isBackwards(direction)) {
-        if (isContentEditableFalse(node) || isCaretContainerBlock(node)) {
-          node = skipCaretContainers(walker.prev, true);
-          if (predicateFn(node)) {
-            return node;
-          }
-        }
-
-        while ((node = skipCaretContainers(walker.prev, shallow))) {
-          if (predicateFn(node)) {
-            return node;
-          }
-        }
-      }
-
-      if (isForwards(direction)) {
-        if (isContentEditableFalse(node) || isCaretContainerBlock(node)) {
-          node = skipCaretContainers(walker.next, true);
-          if (predicateFn(node)) {
-            return node;
-          }
-        }
-
-        while ((node = skipCaretContainers(walker.next, shallow))) {
-          if (predicateFn(node)) {
-            return node;
-          }
-        }
-      }
-
-      return null;
-    }
-
-    function getEditingHost(node, rootNode) {
-      for (node = node.parentNode; node && node != rootNode; node = node.parentNode) {
-        if (isContentEditableTrue(node)) {
-          return node;
-        }
-      }
-
-      return rootNode;
-    }
-
-    function getParentBlock(node, rootNode) {
-      while (node && node != rootNode) {
-        if (isBlockLike(node)) {
-          return node;
-        }
-
-        node = node.parentNode;
-      }
-
-      return null;
-    }
-
-    function isInSameBlock(caretPosition1, caretPosition2, rootNode) {
-      return getParentBlock(caretPosition1.container(), rootNode) == getParentBlock(caretPosition2.container(), rootNode);
-    }
-
-    function isInSameEditingHost(caretPosition1, caretPosition2, rootNode) {
-      return getEditingHost(caretPosition1.container(), rootNode) == getEditingHost(caretPosition2.container(), rootNode);
-    }
-
-    function getChildNodeAtRelativeOffset(relativeOffset, caretPosition) {
-      var container, offset;
-
-      if (!caretPosition) {
-        return null;
-      }
-
-      container = caretPosition.container();
-      offset = caretPosition.offset();
-
-      if (!isElement(container)) {
-        return null;
-      }
-
-      return container.childNodes[offset + relativeOffset];
-    }
-
-    function beforeAfter(before, node) {
-      var range = node.ownerDocument.createRange();
-
-      if (before) {
-        range.setStartBefore(node);
-        range.setEndBefore(node);
-      } else {
-        range.setStartAfter(node);
-        range.setEndAfter(node);
-      }
-
-      return range;
-    }
-
-    function isNodesInSameBlock(rootNode, node1, node2) {
-      return getParentBlock(node1, rootNode) == getParentBlock(node2, rootNode);
-    }
-
-    function lean(left, rootNode, node) {
-      var sibling, siblingName;
-
-      if (left) {
-        siblingName = 'previousSibling';
-      } else {
-        siblingName = 'nextSibling';
-      }
-
-      while (node && node != rootNode) {
-        sibling = node[siblingName];
-
-        if (isCaretContainer(sibling)) {
-          sibling = sibling[siblingName];
-        }
-
-        if (isContentEditableFalse(sibling)) {
-          if (isNodesInSameBlock(rootNode, sibling, node)) {
-            return sibling;
-          }
-
-          break;
-        }
-
-        if (isCaretCandidate(sibling)) {
-          break;
-        }
-
-        node = node.parentNode;
-      }
-
-      return null;
-    }
-
-    var before = curry(beforeAfter, true);
-    var after = curry(beforeAfter, false);
-
-    function normalizeRange(direction, rootNode, range) {
-      var node, container, offset, location;
-      var leanLeft = curry(lean, true, rootNode);
-      var leanRight = curry(lean, false, rootNode);
-
-      container = range.startContainer;
-      offset = range.startOffset;
-
-      if (CaretContainer.isCaretContainerBlock(container)) {
-        if (!isElement(container)) {
-          container = container.parentNode;
-        }
-
-        location = container.getAttribute('data-mce-caret');
-
-        if (location == 'before') {
-          node = container.nextSibling;
-          if (isContentEditableFalse(node)) {
-            return before(node);
-          }
-        }
-
-        if (location == 'after') {
-          node = container.previousSibling;
-          if (isContentEditableFalse(node)) {
-            return after(node);
-          }
-        }
-      }
-
-      if (!range.collapsed) {
-        return range;
-      }
-
-      if (NodeType.isText(container)) {
-        if (isCaretContainer(container)) {
-          if (direction === 1) {
-            node = leanRight(container);
-            if (node) {
-              return before(node);
-            }
-
-            node = leanLeft(container);
-            if (node) {
-              return after(node);
-            }
-          }
-
-          if (direction === -1) {
-            node = leanLeft(container);
-            if (node) {
-              return after(node);
-            }
-
-            node = leanRight(container);
-            if (node) {
-              return before(node);
-            }
-          }
-
-          return range;
-        }
-
-        if (CaretContainer.endsWithCaretContainer(container) && offset >= container.data.length - 1) {
-          if (direction === 1) {
-            node = leanRight(container);
-            if (node) {
-              return before(node);
-            }
-          }
-
-          return range;
-        }
-
-        if (CaretContainer.startsWithCaretContainer(container) && offset <= 1) {
-          if (direction === -1) {
-            node = leanLeft(container);
-            if (node) {
-              return after(node);
-            }
-          }
-
-          return range;
-        }
-
-        if (offset === container.data.length) {
-          node = leanRight(container);
-          if (node) {
-            return before(node);
-          }
-
-          return range;
-        }
-
-        if (offset === 0) {
-          node = leanLeft(container);
-          if (node) {
-            return after(node);
-          }
-
-          return range;
-        }
-      }
-
-      return range;
-    }
-
-    function isNextToContentEditableFalse(relativeOffset, caretPosition) {
-      return isContentEditableFalse(getChildNodeAtRelativeOffset(relativeOffset, caretPosition));
-    }
-
-    tinymce.caret.CaretUtils = {
-      isForwards: isForwards,
-      isBackwards: isBackwards,
-      findNode: findNode,
-      getEditingHost: getEditingHost,
-      getParentBlock: getParentBlock,
-      isInSameBlock: isInSameBlock,
-      isInSameEditingHost: isInSameEditingHost,
-      isBeforeContentEditableFalse: curry(isNextToContentEditableFalse, 0),
-      isAfterContentEditableFalse: curry(isNextToContentEditableFalse, -1),
-      normalizeRange: normalizeRange
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-  /**
-   * This module contains logic for moving around a virtual caret in logical order within a DOM element.
-   *
-   * It ignores the most obvious invalid caret locations such as within a script element or within a
-   * contentEditable=false element but it will return locations that isn't possible to render visually.
-   *
-   * @private
-   * @class tinymce.caret.CaretWalker
-   * @example
-   * var caretWalker = new CaretWalker(rootElm);
-   *
-   * var prevLogicalCaretPosition = caretWalker.prev(CaretPosition.fromRangeStart(range));
-   * var nextLogicalCaretPosition = caretWalker.next(CaretPosition.fromRangeEnd(range));
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType,
-      CaretPosition = tinymce.caret.CaretPosition,
-      CaretUtils = tinymce.caret.CaretUtils,
-      CaretCandidate = tinymce.caret.CaretCandidate,
-      Arr = tinymce.util.Arr,
-      Fun = tinymce.util.Fun;
-
-    var isContentEditableFalse = NodeType.isContentEditableFalse,
-      isText = NodeType.isText,
-      isElement = NodeType.isElement,
-      isBr = NodeType.isBr,
-      isForwards = CaretUtils.isForwards,
-      isBackwards = CaretUtils.isBackwards,
-      isCaretCandidate = CaretCandidate.isCaretCandidate,
-      isAtomic = CaretCandidate.isAtomic,
-      isEditableCaretCandidate = CaretCandidate.isEditableCaretCandidate;
-
-    function getParents(node, rootNode) {
-      var parents = [];
-
-      while (node && node != rootNode) {
-        parents.push(node);
-        node = node.parentNode;
-      }
-
-      return parents;
-    }
-
-    function nodeAtIndex(container, offset) {
-      if (container.hasChildNodes() && offset < container.childNodes.length) {
-        return container.childNodes[offset];
-      }
-
-      return null;
-    }
-
-    function getCaretCandidatePosition(direction, node) {
-      if (isForwards(direction)) {
-        if (isCaretCandidate(node.previousSibling) && !isText(node.previousSibling)) {
-          return CaretPosition.before(node);
-        }
-
-        if (isText(node)) {
-          return CaretPosition(node, 0);
-        }
-      }
-
-      if (isBackwards(direction)) {
-        if (isCaretCandidate(node.nextSibling) && !isText(node.nextSibling)) {
-          return CaretPosition.after(node);
-        }
-
-        if (isText(node)) {
-          return CaretPosition(node, node.data.length);
-        }
-      }
-
-      if (isBackwards(direction)) {
-        if (isBr(node)) {
-          return CaretPosition.before(node);
-        }
-
-        return CaretPosition.after(node);
-      }
-
-      return CaretPosition.before(node);
-    }
-
-    // Jumps over BR elements <p>|<br></p><p>a</p> -> <p><br></p><p>|a</p>
-    function isBrBeforeBlock(node, rootNode) {
-      var next;
-
-      if (!NodeType.isBr(node)) {
-        return false;
-      }
-
-      next = findCaretPosition(1, CaretPosition.after(node), rootNode);
-      if (!next) {
-        return false;
-      }
-
-      return !CaretUtils.isInSameBlock(CaretPosition.before(node), CaretPosition.before(next), rootNode);
-    }
-
-    function findCaretPosition(direction, startCaretPosition, rootNode) {
-      var container, offset, node, nextNode, innerNode,
-        rootContentEditableFalseElm, caretPosition;
-
-      if (!isElement(rootNode) || !startCaretPosition) {
-        return null;
-      }
-
-      caretPosition = startCaretPosition;
-      container = caretPosition.container();
-      offset = caretPosition.offset();
-
-      if (isText(container)) {
-        if (isBackwards(direction) && offset > 0) {
-          return CaretPosition(container, --offset);
-        }
-
-        if (isForwards(direction) && offset < container.length) {
-          return CaretPosition(container, ++offset);
-        }
-
-        node = container;
-      } else {
-        if (isBackwards(direction) && offset > 0) {
-          nextNode = nodeAtIndex(container, offset - 1);
-          if (isCaretCandidate(nextNode)) {
-            if (!isAtomic(nextNode)) {
-              innerNode = CaretUtils.findNode(nextNode, direction, isEditableCaretCandidate, nextNode);
-              if (innerNode) {
-                if (isText(innerNode)) {
-                  return CaretPosition(innerNode, innerNode.data.length);
-                }
-
-                return CaretPosition.after(innerNode);
-              }
-            }
-
-            if (isText(nextNode)) {
-              return CaretPosition(nextNode, nextNode.data.length);
-            }
-
-            return CaretPosition.before(nextNode);
-          }
-        }
-
-        if (isForwards(direction) && offset < container.childNodes.length) {
-          nextNode = nodeAtIndex(container, offset);
-          if (isCaretCandidate(nextNode)) {
-            if (isBrBeforeBlock(nextNode, rootNode)) {
-              return findCaretPosition(direction, CaretPosition.after(nextNode), rootNode);
-            }
-
-            if (!isAtomic(nextNode)) {
-              innerNode = CaretUtils.findNode(nextNode, direction, isEditableCaretCandidate, nextNode);
-              if (innerNode) {
-                if (isText(innerNode)) {
-                  return CaretPosition(innerNode, 0);
-                }
-
-                return CaretPosition.before(innerNode);
-              }
-            }
-
-            if (isText(nextNode)) {
-              return CaretPosition(nextNode, 0);
-            }
-
-            return CaretPosition.after(nextNode);
-          }
-        }
-
-        node = caretPosition.getNode();
-      }
-
-      if ((isForwards(direction) && caretPosition.isAtEnd()) || (isBackwards(direction) && caretPosition.isAtStart())) {
-        node = CaretUtils.findNode(node, direction, Fun.constant(true), rootNode, true);
-        if (isEditableCaretCandidate(node)) {
-          return getCaretCandidatePosition(direction, node);
-        }
-      }
-
-      nextNode = CaretUtils.findNode(node, direction, isEditableCaretCandidate, rootNode);
-
-      rootContentEditableFalseElm = Arr.last(Arr.filter(getParents(container, rootNode), isContentEditableFalse));
-      if (rootContentEditableFalseElm && (!nextNode || !rootContentEditableFalseElm.contains(nextNode))) {
-        if (isForwards(direction)) {
-          caretPosition = CaretPosition.after(rootContentEditableFalseElm);
-        } else {
-          caretPosition = CaretPosition.before(rootContentEditableFalseElm);
-        }
-
-        return caretPosition;
-      }
-
-      if (nextNode) {
-        return getCaretCandidatePosition(direction, nextNode);
-      }
-
-      return null;
-    }
-    tinymce.caret.CaretWalker = function (rootNode) {
-      return {
-        /**
-         * Returns the next logical caret position from the specificed input
-         * caretPoisiton or null if there isn't any more positions left for example
-         * at the end specified root element.
-         *
-         * @method next
-         * @param {tinymce.caret.CaretPosition} caretPosition Caret position to start from.
-         * @return {tinymce.caret.CaretPosition} CaretPosition or null if no position was found.
-         */
-        next: function (caretPosition) {
-          return findCaretPosition(1, caretPosition, rootNode);
-        },
-
-        /**
-         * Returns the previous logical caret position from the specificed input
-         * caretPoisiton or null if there isn't any more positions left for example
-         * at the end specified root element.
-         *
-         * @method prev
-         * @param {tinymce.caret.CaretPosition} caretPosition Caret position to start from.
-         * @return {tinymce.caret.CaretPosition} CaretPosition or null if no position was found.
-         */
-        prev: function (caretPosition) {
-          return findCaretPosition(-1, caretPosition, rootNode);
-        }
-      };
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-  /**
-   * This module contains logic for rendering a fake visual caret.
-   *
-   * @private
-   * @class tinymce.caret.FakeCaret
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType,
-      DOM = tinymce.DOM,
-      ClientRect = tinymce.geom.ClientRect,
-      CaretContainer = tinymce.caret.CaretContainer,
-      CaretContainerRemove = tinymce.caret.CaretContainerRemove;
-
-    var isContentEditableFalse = NodeType.isContentEditableFalse;
-
-    tinymce.caret.FakeCaret = function (rootNode, isBlock) {
-      var cursorInterval, $lastVisualCaret, caretContainerNode;
-
-      function getAbsoluteClientRect(node, before) {
-        var clientRect = ClientRect.collapse(node.getBoundingClientRect(), before),
-          docElm, scrollX, scrollY, margin, rootRect;
-
-        if (rootNode.tagName == 'BODY') {
-          docElm = rootNode.ownerDocument.documentElement;
-          scrollX = rootNode.scrollLeft || docElm.scrollLeft;
-          scrollY = rootNode.scrollTop || docElm.scrollTop;
-        } else {
-          rootRect = rootNode.getBoundingClientRect();
-          scrollX = rootNode.scrollLeft - rootRect.left;
-          scrollY = rootNode.scrollTop - rootRect.top;
-        }
-
-        clientRect.left += scrollX;
-        clientRect.right += scrollX;
-        clientRect.top += scrollY;
-        clientRect.bottom += scrollY;
-        clientRect.width = 1;
-
-        margin = node.offsetWidth - node.clientWidth;
-
-        if (margin > 0) {
-          if (before) {
-            margin *= -1;
-          }
-
-          clientRect.left += margin;
-          clientRect.right += margin;
-        }
-
-        return clientRect;
-      }
-
-      function trimInlineCaretContainers() {
-        var contentEditableFalseNodes, node, sibling, i, data;
-
-        contentEditableFalseNodes = DOM.select('*[contentEditable=false]', rootNode);
-        
-        for (i = 0; i < contentEditableFalseNodes.length; i++) {
-          node = contentEditableFalseNodes[i];
-
-          sibling = node.previousSibling;
-          if (CaretContainer.endsWithCaretContainer(sibling)) {
-            data = sibling.data;
-
-            if (data.length == 1) {
-              sibling.parentNode.removeChild(sibling);
-            } else {
-              sibling.deleteData(data.length - 1, 1);
-            }
-          }
-
-          sibling = node.nextSibling;
-          if (CaretContainer.startsWithCaretContainer(sibling)) {
-            data = sibling.data;
-
-            if (data.length == 1) {
-              sibling.parentNode.removeChild(sibling);
-            } else {
-              sibling.deleteData(0, 1);
-            }
-          }
-        }
-
-        return null;
-      }
-
-      function show(before, node) {
-        var clientRect, rng;
-
-        hide();
-
-        if (isBlock(node)) {
-          caretContainerNode = CaretContainer.insertBlock('p', node, before);
-          clientRect = getAbsoluteClientRect(node, before);
-          DOM.setStyle(caretContainerNode, 'top', clientRect.top);
-
-          $lastVisualCaret = DOM.add(rootNode, 'div', { 'class': 'mce-visual-caret', 'data-mce-bogus': 'all', 'style': clientRect });
-
-          if (before) {
-            DOM.addClass($lastVisualCaret, 'mce-visual-caret-before');
-          }
-
-          startBlink();
-
-          rng = node.ownerDocument.createRange();
-          rng.setStart(caretContainerNode, 0);
-          rng.setEnd(caretContainerNode, 0);
-        } else {
-          caretContainerNode = CaretContainer.insertInline(node, before);
-          rng = node.ownerDocument.createRange();
-
-          if (isContentEditableFalse(caretContainerNode.nextSibling)) {
-            rng.setStart(caretContainerNode, 0);
-            rng.setEnd(caretContainerNode, 0);
-          } else {
-            rng.setStart(caretContainerNode, 1);
-            rng.setEnd(caretContainerNode, 1);
-          }
-
-          return rng;
-        }
-
-        return rng;
-      }
-
-      function hide() {
-        trimInlineCaretContainers();
-
-        if (caretContainerNode) {
-          CaretContainerRemove.remove(caretContainerNode);
-          caretContainerNode = null;
-        }
-
-        if ($lastVisualCaret) {
-          $lastVisualCaret.remove();
-          $lastVisualCaret = null;
-        }
-
-        clearInterval(cursorInterval);
-      }
-
-      function startBlink() {
-        cursorInterval = setInterval(function () {
-          var caret = DOM.select('div.mce-visual-caret', rootNode)[0];
-
-          DOM.toggleClass(caret, 'mce-visual-caret-hidden');
-          
-        }, 500);
-      }
-
-      function destroy() {
-        clearInterval(cursorInterval);
-      }
-
-      function getCss() {
-        return (
-          '.mce-visual-caret {' +
-          'position: absolute;' +
-          'background-color: black;' +
-          'background-color: currentcolor;' +
-          '}' +
-          '.mce-visual-caret-hidden {' +
-          'display: none;' +
-          '}' +
-          '*[data-mce-caret] {' +
-          'position: absolute;' +
-          'left: -1000px;' +
-          'right: auto;' +
-          'top: 0;' +
-          'margin: 0;' +
-          'padding: 0;' +
-          '}'
-        );
-      }
-
-      return {
-        show: show,
-        hide: hide,
-        getCss: getCss,
-        destroy: destroy
-      };
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * Utility functions for working with lines.
-   *
-   * @private
-   * @class tinymce.caret.LineUtils
-   */
-  (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType,
-      Fun = tinymce.util.Fun, Arr = tinymce.util.Arr,
-      Dimensions = tinymce.dom.Dimensions,
-      ClientRect = tinymce.geom.ClientRect,
-      CaretUtils = tinymce.caret.CaretUtils,
-      CaretCandidate = tinymce.caret.CaretCandidate;
-
-    var isContentEditableFalse = NodeType.isContentEditableFalse,
-      findNode = CaretUtils.findNode,
-      curry = Fun.curry;
-
-    function distanceToRectLeft(clientRect, clientX) {
-      return Math.abs(clientRect.left - clientX);
-    }
-
-    function distanceToRectRight(clientRect, clientX) {
-      return Math.abs(clientRect.right - clientX);
-    }
-
-    function findClosestClientRect(clientRects, clientX) {
-      function isInside(clientX, clientRect) {
-        return clientX >= clientRect.left && clientX <= clientRect.right;
-      }
-
-      return Arr.reduce(clientRects, function (oldClientRect, clientRect) {
-        var oldDistance, newDistance;
-
-        oldDistance = Math.min(distanceToRectLeft(oldClientRect, clientX), distanceToRectRight(oldClientRect, clientX));
-        newDistance = Math.min(distanceToRectLeft(clientRect, clientX), distanceToRectRight(clientRect, clientX));
-
-        if (isInside(clientX, clientRect)) {
-          return clientRect;
-        }
-
-        if (isInside(clientX, oldClientRect)) {
-          return oldClientRect;
-        }
-
-        // cE=false has higher priority
-        if (newDistance == oldDistance && isContentEditableFalse(clientRect.node)) {
-          return clientRect;
-        }
-
-        if (newDistance < oldDistance) {
-          return clientRect;
-        }
-
-        return oldClientRect;
-      });
-    }
-
-    function walkUntil(direction, rootNode, predicateFn, node) {
-      while ((node = findNode(node, direction, CaretCandidate.isEditableCaretCandidate, rootNode))) {
-        if (predicateFn(node)) {
-          return;
-        }
-      }
-    }
-
-    function findLineNodeRects(rootNode, targetNodeRect) {
-      var clientRects = [];
-
-      function collect(checkPosFn, node) {
-        var lineRects;
-
-        lineRects = Arr.filter(Dimensions.getClientRects(node), function (clientRect) {
-          return !checkPosFn(clientRect, targetNodeRect);
-        });
-
-        clientRects = clientRects.concat(lineRects);
-
-        return lineRects.length === 0;
-      }
-
-      clientRects.push(targetNodeRect);
-      walkUntil(-1, rootNode, curry(collect, ClientRect.isAbove), targetNodeRect.node);
-      walkUntil(1, rootNode, curry(collect, ClientRect.isBelow), targetNodeRect.node);
-
-      return clientRects;
-    }
-
-    function getContentEditableFalseChildren(rootNode) {
-      return Arr.filter(Arr.toArray(rootNode.getElementsByTagName('*')), isContentEditableFalse);
-    }
-
-    function caretInfo(clientRect, clientX) {
-      return {
-        node: clientRect.node,
-        before: distanceToRectLeft(clientRect, clientX) < distanceToRectRight(clientRect, clientX)
-      };
-    }
-
-    function closestCaret(rootNode, clientX, clientY) {
-      var contentEditableFalseNodeRects, closestNodeRect;
-
-      contentEditableFalseNodeRects = Dimensions.getClientRects(getContentEditableFalseChildren(rootNode));
-      contentEditableFalseNodeRects = Arr.filter(contentEditableFalseNodeRects, function (clientRect) {
-        return clientY >= clientRect.top && clientY <= clientRect.bottom;
-      });
-
-      closestNodeRect = findClosestClientRect(contentEditableFalseNodeRects, clientX);
-      if (closestNodeRect) {
-        closestNodeRect = findClosestClientRect(findLineNodeRects(rootNode, closestNodeRect), clientX);
-        if (closestNodeRect && isContentEditableFalse(closestNodeRect.node)) {
-          return caretInfo(closestNodeRect, clientX);
-        }
-      }
-
-      return null;
-    }
-
-    tinymce.caret.LineUtils = {
-      findClosestClientRect: findClosestClientRect,
-      findLineNodeRects: findLineNodeRects,
-      closestCaret: closestCaret
-    };
-
-  })(tinymce);
-
-  /**
-   * Copyright (c) Moxiecode Systems AB. All rights reserved.
-   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
-   *
-   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
-   * https://www.gnu.org/licenses/gpl-2.0.html
-   */
-
-  /**
-   * This module lets you walk the document line by line
-   * returing nodes and client rects for each line.
-   *
-   * @private
-   * @class tinymce.caret.LineWalker
-   */
-  (function (tinymce) {
-    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr,
-      Dimensions = tinymce.dom.Dimensions,
-      ClientRect = tinymce.geom.ClientRect,
-      CaretUtils = tinymce.caret.CaretUtils,
-      CaretCandidate = tinymce.caret.CaretCandidate,
-      CaretWalker = tinymce.caret.CaretWalker,
-      CaretPosition = tinymce.caret.CaretPosition;
-
-    var curry = Fun.curry;
-
-    function findUntil(direction, rootNode, predicateFn, node) {
-      while ((node = CaretUtils.findNode(node, direction, CaretCandidate.isEditableCaretCandidate, rootNode))) {
-        if (predicateFn(node)) {
-          return;
-        }
-      }
-    }
-
-    function walkUntil(direction, isAboveFn, isBeflowFn, rootNode, predicateFn, caretPosition) {
-      var line = 0,
-        node, result = [],
-        targetClientRect;
-
-      function add(node) {
-        var i, clientRect, clientRects;
-
-        clientRects = Dimensions.getClientRects(node);
-        if (direction == -1) {
-          clientRects = clientRects.reverse();
-        }
-
-        for (i = 0; i < clientRects.length; i++) {
-          clientRect = clientRects[i];
-          if (isBeflowFn(clientRect, targetClientRect)) {
-            continue;
-          }
-
-          if (result.length > 0 && isAboveFn(clientRect, Arr.last(result))) {
-            line++;
-          }
-
-          clientRect.line = line;
-
-          if (predicateFn(clientRect)) {
-            return true;
-          }
-
-          result.push(clientRect);
-        }
-      }
-
-      targetClientRect = Arr.last(caretPosition.getClientRects());
-      if (!targetClientRect) {
-        return result;
-      }
-
-      node = caretPosition.getNode();
-      add(node);
-      findUntil(direction, rootNode, add, node);
-
-      return result;
-    }
-
-    function aboveLineNumber(lineNumber, clientRect) {
-      return clientRect.line > lineNumber;
-    }
-
-    function isLine(lineNumber, clientRect) {
-      return clientRect.line === lineNumber;
-    }
-
-    var upUntil = curry(walkUntil, -1, ClientRect.isAbove, ClientRect.isBelow);
-    var downUntil = curry(walkUntil, 1, ClientRect.isBelow, ClientRect.isAbove);
-
-    function positionsUntil(direction, rootNode, predicateFn, node) {
-      var caretWalker = new CaretWalker(rootNode),
-        walkFn, isBelowFn, isAboveFn,
-        caretPosition, result = [],
-        line = 0,
-        clientRect, targetClientRect;
-
-      function getClientRect(caretPosition) {
-        if (direction == 1) {
-          return Arr.last(caretPosition.getClientRects());
-        }
-
-        return Arr.last(caretPosition.getClientRects());
-      }
-
-      if (direction == 1) {
-        walkFn = caretWalker.next;
-        isBelowFn = ClientRect.isBelow;
-        isAboveFn = ClientRect.isAbove;
-        caretPosition = CaretPosition.after(node);
-      } else {
-        walkFn = caretWalker.prev;
-        isBelowFn = ClientRect.isAbove;
-        isAboveFn = ClientRect.isBelow;
-        caretPosition = CaretPosition.before(node);
-      }
-
-      targetClientRect = getClientRect(caretPosition);
-
-      do {
-        if (!caretPosition.isVisible()) {
-          continue;
-        }
-
-        clientRect = getClientRect(caretPosition);
-
-        if (isAboveFn(clientRect, targetClientRect)) {
-          continue;
-        }
-
-        if (result.length > 0 && isBelowFn(clientRect, Arr.last(result))) {
-          line++;
-        }
-
-        clientRect = ClientRect.clone(clientRect);
-        clientRect.position = caretPosition;
-        clientRect.line = line;
-
-        if (predicateFn(clientRect)) {
-          return result;
-        }
-
-        result.push(clientRect);
-      } while ((caretPosition = walkFn(caretPosition)));
-
-      return result;
-    }
-
-    tinymce.caret.LineWalker = {
-      upUntil: upUntil,
-      downUntil: downUntil,
-
-      /**
-       * Find client rects with line and caret position until the predicate returns true.
-       *
-       * @method positionsUntil
-       * @param {Number} direction Direction forward/backward 1/-1.
-       * @param {DOMNode} rootNode Root node to walk within.
-       * @param {function} predicateFn Gets the client rect as it's input.
-       * @param {DOMNode} node Node to start walking from.
-       * @return {Array} Array of client rects with line and position properties.
-       */
-      positionsUntil: positionsUntil,
-
-      isAboveLine: curry(aboveLineNumber),
-      isLine: curry(isLine)
-    };
-
-  })(tinymce);
 
   /*jshint bitwise:false, expr:true, noempty:false, sub:true, eqnull:true, latedef:false, maxlen:255 */
   /*eslint-disable */
