@@ -85,6 +85,11 @@
                 outline: none;
             }
         }
+
+        &.mce-code-toggle {
+            height: 32px;
+            overflow: hidden;
+        }
     }
 
     &.mceVisualBlocks {
@@ -112,6 +117,38 @@
         top: -8px;
 
         .label_fonts();
+    }
+
+    pre[data-mce-code]:after,
+    div[data-mce-code]:after {    
+        display: block;
+        font-size: 1.5em;
+        color:#787679;
+        color: var(--mce-guidelines);
+        padding: 0;
+        margin: 0;
+        line-height: 1.5em;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        right: 0;
+        top: 0;
+
+        content: "\25B4";
+    }
+
+    pre[data-mce-code] {
+        &.mce-code-toggle {
+            &:after {
+                content: "\25BE";
+            }
+        }
     }
 
     img[data-mce-code] {

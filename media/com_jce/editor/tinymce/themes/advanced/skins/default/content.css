@@ -491,6 +491,11 @@ img.mce-object.mce-object-img {
 .mceContentBody div[data-mce-code] textarea:focus {
   outline: none;
 }
+.mceContentBody pre[data-mce-code].mce-code-toggle,
+.mceContentBody div[data-mce-code].mce-code-toggle {
+  height: 32px;
+  overflow: hidden;
+}
 .mceContentBody.mceVisualBlocks pre[data-mce-code],
 .mceContentBody.mceVisualBlocks div[data-mce-code] {
   border: 1px solid #787679;
@@ -516,6 +521,29 @@ img.mce-object.mce-object-img {
   font-weight: 700;
   color: #787679;
   color: var(--mce-guidelines);
+}
+.mceContentBody pre[data-mce-code]:after,
+.mceContentBody div[data-mce-code]:after {
+  display: block;
+  font-size: 1.5em;
+  color: #787679;
+  color: var(--mce-guidelines);
+  padding: 0;
+  margin: 0;
+  line-height: 1.5em;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  top: 0;
+  content: "\25B4";
+}
+.mceContentBody pre[data-mce-code].mce-code-toggle:after {
+  content: "\25BE";
 }
 .mceContentBody img[data-mce-code] {
   display: block;
