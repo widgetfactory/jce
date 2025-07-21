@@ -47581,8 +47581,7 @@
       Node = tinymce.html.Node,
       VK = tinymce.VK,
       DomParser = tinymce.html.DomParser,
-      Serializer = tinymce.html.Serializer,
-      SaxParser = tinymce.html.SaxParser;
+      Serializer = tinymce.html.Serializer;
 
     function createTextNode(value, raw) {
       var text = new Node('#text', 3);
@@ -47633,9 +47632,6 @@
         htmlSchema = new tinymce.html.Schema({
           schema: 'mixed',
           invalid_elements: ed.settings.invalid_elements
-        }),
-        xmlSchema = new tinymce.html.Schema({
-          verify_html: false
         });
 
       // should code blocks be used?
@@ -47809,83 +47805,111 @@
         return !htmlSchema.isValid(name) && !isInvalidElement(name);
       }
 
+      // check that the element or attribute is not invalid
+      function isValid(tag, attr) {
+        // is an xml tag and is not an invalid_element
+        if (isXmlElement(tag)) {
+          return true;
+        }
+
+        // skip validation
+        if (ed.settings.validate === false) {
+          return true;
+        }
+
+        return ed.schema.isValid(tag, attr);
+      }
+
+      function sanitizeNode(node) {
+        const html = [];
+
+        switch (node.nodeType) {
+          case 1: {
+            const tagName = node.nodeName.toLowerCase();
+
+            // skip invalid elements
+            if (!isValid(tagName)) {
+              return "";
+            }
+
+            // open tag + attributes
+            html.push("<", tagName);
+
+            for (let { name, value } of Array.from(node.attributes)) {
+              // skip invalid attrs
+              if (!isValid(tagName, name)) {
+                continue;
+              }
+
+              // skip events
+              if (!ed.settings.allow_event_attributes && name.startsWith("on")) {
+                continue;
+              }
+
+              html.push(
+                " ",
+                name,
+                '="',
+                ed.dom.encode(value, true),
+                '"'
+              );
+            }
+
+            html.push(">");
+
+            // recurse into children
+            for (let child of Array.from(node.childNodes)) {
+              html.push(sanitizeNode(child));
+            }
+
+            // closing tag
+            html.push("</", tagName, ">");
+            break;
+          }
+
+          case 3: {
+            const text = node.nodeValue;
+            //if (text.trim()) {
+              html.push(ed.dom.encode(text, true));
+            //}
+            break;
+          }
+
+          case 5: {
+            html.push(
+              "<![CDATA[",
+              ed.dom.encode(node.nodeValue, true),
+              "]]>"
+            );
+            break;
+          }
+
+          case 8: {
+            html.push(
+              "<!--",
+              ed.dom.encode(node.nodeValue, true),
+              "-->"
+            );
+            break;
+          }
+
+          // other node types we just ignore
+        }
+
+        return html.join("");
+      }
+
       /**
-       * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
+       * Validate xml code using a custom Parser. This will remove event attributes ir required, and validate nested html using the editor schema.
        * @param {String} xml
        */
       function validateXml(xml) {
-        var html = [];
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(xml, 'text/xml');
 
-        // check that the element or attribute is not invalid
-        function isValid(tag, attr) {
-          // is an xml tag and is not an invalid_element
-          if (isXmlElement(tag)) {
-            return true;
-          }
+        var html = sanitizeNode(doc.documentElement);
 
-          return ed.schema.isValid(tag, attr);
-        }
-
-        new SaxParser({
-          start: function (name, attrs, empty) {
-            if (!isValid(name)) {
-              return;
-            }
-
-            html.push('<', name);
-
-            var attr;
-
-            if (attrs) {
-              for (var i = 0, len = attrs.length; i < len; i++) {
-                attr = attrs[i];
-
-                if (!isValid(name, attr.name)) {
-                  continue;
-                }
-
-                // skip event attributes
-                if (ed.settings.allow_event_attributes !== true) {
-                  if (attr.name.indexOf('on') === 0) {
-                    continue;
-                  }
-                }
-
-                html.push(' ', attr.name, '="', ed.dom.encode('' + attr.value, true), '"');
-              }
-            }
-
-            if (!empty) {
-              html[html.length] = '>';
-            } else {
-              html[html.length] = ' />';
-            }
-          },
-
-          text: function (value) {
-            if (value.length > 0) {
-              html[html.length] = value;
-            }
-          },
-
-          end: function (name) {
-            if (!isValid(name)) {
-              return;
-            }
-
-            html.push('</', name, '>');
-          },
-
-          cdata: function (text) {
-            html.push('<![CDATA[', text, ']]>');
-          },
-
-          comment: function (text) {
-            html.push('<!--', text, '-->');
-          }
-        }, xmlSchema).parse(xml);
-
-        return html.join('');
+        return html;
       }
 
       /**
@@ -47896,7 +47920,7 @@
         return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
           // lowercase tag name
           tag = tag.toLowerCase();
-          
+
           // check if svg is allowed
           if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
             return match;
@@ -47946,6 +47970,9 @@
        * @param {String} tag
        */
       function createCodePre(data, type, tag) {
+        type = type || 'script';
+        tag = tag || 'pre';
+
         // "protect" code if we are not using code blocks
         if (!code_blocks) {
           // convert linebreaks to newlines
@@ -47955,14 +47982,14 @@
           return ed.dom.createHTML('img', {
             src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
             'data-mce-resize': 'false',
-            'data-mce-code': type || 'script',
+            'data-mce-code': type,
             'data-mce-type': 'placeholder',
             'data-mce-value': escape(data)
           });
         }
 
-        return ed.dom.createHTML(tag || 'pre', {
-          'data-mce-code': type || 'script'
+        return ed.dom.createHTML(tag, {
+          'data-mce-code': type
         }, ed.dom.encode(data));
       }
 
@@ -48541,6 +48568,23 @@
               o.name = node.getAttribute('data-mce-code');
             }
           });
+        }
+      });
+
+      var hitAreaSize = 32;
+
+      ed.onMouseDown.add(function (ed, e) {
+        var pre = e.target.closest('pre[data-mce-code]');
+
+        if (!pre) {
+          return;
+        }
+
+        var { clientX, clientY } = e;
+        var { top, right } = pre.getBoundingClientRect();
+
+        if (clientX >= right - hitAreaSize && clientY <= top + hitAreaSize) {
+          ed.dom.toggleClass(pre, 'mce-code-toggle');
         }
       });
 
