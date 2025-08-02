@@ -9,7 +9,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 /* Set internal character encoding to UTF-8 */
 if (function_exists('mb_internal_encoding')) {

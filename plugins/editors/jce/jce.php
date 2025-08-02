@@ -9,7 +9,7 @@
  */
 
 // Do not allow direct access
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Plugin\CMSPlugin;

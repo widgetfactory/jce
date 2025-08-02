@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('_JEXEC') or die;
+\defined('_JEXEC') or die;
 
 JLoader::registerNamespace('Joomla\\Plugin\\Installer\\Jce', JPATH_PLUGINS . '/installer/jce/src', false, false, 'psr4');
 
