@@ -131,7 +131,9 @@
         'slideshare.net',
         'slides.com',
         'facebook.com',
-        'instagram.com'
+        'instagram.com',
+        'bandcamp.com',
+        'calendly.com'
     ];
 
     var mediaProviders = {
@@ -145,7 +147,9 @@
         'ted': /ted\.com\/talks\/(.+)/,
         'twitch': /twitch\.tv\/(.+)/,
         'facebook': /facebook\.com\/(.+)/,
-        'instagram': /instagram\.com\/(.+)/
+        'instagram': /instagram\.com\/(.+)/,
+        'bandcamp': /bandcamp\.com\/(.+)/,
+        'calendly': /calendly\.com\/(.+)/
     };
 
     function objectRequiresEmbed(type) {
@@ -277,6 +281,24 @@
                 'allow': 'encrypted-media;fullscreen',
                 'sandbox': false,
                 'oembed': false
+            },
+            'bandcamp': {
+                'src': '',
+                'width': 350,
+                'height': 120,
+                'frameborder': 0,
+                'allowtransparency': true,
+                'sandbox': false,
+                'oembed': true
+            },
+            'calendly': {
+                'src': '',
+                'width': 400,
+                'height': 600,
+                'frameborder': 0,
+                'allowtransparency': true,
+                'sandbox': false,
+                'oembed': false
             }
         };
 
@@ -379,6 +401,22 @@
             }
 
             defaultValues[provider].src = url + encodeURIComponent(value);
+        }
+
+        if (provider === 'bandcamp') {
+            // remove query string from url
+            value = value.replace(/\?.+$/, '');
+            value = value.replace(/\/$/, '');
+
+            defaultValues[provider].src = value + '/embed/';
+        }
+
+        if (provider === 'calendly') {
+            // remove query string from url
+            value = value.replace(/\?.+$/, '');
+            value = value.replace(/\/$/, '');
+
+            defaultValues[provider].src = 'https://calendly.com/' + value + '?embed_domain=' + ed.documentBaseURI.getDomain() + '&embed_type=Inline';
         }
 
         return defaultValues[provider];
