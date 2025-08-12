@@ -21,7 +21,7 @@
 
             <field type="container" label="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA" class="well well-small p-3 bg-light" description="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA_DESC" showon="iframes:3">
 
-                <field name="iframes_supported_media" type="checkboxes" class="flex-row" default="youtube,vimeo,dailymotion,scribd,slideshare,soundcloud,spotify,ted,twitch" layout="form.field.checkboxes" hiddenLabel="true" labelclass="hide">
+                <field name="iframes_supported_media" type="checkboxes" class="flex-row" default="youtube,vimeo,dailymotion,scribd,slideshare,soundcloud,spotify,ted,twitch,calendly" layout="form.field.checkboxes" hiddenLabel="true" labelclass="hide">
                     <option value="youtube">youtube</option>
                     <option value="vimeo">vimeo</option>
                     <option value="dailymotion">dailymotion</option>
@@ -31,6 +31,7 @@
                     <option value="spotify">spotify</option>
                     <option value="ted">ted</option>
                     <option value="twitch">twitch</option>
+                    <option value="calendly">calendly</option>
                 </field>
 
                 <field type="repeatable" name="iframes_supported_media_custom" default="" label="Custom URL" description="">
