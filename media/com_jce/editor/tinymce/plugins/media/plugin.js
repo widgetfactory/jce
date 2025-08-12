@@ -131,7 +131,9 @@
         'slideshare.net',
         'slides.com',
         'facebook.com',
-        'instagram.com'
+        'instagram.com',
+        'bandcamp.com',
+        'calendly.com'
     ];
 
     var mediaProviders = {
@@ -145,7 +147,9 @@
         'ted': /ted\.com\/talks\/(.+)/,
         'twitch': /twitch\.tv\/(.+)/,
         'facebook': /facebook\.com\/(.+)/,
-        'instagram': /instagram\.com\/(.+)/
+        'instagram': /instagram\.com\/(.+)/,
+        'bandcamp': /bandcamp\.com\/(.+)/,
+        'calendly': /calendly\.com\/(.+)/
     };
 
     function objectRequiresEmbed(type) {
@@ -277,6 +281,16 @@
                 'allow': 'encrypted-media;fullscreen',
                 'sandbox': false,
                 'oembed': false
+            },
+            'calendly': {
+                'src': '',
+                'width': '100%',
+                'height': 700,
+                'frameborder': 0,
+                'style': 'min-width:320px',
+                'allowtransparency': true,
+                'sandbox': false,
+                'oembed': false
             }
         };
 
@@ -379,6 +393,14 @@
             }
 
             defaultValues[provider].src = url + encodeURIComponent(value);
+        }
+
+        if (provider === 'calendly') {
+            // remove query string from url
+            value = value.replace(/\?.+$/, '');
+            value = value.replace(/\/$/, '');
+
+            defaultValues[provider].src = value;
         }
 
         return defaultValues[provider];
@@ -537,7 +559,7 @@
         var objectExts = ['swf', 'pdf'];
 
         // Strict MIME-type match if provided
-        if (type.startsWith('audio/')) {            
+        if (type.startsWith('audio/')) {
             if (indexOf(audioExts, ext) === -1) {
                 return false;
             }
@@ -1324,6 +1346,12 @@
 
             each(defaultAttributes, function (val, name) {
                 if (!tinymce.is(sourceNode.attr(name)) && !(name in boolAttrs)) {
+                    
+                    if (name === 'style' && tinymce.is(val, 'object')) {
+                        // convert style object to string
+                        val = editor.dom.serializeStyle(val);
+                    }
+                    
                     sourceNode.attr(name, val);
                 }
             });
@@ -1600,7 +1628,7 @@
                                 type = sources[0].attr('type') || type;
                             }
                         }
-                        
+
                         // get the source from the param tag
                         if (node.name === 'object') {
                             var params = node.getAll('param');
@@ -1946,7 +1974,13 @@
 
             // update styles then continue
             if (name == 'style' && value) {
+                
+                if (tinymce.is(value, 'object')) {
+                    value = ed.dom.serializeStyle(value);
+                }
+                
                 ed.dom.setStyles(node, ed.dom.parseStyle(value));
+
                 return true;
             }
 

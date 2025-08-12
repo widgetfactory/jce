@@ -10,6 +10,8 @@
 
 namespace Joomla\Plugin\Installer\Jce\Extension;
 
+\defined('_JEXEC') or die;
+
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseAwareTrait;

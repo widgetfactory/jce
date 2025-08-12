@@ -10,7 +10,7 @@
 
 use Joomla\Registry\Registry;
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 class WFMediaManagerBase extends WFEditorPlugin
 {

@@ -8,6 +8,6 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/jce.php';
