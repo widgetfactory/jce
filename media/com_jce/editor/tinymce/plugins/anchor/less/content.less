@@ -1,0 +1,30 @@
+a.mce-item-anchor {
+    width:11px !important; 
+    height:11px !important; 
+    background-image:url(img/anchor.svg); 
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 12px;
+    padding-left : 14px;
+    border: 1px dashed #B4D4FF;
+    text-decoration:none;
+    font-weight:normal;
+    color:inherit;
+    vertical-align:middle;
+    -ms-user-select:all;
+    -ms-user-modify:read-only;
+    user-select:all;
+    user-modify:read-only;
+    -webkit-user-select:all; 
+    -webkit-user-modify:read-only; 
+    -moz-user-select:all; 
+    -moz-user-modify:read-only;
+
+    &::selection {
+        background-color: #b4d4ff;
+    }
+
+    &.mce-item-selected {
+        background-color: #b4d4ff;
+    }
+}

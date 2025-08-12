@@ -1,0 +1,149 @@
+// out: ../global.min.css, sourcemap: false, compress: false
+@images: "../../../editor/img";
+
+/*.ui-jce {
+    position: relative;
+}*/
+
+.ui-jce {
+    .control-label label {
+        width: 12rem;
+        min-width: 6rem;
+    }
+
+    .control-group {
+        &.field-spacer {
+            .control-label {
+                width: 100%;
+
+                hr {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .radio label,
+    .checkbox label,
+    .radio,
+    .checkbox {
+        display: inline-block;
+    }
+
+    .checkboxes input {
+        float: initial;
+        margin-left: 0;
+    }
+
+    .form-field-container legend {
+        line-height: 2em;
+        font-size: 1.25em;
+        font-weight: bold;
+        border: 0 none;
+        color: inherit;
+        margin: 0;
+    }
+
+    .form-horizontal .control-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .form-horizontal .controls {
+        margin-left: inherit;
+    }
+
+    .form-horizontal .control-label+.controls {
+        width: calc(100% - 12.5rem);
+    }
+
+    .control-group {
+        .description {
+            display: block;
+            width: 100%;
+            padding: 1rem 0.5rem;
+            background: rgba(0, 0, 0, 0.03);
+            margin: 0.5rem 0;
+            font-size: 90%;
+            box-sizing: border-box;
+        }
+
+        .help-block {
+            width: 100%;
+        }
+
+        .chzn-container {
+            min-width: 260px;
+        }
+    }
+
+    .form-horizontal {
+        .control-label {
+            width: auto;
+            min-width: 160px;
+
+            &:empty {
+                min-width: inherit;
+                padding: 0;
+                width: 0;
+            }
+        }
+    }
+
+    .control-group {
+        .controls+.description {
+            display: none;
+        }
+    }
+
+    .form-help-inline {
+        .control-group {
+            .controls+.description {
+                display: block;
+            }
+
+            .control-label {
+                cursor: default;
+            }
+        }
+    }
+
+    .form-check input[type="radio"] {
+        vertical-align: middle;
+    }
+
+    .choices.is-disabled .choices__inner {
+        padding: 0;
+
+        input[type="text"] {
+            width: 100% !important;
+            height: 100%;
+            padding: .5rem 1rem;
+
+            &::placeholder {
+                color: #aaa;
+            }
+        }
+    }
+
+    .checkboxes.flex-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .form-check-inline {
+            padding-left: 0;
+        }
+    }
+
+    // showon override
+    [data-showon].hidden {
+        display: none;
+    }
+}
+
+@import "../src/custom.less";
+@import "../src/tips.less";
+@import "../src/repeatable.less";
+@import "../../../editor/css/less/colorpicker.less";
