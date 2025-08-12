@@ -27,6 +27,14 @@
     cursor: not-allowed;
 }
 
+.mceDefaultSkin .mceTextBox + .mceTextBoxDescription {
+    font-size: 0.75em;
+    color: #666;
+    line-height: 2;
+    display: inline-block;
+    width: 100%;
+}
+
 .mceDefaultSkin .mceToolbarRow .mceTextBox {
     margin: 1px 0 1px 2px;
     max-width: 10em;

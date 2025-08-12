@@ -1114,6 +1114,14 @@ select.mceNativeListBox {
     cursor: not-allowed;
 }
 
+.mceDefaultSkin .mceTextBox + .mceTextBoxDescription {
+    font-size: 0.75em;
+    color: #666;
+    line-height: 2;
+    display: inline-block;
+    width: 100%;
+}
+
 .mceDefaultSkin .mceToolbarRow .mceTextBox {
     margin: 1px 0 1px 2px;
     max-width: 10em;
@@ -3254,7 +3262,7 @@ select.mceNativeListBox {
     display: flex;
     flex-direction: row;
     justify-content: start;
-    align-items: center;
+    align-items: flex-start;
     min-height: 32px;
     width: 100%;
 }
@@ -3289,6 +3297,8 @@ select.mceNativeListBox {
 .mceFormControl {
     width: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .mceFormControl .mceListBox {
@@ -3297,10 +3307,13 @@ select.mceNativeListBox {
 
 .mceFormControl .mceListBox .mceText {
     width: 100%;
+    align-self: flex-start;
 }
 
 .mceForm .mceFormRow label {
     min-width: 96px;
+
+    padding: 0.5em 0;
 }
 
 .mceFormControl .mceTextBox + .mceButton {

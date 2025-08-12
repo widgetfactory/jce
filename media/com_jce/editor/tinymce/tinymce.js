@@ -30757,12 +30757,23 @@
           autofocus: true
         };
 
+        if (s.description) {
+          attribs['aria-describedby'] = this.id + '_description';
+        }
+
         attribs = tinymce.extend(attribs, s.attributes || {});
 
         if (s.multiline) {
           html += DOM.createHTML('textarea', attribs, '');
         } else {
           html += DOM.createHTML('input', attribs);
+        }
+
+        if (s.description) {
+          html += DOM.createHTML('span', {
+            class: prefix + 'Description',
+            id: this.id + '_description'
+          }, DOM.encode(s.description));
         }
 
         if (s.button) {
