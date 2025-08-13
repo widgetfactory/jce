@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -41,7 +42,7 @@ class WFMediaPluginConfig
 
                 $settings['media_iframes_allow_supported'] = true;
 
-                $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array('youtube', 'vimeo', 'dailymotion', 'scribd', 'slideshare', 'soundcloud', 'spotify', 'ted', 'twitch'));
+                $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array('youtube', 'vimeo', 'dailymotion', 'scribd', 'slideshare', 'soundcloud', 'spotify', 'ted', 'twitch', 'bandcamp', 'calendly'));
 
                 // get values only
                 $iframes_supported_media = array_values($iframes_supported_media);
@@ -63,7 +64,7 @@ class WFMediaPluginConfig
             if ($name == 'object' || $name == 'embed') {
                 $default = 0;
             }
-            
+
             $allowed = (int) $wf->getParam('media.' . $name, $default);
 
             if ($allowed) {
