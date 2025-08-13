@@ -6941,6 +6941,10 @@
        */
       self.setValidElements = setValidElements;
 
+      self.getValidElements = function () {
+        return elements;
+      };
+
       /**
        * Adds custom non HTML elements to the schema.
        *
@@ -9823,6 +9827,12 @@
                   return;
               }
 
+              if (node && node.nodeName === 'IFRAME') {
+                  while (node.firstChild) {
+                      node.removeChild(node.firstChild);
+                  }
+              }
+
               var rule = schema.getElementRule(tag);
 
               if (settings.validate && !rule) {
@@ -9978,7 +9988,8 @@
                   ALLOW_UNKNOWN_PROTOCOLS: true,
                   ALLOWED_TAGS: ['#comment', '#cdata-section', 'body'],
                   ALLOWED_ATTR: [],
-                  PARSER_MEDIA_TYPE: mimeType
+                  PARSER_MEDIA_TYPE: mimeType,
+                  SAFE_FOR_XML: true
               };
 
               // Allow any URI when allowing script urls
@@ -9992,6 +10003,10 @@
               if (schema.isValid('script') || schema.isValid('style')) {
                   config.FORCE_BODY = true; // Force body to be present for script/style tags
               }
+
+              each(schema.getValidElements(), function (rule, tag) {
+                  config.ALLOWED_TAGS.push(tag);   
+              });
 
               return config;
           }
@@ -11097,7 +11112,7 @@
       self.addAttributeFilter('href', function (nodes) {
         var i = nodes.length,
           node;
-
+      
         var appendRel = function (rel) {
           var parts = rel.split(' ').filter(function (p) {
             return p.length > 0;
