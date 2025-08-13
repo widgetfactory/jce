@@ -1321,6 +1321,176 @@
         return elm;
     };
 
+    var convertMediaToPlaceholder = function (editor, node) {
+        var media_live_embed = editor.settings.media_live_embed;
+        var strict_embed = editor.settings.media_strict_embed !== false; // strict embed is enabled by default
+
+        if (node.parent.attr('data-mce-object')) {
+            return false;
+        }
+
+        if (node.firstChild && node.firstChild.attr('data-mce-type') == 'bookmark') {
+            node.firstChild.remove();
+        }
+
+        // mark iframe for removal if invalid
+        if (node.name === 'iframe') {
+            // click to play embed remove the src attribute
+            if (!node.attr('src')) {
+                media_live_embed = false;
+            } else if (validateIframe(editor, node) === false) {
+                node.remove();
+                return false;
+            }
+        }
+
+        // if valid node (validate == false)
+        if (!isValidElement(editor, node.name) && !isNonEditable(editor, node)) {
+            node.remove();
+            return false;
+        }
+
+        // validate non-iframe node
+        if (node.name !== 'iframe') {
+            var src = node.attr('src') || node.attr('data') || '';
+
+            // get the mime type from the type attribute
+            var type = node.attr('type') || node.attr('data-mce-p-type') || '';
+
+            if (!src) {
+                // get the source from the first source tag
+                if (node.name === 'video' || node.name === 'audio') {
+                    var sources = node.getAll('source');
+
+                    for (var j = 0; j < sources.length; j++) {
+                        var source = sources[j];
+
+                        // skip empty source
+                        if (!source.attr('src')) {
+                            continue;
+                        }
+
+                        // remove unsupported source
+                        if (!isSupportedUrl(editor, node.name, source.attr('src'))) {
+                            source.remove();
+                            // adjust index
+                            sources.splice(j, 1);
+                        }
+                    }
+
+                    // get src value from any remaining source
+                    if (sources.length) {
+                        src = sources[0].attr('src');
+                        type = sources[0].attr('type') || type;
+                    }
+                }
+
+                // get the source from the param tag
+                if (node.name === 'object') {
+                    var params = node.getAll('param');
+
+                    if (params.length) {
+                        for (var j = 0; j < params.length; j++) {
+                            var param = params[j];
+
+                            if (param.attr('movie')) {
+                                src = param.attr('value');
+                            }
+                        }
+                    }
+
+                    // try embed
+                    if (!src) {
+                        var embed = node.getAll('embed');
+
+                        if (embed.length) {
+                            src = embed[0].attr('src');
+                            type = embed[0].attr('type') || type;
+                        }
+                    }
+                }
+            }
+
+            if (src) {
+                // validate 
+                if (!isSupportedUrl(editor, node.name, src)) {
+                    node.remove();
+                    return false;
+                }
+            } else {
+                media_live_embed = false;
+                return false;
+            }
+
+            if (strict_embed) {
+                var newName = isSupportedMedia(editor, src, type);
+
+                // not supported
+                if (!newName) {
+                    node.remove();
+                    return false;
+                }
+
+                // iframe, but not a supported provider, eg: Youtube etc.
+                if (newName == 'iframe' && !isSupportedProvider(editor, src)) {
+                    node.remove();
+                    return false;
+                }
+
+                // node has been renamed, so validate child nodes
+                if (newName !== node.name) {
+                    // clean up child nodes after conversion
+                    // eslint-disable-next-line no-loop-func
+                    each(node.children(), function (elm) {
+                        if (!editor.schema.isValidChild(newName, elm.name)) {
+                            elm.remove();
+                        }
+                    });
+                }
+
+                // rename node
+                node.name = newName;
+
+                // update src attribute
+                node.attr('src', src);
+
+                // update data and type attributes for object
+                if (newName == 'object') {
+                    // set data attribute
+                    node.attr('data', src);
+
+                    // remove src attribute
+                    node.attr('src', null);
+
+                    // clean the src value
+                    var cleanSrc = stripQuery(src);
+
+                    // get the extension
+                    var ext = cleanSrc.split('.').pop();
+
+                    node.attr('type', mimes[ext] || 'application/octet-stream');
+                }
+            }
+        }
+
+        if (media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(editor, node)) {
+            if (!isWithinEmbed(node)) {
+                node.replace(createPreviewNode(editor, node));
+            }
+        } else {
+            if (!isWithinEmbed(node)) {
+                if (isResponsiveMedia(node)) {
+                    node.parent.attr({
+                        'contentEditable': 'false',
+                        'data-mce-contenteditable': 'true'
+                    });
+                }
+
+                node.replace(createPlaceholderNode(editor, node));
+            }
+        }
+    };
+
     /**
      * Process media HTML attributes
      * @param {*} editor 
@@ -1346,12 +1516,12 @@
 
             each(defaultAttributes, function (val, name) {
                 if (!tinymce.is(sourceNode.attr(name)) && !(name in boolAttrs)) {
-                    
+
                     if (name === 'style' && tinymce.is(val, 'object')) {
                         // convert style object to string
                         val = editor.dom.serializeStyle(val);
                     }
-                    
+
                     sourceNode.attr(name, val);
                 }
             });
@@ -1559,9 +1729,6 @@
             var i = nodes.length;
             var node;
 
-            var media_live_embed = editor.settings.media_live_embed;
-            var strict_embed = editor.settings.media_strict_embed !== false; // strict embed is enabled by default
-
             while (i--) {
                 node = nodes[i];
 
@@ -1569,169 +1736,8 @@
                     continue;
                 }
 
-                if (node.parent.attr('data-mce-object')) {
+                if (convertMediaToPlaceholder(editor, node) === false) {
                     continue;
-                }
-
-                if (node.firstChild && node.firstChild.attr('data-mce-type') == 'bookmark') {
-                    node.firstChild.remove();
-                }
-
-                // mark iframe for removal if invalid
-                if (node.name === 'iframe') {
-                    // click to play embed remove the src attribute
-                    if (!node.attr('src')) {
-                        media_live_embed = false;
-                    } else if (validateIframe(editor, node) === false) {
-                        node.remove();
-                        continue;
-                    }
-                }
-
-                // if valid node (validate == false)
-                if (!isValidElement(editor, node.name) && !isNonEditable(editor, node)) {
-                    node.remove();
-                    continue;
-                }
-
-                // validate non-iframe node
-                if (node.name !== 'iframe') {
-                    var src = node.attr('src') || node.attr('data') || '';
-
-                    // get the mime type from the type attribute
-                    var type = node.attr('type') || node.attr('data-mce-p-type') || '';
-
-                    if (!src) {
-                        // get the source from the first source tag
-                        if (node.name === 'video' || node.name === 'audio') {
-                            var sources = node.getAll('source');
-
-                            for (var j = 0; j < sources.length; j++) {
-                                var source = sources[j];
-
-                                // skip empty source
-                                if (!source.attr('src')) {
-                                    continue;
-                                }
-
-                                // remove unsupported source
-                                if (!isSupportedUrl(editor, node.name, source.attr('src'))) {
-                                    source.remove();
-                                    // adjust index
-                                    sources.splice(j, 1);
-                                }
-                            }
-
-                            // get src value from any remaining source
-                            if (sources.length) {
-                                src = sources[0].attr('src');
-                                type = sources[0].attr('type') || type;
-                            }
-                        }
-
-                        // get the source from the param tag
-                        if (node.name === 'object') {
-                            var params = node.getAll('param');
-
-                            if (params.length) {
-                                for (var j = 0; j < params.length; j++) {
-                                    var param = params[j];
-
-                                    if (param.attr('movie')) {
-                                        src = param.attr('value');
-                                    }
-                                }
-                            }
-
-                            // try embed
-                            if (!src) {
-                                var embed = node.getAll('embed');
-
-                                if (embed.length) {
-                                    src = embed[0].attr('src');
-                                    type = embed[0].attr('type') || type;
-                                }
-                            }
-                        }
-                    }
-
-                    if (src) {
-                        // validate 
-                        if (!isSupportedUrl(editor, node.name, src)) {
-                            node.remove();
-                            continue;
-                        }
-                    } else {
-                        media_live_embed = false;
-                        continue;
-                    }
-
-                    if (strict_embed) {
-                        var newName = isSupportedMedia(editor, src, type);
-
-                        // not supported
-                        if (!newName) {
-                            node.remove();
-                            continue;
-                        }
-
-                        // iframe, but not a supported provider, eg: Youtube etc.
-                        if (newName == 'iframe' && !isSupportedProvider(editor, src)) {
-                            node.remove();
-                            continue;
-                        }
-
-                        // node has been renamed, so validate child nodes
-                        if (newName !== node.name) {
-                            // clean up child nodes after conversion
-                            // eslint-disable-next-line no-loop-func
-                            each(node.children(), function (elm) {
-                                if (!editor.schema.isValidChild(newName, elm.name)) {
-                                    elm.remove();
-                                }
-                            });
-                        }
-
-                        // rename node
-                        node.name = newName;
-
-                        // update src attribute
-                        node.attr('src', src);
-
-                        // update data and type attributes for object
-                        if (newName == 'object') {
-                            // set data attribute
-                            node.attr('data', src);
-
-                            // remove src attribute
-                            node.attr('src', null);
-
-                            // clean the src value
-                            var cleanSrc = stripQuery(src);
-
-                            // get the extension
-                            var ext = cleanSrc.split('.').pop();
-
-                            node.attr('type', mimes[ext] || 'application/octet-stream');
-                        }
-                    }
-                }
-
-                if (media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(editor, node)) {
-                    if (!isWithinEmbed(node)) {
-                        node.replace(createPreviewNode(editor, node));
-                    }
-                } else {
-                    if (!isWithinEmbed(node)) {
-                        if (isResponsiveMedia(node)) {
-                            node.parent.attr({
-                                'contentEditable': 'false',
-                                'data-mce-contenteditable': 'true'
-                            });
-                        }
-
-                        node.replace(createPlaceholderNode(editor, node));
-                    }
                 }
             }
         };
@@ -1974,11 +1980,11 @@
 
             // update styles then continue
             if (name == 'style' && value) {
-                
+
                 if (tinymce.is(value, 'object')) {
                     value = ed.dom.serializeStyle(value);
                 }
-                
+
                 ed.dom.setStyles(node, ed.dom.parseStyle(value));
 
                 return true;
@@ -2474,6 +2480,10 @@
 
             isMediaHtml: function (html) {
                 return isMediaHtml(ed, html);
+            },
+
+            convertMediaToPlaceholder: function (node) {                
+                return convertMediaToPlaceholder(ed, node);
             }
         });
     });
