@@ -8,6 +8,35 @@
 .mceModernSkin .mceToolbarRow .mceToolbarItem {
   background-color: transparent;
   margin: 2px;
+  width: 100%;
+}
+.mceModernSkin .mceToolbarRow .mceToolbarItem .mceTextBox {
+  max-width: inherit;
+}
+.mceModernSkin .mceToolbarRow .mceToolbarItem textarea {
+  height: auto;
+  white-space: pre-wrap;
+  font-size: 13px;
+  line-height: 2;
+}
+.mceModernSkin .mceToolbarFooter .mceToolbarItem {
+  text-align: right;
+}
+.mceModernSkin .mceToolbarFooter .mceToolbarItem .mceButton {
+  min-width: 5em;
+  height: 32px;
+  line-height: 1;
+  background: #fff;
+  border-radius: 2px;
+  color: #444;
+  border: 1px solid #ddd;
+  margin: 0 0 0 4px;
+  padding: 0 8px;
+}
+.mceModernSkin .mceToolbarFooter .mceToolbarItem .mceButtonPrimary {
+  background-color: #337ab7;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #fff;
 }
 .mceModernSkin .mceButton,
 .mceModernSkin .mceSplitButton .mceText,
@@ -65,6 +94,10 @@
   border-top-color: #ddd;
   border-bottom-color: #ddd;
   border-left-color: #ddd;
+}
+.mceModernSkin .mceListBox .mceText::placeholder {
+  color: #ddd;
+  font-size: inherit;
 }
 .mceModernSkin .mceListBox .mceOpen {
   background-color: transparent;

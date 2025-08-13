@@ -482,6 +482,7 @@ textarea::placeholder {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-direction: column;
 }
 
 .mceMenu .mceMenuItems .mceMenuItem  > div {

@@ -13,6 +13,40 @@
     .mceToolbarRow .mceToolbarItem {
         background-color: transparent;
         margin: 2px;
+        width: 100%;
+
+        .mceTextBox {
+            max-width: inherit;
+        }
+
+        textarea {
+            height: auto;
+            white-space: pre-wrap;
+            font-size: 13px;
+            line-height: 2;
+        }
+    }
+
+    .mceToolbarFooter .mceToolbarItem {
+        text-align: right;
+
+        .mceButton {
+            min-width: 5em;
+            height: 32px;
+            line-height: 1;
+            background: #fff;
+            border-radius: 2px;
+            color: #444;
+            border: 1px solid #ddd;
+            margin: 0 0 0 4px;
+            padding: 0 8px;
+        }
+
+        .mceButtonPrimary {
+            background-color: #337ab7;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            color: #fff;
+        }
     }
 
     .mceButton,
@@ -81,6 +115,11 @@
         border-top-color: #ddd;
         border-bottom-color: #ddd;
         border-left-color: #ddd;
+
+        &::placeholder {
+            color: #ddd;
+            font-size: inherit;
+        }
     }
 
     .mceListBox .mceOpen {
