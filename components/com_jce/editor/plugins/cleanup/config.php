@@ -36,8 +36,9 @@ class WFCleanupPluginConfig
 
         // get verify html (default is true)
         $settings['verify_html'] = $wf->getParam('editor.verify_html', 1, 1, 'boolean', false);
-
-        $settings['purify_html'] = true;
+        
+        // get sanitize html (default is true)
+        $settings['sanitize_html'] = $wf->getParam('editor.sanitize_html', 1, 1, 'boolean', false);
 
         $settings['pad_empty_tags'] = $wf->getParam('editor.pad_empty_tags', 1, 1, 'boolean');
 

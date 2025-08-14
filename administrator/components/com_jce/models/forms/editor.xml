@@ -65,6 +65,10 @@
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
+            <field name="sanitize_html" type="radio" default="1" label="WF_PARAM_SANITIZE_HTML" description="WF_PARAM_EDITOR_PROFILE_SANITIZE_HTML_DESC" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
             <field name="schema" type="list" default="" label="WF_PARAM_DOCTYPE" description="WF_PARAM_EDITOR_PROFILE_DOCTYPE_DESC">
                 <option value="">WF_OPTION_INHERIT</option>
                 <option value="mixed">WF_PARAM_DOCTYPE_MIXED</option>

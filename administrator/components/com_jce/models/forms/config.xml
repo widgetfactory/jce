@@ -8,6 +8,11 @@
                 <option value="0">JNO</option>
             </field>
 
+            <field name="sanitize_html" type="radio" default="1" label="WF_PARAM_SANITIZE_HTML" description="WF_PARAM_SANITIZE_HTML_DESC" class="btn-group btn-group-yesno" filter="integer">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
             <field name="schema" type="list" default="mixed" label="WF_PARAM_DOCTYPE" description="WF_PARAM_DOCTYPE_DESC">
                 <option value="html4">HTML4</option>
                 <option value="mixed">WF_PARAM_DOCTYPE_MIXED</option>
