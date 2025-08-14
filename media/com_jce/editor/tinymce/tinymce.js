@@ -10061,11 +10061,7 @@
            * @returns {Element} The sanitized root element.
            */
           this.sanitize = function (body, mimeType) {
-              if (settings.verify_html === false) {
-                  return body;
-              }
-
-              if (settings.purify_html !== false) {
+              if (settings.sanitize_html !== false) {
                   return purify$1(body, mimeType);
               }
 
@@ -10147,7 +10143,7 @@
       settings.root_name = settings.root_name || 'body';
       self.schema = schema = schema || new tinymce.html.Schema();
 
-      settings.purify_html = "purify_html" in settings ? settings.purify_html : true;
+      settings.sanitize_html = "sanitize_html" in settings ? settings.sanitize_html : true;
 
       var Sanitizer = new tinymce.html.Sanitizer(settings, schema);
       var DomParser = new DOMParser();
