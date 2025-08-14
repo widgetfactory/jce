@@ -43,7 +43,7 @@
     flex-direction: column;
 }
 
-.mceMenu .mceMenuItems .mceMenuItem  > div {
+.mceMenu .mceMenuItems .mceMenuItem>div {
     width: 100%;
 }
 
@@ -86,7 +86,7 @@
     margin-top: 0.5rem;
 }
 
-.mceMenu .mceMenuItems .mceImage + .mceText {
+.mceMenu .mceMenuItems .mceImage+.mceText {
     text-align: center;
 }
 
@@ -279,4 +279,41 @@
 
 .mceMenu .mceModalContent .mceListBox .mceText {
     width: calc(100% - 32px);
+}
+
+.mceMenu .mceToolbarRow .mceToolbarItem {
+    width: 100%;
+}
+
+.mceMenu .mceToolbarFooter .mceToolbarItem {
+    text-align: right;
+}
+
+.mceMenu .mceToolbarRow .mceToolbarItem .mceTextBox {
+    max-width: inherit;
+}
+
+.mceMenu .mceToolbarRow .mceToolbarItem textarea {
+    height: auto;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 2;
+}
+
+.mceMenu .mceToolbarFooter .mceToolbarItem .mceButton {
+    min-width: 5em;
+    height: 32px;
+    line-height: 1;
+    background: #fff;
+    border-radius: 2px;
+    color: #444;
+    border: 1px solid #ddd;
+    margin: 0 0 0 4px;
+    padding: 0 8px;
+}
+
+.mceMenu .mceToolbarFooter .mceToolbarItem .mceButton.mceButtonPrimary {
+    background-color: #337ab7;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #fff;
 }

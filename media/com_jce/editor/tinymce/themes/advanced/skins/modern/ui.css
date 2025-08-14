@@ -8,7 +8,6 @@
 .mceModernSkin .mceToolbarRow .mceToolbarItem {
   background-color: transparent;
   margin: 2px;
-  width: 100%;
 }
 .mceModernSkin .mceToolbarRow .mceToolbarItem .mceTextBox {
   max-width: inherit;
@@ -18,6 +17,9 @@
   white-space: pre-wrap;
   font-size: 13px;
   line-height: 2;
+}
+.mceModernSkin .mceMenu .mceToolbarRow .mceToolbarItem {
+  width: 100%;
 }
 .mceModernSkin .mceToolbarFooter .mceToolbarItem {
   text-align: right;
