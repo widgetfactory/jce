@@ -85,7 +85,7 @@ class JFormFieldKeyValue extends FormField
                     $values = array(
                         array(
                             'name' => $value,
-                            'value' => ''
+                            'value' => '',
                         ),
                     );
                 }
@@ -107,15 +107,15 @@ class JFormFieldKeyValue extends FormField
         $children = (array) $this->element->children();
 
         // if field has defined children
-        if (count($children)) {        
+        if (count($children)) {
             $children = $this->element->children();
 
             $subForm->load($children, true);
             $subForm->setFields($children);
         } else {
-            $label  = $this->element['label'];
+            $label = $this->element['label'];
 
-            $xml    = '<form><fields name="' . $this->name . '">';
+            $xml = '<form><fields name="' . $this->name . '">';
 
             $keyName = 'name';
             $keyLabel = 'WF_LABEL_NAME';
@@ -148,7 +148,7 @@ class JFormFieldKeyValue extends FormField
             }
 
             $xml .= '</fields></form>';
-        
+
             $subForm->load($xml);
         }
 
@@ -176,21 +176,21 @@ class JFormFieldKeyValue extends FormField
 
             foreach ($fields as $field) {
                 $tmpField = clone $field;
-                
+
                 $tmpField->element['multiple'] = true;
 
                 $name = (string) $tmpField->element['name'];
+
+                $val = is_array($value) && isset($value[$name]) ? $value[$name] : '';
 
                 // if the original value is a string and does not match the field name, use the default field item name
                 if (!isset($value[$name]) && is_string($this->value)) {
                     $key = $fieldItem[$n] ?? '';
 
                     if ($key) {
-                        $val = isset($value[$key]) ? $value[$key] : '';
+                        $val = $value[$key] ?? '';
                     }
                 }
-
-                $val = is_array($value) && isset($value[$name]) ? $value[$name] : '';
 
                 // escape value
                 $tmpField->value = htmlspecialchars_decode($val);
