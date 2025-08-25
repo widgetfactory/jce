@@ -508,6 +508,17 @@ textarea::placeholder {
     line-height: 32px;
 }
 
+.mceMenu .mceMenuItems .mceDescription {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666;
+    max-width: 20em;
+    white-space: normal;
+    overflow: hidden;
+    padding: 0 8px;
+    width: 100%;
+}
+
 .mceMenu .mceMenuItems pre.mceText {
     font-family: Monospace;
 }

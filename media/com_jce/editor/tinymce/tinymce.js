@@ -29509,6 +29509,13 @@
             role: 'presentation'
           }, o.settings.title);
 
+          if (s.description) {
+            DOM.add(item, 'span', {
+            'class': 'mceDescription',
+            role: 'presentation'
+          }, s.description);
+          }
+
           if (o.settings.style) {
             if (typeof o.settings.style == "function") {
               o.settings.style = o.settings.style();
