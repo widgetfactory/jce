@@ -29462,11 +29462,13 @@
           return;
         }
 
+        var tooltip = s.tooltip || '';
+
         var item = DOM.add(menu, 'div', {
           id: o.id,
-          'class': cp + 'Item ' + cp + 'ItemEnabled',
-          title: o.settings.title || '',
-          'aria-label': o.settings.title || ''
+          'class': cp + 'Item ' + cp + 'ItemEnabled' + (tooltip ? ' ' + 'mceTooltip' : ''),
+          'data-title': tooltip,
+          'aria-label': tooltip || s.title || ''
         });
 
         if (s.html) {
