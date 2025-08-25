@@ -9,7 +9,7 @@
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
-    overflow: hidden;
+    overflow: visible;
     overflow-y: auto;
     margin-top: 3px;
     margin-left: 1px;
@@ -20,7 +20,6 @@
 .mceSplitButtonMenu,
 .mceListBoxMenu {
     border-radius: 0 2px 2px 2px;
-    overflow: hidden;
 }
 
 .mceMenu .mceMenuItems span,
@@ -92,7 +91,7 @@
 
 .mceMenu .mceMenuItems {
     height: 100%;
-    overflow: hidden;
+    overflow: visible; /* allow for tooltip */
     display: flex;
     flex-direction: column;
     margin: 2px;
