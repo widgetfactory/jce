@@ -29177,7 +29177,7 @@
 
           dm = dm.settings.parent;
         }
-      },  
+      },
 
       /**
        * Removes a specific sub menu or menu item from the drop menu.
@@ -29228,7 +29228,8 @@
         menu = DOM.create('div', {
           role: 'menu',
           id: 'menu_' + self.id,
-          'class': s['class'] + ' ' + self.classPrefix
+          'class': s['class'] + ' ' + self.classPrefix,
+          'aria-orientation': 'vertical'
         });
 
         if (self.settings.parent) {
@@ -29253,7 +29254,6 @@
         }
 
         items = DOM.add(menu, 'div', {
-          role: 'presentation',
           id: 'menu_' + self.id + '_items',
           'class': self.classPrefix + 'Items'
         });
@@ -29267,7 +29267,7 @@
         return menu;
       },
 
-      selectAndClear : function (value) {
+      selectAndClear: function (value) {
         var self = this;
 
         self.settings.onselect.call(self, value);
@@ -29279,7 +29279,7 @@
         var contextMenu, menuItems, self = this;
         contextMenu = DOM.get('menu_' + self.id);
 
-        menuItems = DOM.select('div[role="option"]', 'menu_' + self.id);
+        menuItems = DOM.select('div[role="menuitem"]', 'menu_' + self.id);
         menuItems.splice(0, 0, contextMenu);
 
         self.keyboardNav = new tinymce.ui.KeyboardNavigation({
@@ -29288,7 +29288,7 @@
           onCancel: function () {
             self.hideMenu();
           },
-          onAction: function (e, id) {          
+          onAction: function (e, id) {
             // process filter value
             if (menuItems.length > 1) {
               if (e.target && e.target.nodeName === "INPUT") {
@@ -29301,10 +29301,10 @@
                     id = item.id;
                   } else {
                     id = DOM.uniqueId();
-                    
+
                     item = self.add({
                       id: id,
-                      role: 'option',
+                      role: 'menuitem',
                       title: val,
                       onclick: function () {
                         self.selectAndClear(this.settings.value);
@@ -29320,7 +29320,7 @@
               if (self.settings.onselect) {
                 self.settings.onselect.call(self, e.target);
               }
-              
+
               self.hideMenu();
             }
 
@@ -29338,7 +29338,7 @@
 
       _updateKeyboardNav: function () {
         // update keyboard nav with new list
-        var items = DOM.select('div[role="option"]:not(.mceMenuItemHidden)', this.id + '');
+        var items = DOM.select('div[role="menuitem"]:not(.mceMenuItemHidden)', this.id + '');
         this.keyboardNav.update(items);
       },
 
@@ -29462,20 +29462,33 @@
           return;
         }
 
-        var tooltip = s.tooltip || '';
-
         var item = DOM.add(menu, 'div', {
           id: o.id,
-          'class': cp + 'Item ' + cp + 'ItemEnabled' + (tooltip ? ' ' + 'mceTooltip' : ''),
-          'data-title': tooltip,
-          'aria-label': tooltip || s.title || ''
+          'class': cp + 'Item ' + cp + 'ItemEnabled'
         });
+
+        if (s.tooltip) {
+          DOM.setAttrib(item, 'data-title', s.tooltip);
+          DOM.addClass(item, 'mceTooltip');
+
+          // sr-only text
+          DOM.add(item, 'span', {
+            'class': 'sr-only',
+            id: o.id + '_sr_only'
+          }, s.tooltip);
+
+          DOM.setAttrib(item, 'aria-describedby', o.id + '_sr_only');
+        }
+
+        if (s.description) {
+          DOM.setAttrib(item, 'aria-describedby', o.id + '_description');
+        }
 
         if (s.html) {
           DOM.addClass(item, 'mceMenuHtml');
           DOM.setHTML(item, s.html);
         } else {
-          DOM.setAttrib(item, 'role', 'option');
+          DOM.setAttrib(item, 'role', 'menuitem');
 
           if ((s.icon || s.icon_src) && (!s.svg && !s.image)) {
             icon = DOM.add(item, 'span', {
@@ -29490,11 +29503,12 @@
 
             DOM.addClass(item, 'mceHasIcon');
           }
-          
+
           if (s.image) {
             DOM.add(item, 'span', {
               'class': 'mceImage',
-              style: 'background-image:url("' + s.image + '")'
+              style: 'background-image:url("' + s.image + '")',
+              role: 'presentation'
             });
           }
 
@@ -29505,15 +29519,14 @@
           }
 
           var txt = DOM.add(item, s.element || 'span', {
-            'class': 'mceText',
-            role: 'presentation'
+            'class': 'mceText'
           }, o.settings.title);
 
           if (s.description) {
             DOM.add(item, 'span', {
-            'class': 'mceDescription',
-            role: 'presentation'
-          }, s.description);
+              'class': 'mceDescription',
+              id: o.id + '_description'
+            }, s.description);
           }
 
           if (o.settings.style) {
