@@ -62,19 +62,31 @@ class JFormFieldKeyValue extends FormField
 
             $values = json_decode($value, true);
 
-            if (empty($values) && strpos($value, ':') !== false && strpos($value, '{') === false) {
+            // not valid json
+            if (empty($values) || json_last_error() !== JSON_ERROR_NONE) {
                 $values = array();
 
-                foreach (explode(',', $value) as $item) {
-                    $pair = explode(':', $item);
+                // If the value is a string with key-value pairs, convert it to an array
+                if (strpos($value, ':') !== false && strpos($value, '{') === false) {
+                    foreach (explode(',', $value) as $item) {
+                        $pair = explode(':', $item);
 
-                    array_walk($pair, function (&$val) {
-                        $val = trim($val, chr(0x22) . chr(0x27) . chr(0x38));
-                    });
+                        array_walk($pair, function (&$val) {
+                            $val = trim($val, chr(0x22) . chr(0x27) . chr(0x38));
+                        });
 
-                    $values[] = array(
-                        'name' => $pair[0],
-                        'value' => $pair[1],
+                        $values[] = array(
+                            'name' => $pair[0],
+                            'value' => $pair[1],
+                        );
+                    }
+                } else {
+                    // where the value is a string with no key-value pairs, use only the "name" key
+                    $values = array(
+                        array(
+                            'name' => $value,
+                            'value' => ''
+                        ),
                     );
                 }
             }
@@ -153,6 +165,9 @@ class JFormFieldKeyValue extends FormField
 
         $str[] = '<div class="form-field-repeatable"' . $sortable . '>';
 
+        // the default field names for the key-value pairs
+        $fieldItem = array('name', 'value');
+
         foreach ($values as $value) {
             $str[] = '<div class="form-field-repeatable-item wf-keyvalue">';
             $str[] = '  <div class="form-field-repeatable-item-group well p-4 card">';
@@ -165,6 +180,15 @@ class JFormFieldKeyValue extends FormField
                 $tmpField->element['multiple'] = true;
 
                 $name = (string) $tmpField->element['name'];
+
+                // if the original value is a string and does not match the field name, use the default field item name
+                if (!isset($value[$name]) && is_string($this->value)) {
+                    $key = $fieldItem[$n] ?? '';
+
+                    if ($key) {
+                        $val = isset($value[$key]) ? $value[$key] : '';
+                    }
+                }
 
                 $val = is_array($value) && isset($value[$name]) ? $value[$name] : '';
 
