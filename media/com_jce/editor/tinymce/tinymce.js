@@ -8242,7 +8242,7 @@
 
         if (node) {
           do {
-            if (node.type === 1) {
+            if (node.type === 1) {            
               // Ignore bogus elements
               if (node.attr('data-mce-bogus')) {
                 continue;
@@ -9759,8 +9759,6 @@
                   return false;
               }
 
-
-
               // Remove attributes not in schema
               if (schema.isValid(tagName, attrName)) {
                   return true;
@@ -10072,7 +10070,7 @@
 
               var node;
 
-              while ((node = iterator.nextNode())) {
+              while ((node = iterator.nextNode())) {                
                   processNode(node);
 
                   if (node.nodeType === 1) {
@@ -10946,7 +10944,7 @@
         var invalidFinder = validate ? function (node) {
           findInvalidChildren(node, invalidChildren);
         } : function () { };
-
+      
         var matches = { nodes: {}, attributes: {} };
 
         var matchFinder = function (node) {
