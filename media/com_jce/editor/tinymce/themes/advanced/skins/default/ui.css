@@ -483,6 +483,10 @@ textarea::placeholder {
     justify-content: space-between;
 }
 
+.mceMenu .mceMenuItems .mceMenuItem:has(.mceDescription) {
+    flex-direction: column;
+}
+
 .mceMenu .mceMenuItems .mceMenuItem>div {
     width: 100%;
 }
@@ -495,6 +499,7 @@ textarea::placeholder {
     padding: 0 8px;
     overflow: hidden;
     width: 100%;
+    flex: 1 0 100%;
 }
 
 .mceMenu .mceMenuItems .mceIcon+.mceText {
@@ -516,6 +521,7 @@ textarea::placeholder {
     overflow: hidden;
     padding: 0 8px;
     width: 100%;
+    flex: 1 0 100%;
 }
 
 .mceMenu .mceMenuItems .mceDescription {
@@ -527,6 +533,7 @@ textarea::placeholder {
     overflow: hidden;
     padding: 0 8px;
     width: 100%;
+    flex: 1 0 100%;
 }
 
 .mceMenu .mceMenuItems pre.mceText {
@@ -1224,6 +1231,10 @@ select.mceNativeListBox {
     background-image: url(../../img/icons.png?@@etag@@);
 }
 
+.mceDefaultSkin .mceSplitButton img.mceAction {
+    background: none;
+}
+
 .mceDefaultSkin .mceSplitButton .mceOpen {
     width: 16px;
     text-align: center;
@@ -1496,6 +1507,12 @@ select.mceNativeListBox {
     width: 1em;
     height: 1em;
     fill: #444;
+}
+
+.mceDefaultSkin img[src$=".svg"].mceIcon,
+.mceDefaultSkin img[src$=".svg"].mceAction {
+    width: 18px;
+    height: 16px;
 }
 
 .mceDefaultSkin .mceIconImage {
@@ -3402,6 +3419,10 @@ select.mceNativeListBox {
 .mceFormControl .mceListBox:focus .mceOpen {
     border-color: #66afe9;
     background: #f5fbfe;
+}
+
+.mceFormControl:has(.mceTextBoxDescription) {
+    flex-direction: column;
 }/* Base hook */
 .mceTooltip {
     position: relative;
