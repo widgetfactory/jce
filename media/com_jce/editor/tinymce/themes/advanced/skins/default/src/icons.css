@@ -24,6 +24,12 @@
     fill: #444;
 }
 
+.mceDefaultSkin img[src$=".svg"].mceIcon,
+.mceDefaultSkin img[src$=".svg"].mceAction {
+    width: 18px;
+    height: 16px;
+}
+
 .mceDefaultSkin .mceIconImage {
     display: flex;
     background: none;

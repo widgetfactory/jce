@@ -36,6 +36,10 @@
     background-image: url(../../img/icons.png?@@etag@@);
 }
 
+.mceDefaultSkin .mceSplitButton img.mceAction {
+    background: none;
+}
+
 .mceDefaultSkin .mceSplitButton .mceOpen {
     width: 16px;
     text-align: center;
