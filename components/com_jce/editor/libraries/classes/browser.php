@@ -1223,12 +1223,15 @@ class WFFileBrowser extends CMSObject
                 $folders = $this->getFolders($store['path']);
 
                 array_walk($folders, function (&$item) use ($store) {
-                    $path = trim($item['id'], '/');
-
+                    $path = $item['id'];
+                    
                     // remove the $store['path'] value from the beginning of the id, must be multibyte safe
                     if (WFUtility::safe_strpos($item['id'], $store['path']) === 0) {
                         $item['id'] = WFUtility::safe_substr($item['id'], WFUtility::safe_strlen($store['path']));
                     }
+
+                    $item['id'] = trim($item['id'], '/');
+                    $path = trim($path, '/');
 
                     $item['id']     = $store['prefix'] . ':' . $item['id'];
                     $item['path']   = $path;
@@ -1251,11 +1254,13 @@ class WFFileBrowser extends CMSObject
             // get folder list
             $folders = $this->getFolders($source);
 
-            array_walk($folders, function (&$item) use ($store, $path) {
+            array_walk($folders, function (&$item) use ($store, $path) {                
                 // remove the $store['path'] value from the beginning of the id, must be multibyte safe
                 if (WFUtility::safe_strpos($item['id'], $store['path']) === 0) {
                     $item['id'] = WFUtility::safe_substr($item['id'], WFUtility::safe_strlen($store['path']));
                 }
+
+                $item['id'] = trim($item['id'], '/');
 
                 $item['id']     = $store['prefix'] . ':' . $item['id'];
                 $item['path']   = WFUtility::makePath($path, $item['name']);
@@ -1340,8 +1345,11 @@ class WFFileBrowser extends CMSObject
                 $id = trim($folder['id'], '/');
 
                 if ($treedir) {
+                    // resolve $treedir
+                    $resolved = $this->resolvePath($treedir);
+                    
                     // check if the folder is open, ie: the path matches the current directory
-                    $open = (bool) preg_match('#' . preg_quote($folder['path']) . '\b#', $treedir);
+                    $open = (bool) preg_match('#' . preg_quote($folder['path']) . '\b#', $resolved);
                 }
 
                 $result .= '

@@ -827,11 +827,11 @@
             }
 
             // contains non-standard characters
-            if (/[^\w\.\-\s \/]/i.test(s)) {
+            if (/[^\w\.\:\-\s \/]/i.test(s)) {
                 for (var i = 0, ln = s.length; i < ln; i++) {
                     var ch = s[i];
                     // only process on possible restricted characters or utf-8 letters/numbers
-                    if (/[^\w\.\-\s \/]/i.test(ch)) {
+                    if (/[^\w\.\:\-\s \/]/i.test(ch)) {
                         // return false on character less than 127, eg: &?@* etc.
                         if (_toUnicode(ch.charCodeAt(0)) < '\\u007F') {
                             return false;
@@ -902,6 +902,11 @@
                 src = src.substr(0, src.indexOf('&'));
             }
 
+            // make sure its relative
+            if (src && /:\/\//.test(src)) {
+                src = Wf.URL.toRelative(src);
+            }
+
             // remove slashes
             src = this._trimPath(src);
 
@@ -923,11 +928,6 @@
 
             // store directory
             this._setDir(Wf.String.encodeURI(dir));
-
-            // make sure its relative
-            if (src && /:\/\//.test(src)) {
-                src = Wf.URL.toRelative(src);
-            }
 
             // set loading status
             this.setStatus({
