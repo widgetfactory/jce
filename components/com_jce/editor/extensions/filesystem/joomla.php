@@ -242,6 +242,12 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getFolders($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
+        $relative = trim($relative, '/');
+
+        if (empty($relative)) {
+            $relative = $this->getRootDir();
+        }
+        
         $path = $this->toAbsolute($relative);
         $path = WFUtility::fixPath($path);
 
@@ -307,6 +313,12 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getFiles($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
+        $relative = trim($relative, '/');
+
+        if (empty($relative)) {
+            $relative = $this->getRootDir();
+        }
+        
         $path = $this->toAbsolute($relative);
         $path = WFUtility::fixPath($path);
 
