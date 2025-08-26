@@ -39,7 +39,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-direction: column;
 }
 
 .mceMenu .mceMenuItems .mceMenuItem>div {
@@ -201,6 +200,7 @@
 
 .mceMenu .mceMenuItems .mceMenuHtml {
     position: relative;
+    flex-direction: column;
 }
 
 .mceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
