@@ -75,3 +75,7 @@
     border-color: #66afe9;
     background: #f5fbfe;
 }
+
+.mceFormControl:has(.mceTextBoxDescription) {
+    flex-direction: column;
+}

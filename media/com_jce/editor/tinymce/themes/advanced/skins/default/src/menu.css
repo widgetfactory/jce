@@ -41,6 +41,10 @@
     justify-content: space-between;
 }
 
+.mceMenu .mceMenuItems .mceMenuItem:has(.mceDescription) {
+    flex-direction: column;
+}
+
 .mceMenu .mceMenuItems .mceMenuItem>div {
     width: 100%;
 }
@@ -53,6 +57,7 @@
     padding: 0 8px;
     overflow: hidden;
     width: 100%;
+    flex: 1 0 100%;
 }
 
 .mceMenu .mceMenuItems .mceIcon+.mceText {
@@ -74,6 +79,7 @@
     overflow: hidden;
     padding: 0 8px;
     width: 100%;
+    flex: 1 0 100%;
 }
 
 .mceMenu .mceMenuItems .mceDescription {
@@ -85,6 +91,7 @@
     overflow: hidden;
     padding: 0 8px;
     width: 100%;
+    flex: 1 0 100%;
 }
 
 .mceMenu .mceMenuItems pre.mceText {
