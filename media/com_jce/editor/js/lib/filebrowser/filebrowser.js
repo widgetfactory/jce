@@ -902,17 +902,17 @@
                 src = src.substr(0, src.indexOf('&'));
             }
 
-            // make sure its relative
-            if (src && /:\/\//.test(src)) {
-                src = Wf.URL.toRelative(src);
-            }
-
             // remove slashes
             src = this._trimPath(src);
 
             // invalid src or not a local file resource
             if (!this._validatePath(src)) {
                 src = '';
+            }
+
+            // make sure its relative
+            if (src && /:\/\//.test(src)) {
+                src = Wf.URL.toRelative(src);
             }
 
             // get directory from cookie
