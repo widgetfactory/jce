@@ -198,6 +198,14 @@ main>div+div+div {
   padding: 5px 1px;
 }
 
+.root #check-all input[type="checkbox"] {
+  display: none;
+}
+
+.root .item-list li input[type="checkbox"]:disabled {
+  visibility: hidden;
+}
+
 #browser-list-limit {
   margin: 0;
   position: relative;
@@ -436,6 +444,7 @@ div#info-comment {
 
 #check-all {
   padding: 0 7px;
+  min-width: 32px;
 }
 
 .asc [class*="-asc"] {

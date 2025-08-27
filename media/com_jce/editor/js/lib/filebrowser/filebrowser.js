@@ -983,10 +983,14 @@
             // empty list
             $('#item-list').empty();
 
-            $('#browser').toggleClass('root', this._isRoot());
+            var isRoot = this._isRoot();
 
-            if (!this._isRoot()) {
-                //h += '<li class="folder folder-up" title="Up"><span class="uk-width-0-10"></span><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i><a class="uk-flex-item-auto" href="#">...</a></li>';
+            $('#browser').toggleClass('root', isRoot);
+
+            if (isRoot) {
+                self._hideActions(['.upload', '.folder-new']);
+            } else {
+                self._showActions(['.upload', '.folder-new']);
             }
 
             if (o.folders.length) {
@@ -1041,7 +1045,11 @@
                     });
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
-                    h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
+                    if (isRoot) {
+                        h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" disabled /></label>';
+                    } else {
+                        h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
+                    }
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i>';
                     h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + name + '</a>';
                     h += '  <span class="uk-width-6-10 uk-item-date uk-hidden-mini">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
@@ -1660,8 +1668,8 @@
             if (!this._isRoot()) {
                 $('#folder-list').append('<li class="folder-up" title="Up"><a href="#">...</a></li>');
 
-                // create tree nodes
-                if (this._treeLoaded()) {
+                // create tree nodes if there is a valid return path
+                if (this._treeLoaded() && o.path) {
                     $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
 
                     /// don't scroll on tree click
@@ -2489,6 +2497,18 @@
             };
         },
 
+        _hideActions: function (actions) {
+            $.each(actions, function (i, action) {
+                $(action, '#browser-actions').addClass('uk-hidden').attr('aria-hidden', true).prop('disabled', true);
+            });
+        },
+
+        _showActions: function (actions) {
+            $.each(actions, function (i, action) {
+                $(action, '#browser-actions').removeClass('uk-hidden').removeAttr('aria-hidden').removeAttr('disabled');
+            });
+        },
+
         /**
          * Hide all buttons
          */
@@ -2519,7 +2539,7 @@
          * @param {String} button The button to hide
          */
         _hideButton: function (button) {
-            $(button).addClass('uk-hidden').attr('aria-hidden', true);
+            $(button).addClass('uk-hidden').attr('aria-hidden', true).prop('disabled', true);
         },
 
         /**
@@ -2607,7 +2627,7 @@
                 }
 
                 if (show) {
-                    $(button).removeClass('uk-hidden').removeAttr('aria-hidden');
+                    $(button).removeClass('uk-hidden').removeAttr('aria-hidden').removeAttr('disabled');
                 } else {
                     $(button).addClass('uk-hidden').attr('aria-hidden', false);
                 }
