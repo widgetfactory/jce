@@ -1796,6 +1796,11 @@ class WFFileBrowser extends CMSObject
         // check destination path
         WFUtility::checkPath($dir);
 
+        // an upload cannot be made into the primary directory tree
+        if (empty($dir)) {
+            throw new InvalidArgumentException('Upload Failed: Invalid target directory');
+        }
+
         // extract the path from the complex path, remove prefix
         $dir = $this->resolvePath($dir);
 
@@ -2283,6 +2288,11 @@ class WFFileBrowser extends CMSObject
 
         // path where the new folder will be created
         $target = array_shift($args);
+
+        // a folder cannot be created in the primary directory tree
+        if (empty($target)) {
+            throw new InvalidArgumentException('Action Failed: Invalid target directory');
+        }
 
         // the name of the new folder
         $new = array_shift($args);
