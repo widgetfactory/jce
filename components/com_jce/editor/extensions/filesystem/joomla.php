@@ -13,8 +13,8 @@
 
 use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
@@ -140,6 +140,10 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function toAbsolute($path)
     {
+        if (empty($path)) {
+            $path = $this->getRootDir();
+        }
+        
         return WFUtility::makePath($this->getBaseDir(), $path);
     }
 
@@ -185,7 +189,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->toAbsolute($path);
         }
 
-        if (Folder::exists($path)) {
+        if (is_dir($path)) {
             $files = Folder::files($path, '.', $recurse, true, array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html', 'thumbs.db'));
 
             foreach ($files as $file) {
@@ -209,7 +213,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->toAbsolute($path);
         }
 
-        if (Folder::exists($path)) {
+        if (is_dir($path)) {
             $files = Folder::files($path, '.', $recurse, false, array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html', 'thumbs.db'));
 
             return count($files);
@@ -231,7 +235,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->toAbsolute($path);
         }
 
-        if (Folder::exists($path)) {
+        if (is_dir($path)) {
             $folders = Folder::folders($path, '.', false, false, array('.svn', 'CVS', '.DS_Store', '__MACOSX'));
 
             return count($folders);
@@ -242,18 +246,17 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getFolders($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
+        // trim to remove leading and trailing slashes
         $relative = trim($relative, '/');
 
-        if (empty($relative)) {
-            $relative = $this->getRootDir();
-        }
-        
+        // resolve to absolute path, defaulting to root directory if empty
         $path = $this->toAbsolute($relative);
         $path = WFUtility::fixPath($path);
 
-        if (!Folder::exists($path)) {
-            $relative = '/';
-            $path = $this->getBaseDir();
+        // if the path does not exist, set to root directory
+        if (!is_dir($path)) {
+            $relative = '';
+            $path = $this->toAbsolute($relative);
         }
 
         $list = Folder::folders($path, $filter, $depth, true);
@@ -313,18 +316,17 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getFiles($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
+        // trim to remove leading and trailing slashes
         $relative = trim($relative, '/');
 
-        if (empty($relative)) {
-            $relative = $this->getRootDir();
-        }
-        
+        // resolve to absolute path, defaulting to root directory if empty
         $path = $this->toAbsolute($relative);
         $path = WFUtility::fixPath($path);
 
-        if (!Folder::exists($path)) {
-            $relative = '/';
-            $path = $this->getBaseDir();
+        // if the path does not exist, set to root directory
+        if (!is_dir($path)) {
+            $relative = '';
+            $path = $this->toAbsolute($relative);
         }
 
         // excluded files
@@ -821,6 +823,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             'width' => '',
             'height' => '',
         );
+
         if (file_exists($path)) {
             $dim = @getimagesize($path);
             $data = array(
@@ -852,7 +855,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             $x = 1;
 
-            while (File::exists($destination)) {
+            while (is_file($destination)) {
                 if (strpos($suffix, '$') !== false) {
                     $tmpname = $name . str_replace('$', $x, $suffix);
                 } else {
