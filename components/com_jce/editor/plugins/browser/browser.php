@@ -2,7 +2,7 @@
 /**
  * @package     JCE
  * @subpackage  Editor
-*
+ *
  * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -24,7 +24,7 @@ class WFBrowserPlugin extends WFMediaManager
     private function isMediaField()
     {
         $app = Factory::getApplication();
-        return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid', $app->input->getCmd('element', ''));    
+        return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid', $app->input->getCmd('element', ''));
     }
 
     /**
@@ -60,27 +60,32 @@ class WFBrowserPlugin extends WFMediaManager
         return $value;
     }
 
-    protected function getFileBrowserConfig($config = array())
+    /*protected function getFileBrowserConfig($config = array())
     {
-        $app = Factory::getApplication();
+    $app = Factory::getApplication();
 
-        $config = parent::getFileBrowserConfig($config);
+    $config = parent::getFileBrowserConfig($config);
 
-        // update folder path if a value is passed from a mediafield url
-        if ($this->isMediaField()) {
-            $folder = $app->input->getString('mediafolder', '');
+    // update folder path if a value is passed from a mediafield url
+    if ($this->isMediaField()) {
+    $folder = $app->input->getString('mediafolder', '');
 
-            if ($folder) {
-                if (empty($config['dir'])) {
-                    $config['dir'] = 'images';
-                }
+    if ($folder) {
+    if (empty($config['dir'])) {
+    $config['dir'] = WFUtility::makePath('images', trim(rawurldecode($folder)));
+    } else {
+    $root = $config['dir'][0];
+    $path = WFUtility::makePath('images', trim(rawurldecode($folder)));
 
-                $config['dir'] = WFUtility::makePath($config['dir'], trim(rawurldecode($folder)));
-            }
-        }
-
-        return $config;
+    $config['dir'] = array(
+    $root . '/' . WFUtility::makePath('images', trim(rawurldecode($folder))),
+    );
     }
+    }
+    }
+
+    return $config;
+    }*/
 
     public function __construct($config = array())
     {
@@ -145,7 +150,7 @@ class WFBrowserPlugin extends WFMediaManager
             $this->setFileTypes($filetypes);
         }
 
-        $folder = $app->input->getPath('folder', '');
+        $folder = $app->input->getPath('mediafolder', '');
 
         if ($folder) {
             // clean
@@ -160,23 +165,69 @@ class WFBrowserPlugin extends WFMediaManager
 
             // rejoin parts
             $folder = implode('/', $parts);
-            
+
+            // clean path again
+            $folder = WFUtility::cleanPath($folder);
+
             // still intact after clean?
             if ($folder) {
-                $filesystem = $browser->getFileSystem();
+                // check this path is within an existing store
+                $store = $browser->getDirectoryStoreFromPath($folder);
 
-                // check path exists
-                if ($filesystem->is_dir($folder)) {
-                    // process any variables in the path
-                    $path = $filesystem->toRelative($folder, false);
+                if (!empty($store)) {
+                    $filesystem = $browser->getFileSystem();
 
-                    if ($browser->checkPathAccess($path)) {
-                        // set new path for browser
-                        $browser->set('source', $folder);
+                    // check path exists
+                    if ($filesystem->is_dir($folder)) {
+
+                        // process any variables in the path
+                        $path = $filesystem->toRelative($folder, false);
+
+                        if ($browser->checkPathAccess($path)) {
+                            // set new path for browser
+                            $browser->set('source', $folder);
+                        }
                     }
                 }
             }
         }
+    }
+    /**
+     * Update the File Browser configuration with the current media folder.
+     *
+     * @param array $config Configuration array to update.
+     * @return array $config Updated configuration array.
+     */
+    protected function getFileBrowserConfig($config = array())
+    {
+        $app = Factory::getApplication();
+
+        $config = parent::getFileBrowserConfig($config);
+
+        // update folder path if a value is passed from a mediafield url
+        if ($this->isMediaField()) {
+            $folder = $app->input->getString('mediafolder', '');
+
+            if ($folder) {                
+                if (empty($config['dir'])) {
+                    $path = WFUtility::makePath('images', trim(rawurldecode($folder)));
+                } else {
+                    $root = $config['dir'][0];
+                    $path = WFUtility::makePath($root['path'], trim(rawurldecode($folder)));
+                }
+
+                $hash = md5($path);
+
+                $config['dir'] = array(
+                    $hash => array(
+                        'label'=> '',
+                        'path' => $path,
+                    ),
+                );
+            }
+        }
+
+        return $config;
     }
 
     public function setFileTypes($filetypes = '')

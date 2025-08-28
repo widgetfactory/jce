@@ -329,6 +329,8 @@ class WFFileBrowser extends CMSObject
      */
     public function getSourceDir($path)
     {
+        $path = $this->get('source', $path);
+        
         if (empty($path)) {
             return '';
         }
@@ -478,7 +480,7 @@ class WFFileBrowser extends CMSObject
         return $dir;
     }
 
-    private function getDirectoryStoreFromPath($path)
+    public function getDirectoryStoreFromPath($path)
     {
         $prefix = $this->parsePath($path); // get the prefix and remove it from the path value
 
@@ -1027,8 +1029,11 @@ class WFFileBrowser extends CMSObject
             }
         }
 
+        // get the store array from the complex path path, eg: prefix:path
+        $store = $this->getDirectoryStoreFromPath($path);
+
         // no path so get the default directories
-        if (empty($path)) {
+        if (empty($path) || empty($store)) {
             $store = $this->getDirectoryStore();
 
             if (!empty($store)) {
@@ -1063,8 +1068,6 @@ class WFFileBrowser extends CMSObject
             }
         } else {
             // get the store array from the complex path path, eg: prefix:path
-            $store = $this->getDirectoryStoreFromPath($path);
-
             if (!$prefix) {
                 // make relative to the store path, eg: images/stories => stories
                 if (WFUtility::safe_strpos($path, $store['path']) === 0) {
