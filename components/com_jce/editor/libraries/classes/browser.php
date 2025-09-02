@@ -419,11 +419,13 @@ class WFFileBrowser extends CMSObject
         // get the store array from the complex source path, eg: prefix:path
         $store = $this->getDirectoryStoreFromPath($path);
 
-        // extract the path from the complex source path, eg: prefix:path
-        $path = $this->extractPath($path);
+        if ($store) {
+            // extract the path from the complex source path, eg: prefix:path
+            $path = $this->extractPath($path);
 
-        // make the source relative to the store path, eg: stories => images/stories
-        $path = WFUtility::makePath($store['path'], $path);
+            // make the source relative to the store path, eg: stories => images/stories
+            $path = WFUtility::makePath($store['path'], $path);
+        }
 
         return $path;
     }
@@ -480,7 +482,7 @@ class WFFileBrowser extends CMSObject
         return $dir;
     }
 
-    public function getDirectoryStoreFromPath($path)
+    public function getDirectoryStoreFromPath($path, $withKey = false)
     {
         $prefix = $this->parsePath($path); // get the prefix and remove it from the path value
 
@@ -499,6 +501,10 @@ class WFFileBrowser extends CMSObject
         }
 
         if (isset($store[$prefix])) {
+            if ($withKey) {
+                return $store;
+            }
+            
             // return the store entry for the prefix
             return $store[$prefix];
         }
@@ -1796,16 +1802,27 @@ class WFFileBrowser extends CMSObject
         // decode and cast as string
         $dir = rawurldecode($dir);
 
+        // add random string
+        if ($upload['add_random']) {
+            $name = $name . '_' . substr(md5(uniqid(rand(), 1)), 0, 5);
+        }
+
+        // rebuild file name - name + extension
+        $name = $name . '.' . $ext;
+
+        // pass to onBeforeUpload
+        $this->fireEvent('onBeforeUpload', array(&$file, &$dir, &$name));
+        
         // check destination path
         WFUtility::checkPath($dir);
+
+        // extract the path from the complex path, remove prefix
+        $dir = $this->resolvePath($dir);
 
         // an upload cannot be made into the primary directory tree
         if (empty($dir)) {
             throw new InvalidArgumentException('Upload Failed: Invalid target directory');
         }
-
-        // extract the path from the complex path, remove prefix
-        $dir = $this->resolvePath($dir);
 
         // check path exists
         if (!$filesystem->is_dir($dir)) {
@@ -1835,22 +1852,10 @@ class WFFileBrowser extends CMSObject
             }
         }
 
-        // add random string
-        if ($upload['add_random']) {
-            $name = $name . '_' . substr(md5(uniqid(rand(), 1)), 0, 5);
-        }
-
-        // rebuild file name - name + extension
-        $name = $name . '.' . $ext;
-
         $contentType = $_SERVER['CONTENT_TYPE'];
 
         // Only multipart uploading is supported for now
         if ($contentType && strpos($contentType, 'multipart') !== false) {
-
-            // pass to onBeforeUpload
-            $this->fireEvent('onBeforeUpload', array(&$file, &$dir, &$name));
-
             // upload file with filesystem
             $result = $filesystem->upload('multipart', trim($file['tmp_name']), $dir, $name);
 
@@ -1875,7 +1880,8 @@ class WFFileBrowser extends CMSObject
                 $name = WFUtility::mb_basename($result->path);
 
                 if (empty($result->url)) {
-                    $result->url = WFUtility::makePath($filesystem->getBaseURL(), $dir, $name);
+                    $relative = WFUtility::makePath($dir, $name);
+                    $result->url = WFUtility::makePath($filesystem->getBaseURL(), $relative);
                 }
 
                 // trim slashes
