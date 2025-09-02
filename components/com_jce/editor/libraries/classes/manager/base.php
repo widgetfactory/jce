@@ -139,6 +139,10 @@ class WFMediaManagerBase extends WFEditorPlugin
         return (object) $item;
     }
 
+    public function onBeforeUpload(&$file, &$dir, &$name)
+    {
+    }
+
     public function onUpload($file, $relative = '')
     {
     }
