@@ -47684,6 +47684,9 @@
         ed.settings.allow_script_urls = true;
       }
 
+      var shortEndedElements = {};
+      var booleanAttributes = {};
+
       ed.addCommand('InsertShortCode', function (ui, html) {
         if (ed.settings.code_protect_shortcode) {
           html = processShortcode(html, 'pre');
@@ -47726,6 +47729,17 @@
           });
 
           value = processPhp(value);
+        }
+
+        // link[rel="stylesheet"]
+        if (/<link[^>]*?rel="stylesheet"[^>]*?>/gi.test(value)) {
+          value = value.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, function (match) {
+            if (!ed.getParam('code_allow_style')) {
+              return '';
+            }
+
+            return createCodePre(match, 'link');
+          });
         }
 
         return value;
@@ -47862,7 +47876,7 @@
         return ed.schema.isValid(tag, attr);
       }
 
-      function sanitizeNode(node) {
+      function sanitizeNode(node, raw) {
         const html = [];
 
         switch (node.nodeType) {
@@ -47888,6 +47902,14 @@
                 continue;
               }
 
+              if (booleanAttributes[name]) {
+                // boolean attribute, so no value
+                if (value === "" || value === "true" || value === name) {
+                  html.push(" ", name);
+                  continue;
+                }
+              }
+
               html.push(
                 " ",
                 name,
@@ -47897,23 +47919,34 @@
               );
             }
 
-            html.push(">");
+            if (shortEndedElements[tagName]) {
+              // self-closing tag
+              if (ed.settings.schema === 'html5-strict') {
+                html.push(">");
+              } else {
+                html.push(" />");
+              }
+            } else {
+              html.push(">");
 
-            // recurse into children
-            for (let child of Array.from(node.childNodes)) {
-              html.push(sanitizeNode(child));
+              // recurse into children
+              for (let child of Array.from(node.childNodes)) {
+                html.push(sanitizeNode(child));
+              }
+
+              // closing tag
+              html.push("</", tagName, ">");
             }
 
-            // closing tag
-            html.push("</", tagName, ">");
             break;
           }
 
           case 3: {
-            const text = node.nodeValue;
-            //if (text.trim()) {
-              html.push(ed.dom.encode(text, true));
-            //}
+            var text = node.nodeValue;
+
+            text = text ;
+
+            html.push(text);
             break;
           }
 
@@ -48218,8 +48251,21 @@
           blockElements.push(blockName);
         });
 
+        // store inline elements from schema map
         each(ed.schema.getTextInlineElements(), function (inline, name) {
           inlineElements.push(name);
+        });
+
+        // store short ended elements from schema map
+        each(ed.schema.getShortEndedElements(), function (shortEnded, name) {
+          name = name.toLowerCase();
+          shortEndedElements[name] = true;
+        });
+
+        // store boolean attributes from schema map
+        each(ed.schema.getBoolAttrs(), function (boolAttr, name) {
+          name = name.toLowerCase();
+          booleanAttributes[name] = true;
         });
 
         if (ed.settings.code_protect_shortcode) {
@@ -48257,12 +48303,18 @@
         });
 
         // Convert script elements to span placeholder
-        ed.parser.addNodeFilter('script,style', function (nodes) {
+        ed.parser.addNodeFilter('script,style,link', function (nodes) {
           var i = nodes.length,
             node;
 
           while (i--) {
             var node = nodes[i];
+
+            // only allow link[rel="stylesheet"]
+            if (node.name == 'link' && node.attr('rel') != 'stylesheet') {
+              node.remove();
+              continue;
+            }
 
             // remove any code spans that are added to json-like syntax in code blocks
             if (node.firstChild) {
@@ -48645,7 +48697,7 @@
         }
 
         // test for PHP, Script or Style
-        if (/<(\?|script|style)/.test(o.content)) {
+        if (/<(\?|script|style|link)/.test(o.content)) {
           // Remove javascript if not enabled
           if (!ed.settings.code_allow_script) {
             o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
@@ -48653,6 +48705,7 @@
 
           if (!ed.settings.code_allow_style) {
             o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
+            o.content = o.content.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, '');
           }
 
           o.content = processPhp(o.content);
