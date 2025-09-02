@@ -60,33 +60,6 @@ class WFBrowserPlugin extends WFMediaManager
         return $value;
     }
 
-    /*protected function getFileBrowserConfig($config = array())
-    {
-    $app = Factory::getApplication();
-
-    $config = parent::getFileBrowserConfig($config);
-
-    // update folder path if a value is passed from a mediafield url
-    if ($this->isMediaField()) {
-    $folder = $app->input->getString('mediafolder', '');
-
-    if ($folder) {
-    if (empty($config['dir'])) {
-    $config['dir'] = WFUtility::makePath('images', trim(rawurldecode($folder)));
-    } else {
-    $root = $config['dir'][0];
-    $path = WFUtility::makePath('images', trim(rawurldecode($folder)));
-
-    $config['dir'] = array(
-    $root . '/' . WFUtility::makePath('images', trim(rawurldecode($folder))),
-    );
-    }
-    }
-    }
-
-    return $config;
-    }*/
-
     public function __construct($config = array())
     {
         $app = Factory::getApplication();
@@ -150,6 +123,23 @@ class WFBrowserPlugin extends WFMediaManager
             $this->setFileTypes($filetypes);
         }
 
+        $folder = $this->getMediaFolder();
+
+        if ($folder) {
+            // process any variables in the path
+            $path = $browser->getFileSystem()->toRelative($folder, false);
+
+            if ($browser->checkPathAccess($path)) {
+                // set new path for browser
+                $browser->set('source', $folder);
+            }
+        }
+    }
+
+    private function getMediaFolder()
+    {
+        $app = Factory::getApplication();
+
         $folder = $app->input->getPath('mediafolder', '');
 
         if ($folder) {
@@ -171,27 +161,69 @@ class WFBrowserPlugin extends WFMediaManager
 
             // still intact after clean?
             if ($folder) {
+                $browser = $this->getFileBrowser();
+
                 // check this path is within an existing store
                 $store = $browser->getDirectoryStoreFromPath($folder);
 
                 if (!empty($store)) {
-                    $filesystem = $browser->getFileSystem();
-
                     // check path exists
-                    if ($filesystem->is_dir($folder)) {
-
-                        // process any variables in the path
-                        $path = $filesystem->toRelative($folder, false);
-
-                        if ($browser->checkPathAccess($path)) {
-                            // set new path for browser
-                            $browser->set('source', $folder);
-                        }
+                    if ($browser->getFileSystem()->is_dir($folder)) {
+                        return $folder;
                     }
                 }
             }
         }
+
+        return '';
     }
+
+    /**
+     * Normalize a Joomla Media Field path
+     *
+     * @param  string   $folder
+     *
+     * @return string
+     */
+    private function normalizeLocalJoomlaFolder($folder)
+    {
+        if (empty($folder)) {
+            return '';
+        }
+
+        $folder = rawurldecode($folder);
+
+        // shouldn't be an absoute URL so return empty string
+        if (strpos($folder, '://') !== false) {
+            return '';
+        }
+
+        $pos = strpos($folder, ':');
+
+        if ($pos === false) {
+            return $folder;
+        }
+
+        $scheme = substr($folder, 0, $pos);
+        $path = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
+
+        $map = array(
+            'local-images' => 'images',
+            'local-files' => 'files',
+        );
+
+        if (isset($map[$scheme])) {
+            // trim to remove slashes
+            $path = trim($path, '/');            
+            // concatenate the path with the mapped folder
+            $folder = $map[$scheme] . '/' . $path;
+            // trim to remove slashes
+            $folder = trim($folder, '/');
+        }
+
+        return $folder;
+    }
+
     /**
      * Update the File Browser configuration with the current media folder.
      *
@@ -206,25 +238,49 @@ class WFBrowserPlugin extends WFMediaManager
 
         // update folder path if a value is passed from a mediafield url
         if ($this->isMediaField()) {
+            // get the mediafolder value from a JCE Media Field if any
             $folder = $app->input->getString('mediafolder', '');
 
-            if ($folder) {                
-                if (empty($config['dir'])) {
-                    $path = WFUtility::makePath('images', trim(rawurldecode($folder)));
-                } else {
-                    $root = $config['dir'][0];
-                    $path = WFUtility::makePath($root['path'], trim(rawurldecode($folder)));
+            $folder = trim(rawurldecode($folder));
+
+            // get a default root folder value
+            $root = empty($config['dir']) ? array('path' => '') : reset($config['dir']);
+
+            if ($app->input->getInt('converted', 0) === 1) {
+                // get the path from a converted media field
+                $folder = $app->input->getString('path', '');
+
+                // normalize the folder path of Joomla Media Field, creating a local path, eg: local-images:/folder/subfolder => images/folder/subfolder
+                $folder = $this->normalizeLocalJoomlaFolder($folder);
+
+                if ($folder) {
+                    $tmpPath = $folder . '/';
+                    
+                    foreach ($config['dir'] as $key => $store) {
+                        $base = trim($store['path'], '/');
+
+                        // check if the folder is within any directory store path
+                        if ($tmpPath === $base || strpos($tmpPath, $base . '/') === 0) {
+                            $root['path'] = $tmpPath;
+                            break;
+                        }
+                    }
+                    
+                    // reset folder
+                    $folder = '';
                 }
-
-                $hash = md5($path);
-
-                $config['dir'] = array(
-                    $hash => array(
-                        'label'=> '',
-                        'path' => $path,
-                    ),
-                );
             }
+
+            $path = WFUtility::makePath($root['path'], $folder);
+            $path = trim($path, '/');
+            $hash = md5($path);
+
+            $config['dir'] = array(
+                $hash => array(
+                    'label' => '',
+                    'path' => $path,
+                ),
+            );
         }
 
         return $config;
@@ -291,11 +347,58 @@ class WFBrowserPlugin extends WFMediaManager
         }
     }
 
+    public function onBeforeUpload(&$file, &$dir, &$name)
+    {
+        $app = Factory::getApplication();
+
+        // check if this is a media field upload, as it will not send a target upload folder
+        if ($this->isMediaField()) {
+            // only for inline uploads outside of the dialog
+            if ($app->input->getInt('inline', 0) === 1) {
+                if (empty($dir)) {
+                    // get the mediafolder for a JCE Media Field
+                    $folder = $app->input->getString('mediafolder', '');
+
+                    $browser = $this->getFileBrowser();
+
+                    // for the JCE Media Field, set the default root folder
+                    $dirStore = $browser->get('dir');
+                    $key = array_key_first($dirStore);
+                    $dir = $key . ':';
+
+                    // get the path from a converted media field
+                    if ($app->input->getInt('converted', 0) === 1) {
+                        $folder = $app->input->getString('path', '');
+
+                        $folder = $this->normalizeLocalJoomlaFolder($folder);
+
+                        if ($folder) {
+                            // check if the folder is within any directory store path
+                            foreach ($dirStore as $key => $store) {
+                                // trim trailing slashes
+                                $base = trim($store['path'], '/');
+
+                                // check if the folder is within any directory store path
+                                if ($folder === $base || strpos($folder, $base . '/') === 0) {
+                                    $dir = $key . ':';
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // pass to parent method
+        parent::onBeforeUpload($file, $dir, $name);
+    }
+
     public function onUpload($file, $relative = '')
     {
-        parent::onUpload($file, $relative);
-
         $app = Factory::getApplication();
+
+        parent::onUpload($file, $relative);
 
         // inline upload
         if ($app->input->getInt('inline', 0) === 1) {
