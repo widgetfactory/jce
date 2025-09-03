@@ -11,7 +11,7 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\Folder;
 
 class WFLinkBrowser_Joomlalinks
 {

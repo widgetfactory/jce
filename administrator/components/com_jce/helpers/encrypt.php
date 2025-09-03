@@ -7,7 +7,7 @@
  * @since 2.7
  */
 // Protection against direct access
-defined('JPATH_PLATFORM') or die();
+\defined('_JEXEC') or die;
 
 use Defuse\Crypto\Key;
 use Defuse\Crypto\Encoding;

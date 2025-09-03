@@ -7,7 +7,7 @@
  */
 
 // Protection against direct access
-defined('JPATH_PLATFORM') or die();
+\defined('_JEXEC') or die;
 
 /**
  * AES implementation in PHP (c) Chris Veness 2005-2013.
