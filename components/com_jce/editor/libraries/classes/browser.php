@@ -1802,6 +1802,9 @@ class WFFileBrowser extends CMSObject
         // decode and cast as string
         $dir = rawurldecode($dir);
 
+        // get upload settings from the config
+        $upload = $this->get('upload');
+
         // add random string
         if ($upload['add_random']) {
             $name = $name . '_' . substr(md5(uniqid(rand(), 1)), 0, 5);
@@ -1833,8 +1836,6 @@ class WFFileBrowser extends CMSObject
         if (!$this->checkPathAccess($dir)) {
             throw new InvalidArgumentException('Upload Failed: Access to the target directory is restricted');
         }
-
-        $upload = $this->get('upload');
 
         // Check file number limits
         if (!empty($upload['total_files'])) {
