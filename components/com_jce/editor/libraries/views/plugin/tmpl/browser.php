@@ -13,7 +13,7 @@
  use Joomla\CMS\Client\ClientHelper;
  use Joomla\CMS\Factory;
  use Joomla\CMS\Filesystem\File;
- use Joomla\CMS\Filesystem\Folder;
+ use Joomla\Filesystem\Folder;
  use Joomla\CMS\Language\Text;
  use Joomla\CMS\Uri\Uri;
  
