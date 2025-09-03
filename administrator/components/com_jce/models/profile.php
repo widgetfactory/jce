@@ -53,6 +53,15 @@ class JceModelProfile extends AdminModel
      */
     protected $text_prefix = 'COM_JCE';
 
+    public function __construct($config = array())
+    {
+        if ($this instanceof DispatcherAwareInterface) {
+            $this->setDispatcher(Factory::getApplication()->getDispatcher());
+        }
+
+        parent::__construct($config);
+    }
+
     /**
      * Returns a Table object, always creating it.
      *
