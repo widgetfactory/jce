@@ -11,7 +11,7 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
@@ -21,6 +21,7 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
+use Joomla\Event\DispatcherAwareInterface;
 
 require JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php';
 
@@ -176,6 +177,10 @@ class JceModelProfile extends AdminModel
 
     public function getForm($data = array(), $loadData = true)
     {        
+        if ($this instanceof DispatcherAwareInterface) {
+            $this->setDispatcher(Factory::getApplication()->getDispatcher());
+        }
+        
         FormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
 
         // Get the setup form.

@@ -15,6 +15,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Table\Table;
+use Joomla\Event\DispatcherAwareInterface;
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/profiles.php';
 
@@ -30,6 +31,10 @@ class JceModelProfiles extends ListModel
      */
     public function __construct($config = array())
     {
+        if ($this instanceof DispatcherAwareInterface) {
+            $this->setDispatcher(Factory::getApplication()->getDispatcher());
+        }
+        
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = array(
                 'id', 'id',

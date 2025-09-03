@@ -75,7 +75,7 @@ class JoomlalinksTags extends CMSObject
                     $language = $tag->language;
                 }
 
-                $id = $router->getRoute($tag->slug, 'com_tags.tag', '', $language);
+                $id = $router->getRoute($tag->slug ?? $tag->id, 'com_tags.tag', '', $language);
                 $id = $this->route($id);
 
                 $items[] = array(

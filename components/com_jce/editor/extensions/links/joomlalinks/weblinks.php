@@ -50,7 +50,9 @@ class JoomlalinksWeblinks extends CMSObject
         $wf = WFEditorPlugin::getInstance();
         $items = array();
 
-        if (!defined('JPATH_PLATFORM')) {
+        $version = new Joomla\CMS\Version();
+
+        if (!$version->isCompatible('4.0')) {
             require_once JPATH_SITE . '/includes/application.php';
         }
 
@@ -136,13 +138,15 @@ class JoomlalinksWeblinks extends CMSObject
 
                 foreach ($weblinks as $weblink) {
                     // language
+
                     if (isset($weblink->language)) {
                         $language = $weblink->language;
                     }
 
                     $id = WeblinksHelperRoute::getWeblinkRoute($weblink->slug, $weblink->catslug, $language);
 
-                    if (defined('JPATH_PLATFORM')) {
+                    // Joomla 4/5/6
+                    if ($version->isCompatible('4.0')) {
                         $id .= '&task=weblink.go';
                     }
 

@@ -202,8 +202,10 @@ class WFLinkExtension extends WFExtension
     {
         $match = null;
 
+        $version = new Joomla\CMS\Version();
+
         $app = CMSApplication::getInstance('site');
-        $tag = defined('JPATH_PLATFORM') ? 'component_id' : 'componentid';
+        $tag = $version->isCompatible('4.0') ? 'component_id' : 'componentid';
 
         $component = ComponentHelper::getComponent($component);
         $menu = $app->getMenu('site');

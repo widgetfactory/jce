@@ -198,7 +198,14 @@ class pkg_jceInstallerScript
     }
 
     public function preflight($route, $installer)
-    {
+    {        
+        // ensure the behaviour:compat6 plugin is enabled
+        if (version_compare(JVERSION, '6', 'ge')) {
+            if (!PluginHelper::isEnabled('behaviour', 'compat6')) {
+                throw new RuntimeException('The Behaviour - Backward Compatibility 6 plugin must be enabled to install and use this version of JCE');
+            }
+        }
+        
         // skip on uninstall etc.
         if ($route == 'remove' || $route == 'uninstall') {
             return true;
@@ -340,7 +347,7 @@ class pkg_jceInstallerScript
             $plugin = PluginHelper::getPlugin($folder, $element);
 
             if ($plugin) {
-                $inst = new Installer();
+                $inst = Installer::getInstance();
 
                 // try uninstall
                 if (!$inst->uninstall('plugin', $plugin->id)) {
