@@ -230,7 +230,7 @@
         match = match.replace(/\n/g, '<br />');
 
         // create code span
-        return createCodePre(match, 'php', 'span');
+        return createCodePre(match, 'php');
       });
 
       return content;
