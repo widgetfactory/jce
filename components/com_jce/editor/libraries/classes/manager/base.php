@@ -220,14 +220,22 @@ class WFMediaManagerBase extends WFEditorPlugin
         $baseDir = $this->getParam('editor.dir', '', '', false);
 
         // get directory from plugin parameter, fallback to base directory as it cannot itself be empty
-        $dir = $this->getParam($this->getName() . '.dir', $baseDir);
+        $dir = $this->getParam($this->getName() . '.dir');
 
         // check for directory set by caller, eg: Image Manager in Basic Dialog
         if ($this->get('caller')) {
             $dir = $this->getParam($this->get('caller') . '.dir', $dir);
         }
 
-        // Normalize $dir into an array of directories
+        // if no directory is set, or it is an empty array, use the base directory
+        if (empty($dir)) {
+            $dir = $baseDir;
+        // otherwise, if it is an array, check if it has a path value, if not use the base directory
+        } else if (is_array($dir) && count(array_filter(array_column($dir, 'path'))) === 0) {
+            $dir = $baseDir;
+        }
+
+        // Normalize $dir into an array of directories if it is a string (legacy value)
         if (!is_array($dir)) {
             $dir = [
                 [
