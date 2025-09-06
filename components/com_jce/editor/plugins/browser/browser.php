@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -215,7 +214,7 @@ class WFBrowserPlugin extends WFMediaManager
 
         if (isset($map[$scheme])) {
             // trim to remove slashes
-            $path = trim($path, '/');
+            $path = trim($path, '/');            
             // concatenate the path with the mapped folder
             $folder = $map[$scheme] . '/' . $path;
             // trim to remove slashes
@@ -256,7 +255,7 @@ class WFBrowserPlugin extends WFMediaManager
 
                 if ($folder) {
                     $tmpPath = $folder . '/';
-
+                    
                     foreach ($config['dir'] as $key => $store) {
                         $base = trim($store['path'], '/');
 
@@ -266,7 +265,7 @@ class WFBrowserPlugin extends WFMediaManager
                             break;
                         }
                     }
-
+                    
                     // reset folder
                     $folder = '';
                 }
@@ -352,48 +351,47 @@ class WFBrowserPlugin extends WFMediaManager
     {
         $app = Factory::getApplication();
 
-        // pass to parent method
-        parent::onBeforeUpload($file, $dir, $name);
-
-        if (!empty($dir)) {
-            return;
-        }
-
         // check if this is a media field upload, as it will not send a target upload folder
-        if ($this->isMediaField() === false) {
-            return;
-        }
+        if ($this->isMediaField()) {
+            // only for inline uploads outside of the dialog
+            if ($app->input->getInt('inline', 0) === 1) {
+                if (empty($dir)) {
+                    // get the mediafolder for a JCE Media Field
+                    $folder = $app->input->getString('mediafolder', '');
 
-        // only for inline uploads outside of the dialog
-        if ($app->input->getInt('inline', 0) === 0) {
-            return;
-        }
+                    $browser = $this->getFileBrowser();
 
-        $browser = $this->getFileBrowser();
-
-        // for the JCE Media Field, set the default root folder
-        $dirStore = $browser->get('dir');
-        $key = array_key_first($dirStore);
-        $dir = $key . ':';
-
-        // get the path from a converted media field
-        $folder = $app->input->getString('path', '');
-
-        $folder = $this->normalizeLocalJoomlaFolder($folder);
-
-        if ($folder) {
-            // check if the folder is within any directory store path
-            foreach ($dirStore as $key => $store) {
-                // trim trailing slashes
-                $base = trim($store['path'], '/');
-
-                // check if the folder is within any directory store path
-                if ($folder === $base || strpos($folder, $base . '/') === 0) {
+                    // for the JCE Media Field, set the default root folder
+                    $dirStore = $browser->get('dir');
+                    $key = array_key_first($dirStore);
                     $dir = $key . ':';
-                    break;
+
+                    // get the path from a converted media field
+                    if ($app->input->getInt('converted', 0) === 1) {
+                        $folder = $app->input->getString('path', '');
+
+                        $folder = $this->normalizeLocalJoomlaFolder($folder);
+
+                        if ($folder) {
+                            // check if the folder is within any directory store path
+                            foreach ($dirStore as $key => $store) {
+                                // trim trailing slashes
+                                $base = trim($store['path'], '/');
+
+                                // check if the folder is within any directory store path
+                                if ($folder === $base || strpos($folder, $base . '/') === 0) {
+                                    $dir = $key . ':';
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        // pass to parent method
+        parent::onBeforeUpload($file, $dir, $name);
     }
 
     public function onUpload($file, $relative = '')
