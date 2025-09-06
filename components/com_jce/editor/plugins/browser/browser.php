@@ -356,9 +356,6 @@ class WFBrowserPlugin extends WFMediaManager
             // only for inline uploads outside of the dialog
             if ($app->input->getInt('inline', 0) === 1) {
                 if (empty($dir)) {
-                    // get the mediafolder for a JCE Media Field
-                    $folder = $app->input->getString('mediafolder', '');
-
                     $browser = $this->getFileBrowser();
 
                     // for the JCE Media Field, set the default root folder
