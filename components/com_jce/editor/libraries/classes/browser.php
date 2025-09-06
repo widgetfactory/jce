@@ -330,7 +330,7 @@ class WFFileBrowser extends CMSObject
     public function getSourceDir($path)
     {
         $path = $this->get('source', $path);
-        
+
         if (empty($path)) {
             return '';
         }
@@ -410,6 +410,10 @@ class WFFileBrowser extends CMSObject
 
     public function resolvePath($path)
     {
+        if (empty($path)) {
+            return '';
+        }
+
         // check for complex path
         if (strpos($path, ':') === false) {
             // no prefix so return the path as is
@@ -430,16 +434,51 @@ class WFFileBrowser extends CMSObject
         return $path;
     }
 
+    public function getDefaultPath()
+    {
+        $store = $this->getDirectoryStore();
+        $values = array_shift(array_values($store));
+
+        return $values['prefix'] . ':' . $values['path'];
+    }
+
     private function getDirectoryStore()
     {
         $filesystem = $this->getFileSystem();
 
         // if Allow Root is enabled, return an empty array so no specific folders are root
         if (empty($filesystem->getRootDir())) {
-            return array();
+            $hash = md5('__allow_root_access__');
+
+            // create a default store for "allow root access" etc. that has an empty path
+            $dirStore = array(
+                $hash => array(
+                    'path'  => '',
+                    'label' => '',
+                    'prefix' => $hash
+                )
+            );
+
+            return $dirStore;
         }
 
         $dir = $this->get('dir');
+
+        // fallback to default directory if no directories set
+        if (empty($dir)) {
+            $hash = md5('images');
+
+            // create a default store that defaults to "images"
+            $dirStore = array(
+                $hash => array(
+                    'path'  => 'images',
+                    'label' => '',
+                    'prefix' => $hash
+                )
+            );
+
+            return $dirStore;
+        }
 
         foreach ($dir as $key => &$item) {
             if ($item['path'] == '') {
@@ -469,16 +508,6 @@ class WFFileBrowser extends CMSObject
 
         unset($item); // break reference
 
-        // fallback to default directory if no directories set
-        if (empty($dir)) {
-            $dir = array(
-                array(
-                    'path' => 'images',
-                    'label' => ''
-                )
-            );
-        }
-
         return $dir;
     }
 
@@ -504,7 +533,7 @@ class WFFileBrowser extends CMSObject
             if ($withKey) {
                 return $store;
             }
-            
+
             // return the store entry for the prefix
             return $store[$prefix];
         }
@@ -1233,7 +1262,7 @@ class WFFileBrowser extends CMSObject
 
                 array_walk($folders, function (&$item) use ($store) {
                     $path = $item['id'];
-                    
+
                     // remove the $store['path'] value from the beginning of the id, must be multibyte safe
                     if (WFUtility::safe_strpos($item['id'], $store['path']) === 0) {
                         $item['id'] = WFUtility::safe_substr($item['id'], WFUtility::safe_strlen($store['path']));
@@ -1263,7 +1292,7 @@ class WFFileBrowser extends CMSObject
             // get folder list
             $folders = $this->getFolders($source);
 
-            array_walk($folders, function (&$item) use ($store, $path) {                
+            array_walk($folders, function (&$item) use ($store, $path) {
                 // remove the $store['path'] value from the beginning of the id, must be multibyte safe
                 if (WFUtility::safe_strpos($item['id'], $store['path']) === 0) {
                     $item['id'] = WFUtility::safe_substr($item['id'], WFUtility::safe_strlen($store['path']));
@@ -1356,7 +1385,7 @@ class WFFileBrowser extends CMSObject
                 if ($treedir) {
                     // resolve $treedir
                     $resolved = $this->resolvePath($treedir);
-                    
+
                     // check if the folder is open, ie: the path matches the current directory
                     $open = (bool) preg_match('#' . preg_quote($folder['path']) . '\b#', $resolved);
                 }
@@ -1815,9 +1844,14 @@ class WFFileBrowser extends CMSObject
 
         // pass to onBeforeUpload
         $this->fireEvent('onBeforeUpload', array(&$file, &$dir, &$name));
-        
+
         // check destination path
         WFUtility::checkPath($dir);
+
+        // if directory is empty, use the default complex path
+        if (empty($dir)) {
+            $dir = $this->getDefaultPath();
+        }
 
         // extract the path from the complex path, remove prefix
         $dir = $this->resolvePath($dir);
@@ -1881,8 +1915,10 @@ class WFFileBrowser extends CMSObject
                 $name = WFUtility::mb_basename($result->path);
 
                 if (empty($result->url)) {
-                    $relative = WFUtility::makePath($dir, $name);
-                    $result->url = WFUtility::makePath($filesystem->getBaseURL(), $relative);
+                    /*$relative = WFUtility::makePath($dir, $name);
+                    $result->url = WFUtility::makePath($filesystem->getBaseURL(), $relative);*/
+
+                    $result->url = WFUtility::makePath($dir, $name);
                 }
 
                 // trim slashes
