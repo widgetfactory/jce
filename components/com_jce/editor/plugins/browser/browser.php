@@ -253,7 +253,7 @@ class WFBrowserPlugin extends WFMediaManager
 
             if ($app->input->getInt('converted', 0) === 1) {
                 // get the path from a converted media field
-                $folder = $app->input->getString('path', '');
+                $folder = $app->input->getString('path', $app->input->getString('folder', '')); // include "folder" for Joomla 3
 
                 // normalize the folder path of Joomla Media Field, creating a local path, eg: local-images:/folder/subfolder => images/folder/subfolder
                 $folder = $this->normalizeLocalJoomlaFolder($folder);
