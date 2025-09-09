@@ -1125,6 +1125,7 @@ class WFFileBrowser extends CMSObject
         // revert to store path if the path is not a directory
         if (!$filesystem->is_dir($fullpath)) {
             $fullpath = $store['path'];
+            $path = ''; // reset path to empty
         }
 
         // trim leading and trailing slash
