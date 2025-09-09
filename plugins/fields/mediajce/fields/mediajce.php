@@ -117,10 +117,12 @@ class JFormFieldMediaJce extends MediaField
             return $data;
         }
 
+        $converted = (bool) $this->element['converted'];
+
         $config = array(
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
-            'converted' => false,
+            'converted' => $converted,
             'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : '',
         );
 
@@ -131,6 +133,10 @@ class JFormFieldMediaJce extends MediaField
             'link'  => $this->link,
             'class' => $data['class'] .= ' wf-media-input-active',
         );
+
+        if ($converted) {
+            $extraData['class'] .= ' wf-media-input-converted';;
+        }
 
         // get global field options
         $options = WfBrowserHelper::getMediaFieldOptions();
