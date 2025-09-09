@@ -198,28 +198,33 @@ class WFBrowserPlugin extends WFMediaManager
             return '';
         }
 
+        // default scheme and path
+        $scheme = 'local-images';
+        $path = $folder;
+
         $pos = strpos($folder, ':');
 
-        if ($pos === false) {
-            return $folder;
+        if ($pos !== false) {
+            $scheme = substr($folder, 0, $pos);
+            $path = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
         }
-
-        $scheme = substr($folder, 0, $pos);
-        $path = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
 
         $map = array(
             'local-images' => 'images',
             'local-files' => 'files',
         );
 
-        if (isset($map[$scheme])) {
-            // trim to remove slashes
-            $path = trim($path, '/');            
-            // concatenate the path with the mapped folder
-            $folder = $map[$scheme] . '/' . $path;
-            // trim to remove slashes
-            $folder = trim($folder, '/');
-        }
+        // map the scheme to a root folder
+        $root = isset($map[$scheme]) ? $map[$scheme] : 'images';
+
+        // trim to remove slashes
+        $path = trim($path, '/');
+
+        // concatenate the path with the mapped folder
+        $folder = $root . '/' . $path;
+
+        // trim to remove slashes
+        $folder = trim($folder, '/');
 
         return $folder;
     }
