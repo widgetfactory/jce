@@ -158,7 +158,7 @@
             return store;
         },
 
-        gerDirectoryStoreFromPath: function (path) {
+        getDirectoryStoreFromPath: function (path) {
             var store = this.getDirectoryStore();
 
             // if path is not set, return store
@@ -173,6 +173,24 @@
             });
 
             return null;
+        },
+        /**
+         * Resolve a complext path, eg: hash:path to the relative path from the directory store
+         * @param {string} path 
+         */
+        resolvePath: function (path) {
+            var parts = path.split(':');
+
+            if (parts.length > 1) {
+                var store = this.getDirectoryStore(parts[0]);
+
+                if (store && store.path) {
+                    return store.path + '/' + parts.slice(1).join(':');
+                }
+            }
+
+            // if no store, return path
+            return path;
         },
 
         /**
@@ -863,7 +881,7 @@
                 if (/\.([a-z0-9]{2,}$)/i.test(path)) {
                     path = Wf.String.dirname(path);
 
-                    var store = this.gerDirectoryStoreFromPath(path);
+                    var store = this.getDirectoryStoreFromPath(path);
 
                     if (store && store.path) {
                         path = path.replace(new RegExp('^' + escapeRegex(store.path)), '').replace(/^[\/\\]+/, '');
@@ -1341,7 +1359,7 @@
             if (dir) {
                 // get prefix
                 var parts = dir.split(':'), path = parts.pop(), prefix = parts[0];
-                
+
                 // get the store item using the prefix or default
                 var storeItem = store[prefix] || { 'path': path, 'label': '' };
 
@@ -2965,15 +2983,21 @@
                 if (props.url) {
                     resolve(props);
                 } else {
-                    var path = Wf.String.path(self._dir, props.title);
-
-                    Wf.JSON.request('getFileDetails', [path], function (o) {
-                        if (o && !o.error) {
-                            props = $.extend(props, o);
-                        }
+                    if ($(item).hasClass('folder') && $(item).attr('data-url')) {
+                        props.url = self.resolvePath($(item).attr('data-url'));
 
                         resolve(props);
-                    });
+                    } else {
+                        var path = Wf.String.path(self._dir, props.title);
+
+                        Wf.JSON.request('getFileDetails', [path], function (o) {
+                            if (o && !o.error) {
+                                props = $.extend(props, o);
+                            }
+
+                            resolve(props);
+                        });
+                    }
                 }
             });
         },
