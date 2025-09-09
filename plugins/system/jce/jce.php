@@ -26,8 +26,6 @@ use Joomla\CMS\Uri\Uri;
  */
 class PlgSystemJce extends CMSPlugin
 {
-    protected $mediaLoaded = false;
-
     protected $booted = false;
     
     private function getDummyDispatcher()
@@ -113,14 +111,6 @@ class PlgSystemJce extends CMSPlugin
         }
     }
 
-    public function onAfterRoute()
-    {
-        // JCE Pro will load media
-        if (PluginHelper::isEnabled('system', 'jcepro')) {
-            $this->mediaLoaded = true;
-        }
-    }
-
     public function onAfterDispatch()
     {
         $app = Factory::getApplication();
@@ -159,8 +149,8 @@ class PlgSystemJce extends CMSPlugin
             return;
         }
         
-        // check if field media have been loaded
-        if ($this->mediaLoaded) {
+        // media will be loaded by JCE Pro
+        if (PluginHelper::isEnabled('system', 'jcepro')) {
             return;
         }
 
@@ -178,8 +168,5 @@ class PlgSystemJce extends CMSPlugin
 
         $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
         $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
-
-        // update the mediaLoaded flag
-        $this->mediaLoaded = true;
     }
 }

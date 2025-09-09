@@ -108,6 +108,15 @@ class JFormFieldMediaJce extends MediaField
             return $data;
         }
 
+        $data['class'] .= ' input-medium wf-media-input';
+
+        // not enabled for media field
+        if (!WfBrowserHelper::isMediaFieldEnabled()) {
+            $data['readonly'] = true;
+            $data['link'] = '';
+            return $data;
+        }
+
         $config = array(
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
@@ -115,22 +124,16 @@ class JFormFieldMediaJce extends MediaField
             'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : '',
         );
 
-        $options = WfBrowserHelper::getMediaFieldOptions($config);
-
-        $this->link = $options['url'];
-
-        $data['class'] .= ' input-medium wf-media-input';
-
-        // not a valid file browser link
-        if (!$this->link) {
-            $data['readonly'] = true;
-            return $data;
-        }
+        // get individual field link
+        $this->link = WfBrowserHelper::getMediaFieldUrl($config);
 
         $extraData = array(
             'link'  => $this->link,
             'class' => $data['class'] .= ' wf-media-input-active',
         );
+
+        // get global field options
+        $options = WfBrowserHelper::getMediaFieldOptions();
 
         if ($options['upload'] == 1) {
             $extraData['class'] .= ' wf-media-input-upload';
