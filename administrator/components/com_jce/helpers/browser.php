@@ -25,20 +25,20 @@ abstract class WfBrowserHelper
             'callback' => $callback,
         ));
 
-        $values = self::getMediaFieldUrl($options);
+        $url = self::getMediaFieldUrl($options);
 
-        return $values['url'];
+        return $url;
     }
 
     public static function getMediaFieldLink($element = null, $mediatype = 'images', $callback = '')
     {
-        $options = self::getMediaFieldUrl(array(
+        $url = self::getMediaFieldUrl(array(
             'element' => $element,
             'mediatype' => $mediatype,
             'callback' => $callback,
         ));
 
-        return $options['url'];
+        return $url;
     }
 
     public static function isMediaFieldEnabled()
