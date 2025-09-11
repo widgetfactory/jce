@@ -748,7 +748,7 @@ class WFFileBrowser extends CMSObject
                 $filter = substr($filter, 1);
 
                 // process path for variables, text case etc.
-                $filesystem->processPath($filter);
+                $this->processPath($filter);
 
                 // explode to array
                 $filterParts = explode('/', $filter);
@@ -760,7 +760,7 @@ class WFFileBrowser extends CMSObject
                 }
             } else {
                 // process path for variables, text case etc.
-                $filesystem->processPath($filter);
+                $this->processPath($filter);
 
                 if ($path === $filter) {
                     $access = false;
