@@ -370,7 +370,7 @@ class WFBrowserPlugin extends WFMediaManager
 
                     // get the path from a converted media field
                     if ($app->input->getInt('converted', 0) === 1) {
-                        $folder = $app->input->getString('path', '');
+                        $folder = $app->input->getString('path', $app->input->getString('folder', ''));
 
                         $folder = $this->normalizeLocalJoomlaFolder($folder);
 
