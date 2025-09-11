@@ -439,7 +439,7 @@ class WFFileBrowser extends CMSObject
         $store = $this->getDirectoryStore();
         $values = array_shift(array_values($store));
 
-        return $values['prefix'] . ':' . $values['path'];
+        return $values['prefix'] . ':';
     }
 
     private function getDirectoryStore()
