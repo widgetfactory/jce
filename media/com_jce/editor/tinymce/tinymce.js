@@ -6031,9 +6031,9 @@
       add("img", "src sizes srcset alt usemap ismap width height");
       add("iframe", "src name width height", flowContent);
       add("embed", "src type width height");
-      add("object", "data type typemustmatch name usemap form width height", [ flowContent, 'param' ].join(' '));
+      add("object", "data type typemustmatch name usemap form width height", flowContent.concat(['param']).join(' '));
       add("param", "name value");
-      add("map", "name", [ flowContent, 'area' ].join(' '));
+      add("map", "name", flowContent.concat(['area']).join(' '));
       add("area", "alt coords shape href target rel media hreflang type");
       add("table", "border", "caption colgroup thead tfoot tbody tr" + (type == "html4" ? " col" : ""));
       add("colgroup", "span", "col");
@@ -6043,7 +6043,7 @@
       add("td", "colspan rowspan headers", flowContent);
       add("th", "colspan rowspan headers scope abbr", flowContent);
       add("form", "accept-charset action autocomplete enctype method name novalidate target", flowContent);
-      add("fieldset", "disabled form name", [ flowContent, 'legend' ].join(' '));
+      add("fieldset", "disabled form name", flowContent.concat(['legend']).join(' '));
       add("label", "form for", phrasingContent);
       add("input", "accept alt autocomplete checked dirname disabled form formaction formenctype formmethod formnovalidate " +
         "formtarget height list max maxlength min multiple name pattern readonly required size src step type value width"
@@ -6062,27 +6062,27 @@
       // Extend with HTML5 elements
       if (type != "html4") {
         add("wbr");
-        add("ruby", "", [ phrasingContent, 'rt rp' ].join(' '));
+        add("ruby", "", phrasingContent.concat(['rt', 'rp']).join(' '));
         add("figcaption", "", flowContent);
         add("mark rt rp summary bdi", "", phrasingContent);
         add("canvas", "width height", flowContent);
         add("video", "src crossorigin poster preload autoplay mediagroup loop " +
-          "muted controls width height buffered controlslist playsinline", [ flowContent, 'track source' ].join(' '));
-        add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", [ flowContent, 'track source' ].join(' '));
+          "muted controls width height buffered controlslist playsinline", flowContent.concat(['track', 'source']).join(' '));
+        add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", flowContent.concat(['track', 'source']).join(' '));
         add("picture", "", "img source");
         add("source", "src srcset type media sizes");
         add("track", "kind src srclang label default");
-        add("datalist", "", [ phrasingContent, 'option' ].join(' '));
+        add("datalist", "", phrasingContent.concat(['option']).join(' '));
         add("article section nav aside header footer", "", flowContent);
         add("hgroup", "", "h1 h2 h3 h4 h5 h6");
-        add("figure", "", [ flowContent, 'figcaption' ].join(' '));
+        add("figure", "", flowContent.concat(['figcaption']).join(' '));
         add("time", "datetime", phrasingContent);
         add("dialog", "open", flowContent);
         add("command", "type label icon disabled checked radiogroup command");
         add("output", "for form name", phrasingContent);
         add("progress", "value max", phrasingContent);
         add("meter", "value min max low high optimum", phrasingContent);
-        add("details", "open", [ flowContent, 'summary' ].join(' '));
+        add("details", "open", flowContent.concat(['summary']).join(' '));
         add("keygen", "autofocus challenge disabled form keytype name");
 
         // update with flowContent
