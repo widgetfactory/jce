@@ -32,7 +32,20 @@
       ed.settings.validate = false;
     }
 
-    ed.onPreInit.add(function () {
+    function paddEmptyTags(content) {
+        // pad bootstrap icons
+        content = content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
+
+        // padd some empty tags
+        content = content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2 data-mce-empty="1">&nbsp;</$1>');
+
+        // padd list elements
+        content = content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
+
+        return content;
+    }
+
+    ed.onPreInit.add(function () {      
       // Remove bogus elements
       ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
         var i = nodes.length;
@@ -387,7 +400,6 @@
       });
     }
 
-    // Cleanup callback
     ed.onBeforeSetContent.add(function (ed, o) {
       // remove br tag added by Firefox
       o.content = o.content.replace(/^<br>/, '');
@@ -409,14 +421,8 @@
         }
       }
 
-      // pad bootstrap icons
-      o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
-
-      // padd some empty tags
-      o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2 data-mce-empty="1">&nbsp;</$1>');
-
-      // padd list elements
-      o.content = o.content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
+      // padd various empty tags
+      o.content = paddEmptyTags(o.content);
     });
 
     // Cleanup callback
@@ -425,6 +431,7 @@
         // Geshi
         o.content = convertFromGeshi(o.content);
       }
+
       if (o.get) {
         // Geshi
         o.content = convertToGeshi(o.content);
@@ -538,5 +545,7 @@
 
       return h;
     }
+
+    this.paddEmptyTags = paddEmptyTags;
   });
 })();
