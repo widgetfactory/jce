@@ -19,9 +19,16 @@
     DOM = tinymce.DOM;
 
   function validateContent(ed, content) {
+    if (!ed.settings.validate) {
+      return content;
+    }
+
+    // set arguments for the parser
     var args = {
-      "no_events": true,
-      "format": "raw"
+      no_events: true,
+      format: "html",
+      get: true,
+      load: true // set to true to process code blocks
     };
 
     // create new settings object
@@ -30,47 +37,35 @@
     // extend with editor settings
     extend(settings, ed.settings);
 
-    // set content    
+    // set content
     args.content = content;
 
-    if (ed.settings.validate) {
-      // trigger cleanup etc in editor
-      args.format = "html";
+    // run on onBeforeGetContent
+    ed.onBeforeGetContent.dispatch(ed, args);
 
-      // set a load flag so code is processed as code blocks
-      args.load = true;
+    // allow all tags
+    settings.verify_html = false;
 
-      // onBeforeGetContent
-      ed.onBeforeGetContent.dispatch(ed, args);
+    // no root blocks
+    settings.forced_root_block = false;
 
-      // allow all tags
-      settings.verify_html = false;
+    // must validate
+    settings.validate = true;
 
-      // no root blocks
-      settings.forced_root_block = false;
+    // create dom parser
+    var parser = new DomParser(settings, ed.schema);
 
-      // must validate
-      settings.validate = true;
+    // create html serializer
+    var serializer = new HtmlSerializer(settings, ed.schema);
 
-      // create dom parser
-      var parser = new DomParser(settings, ed.schema);
+    // clean content
+    args.content = serializer.serialize(parser.parse(args.content), args);
 
-      // create html serializer
-      var serializer = new HtmlSerializer(settings, ed.schema);
+    // onPostProcess
+    ed.onPostProcess.dispatch(ed, args);
 
-      // clean content
-      args.content = serializer.serialize(parser.parse(args.content), args);
-
-      args.get = true;
-
-      // onPostProcess
-      ed.onPostProcess.dispatch(ed, args);
-
-      // pass content
-      content = args.content;
-    }
-
-    return content;
+    // pass content
+    return args.content;
   }
 
   tinymce.PluginManager.add('core', function (ed, url) {
