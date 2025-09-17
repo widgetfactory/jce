@@ -89,17 +89,17 @@ class JFormFieldMediaJce extends MediaField
             $config['plugin'] = (string) $this->element['plugin'];
         }
 
-        $options = WFBrowserHelper::getMediaFieldOptions($config);
-
-        $this->link = $options['url'];
-
         // Get the basic field data
         $data = parent::getLayoutData();
+
+        $this->link = WFBrowserHelper::getMediaFieldUrl($config);
 
         // not a valid file browser link
         if (!$this->link) {
             return $data;
         }
+        
+        $options = WFBrowserHelper::getMediaFieldOptions($config);
 
         $extraData = array(
             'link' => $this->link,
