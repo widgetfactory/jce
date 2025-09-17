@@ -500,6 +500,7 @@ textarea::placeholder {
     overflow: hidden;
     width: 100%;
     flex: 1 0 100%;
+    text-overflow: ellipsis;
 }
 
 .mceMenu .mceMenuItems .mceIcon+.mceText {
@@ -1224,6 +1225,8 @@ select.mceNativeListBox {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    text-overflow: ellipsis;
 }
 
 .mceDefaultSkin .mceSplitButton .mceAction {
@@ -1284,6 +1287,8 @@ select.mceNativeListBox {
     margin-top: -1px;
     max-height: 336px;
     overflow: visible;
+    overflow-y: auto;
+    max-width: 20em;
 }
 
 .mceSplitButtonMenu:before {

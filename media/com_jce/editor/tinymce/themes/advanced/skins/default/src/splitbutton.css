@@ -29,6 +29,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    text-overflow: ellipsis;
 }
 
 .mceDefaultSkin .mceSplitButton .mceAction {
@@ -89,6 +91,8 @@
     margin-top: -1px;
     max-height: 336px;
     overflow: visible;
+    overflow-y: auto;
+    max-width: 20em;
 }
 
 .mceSplitButtonMenu:before {
