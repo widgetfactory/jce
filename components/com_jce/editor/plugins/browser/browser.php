@@ -248,8 +248,16 @@ class WFBrowserPlugin extends WFMediaManager
 
             $folder = trim(rawurldecode($folder));
 
-            // get a default root folder value
-            $root = empty($config['dir']) ? array('path' => '') : reset($config['dir']);
+            $prefix = '';
+
+            if (empty($config['dir'])) {
+                $root = array('path' => '');
+            } else {
+                // get the first directory store prefix
+                $prefix = key($config['dir']);
+                // get the first directory store
+                $root = reset($config['dir']);
+            }
 
             if ($app->input->getInt('converted', 0) === 1) {
                 // get the path from a converted media field
@@ -260,7 +268,7 @@ class WFBrowserPlugin extends WFMediaManager
 
                 if ($folder) {
                     $tmpPath = $folder . '/';
-                    
+
                     foreach ($config['dir'] as $key => $store) {
                         $base = trim($store['path'], '/');
 
@@ -270,7 +278,7 @@ class WFBrowserPlugin extends WFMediaManager
                             break;
                         }
                     }
-                    
+
                     // reset folder
                     $folder = '';
                 }
@@ -278,7 +286,12 @@ class WFBrowserPlugin extends WFMediaManager
 
             $path = WFUtility::makePath($root['path'], $folder);
             $path = trim($path, '/');
-            $hash = md5($path);
+
+            if (empty($prefix)) {
+                $hash = md5($path);
+            } else {
+                $hash = $prefix;
+            }
 
             $config['dir'] = array(
                 $hash => array(
