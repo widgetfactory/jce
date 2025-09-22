@@ -73,7 +73,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $wf = WFEditorPlugin::getInstance();
 
         // Get default restricted directories and root access setting
-        $restricted = $this->getParam('restricted', $this->restricted);
+        $restricted = $this->getParam('restrict_dir', $this->restricted);
         $allowroot = (bool) $this->getParam('allow_root', 0);
 
         // Normalize $restricted to array
