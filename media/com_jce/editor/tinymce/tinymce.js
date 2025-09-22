@@ -17443,7 +17443,8 @@
 
   			// Handle table cell selection the table plugin enables
   			// you to fake select table cells and perform formatting actions on them
-  			nodes = dom.select('td[data-mce-selected],th[data-mce-selected]');
+  			nodes = dom.select('td.mceSelected,th.mceSelected,td[data-mce-selected],th[data-mce-selected]');
+
   			if (nodes.length > 0) {
   				each(nodes, function (node) {
   					callback([node]);
