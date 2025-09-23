@@ -51,13 +51,13 @@
         var win = tinyMCEPopup.getWindowArg('window');
         var callback = tinyMCEPopup.getWindowArg('callback');
 
-        // a callback function of id must exist
+        // a callback function or id must exist
         if (!callback) {
             return tinyMCEPopup.close();
         }
 
         // get selected items
-        $('[data-filebrowser]').trigger('filebrowser:insert', function (selected, data) {            
+        $('[data-filebrowser]').trigger('filebrowser:insert', function (selected, data) {                        
             // nothing selected, so create empty item
             if (!data.length) {
                 data = [
