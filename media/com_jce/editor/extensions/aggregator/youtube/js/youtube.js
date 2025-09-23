@@ -290,6 +290,13 @@ WFAggregator.add('youtube', {
                 return true;
             }
 
+            // convert "t" key to "start" if it exists
+            if (key == 't') {
+                key = 'start';
+                // remove seconds unit from value, allow only digits
+                val = val.replace(/(\D)/g, '');
+            }
+
             try {
                 val = decodeURIComponent(val);
             } catch (e) {
