@@ -5973,7 +5973,7 @@
 
       // Block content elements
       blockContent = split(
-        "address blockquote div dl fieldset form h1 h2 h3 h4 h5 h6 hr menu ol p pre table ul"
+        "address blockquote div dl fieldset form h1 h2 h3 h4 h5 h6 hr menu ol p pre table ul template"
       );
 
       // Phrasing content elements from the HTML5 spec (inline)
@@ -6107,6 +6107,9 @@
 
         // update with flowContent
         add("a", "href target rel media hreflang type", flowContent);
+
+        // template
+        add("template", "", flowContent);
       }
 
       // form events
@@ -10713,6 +10716,7 @@
               }
 
               purifier.sanitize(body, purifyConfig);
+
               purifier.removed = [];
 
               return body;
@@ -12141,6 +12145,13 @@
               }
 
               newNode.shortEnded = nodeName in shortEndedElements || false;
+
+              if (nodeName === 'template') {
+                // Recurse into the fragment children, but keep <template> itself
+                transferChildren(newNode, nativeChild.content, specialElements);
+                parent.append(newNode);
+                continue; // prevent falling through and recursing into the element itself
+              }
             }
 
             if (nodeType == 3) { // TEXT_NODE
@@ -12151,7 +12162,7 @@
               }
             }
 
-            if (nodeType == 8 || nodeType == 4 || nodeType == 7) { // COMMENT_NODE, CDATA_SECTION_NODE, PROCESSING_INSTRUCTION_NODE            
+            if (nodeType == 8 || nodeType == 4 || nodeType == 7 || nodeType == 11) { // COMMENT_NODE, CDATA_SECTION_NODE, PROCESSING_INSTRUCTION_NODE, DOCUMENT_FRAGMENT_NODE           
               var value = nativeChild.data;
 
               if (nodeType == 8) { // COMMENT_NODE
@@ -12165,6 +12176,7 @@
             }
 
             transferChildren(newNode, nativeChild, specialElements);
+
             parent.append(newNode);
           }
         }
@@ -12181,7 +12193,36 @@
           var node = rootNode.firstChild, rootBlockNode = null;
 
           function isWrappableNode(node) {
-            return (node.type == 3 && tinymce.trim(node.value)) || (node.type == 1 && node.name !== 'p' && !blockElements[node.name] && !node.attr('data-mce-type'));
+            // text node with non-whitespace
+            if (node.type === 3) {
+              return !!tinymce.trim(node.value);
+            }
+
+            if (node.type === 1) {
+              // never wrap template
+              if (node.name === 'template') {
+                return false;
+              }
+
+              // don't wrap blocks or <p> itself
+              if (node.name === 'p' || blockElements[node.name]) {
+                return false;
+              }
+
+              // don't wrap special editor artifacts
+              if (node.attr('data-mce-type')) {
+                return false;
+              }
+
+              // optional: treat contenteditable=false as a boundary
+              if (node.attr('contenteditable') === 'false') {
+                return false;
+              }
+
+              return true; // phrasing/inline-ish
+            }
+
+            return false;
           }
 
           // Removes whitespace at beginning and end of block so:
