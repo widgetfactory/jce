@@ -446,69 +446,78 @@ class WFFileBrowser extends CMSObject
     {
         $filesystem = $this->getFileSystem();
 
-        // if Allow Root is enabled, return an empty array so no specific folders are root
+        // If Allow Root is enabled, return a single blank/root entry
         if (empty($filesystem->getRootDir())) {
             $hash = md5('__allow_root_access__');
 
-            // create a default store for "allow root access" etc. that has an empty path
-            $dirStore = array(
+            return array(
                 $hash => array(
-                    'path'  => '',
-                    'label' => '',
-                    'prefix' => $hash
+                    'path'   => '',
+                    'label'  => '',
+                    'prefix' => $hash,
                 )
             );
-
-            return $dirStore;
         }
 
-        $dir = $this->get('dir');
+        $dir = (array) $this->get('dir');
 
-        // fallback to default directory if no directories set
+        // Fallback to a single default directory if none set
         if (empty($dir)) {
-            $hash = md5('images');
+            $path  = 'images';
+            $label = '';
 
-            // create a default store that defaults to "images"
-            $dirStore = array(
+            Factory::getApplication()->triggerEvent('onWfFileSystemGetRootDir', array(&$path, &$label));
+
+            $hash = md5($path);
+
+            return array(
                 $hash => array(
-                    'path'  => 'images',
-                    'label' => '',
-                    'prefix' => $hash
+                    'path'   => $path,
+                    'label'  => '',
+                    'prefix' => $hash,
                 )
             );
-
-            return $dirStore;
         }
 
-        foreach ($dir as $key => &$item) {
-            if ($item['path'] == '') {
+        $newDir = array();
+
+        foreach ($dir as $origKey => $item) {
+            $item['path'] = isset($item['path']) ? trim($item['path']) : '';
+
+            if ($item['path'] === '') {
                 $item['path'] = 'images';
             }
 
             $processedPath = $this->processPath($item['path']);
+            $label         = (isset($item['label']) && $item['label'] !== '') ? $item['label'] : basename($processedPath);
 
-            // if the path does not exist, create it
+            // Process both path and label via the event
+            Factory::getApplication()->triggerEvent('onWfFileSystemGetRootDir', array(&$processedPath, &$label));
+
+            // Ensure the folder exists (create if missing)
             if ($filesystem->is_dir($processedPath) === false) {
-                $name = WFUtility::mb_basename($processedPath);
-                $path = WFUtility::mb_dirname($processedPath);
+                $name    = WFUtility::mb_basename($processedPath);
+                $pathDir = WFUtility::mb_dirname($processedPath);
 
-                if ($filesystem->createFolder($path, $name) === false) {
-                    unset($dir[$key]);
+                if ($filesystem->createFolder($pathDir, $name) === false) {
+                    // Skip this entry if it can't be created
                     continue;
                 }
             }
 
-            if (empty($item['label'])) {
-                $item['label'] = basename($processedPath);
-            }
+            // New associative key from the (possibly changed) path
+            $newKey = md5($processedPath);
 
-            $item['label']  = htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8');
-            $item['prefix'] = $key;
+            // Finalize fields
+            $item['path']   = $processedPath;
+            $item['label']  = htmlspecialchars((string) $label, ENT_QUOTES, 'UTF-8');
+            $item['prefix'] = $newKey;
+
+            // Write into rebuilt array (last one wins on key collision)
+            $newDir[$newKey] = $item;
         }
 
-        unset($item); // break reference
-
-        return $dir;
+        return $newDir;
     }
 
     public function getDirectoryStoreFromPath($path, $withKey = false)
@@ -637,10 +646,14 @@ class WFFileBrowser extends CMSObject
                 'year' => date('Y')
             );
 
-            Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetPathVariables', array(&$path_replacement, &$path_pattern));
+            // expose variables
+            $variables = compact('path_pattern', 'path_replacement');
+
+            Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetPathVariables', array(&$variables));
 
             // convert to array values
-            $path_replacement = array_values($path_replacement);
+            $path_replacement = array_values($variables['path_replacement']);
+            $path_pattern = array_values($variables['path_pattern']);
 
             // get websafe options
             $websafe_textcase = $wf->getParam('editor.websafe_textcase', '');
