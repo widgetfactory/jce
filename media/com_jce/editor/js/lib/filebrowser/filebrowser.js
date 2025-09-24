@@ -241,7 +241,7 @@
 
                 if (n.nodeName === "LI") {
                     if ($(n).hasClass('folder')) {
-                        var u = $(n).data('url') || self._getPreviousDir();
+                        var u = $(n).attr('id') || self._getPreviousDir();
 
                         e.preventDefault();
 
@@ -326,7 +326,7 @@
                         var p = $(n).parents('li');
 
                         if ($(n).hasClass('folder')) {
-                            var u = $(p).data('url') || self._getPreviousDir();
+                            var u = $(p).attr('id') || self._getPreviousDir();
                             return self._changeDir(u);
                         } else {
                             self._setSelectedItems(e, true);
@@ -1028,7 +1028,10 @@
                     });
 
                     // add url data
-                    data.push('data-url="' + (e.url || e.id) + '"');
+                    data.push('data-url="' + (e.url || e.path) + '"');
+
+                    // add id to data
+                    data.push('id="' + e.id + '"');
 
                     // add websafe class
                     classes.push(self._isWebSafe(e.name) ? 'safe' : 'notsafe');
@@ -1380,15 +1383,12 @@
                         return true; // skip empty names
                     }
 
-                    // only add a path if not the first item
-                    if (i) {
-                        crumbPath = Wf.String.path(crumbPath, name);
-                    }
+                    crumbPath = Wf.String.path(crumbPath, name);
 
                     var $item = $('<li title="' + name + '"></li>').on('click', 'a', function (e) {
-                        var url = $(e.target).data('url');
-                        self._changeDir(url);
-                    }).append('<a data-url="' + prefix + ':' + crumbPath + '">' + name + '</a>').insertBefore($count);
+                        var path = $(e.target).data('path');
+                        self._changeDir(path);
+                    }).append('<a data-path="' + prefix + ':' + crumbPath + '">' + name + '</a>').insertBefore($count);
 
                     // add item width
                     w += $item.outerWidth(true);
@@ -2983,21 +2983,15 @@
                 if (props.url) {
                     resolve(props);
                 } else {
-                    if ($(item).hasClass('folder') && $(item).attr('data-url')) {
-                        props.url = self.resolvePath($(item).attr('data-url'));
+                    var path = Wf.String.path(self._dir, props.title);
+
+                    Wf.JSON.request('getFileDetails', [path], function (o) {
+                        if (o && !o.error) {
+                            props = $.extend(props, o);
+                        }
 
                         resolve(props);
-                    } else {
-                        var path = Wf.String.path(self._dir, props.title);
-
-                        Wf.JSON.request('getFileDetails', [path], function (o) {
-                            if (o && !o.error) {
-                                props = $.extend(props, o);
-                            }
-
-                            resolve(props);
-                        });
-                    }
+                    });
                 }
             });
         },
