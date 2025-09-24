@@ -6108,8 +6108,8 @@
         // update with flowContent
         add("a", "href target rel media hreflang type", flowContent);
 
-        // template
-        add("template", "", flowContent);
+        // template - TODO
+        //add("template", "", flowContent);
       }
 
       // form events
