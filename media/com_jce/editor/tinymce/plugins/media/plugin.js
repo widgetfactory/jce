@@ -632,6 +632,11 @@
             return true;
         }
 
+        // remove if no attributes
+        if (node.attributes.length === 0) {
+            return false;
+        }
+
         return isSupportedIframe(editor, src);
     };
 
