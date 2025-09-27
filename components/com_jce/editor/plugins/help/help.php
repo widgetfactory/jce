@@ -11,8 +11,8 @@
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 
@@ -108,7 +108,7 @@ class WFHelpPlugin extends WFEditorPlugin
     {
         $result = '';
 
-        if (file_exists($file)) {
+        if (is_file($file)) {
             // load xml
             $xml = simplexml_load_file($file);
 

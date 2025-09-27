@@ -10,7 +10,7 @@
 
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 

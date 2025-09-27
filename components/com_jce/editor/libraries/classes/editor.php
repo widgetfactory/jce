@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -12,9 +13,9 @@
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Language;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
@@ -481,7 +482,6 @@ class WFEditor
             if (!empty($settings['invalid_elements'])) {
                 $settings['invalid_elements'] = array_values($settings['invalid_elements']);
             }
-
         } else {
             $settings['readonly'] = true;
         }
@@ -513,7 +513,7 @@ class WFEditor
         if ($this->isSkinRtl()) {
             $settings['skin_directionality'] = 'rtl';
         }
-        
+
         $app->triggerEvent('onBeforeWfEditorSettings', array(&$settings));
 
         // add module in Joomla 5
@@ -586,7 +586,7 @@ class WFEditor
         if ($autoInit) {
             // encode as json string
             $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
-            
+
             $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
         } else {
             $this->addScriptOptions($settings);
@@ -938,7 +938,7 @@ class WFEditor
     private function getPluginConfig(&$settings)
     {
         $app = Factory::getApplication();
-        
+
         $core = (array) $settings['plugins'];
         $items = array();
 
@@ -956,7 +956,7 @@ class WFEditor
         if (array_key_exists('external_plugins', $settings)) {
             $installed = (array) $settings['external_plugins'];
 
-            foreach ($installed as $plugin => $path) {                
+            foreach ($installed as $plugin => $path) {
                 $file = Path::find(array(
                     // new path
                     JPATH_PLUGINS . '/jce/editor_' . $plugin,
@@ -1299,7 +1299,7 @@ class WFEditor
 
             $fullpath = JPATH_SITE . '/' . $file;
 
-            if (File::exists($fullpath)) {
+            if (is_file($fullpath)) {
                 // less
                 if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
                     $stylesheets[] = $fullpath;
@@ -1422,7 +1422,7 @@ class WFEditor
                     $basepath = dirname($path);
 
                     $basepath = WFUtility::uriToAbsolutePath($basepath);
-                    
+
                     $file = Path::find(
                         array(
                             JPATH_SITE . '/' . $basepath
@@ -1451,7 +1451,7 @@ class WFEditor
                     $styles = self::getTemplateStyleSheetsList(true);
 
                     foreach ($styles as $style) {
-                        if (File::exists($style)) {
+                        if (is_file($style)) {
                             $files[] = $style;
                         }
                     }
@@ -1460,7 +1460,7 @@ class WFEditor
                     foreach ($plugins['core'] as $plugin) {
                         $content = WF_EDITOR_MEDIA . '/tinymce/plugins/' . $plugin . '/css/content.css';
 
-                        if (File::exists($content)) {
+                        if (is_file($content)) {
                             $files[] = $content;
                         }
                     }
@@ -1471,7 +1471,7 @@ class WFEditor
                         $basepath = dirname($path);
 
                         $basepath = WFUtility::uriToAbsolutePath($basepath);
-                        
+
                         $content = Path::find(
                             array(
                                 $basepath . '/css'
@@ -1486,12 +1486,12 @@ class WFEditor
                 } elseif ($slot == 'preview') {
                     $files = array();
                     $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/preview/css/preview.css';
-                    
+
                     // get template stylesheets
                     $styles = self::getTemplateStyleSheetsList(true);
 
                     foreach ($styles as $style) {
-                        if (File::exists($style)) {
+                        if (is_file($style)) {
                             $files[] = $style;
                         }
                     }

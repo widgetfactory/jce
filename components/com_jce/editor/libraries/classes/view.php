@@ -10,7 +10,7 @@
 
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\Object\CMSObject;
 
 final class WFView extends CMSObject

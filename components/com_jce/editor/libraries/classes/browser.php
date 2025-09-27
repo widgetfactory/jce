@@ -12,8 +12,8 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
@@ -1707,9 +1707,9 @@ class WFFileBrowser extends CMSObject
      */
     public function getFileIcon($ext)
     {
-        if (File::exists(WF_EDITOR_LIBRARIES . '/img/icons/' . $ext . '.gif')) {
+        if (is_file(WF_EDITOR_LIBRARIES . '/img/icons/' . $ext . '.gif')) {
             return $this->image('libraries.icons/' . $ext . '.gif');
-        } elseif (File::exists($this->getPluginPath() . '/img/icons/' . $ext . '.gif')) {
+        } elseif (is_file($this->getPluginPath() . '/img/icons/' . $ext . '.gif')) {
             return $this->image('plugins.icons/' . $ext . '.gif');
         } else {
             return $this->image('libraries.icons/def.gif');

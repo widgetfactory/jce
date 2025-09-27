@@ -11,7 +11,7 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\Object\CMSObject;
 
 class WFLanguageParser extends CMSObject
