@@ -194,8 +194,6 @@ class WFHelpPlugin extends WFEditorPlugin
                 $file = WF_ADMINISTRATOR . '/models/' . $category . '.xml';
                 break;
             case 'editor':
-                $file = WF_EDITOR_PLUGINS . '/' . $category . '/' . $category . '.xml';
-
                 $file = Path::find([
                     WF_EDITOR_PLUGINS . '/' . $category,
                     JPATH_PLUGINS . '/system/jcepro/editor/plugins/' . $category,
@@ -203,7 +201,7 @@ class WFHelpPlugin extends WFEditorPlugin
                     JPATH_PLUGINS . '/jce/editor_' . $category
                 ], $category . '.xml');
 
-                if (!is_file($file)) {
+                if (!$file) {
                     $file = WF_EDITOR_LIBRARIES . '/xml/help/editor.xml';
                 } else {
                     $path = dirname($file);
