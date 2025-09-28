@@ -1698,24 +1698,6 @@ class WFFileBrowser extends CMSObject
         return array();
     }
 
-    /**
-     * Get a file icon based on extension.
-     *
-     * @return string Path to file icon
-     *
-     * @param string $ext File extension
-     */
-    public function getFileIcon($ext)
-    {
-        if (is_file(WF_EDITOR_LIBRARIES . '/img/icons/' . $ext . '.gif')) {
-            return $this->image('libraries.icons/' . $ext . '.gif');
-        } elseif (is_file($this->getPluginPath() . '/img/icons/' . $ext . '.gif')) {
-            return $this->image('plugins.icons/' . $ext . '.gif');
-        } else {
-            return $this->image('libraries.icons/def.gif');
-        }
-    }
-
     private function validateUploadedFile($file)
     {
         // check the POST data array
