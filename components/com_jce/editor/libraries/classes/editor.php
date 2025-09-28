@@ -946,6 +946,8 @@ class WFEditor
         foreach ($core as $plugin) {
             $file = WF_EDITOR_PLUGINS . '/' . $plugin . '/config.php';
 
+            $file = Path::clean($file);
+
             if (is_file($file)) {
                 // add plugin name to array
                 $items[$plugin] = $file;
@@ -1174,10 +1176,12 @@ class WFEditor
                     $file = JPATH_SITE . '/' . $tmp;
                     $list = array();
 
+                    $file = Path::clean($file);
+
                     // check if path is a file
                     if (is_file($file)) {
                         $list[] = $file;
-                        // find files using pattern
+                    // find files using pattern
                     } else {
                         $list = glob($file);
                     }
@@ -1451,6 +1455,8 @@ class WFEditor
                     $styles = self::getTemplateStyleSheetsList(true);
 
                     foreach ($styles as $style) {
+                        $style = Path::clean($style);
+                        
                         if (is_file($style)) {
                             $files[] = $style;
                         }
@@ -1491,6 +1497,8 @@ class WFEditor
                     $styles = self::getTemplateStyleSheetsList(true);
 
                     foreach ($styles as $style) {
+                        $style = Path::clean($style);
+                        
                         if (is_file($style)) {
                             $files[] = $style;
                         }
