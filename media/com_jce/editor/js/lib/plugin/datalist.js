@@ -490,11 +490,9 @@
                 }
 
                 // action is inside the menu
-                if (menu.find(elm).length || $(elm).parents(menu).length) {                
+                if (menu.find(elm).length) {              
                     return;
                 }
-
-                hideMenu();
 
                 // not a datalist
                 if (!select.list) {
@@ -511,6 +509,8 @@
                 if (val !== '') {
                     selectItem({ text: val, value: val, select: true });
                 }
+
+                hideMenu();
             });
 
             $(select).on('datalist:update', function (e, o) {
