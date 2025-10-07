@@ -133,7 +133,7 @@ class WFMediaManagerBase extends WFEditorPlugin
      *
      * @return \stdClass Object with `name` (string) and `properties` (Registry).
      */
-    private function getFileSystem()
+    private function getFileSystemConfig()
     {
         static $filesystem = null;
 
@@ -161,6 +161,24 @@ class WFMediaManagerBase extends WFEditorPlugin
         $filesystem = (object) $item;
 
         return $filesystem;
+    }
+
+    private function getFilesystem($config = array())
+    {
+        static $instances = array();
+
+        $fs = $this->getFileSystemConfig();
+
+        // Determine active filesystem name (defaults to "joomla")
+        $name = empty($config['name']) ? 'joomla' : $config['name'];
+
+        $signature = md5($fs->name . serialize($config));
+
+        if (!isset($instances[$signature])) {
+            $instances[$signature] = WFFileSystem::getInstance($fs->name, $config);
+        }
+
+        return $instances[$signature];
     }
 
     public function onBeforeUpload(&$file, &$dir, &$name) {}
@@ -252,7 +270,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             ];
         }
 
-        $allowRoot = (bool) $filesystem->properties->get('allow_root', 0);
+        $allowRoot = (bool) $filesystem->get('allowroot', 0);
         $dirStore = [];
 
         // Collect non-blank entries (trimmed)
@@ -270,12 +288,18 @@ class WFMediaManagerBase extends WFEditorPlugin
         // If no usable entries exist (all blank or effectively empty after normalization)
         if (count($nonBlank) === 0) {
             if ($allowRoot === false) {
+                $root = $filesystem->get('root', 'images'); // get the default root for the filesystem
+
+                if (empty($root)) {
+                    $root = 'images';
+                }
+
                 // Default ONLY here to "images"
-                $hash = md5('images');
+                $hash = md5($root);
 
                 $dirStore[$hash] = [
-                    'path'  => 'images',
-                    'label' => 'Images',
+                    'path'  => $root,
+                    'label' => ucfirst(basename($root)), // get the last part of the path as label
                 ];
             } else {
                 // Root allowed: a single blank/root entry
@@ -310,13 +334,17 @@ class WFMediaManagerBase extends WFEditorPlugin
      */
     protected function getFileBrowserConfig($config = array())
     {
-        $filesystem = $this->getFileSystem();
-
         $filetypes = $this->getParam('extensions', $this->get('_filetypes'));
         $textcase = $this->getParam('editor.websafe_textcase', '');
 
         // flatten filetypes
         $filetypes = WFUtility::formatFileTypesList('list', $filetypes);
+
+        $filesystem = $this->getFilesystem(array(
+            'upload_conflict'   => $this->getParam('editor.upload_conflict', 'overwrite'),
+            'upload_suffix'     => $this->getParam('editor.upload_suffix', '_copy'),
+            'filetypes'         => $filetypes
+        ));
 
         // implode textcase array to create string
         if (is_array($textcase)) {
@@ -360,7 +388,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $base = array(
             'dir' => $dirStore,
-            'filesystem' => $filesystem->name,
+            'filesystem' => $filesystem,
             'filetypes' => $filetypes,
             'filter' => $filter,
             'upload' => array(
