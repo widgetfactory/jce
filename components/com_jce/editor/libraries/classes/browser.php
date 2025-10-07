@@ -39,8 +39,8 @@ class WFFileBrowser extends CMSObject
     /* @var array */
     public $dir = array();
 
-    /* @var string */
-    public $filesystem = 'joomla';
+    /* @var WFFileSystem */
+    public $filesystem = null;
 
     /* @var string */
     public $filetypes = 'jpg,jpeg,png,gif,webp';
@@ -205,25 +205,7 @@ class WFFileBrowser extends CMSObject
 
     public function getFileSystem()
     {
-        static $instances = array();
-
-        $fs = $this->get('filesystem', 'joomla');
-
-        $wf = WFEditorPlugin::getInstance();
-
-        $config = array(
-            'upload_conflict'   => $wf->getParam('editor.upload_conflict', 'overwrite'),
-            'upload_suffix'     => $wf->getParam('editor.upload_suffix', '_copy'),
-            'filetypes'         => $this->listFileTypes(),
-        );
-
-        $signature = md5($fs . serialize($config));
-
-        if (!isset($instances[$signature])) {
-            $instances[$signature] = WFFileSystem::getInstance($fs, $config);
-        }
-
-        return $instances[$signature];
+        return $this->filesystem; // filesystem is now passed in from the "manager" class
     }
 
     private function getViewable()
