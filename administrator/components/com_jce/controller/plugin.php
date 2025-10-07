@@ -16,7 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\Path;
 
 class JceControllerPlugin extends BaseController
 {
