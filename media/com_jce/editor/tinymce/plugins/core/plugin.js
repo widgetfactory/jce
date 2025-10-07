@@ -43,9 +43,6 @@
     // run on onBeforeGetContent
     ed.onBeforeGetContent.dispatch(ed, args);
 
-    // allow all tags
-    settings.verify_html = false;
-
     // no root blocks
     settings.forced_root_block = false;
 
