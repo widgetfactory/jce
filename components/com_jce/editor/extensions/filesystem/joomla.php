@@ -98,6 +98,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 'list_limit' => 0, // "all",
                 'allowroot' => (bool) $allowroot,
                 'restricted' => $restricted,
+                'root' => 'images'
             )
         );
     }
@@ -135,7 +136,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             return ''; // return a blank value for allowroot
         }
 
-        return 'images';
+        return $this->get('root', 'images');
     }
 
     public function toAbsolute($path)
@@ -367,8 +368,8 @@ class WFJoomlaFileSystem extends WFFileSystem
                     $name = trim($id, '/');
                 }
 
-                // create url
-                $url = WFUtility::makePath($id, '/');
+                // create url from absolute path
+                $url = $this->toRelative($item);
 
                 // remove leading slash
                 $url = trim($url, '/');
