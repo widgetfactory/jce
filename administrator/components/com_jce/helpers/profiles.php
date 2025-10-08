@@ -26,8 +26,6 @@ abstract class JceProfilesHelper
      */
     public static function createProfilesTable()
     {
-        jimport('joomla.installer.helper');
-
         $app = Factory::getApplication();
 
         $db = Factory::getDBO();
