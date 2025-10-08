@@ -22544,6 +22544,18 @@
       editor.addCommand('mceInsertClipboardContent', function (u, data) {        
           if (data.text) {
               pasteText(editor, data.text);
+              return true;
+          }
+
+          if (editor.settings.paste_plain_text && !data.internal) {
+
+              if (!data.text) {
+                  data.text = innerText(data.content || '');
+              }
+
+              pasteText(editor, data.text);
+
+              return true;
           }
 
           if (data.content) {
@@ -22574,7 +22586,7 @@
           var pasteAsPlainText = keyboardPastePlainTextState;
           keyboardPastePlainTextState = false;
 
-          if (editor.settings.paste_plain_text === true) {
+          if (editor.settings.paste_plain_text === true && !internal) {
               pasteAsPlainText = true;
           }
 
@@ -22789,6 +22801,10 @@
           if (rng && editor.settings.paste_filter_drop !== false) {
               var content = dropContent[internalHtmlMime()] || dropContent['text/html'] || dropContent['text/plain'];
 
+              if (editor.settings.paste_plain_text) {
+                  content = dropContent['text/plain'] || content;
+              }
+
               if (content) {
                   e.preventDefault();
 
@@ -22807,7 +22823,7 @@
 
                       var data = {};
 
-                      if (!dropContent['text/html']) {
+                      if (!dropContent['text/html'] || editor.settings.paste_plain_text) {
                           data.text = content;
                       } else {                        
                           // reset styles, replacing style attribute with data-mce-style value or remove
