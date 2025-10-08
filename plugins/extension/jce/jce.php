@@ -197,7 +197,11 @@ class PlgExtensionJce extends CMSPlugin
         $params = json_decode($table->params, true);
 
         if ($params && !empty($params['updates_key'])) {
-            $updatesite = Table::getInstance('Updatesite');
+            $updatesite = Table::getInstance('UpdateSite');
+
+            if (!$updatesite) {
+                return;
+            }
 
             // sanitize key
             $key = preg_replace("/[^a-zA-Z0-9]/", "", $params['updates_key']);
