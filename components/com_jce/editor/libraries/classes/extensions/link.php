@@ -176,7 +176,14 @@ class WFLinkExtension extends WFExtension
             $case = ', CASE WHEN ';
             $case .= $query->charLength('alias', '!=', '0');
             $case .= ' THEN ';
-            $a_id = $query->castAsChar('id');
+
+            // Joomla 3 compatibility
+            if (method_exists($query, 'castAsChar')) {
+                $a_id = $query->castAsChar('id');
+            } else {
+                $a_id = $query->castAs('CHAR', 'id');
+            }
+
             $case .= $query->concatenate(array($a_id, 'alias'), ':');
             $case .= ' ELSE ';
             $case .= $a_id . ' END as slug';

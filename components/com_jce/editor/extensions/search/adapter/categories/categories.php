@@ -100,7 +100,14 @@ class PlgWfSearchCategories extends CMSPlugin
         $case_when = ' CASE WHEN ';
         $case_when .= $query->charLength('a.alias', '!=', '0');
         $case_when .= ' THEN ';
-        $a_id = $query->castAsChar('a.id');
+
+        // Joomla 3 compatibility
+        if (method_exists($query, 'castAsChar')) {
+            $a_id = $query->castAsChar('a.id');
+        } else {
+            $a_id = $query->castAs('CHAR', 'a.id');
+        }
+        
         $case_when .= $query->concatenate(array($a_id, 'a.alias'), ':');
         $case_when .= ' ELSE ';
         $case_when .= $a_id . ' END as slug';

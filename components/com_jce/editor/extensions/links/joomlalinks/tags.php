@@ -103,7 +103,14 @@ class JoomlalinksTags extends CMSObject
             $case_when_item_alias = ' CASE WHEN ';
             $case_when_item_alias .= $query->charLength('a.alias', '!=', '0');
             $case_when_item_alias .= ' THEN ';
-            $a_id = $query->castAsChar('a.id');
+
+            // Joomla 3 compatibility
+            if (method_exists($query, 'castAsChar')) {
+                $a_id = $query->castAsChar('a.id');
+            } else {
+                $a_id = $query->castAs('CHAR', 'a.id');
+            }
+
             $case_when_item_alias .= $query->concatenate(array($a_id, 'a.alias'), ':');
             $case_when_item_alias .= ' ELSE ';
             $case_when_item_alias .= $a_id . ' END as slug';
