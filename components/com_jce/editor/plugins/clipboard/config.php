@@ -42,6 +42,7 @@ class WFClipboardPluginConfig
         // if paste HTML is disabled, then default to plain text paste
         if ($settings['clipboard_paste_html'] === false) {
             $settings['paste_plain_text'] = true;
+            $settings['clipboard_paste_text'] = true;
         }
     }
 
