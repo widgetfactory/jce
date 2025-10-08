@@ -22574,6 +22574,10 @@
           var pasteAsPlainText = keyboardPastePlainTextState;
           keyboardPastePlainTextState = false;
 
+          if (editor.settings.paste_plain_text === true) {
+              pasteAsPlainText = true;
+          }
+
           if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
               pasteBin.remove();
               return;
