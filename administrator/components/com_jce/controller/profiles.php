@@ -100,7 +100,7 @@ class JceControllerProfiles extends AdminController
         // Check for request forgeries
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
         $ids = (array) $this->input->get('cid', array(), 'int');
 
         // Access checks.
