@@ -76,17 +76,10 @@ class Jce extends CMSPlugin
      */
     public function getDownloadKey()
     {
-        $component = ComponentHelper::getComponent('com_jce');
+        // get the key directly from the update sites table, eg: when updating a plugin
+        $key = $this->getDownloadKeyFromUpdateSites();
 
-        // check the component params for the key
-        $key = $component->params->get('updates_key', '');
-
-        // try get the key directly from the update sites table, eg: when updating a plugin
-        if (empty($key)) {
-            $key = $this->getDownloadKeyFromUpdateSites();
-        }
-
-        // Return null or an appropriate value if the key is not found
+        // Return the key or null if not found
         return $key;
     }
 }
