@@ -69,7 +69,7 @@ if ($pos = strpos($data->media_src, '#')) {
 }
 
 // get file extension to determine tag
-$extension = File::getExt($data->media_src);
+$extension = pathinfo($data->media_src, PATHINFO_EXTENSION);
 
 // lowercase
 $extension = strtolower($extension);
