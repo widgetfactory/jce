@@ -11,13 +11,9 @@ defined('JPATH_BASE') or die;
 JLoader::registerNamespace('Joomla\\Plugin\\Editors\\Jce', JPATH_PLUGINS . '/editors/jce/src', false, false, 'psr4');
 JLoader::register('WfBrowserHelper', JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
 
 /**
  * JCE.
@@ -26,91 +22,6 @@ use Joomla\CMS\Uri\Uri;
  */
 class PlgSystemJce extends CMSPlugin
 {
-    protected $booted = false;
-    
-    private function getDummyDispatcher()
-    {
-        $app = Factory::getApplication();
-
-        if (method_exists($app, 'getDispatcher')) {
-            $dispatcher = Factory::getApplication()->getDispatcher();
-        } else {
-            $dispatcher = JEventDispatcher::getInstance();
-        }
-
-        return $dispatcher;
-    }
-
-    private function bootEditorPlugins()
-    {
-        if ($this->booted) {
-            return;
-        }
-        
-        $app = Factory::getApplication();
-
-        // only in "site"
-        if ($app->getClientId() !== 0) {
-            return;
-        }
-
-        // Joomla 4+ only
-        if (!method_exists($app, 'bootPlugin')) {
-            return;
-        }
-
-        $plugins = PluginHelper::getPlugin('jce');
-
-        foreach ($plugins as $plugin) {
-            if (!preg_match('/^editor[-_]/', $plugin->name)) {
-                continue;
-            }
-
-            $path = JPATH_PLUGINS . '/jce/' . $plugin->name;
-
-            // only modern plugins
-            if (!is_dir($path . '/src')) {
-                continue;
-            }
-
-            $plugin = $app->bootPlugin($plugin->name, $plugin->type);
-            $plugin->setDispatcher($app->getDispatcher());
-
-            $plugin->registerListeners();
-        }
-
-        $this->booted = true;
-    }
-
-    private function bootCustomPlugin($className, $config = array())
-    {
-        if (class_exists($className)) {
-            $dispatcher = $this->getDummyDispatcher();
-
-            // Instantiate and register the event
-            $plugin = new $className($dispatcher, $config);
-
-            if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
-                $plugin->registerListeners();
-            }
-        }
-    }
-
-    public function onBeforeWfEditorLoad()
-    {
-        $items = glob(__DIR__ . '/templates/*.php');
-
-        foreach ($items as $item) {
-            $name = basename($item, '.php');
-
-            $className = 'WfTemplate' . ucfirst($name);
-
-            require_once $item;
-
-            $this->bootCustomPlugin($className);
-        }
-    }
-
     public function onAfterDispatch()
     {
         $app = Factory::getApplication();
@@ -127,46 +38,40 @@ class PlgSystemJce extends CMSPlugin
             return true;
         }
 
-        $this->bootEditorPlugins();
-
         $app->triggerEvent('onWfPluginAfterDispatch');
     }
 
     /**
-     * Transforms the field into a DOM XML element and appends it as a child on the given parent.
+     * adds additional fields to the user editing form.
      *
-     * @param   stdClass    $field   The field.
-     * @param   DOMElement  $parent  The field node parent.
-     * @param   Form        $form    The form.
+     * @param Form $form The form to be altered
+     * @param mixed $data The associated data for the form
      *
-     * @return  DOMElement
+     * @return bool
      *
-     * @since   3.7.0
+     * @since   2.6.64
      */
-    public function onCustomFieldsPrepareDom($field, \DOMElement $parent, Form $form)
+    public function onContentPrepareForm(Form $form, $data = [])
     {
-        if ($field->type !== 'mediajce') {
-            return;
-        }
-        
-        // media will be loaded by JCE Pro
-        if (PluginHelper::isEnabled('system', 'jcepro')) {
-            return;
+        $app = Factory::getApplication();
+
+        // Only for admin
+        if (!$app->isClient('administrator')) {
+            return true;
         }
 
-        $document = Factory::getDocument();
+        $formName = $form->getName();
 
-        // load scripts and styles for core JCE Media field
-        HTMLHelper::_('jquery.framework');
+        // profile form data
+        if ($form->getName() == 'com_config.component') {
 
-        $option = Factory::getApplication()->input->getCmd('option');
-        $component = ComponentHelper::getComponent($option);
+            // only for JCE component
+            if ($app->input->getCmd('component') !== 'com_jce') {
+                return true;
+            }
 
-        $document->addScriptOptions('plg_system_jce', array(
-            'context' => (int) $component->id,
-        ), true);
-
-        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
+            Form::addFormPath(__DIR__ . '/forms');
+            $form->loadFile('updates', false, '/config');
+        }
     }
 }
