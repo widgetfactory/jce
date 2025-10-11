@@ -365,50 +365,6 @@ class WFBrowserPlugin extends WFMediaManager
         }
     }
 
-    public function onBeforeUpload(&$file, &$dir, &$name)
-    {
-        $app = Factory::getApplication();
-
-        // check if this is a media field upload, as it will not send a target upload folder
-        if ($this->isMediaField()) {
-            // only for inline uploads outside of the dialog
-            if ($app->input->getInt('inline', 0) === 1) {
-                if (empty($dir)) {
-                    $browser = $this->getFileBrowser();
-
-                    // for the JCE Media Field, set the default root folder
-                    $dirStore = $browser->get('dir');
-                    $key = array_key_first($dirStore);
-                    $dir = $key . ':';
-
-                    // get the path from a converted media field
-                    if ($app->input->getInt('converted', 0) === 1) {
-                        $folder = $app->input->getString('path', $app->input->getString('folder', ''));
-
-                        $folder = $this->normalizeLocalJoomlaFolder($folder);
-
-                        if ($folder) {
-                            // check if the folder is within any directory store path
-                            foreach ($dirStore as $key => $store) {
-                                // trim trailing slashes
-                                $base = trim($store['path'], '/');
-
-                                // check if the folder is within any directory store path
-                                if ($folder === $base || strpos($folder, $base . '/') === 0) {
-                                    $dir = $key . ':';
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // pass to parent method
-        parent::onBeforeUpload($file, $dir, $name);
-    }
-
     public function onUpload($file, $relative = '')
     {
         $app = Factory::getApplication();
