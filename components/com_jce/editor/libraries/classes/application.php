@@ -107,6 +107,26 @@ class WFApplication extends CMSObject
         return $component->id;
     }
 
+    private function isFileBrowser()
+    {
+        $app = Factory::getApplication();
+        $option = $app->input->getCmd('option', '');
+
+        if ($option !== 'com_jce') {
+            return false;
+        }
+
+        if ($app->input->getCmd('view') === 'browser') {
+            return true;
+        }
+
+        if ($app->input->getCmd('plugin') === 'browser') {
+            return true;
+        }
+
+        return false;
+    }
+
     private function getProfileVars()
     {
         $app = Factory::getApplication();
@@ -132,6 +152,10 @@ class WFApplication extends CMSObject
                     $component = $this->getComponent($context);
                     $settings['option'] = $component->option;
                 }
+            }
+
+            if ($this->isFileBrowser()) {
+                $settings['option'] = 'com_jce.browser';
             }
 
             $profile_id = $app->input->getInt('profile_id');
@@ -324,8 +348,8 @@ class WFApplication extends CMSObject
                     }
                 }
 
-                // check component
-                if (!empty($item->components)) {
+                // check component, but skip if this is the file browser
+                if (!empty($item->components) && $vars['option'] != 'com_jce.browser') {
                     $components = explode(',', $item->components);
 
                     // remove duplicates
