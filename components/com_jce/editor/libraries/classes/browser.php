@@ -419,7 +419,7 @@ class WFFileBrowser extends CMSObject
     public function getDefaultPath()
     {
         $store = $this->getDirectoryStore();
-        $values = array_shift(array_values($store));
+        $values = reset($store); // get the first element
 
         return $values['prefix'] . ':';
     }
