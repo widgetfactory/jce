@@ -339,57 +339,99 @@ class WFFileBrowser extends CMSObject
         return '';
     }
 
+    private function isComplexPath($path)
+    {
+        // Fast fail: no colon at all
+        $pos = strpos($path, ':');
+
+        // No colon found, so not a complex path
+        if ($pos === false) {
+            return false;
+        }
+
+        // Ignore protocols like "http://", "ftp://", "file://"
+        if (strpos($path, '://') !== false) {
+            return false;
+        }
+
+        // Candidate prefix before the colon
+        $candidate = substr($path, 0, $pos);
+
+        // Must be exactly 32 hex characters (MD5 hex)
+        if (strlen($candidate) !== 32 || !ctype_xdigit($candidate)) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
-     * Extract a path value from the complex path.
-     *
-     * @param string $path     The path value to process. The path is updated with the id removed
-     *
-     * @return string $path    Simple path value
+     * Try to split a complex path "id:rest" into ($id, $rest) if it really is a store prefix.
+     * Returns true if split occurred, false otherwise. $id will be '' and $rest=$path when false.
+     */
+    private function splitComplexPath($path, &$id, &$relative)
+    {
+        $id         = '';
+        $relative   = $path;
+
+        if (!$this->isComplexPath($path)) {
+            // Not a complex path, so return false
+            return false;
+        }
+
+        $pos = strpos($path, ':');
+
+        // Candidate prefix before the colon
+        $candidate = substr($path, 0, $pos);
+
+        $id = strtolower($candidate);
+        $relative = substr($path, $pos + 1);
+
+        return true;
+    }
+
+    /**
+     * Extract a simple path from a possibly complex "id:path" value.
      */
     private function extractPath($path)
     {
-        if (strpos($path, ':') !== false) {
-            list($id, $path) = explode(':', $path);
+        if ($this->splitComplexPath($path, $id, $relative)) {
+            return $relative;
         }
 
         return $path;
     }
 
     /**
-     * Parse a path value to get the path id.
-     *
-     * @param string $path     The path value to parse. The updated path is updated with the id removed
-     *
-     * @return string $id A Path Id
+     * Parse a path value to get the path id. Updates $path by reference if an id is removed.
      */
     private function parsePath(&$path)
     {
         $id = '';
 
-        if (strpos($path, ':') !== false) {
-            list($id, $path) = explode(':', $path);
+        if ($this->splitComplexPath($path, $id, $relative)) {
+            $path = $relative;
+            return $id;
         }
 
-        return $id;
+        return '';
     }
 
     /**
-     * Get a path id prefix from a path value
-     *
-     * @param [string] $path
-     * @return string prefix
+     * Get a path id prefix from a path value, without modifying the input.
      */
     private function getPathPrefix($path)
     {
-        $prefix = "";
-
-        if (strpos($path, ':') !== false) {
-            list($prefix, $path) = explode(':', $path);
+        if ($this->splitComplexPath($path, $id, $relative)) {
+            return $id;
         }
 
-        return $prefix;
+        return '';
     }
 
+    /**
+     * Resolve a path: if it's "id:sub/path", map it into the store's root; else return as-is.
+     */
     public function resolvePath($path)
     {
         if (empty($path)) {
@@ -397,7 +439,7 @@ class WFFileBrowser extends CMSObject
         }
 
         // check for complex path
-        if (strpos($path, ':') === false) {
+        if ($this->isComplexPath($path) === false) {
             // no prefix so return the path as is
             return $path;
         }
