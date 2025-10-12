@@ -141,7 +141,14 @@ class WFMediaManagerBase extends WFEditorPlugin
             return $filesystem;
         }
 
-        $config = (array) $this->getParam('filesystem', array());
+        // get local (plugin) filesystem config
+        $config = (array) $this->getParam($this->getName() . 'filesystem', array());
+
+        // if no local filesystem name is set, use global config. This is to avoid using the local config values, eg: allow_root, if it has actually been reset to "inherit"
+        if (empty($config['name'])) {
+            // get global filesystem config
+            $config = (array) $this->getParam('editor.filesystem', array());
+        }
 
         // Determine active filesystem name (defaults to "joomla")
         $name = empty($config['name']) ? 'joomla' : $config['name'];
