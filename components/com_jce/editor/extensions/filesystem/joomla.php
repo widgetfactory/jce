@@ -57,50 +57,46 @@ class WFJoomlaFileSystem extends WFFileSystem
      * Constructor activating the default information of the class.
      */
     public function __construct($config = array())
-    {        
+    {
+        // normalize allow_root as boolean to "allowroot"
+        if (isset($config['allow_root'])) {
+            $this->allowroot = (bool) $config['allow_root'];
+            
+            // remove allow_root from config
+            unset($config['allow_root']);
+        }
+
+        if (isset($config['restrict_dir'])) {
+            $restricted = $config['restrict_dir'];
+
+            // Normalize $restricted to array
+            if (is_string($restricted)) {
+                $restricted = array_map('trim', explode(',', $restricted));
+            }
+
+            // Clean empty values
+            $restricted = array_filter($restricted);
+
+            // remove root folder restrictions
+            if ($this->allowroot === false) {
+                $restricted = [];
+            }
+
+            $config['restrict_dir'] = $restricted;
+        }
+
+        if (!isset($config['root'])) {
+            $config['root'] = 'images';
+        }
+
+        if (!isset($config['list_limit'])) {
+            $config['list_limit'] = 0; // "all
+        }
+
+        // this is a "local" filesystem
+        $config['local'] = true;        
+
         parent::__construct($config);
-
-        $safe_mode = false;
-
-        // check for safe mode
-        if (function_exists('ini_get')) {
-            $safe_mode = ini_get('safe_mode');
-            // assume safe mode if can't check ini
-        } else {
-            $safe_mode = true;
-        }
-
-        $wf = WFEditorPlugin::getInstance();
-
-        // Get default restricted directories and root access setting
-        $restricted = $this->getParam('restrict_dir', $this->restricted);
-        $allowroot = (bool) $this->getParam('allow_root', 0);
-
-        // Normalize $restricted to array
-        if (is_string($restricted)) {
-            $restricted = array_map('trim', explode(',', $restricted));
-        }
-
-        // Clean empty values
-        $restricted = array_filter($restricted);
-
-        // Cast to bool
-        $allowroot = (bool) $allowroot;
-
-        // remove root folder restrictions
-        if (!$allowroot) {
-            $restricted = [];
-        }
-
-        $this->setProperties(
-            array(
-                'local' => true,
-                'list_limit' => 0, // "all",
-                'allowroot' => (bool) $allowroot,
-                'restricted' => $restricted,
-                'root' => 'images'
-            )
-        );
     }
 
     /**
