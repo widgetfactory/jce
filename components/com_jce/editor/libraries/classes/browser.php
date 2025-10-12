@@ -339,6 +339,16 @@ class WFFileBrowser extends CMSObject
         return '';
     }
 
+    /**
+     * Determine whether a path is in complex "id:relative" form.
+     *
+     * A complex path begins with a 32-character hexadecimal MD5 prefix,
+     * followed by a colon, and an optional relative path.
+     *
+     * @param   string  $path  The path string to test.
+     *
+     * @return  bool  True if the path has a valid MD5 prefix, false otherwise.
+     */
     private function isComplexPath($path)
     {
         // Fast fail: no colon at all
@@ -366,8 +376,21 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Try to split a complex path "id:rest" into ($id, $rest) if it really is a store prefix.
-     * Returns true if split occurred, false otherwise. $id will be '' and $rest=$path when false.
+     * Split a complex path "id:relative" into prefix and relative components.
+     *
+     * Returns true if split occurred, false otherwise. When false, $id will be empty
+     * and $relative will contain the original $path value.
+     *
+     * Examples:
+     *   abcdef...1234:images/foo.jpg → $id="abcdef...1234", $relative="images/foo.jpg"
+     *   abcdef...1234:               → $id="abcdef...1234", $relative=""
+     *   images/foo.jpg               → no split (false)
+     *
+     * @param   string  $path       The full path to parse.
+     * @param   string  &$id        Output parameter for the 32-character prefix.
+     * @param   string  &$relative  Output parameter for the relative path.
+     *
+     * @return  bool  True if the path was successfully split, false otherwise.
      */
     private function splitComplexPath($path, &$id, &$relative)
     {
@@ -391,7 +414,12 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Extract a simple path from a possibly complex "id:path" value.
+     * Extract the simple relative path from a possibly complex "id:relative" value.
+     * Returns the portion after the colon, or the original path if not complex.
+     *
+     * @param   string  $path  The path value to process.
+     *
+     * @return  string  The extracted relative path, or the original value.
      */
     private function extractPath($path)
     {
@@ -403,7 +431,14 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Parse a path value to get the path id. Updates $path by reference if an id is removed.
+     * Parse a path value to extract its prefix.
+     *
+     * Updates the input $path by reference to remove the prefix,
+     * leaving only the relative portion (or empty string for root).
+     *
+     * @param   string  &$path  The path value to modify.
+     *
+     * @return  string  The extracted prefix, or an empty string if not complex.
      */
     private function parsePath(&$path)
     {
@@ -418,7 +453,11 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Get a path id prefix from a path value, without modifying the input.
+     * Get the prefix from a complex path without modifying it.
+     *
+     * @param   string  $path  The path value to parse.
+     *
+     * @return  string  The prefix if complex, or an empty string otherwise.
      */
     private function getPathPrefix($path)
     {
@@ -430,7 +469,20 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Resolve a path: if it's "id:sub/path", map it into the store's root; else return as-is.
+     * Resolve a path into its absolute filesystem location.
+     *
+     * If the path is in "id:relative" form, it resolves the prefix to its
+     * corresponding directory store root and appends the relative portion.
+     * If the path is simple, it is returned unchanged.
+     *
+     * Examples:
+     *   abcdef...1234:foo/bar → images/foo/bar
+     *   abcdef...1234:        → images
+     *   foo/bar               → foo/bar (no change)
+     *
+     * @param   string  $path  The path to resolve.
+     *
+     * @return  string  The resolved absolute path or the input if simple.
      */
     public function resolvePath($path)
     {
