@@ -21,17 +21,15 @@ class WFFileSystem extends WFExtension
      */
     public function __construct($config = array())
     {
-        parent::__construct($config);
+        if (!isset($config['list_limit'])) {
+            $config['list_limit'] = 50;
+        }
 
-        $this->setProperties(
-            array_merge(
-                $config,
-                array(
-                    'local' => true,
-                    'list_limit' => 50
-                )
-            )
-        );
+        if (!isset($config['local'])) {
+            $config['local'] = true;
+        }
+        
+        parent::__construct($config);
     }
 
     /**
