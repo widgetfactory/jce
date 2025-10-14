@@ -735,9 +735,8 @@ class JceModelProfile extends AdminModel
             foreach ($items as $item) {
                 // add config data
                 if (array_key_exists($item, $data['params'])) {
-                    $value = $data['params'][$item];
-                    // clean and add to json array for merging
-                    $json[$item] = filter_var_array($value, FILTER_SANITIZE_SPECIAL_CHARS);
+                    // Add to json array for merging
+                    $json[$item] = $data['params'][$item];
                 }
             }
 
