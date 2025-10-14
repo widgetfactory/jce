@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Admin
@@ -70,6 +71,52 @@ class JFormFieldContainer extends FormField
         }
 
         return false;
+    }
+
+    /**
+     * Build a subform from a container <field> but strip nested <field> descendants.
+     *
+     * @param  SimpleXMLElement $container  The <field type="container" ...> element (eg. $this->element)
+     * @param  array            $data       Data to bind
+     * @param  string           $control    Control name
+     * @param  string           $name       Form name
+     * @return \Joomla\CMS\Form\Form
+     */
+    private function buildContainerSubForm(SimpleXMLElement $container, array $data, string $control, string $name): Form
+    {
+        // 1) Create a minimal wrapper <form><fields/></form>
+        $wrapper   = new SimpleXMLElement('<form><fields/></form>');
+        $fieldsDst = $wrapper->fields;
+
+        // 2) Take only the container’s *direct* children (field / fieldset)
+        //    but strip any descendant <field> nodes inside them.
+        $directNodes = $container->xpath('./field | ./fieldset');
+
+        foreach ($directNodes as $node) {
+            // Clone the node
+            $clone = new SimpleXMLElement($node->asXML());
+
+            // Remove ALL descendant <field> nodes from the clone
+            foreach ($clone->xpath('.//field') as $desc) {
+                $d = dom_import_simplexml($desc);
+                $d->parentNode->removeChild($d);
+            }
+
+            // Append the cleaned clone to the wrapper
+            $to   = dom_import_simplexml($fieldsDst);
+            $from = dom_import_simplexml($clone);
+            $to->appendChild($to->ownerDocument->importNode($from, true));
+        }
+
+        // 3) Load the cleaned XML into a new Form (no setFields!)
+        $subForm = new Form($name, ['control' => $control]);
+
+        $subForm->load($wrapper);
+
+        // 4) Bind values
+        $subForm->bind($data);
+
+        return $subForm;
     }
 
     /**
@@ -155,14 +202,9 @@ class JFormFieldContainer extends FormField
                 $item[] = '  <div class="form-field-repeatable-item-group">';
             }
 
-            $subForm = new Form('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
-
-            $subForm::addFieldPath(__DIR__);
-
-            $subForm->load($children);
-            $subForm->setFields($children);
-
-            $subForm->bind($data);
+            $control = $this->formControl . '[' . str_replace('.', '][', $group) . ']';
+            $subForm = $this->buildContainerSubForm($this->element, (array) $data, $control, $this->fieldname);
+            
             $fields = $subForm->getFieldset();
 
             $defaultValues = array();
@@ -170,7 +212,7 @@ class JFormFieldContainer extends FormField
 
             foreach ($fields as $field) {
                 $tmpField = clone $field;
-                
+
                 $name = (string) $tmpField->element['name'];
                 $value = (string) $tmpField->element['default'];
 
