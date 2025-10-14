@@ -59,6 +59,7 @@ class JFormFieldKeyValue extends FormField
 
         if (is_string($values) && !empty($values)) {
             $value = htmlspecialchars_decode($this->value);
+            $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
             $values = json_decode($value, true);
 
