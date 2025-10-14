@@ -142,7 +142,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         // get local (plugin) filesystem config
-        $config = (array) $this->getParam($this->getName() . 'filesystem', array());
+        $config = (array) $this->getParam('filesystem', array());
 
         // if no local filesystem name is set, use global config. This is to avoid using the local config values, eg: allow_root, if it has actually been reset to "inherit"
         if (empty($config['name'])) {
@@ -175,9 +175,6 @@ class WFMediaManagerBase extends WFEditorPlugin
         static $instances = array();
 
         $fs = $this->getFileSystemConfig();
-
-        // Determine active filesystem name (defaults to "joomla")
-        $name = empty($config['name']) ? 'joomla' : $config['name'];
 
         $signature = md5($fs->name . serialize($config));
 
@@ -246,7 +243,14 @@ class WFMediaManagerBase extends WFEditorPlugin
     {
         $filesystem = $this->getFileSystem();
 
-        // get base directory from editor parameter
+        // default global filesystem configuration
+        $baseFs = (array) $this->getParam('editor.filesystem', array('name' => 'joomla'));
+
+        if (empty($baseFs['name'])) {
+            $baseFs['name'] = 'joomla'; // default to joomla filesystem
+        }
+
+        // get the global base directory value
         $baseDir = $this->getParam('editor.dir', '', '', false);
 
         // get directory from plugin parameter, fallback to base directory as it cannot itself be empty
@@ -257,14 +261,16 @@ class WFMediaManagerBase extends WFEditorPlugin
             $dir = $this->getParam($this->get('caller') . '.dir', $dir);
         }
 
-        // if no directory is set, or it is an empty array, use the base directory
-        if (empty($dir)) {
-            $dir = $baseDir;
-        }
+        // if the filesystem name matches the base filesystem name, use the base directory if no directory is set
+        if ($baseFs['name'] === $filesystem->get('name')) {
+            // if no directory is set, or it is an empty array, use the base directory
+            if (empty($dir)) {
+                $dir = $baseDir;
 
-        // otherwise, if it is an array, check if it has a path value, if not use the base directory
-        else if (is_array($dir) && count(array_filter(array_column($dir, 'path'))) === 0) {
-            $dir = $baseDir;
+            // otherwise, if it is an array, check if it has a path value, if not use the base directory    
+            } else if (is_array($dir) && count(array_filter(array_column($dir, 'path'))) === 0) {
+                $dir = $baseDir;
+            }
         }
 
         // Normalize $dir into an array of directories if it is a string (legacy value)
@@ -277,8 +283,8 @@ class WFMediaManagerBase extends WFEditorPlugin
             ];
         }
 
-        $allowRoot = (bool) $filesystem->get('allowroot', 0);
-        $dirStore = [];
+        // allow root: accept both spellings just in case
+        $allowRoot = (bool) ($filesystem->get('allowroot', $filesystem->get('allow_root', 0)));
 
         // Collect non-blank entries (trimmed)
         $nonBlank = [];
@@ -291,6 +297,8 @@ class WFMediaManagerBase extends WFEditorPlugin
                 $nonBlank[] = ['path' => $path, 'label' => $label];
             }
         }
+
+        $dirStore = [];
 
         // If no usable entries exist (all blank or effectively empty after normalization)
         if (count($nonBlank) === 0) {
@@ -306,7 +314,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
                 $dirStore[$hash] = [
                     'path'  => $root,
-                    'label' => ucfirst(basename($root)), // get the last part of the path as label
+                    'label' => '' // no label required for a single path
                 ];
             } else {
                 // Root allowed: a single blank/root entry
