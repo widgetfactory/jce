@@ -118,6 +118,48 @@ class WFMediaManagerBase extends WFEditorPlugin
         return $this->getFileBrowser()->setFileTypes($filetypes);
     }
 
+    public function onBeforeUpload(&$file, &$dir, &$name) {}
+
+    public function onUpload($file, $relative = '') {}
+
+    public function getDimensions($file)
+    {
+        $browser = $this->getFileBrowser();
+
+        $data = array();
+
+        $extension = WFUtility::getExtension($file, true);
+
+        // images and flash
+        if (in_array($extension, array('jpg', 'jpeg', 'png', 'apng', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp', 'swf'))) {
+            list($data['width'], $data['height']) = $browser->getDimensions($file);
+            return $data;
+        }
+
+        $path = $browser->toAbsolute($file);
+
+        // svg
+        if ($extension == 'svg') {
+            $svg = @simplexml_load_file($path);
+
+            if ($svg && isset($svg['viewBox'])) {
+                list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
+
+                $width = (int) $end_x;
+                $height = (int) $end_y;
+
+                if ($width && $height) {
+                    $data['width'] = $width;
+                    $data['height'] = $height;
+
+                    return $data;
+                }
+            }
+        }
+
+        return $data;
+    }
+
     /**
      * Get the filesystem definition from parameters (with static caching).
      *
@@ -176,6 +218,11 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $fs = $this->getFileSystemConfig();
 
+        // merge config with filesystem properties
+        if (isset($fs->properties)) {
+            $config = array_merge($fs->properties->toArray(), $config);
+        }
+
         $signature = md5($fs->name . serialize($config));
 
         if (!isset($instances[$signature])) {
@@ -183,48 +230,6 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         return $instances[$signature];
-    }
-
-    public function onBeforeUpload(&$file, &$dir, &$name) {}
-
-    public function onUpload($file, $relative = '') {}
-
-    public function getDimensions($file)
-    {
-        $browser = $this->getFileBrowser();
-
-        $data = array();
-
-        $extension = WFUtility::getExtension($file, true);
-
-        // images and flash
-        if (in_array($extension, array('jpg', 'jpeg', 'png', 'apng', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp', 'swf'))) {
-            list($data['width'], $data['height']) = $browser->getDimensions($file);
-            return $data;
-        }
-
-        $path = $browser->toAbsolute($file);
-
-        // svg
-        if ($extension == 'svg') {
-            $svg = @simplexml_load_file($path);
-
-            if ($svg && isset($svg['viewBox'])) {
-                list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
-
-                $width = (int) $end_x;
-                $height = (int) $end_y;
-
-                if ($width && $height) {
-                    $data['width'] = $width;
-                    $data['height'] = $height;
-
-                    return $data;
-                }
-            }
-        }
-
-        return $data;
     }
 
     /**
@@ -236,13 +241,13 @@ class WFMediaManagerBase extends WFEditorPlugin
      * - Normalize string $dir to array format.
      * - Only add a default "images" entry when there are no usable (non-blank) paths,
      *   and only if allow_root is false. Otherwise, ignore blank rows.
+     * 
+     * @param  WFFileSystem $filesystem The filesystem instance to use.
      *
-     * @return array               Associative array keyed by md5(path) => ['path' => ..., 'label' => ...]
+     * @return array        Associative array keyed by md5(path) => ['path' => ..., 'label' => ...]
      */
-    protected function buildDirectoryStoreFromParams(): array
+    protected function buildDirectoryStoreFromParams($filesystem): array
     {
-        $filesystem = $this->getFileSystem();
-
         // default global filesystem configuration
         $baseFs = (array) $this->getParam('editor.filesystem', array('name' => 'joomla'));
 
@@ -261,8 +266,11 @@ class WFMediaManagerBase extends WFEditorPlugin
             $dir = $this->getParam($this->get('caller') . '.dir', $dir);
         }
 
-        // if the filesystem name matches the base filesystem name, use the base directory if no directory is set
-        if ($baseFs['name'] === $filesystem->get('name')) {
+        // allow root: accept both spellings just in case
+        $allowRoot = (bool) ($filesystem->get('allowroot', $filesystem->get('allow_root', 0)));
+
+        // if the filesystem name matches the base filesystem name, use the base directory if no directory is set and allowRoot is false
+        if ($baseFs['name'] === $filesystem->get('name') && $allowRoot === false) {
             // if no directory is set, or it is an empty array, use the base directory
             if (empty($dir)) {
                 $dir = $baseDir;
@@ -282,9 +290,6 @@ class WFMediaManagerBase extends WFEditorPlugin
                 ],
             ];
         }
-
-        // allow root: accept both spellings just in case
-        $allowRoot = (bool) ($filesystem->get('allowroot', $filesystem->get('allow_root', 0)));
 
         // Collect non-blank entries (trimmed)
         $nonBlank = [];
@@ -377,7 +382,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         // remove empty values
         $filter = array_filter((array) $filter);
 
-        $dirStore = $this->buildDirectoryStoreFromParams();
+        $dirStore = $this->buildDirectoryStoreFromParams($filesystem);
 
         // get websafe spaces parameter and convert legacy values
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
