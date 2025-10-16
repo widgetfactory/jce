@@ -140,36 +140,39 @@ abstract class WfBrowserHelper
         // get component params to check for media field conversion
         $componentParams = ComponentHelper::getParams('com_jce');
 
-        // set $url as empty string
-        $data = array(
+        // merge default options
+        $options = array_merge(array(
             'upload' => 0,
             'select_button' => 1,
             'convert' => 0,
             'mediafields' => array(),
-        );
+        ), $options);
 
         // get editor instance
         $wf = WFApplication::getInstance();
         $profile = $wf->getActiveProfile(['plugin' => 'browser']);
 
         // is conversion enabled?
-        $data['convert'] = (int) $componentParams->get('replace_media_manager', 1) && (int) $wf->getParam('browser.mediafield_conversion', 1);
+        $options['convert'] = (int) $componentParams->get('replace_media_manager', 1) && (int) $wf->getParam('browser.mediafield_conversion', 1);
+
+        // add default context
+        $options['context'] = $wf->getContext();
 
         // get allowed extensions
         $accept = $wf->getParam('browser.extensions', 'jpg,jpeg,png,gif,mp3,m4a,mp4a,ogg,mp4,mp4v,mpeg,mov,webm,doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv,zip,tar,gz');
 
-        $data['accept'] = array_map(function ($value) {
+        $options['accept'] = array_map(function ($value) {
             if ($value[0] != '-') {
                 return $value;
             }
         }, explode(',', $accept));
 
-        $data['accept'] = implode(',', array_filter($data['accept']));
-        $data['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
-        $data['select_button'] = (int) $wf->getParam('browser.mediafield_select_button', 1);
+        $options['accept'] = implode(',', array_filter($options['accept']));
+        $options['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
+        $options['select_button'] = (int) $wf->getParam('browser.mediafield_select_button', 1);
 
-        $app->triggerEvent('onWfMediaFieldGetOptions', array(&$data, $profile));
+        $app->triggerEvent('onWfMediaFieldGetOptions', array(&$options, $profile));
 
-        return $data;
+        return $options;
     }
 }
