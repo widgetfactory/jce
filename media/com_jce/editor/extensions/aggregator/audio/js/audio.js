@@ -133,9 +133,6 @@ WFAggregator.add('audio', {
                 return true;
             }
 
-            // remove from data object
-            delete data[key];
-
             // remove audio_ prefix
             key = key.substr(key.indexOf('_') + 1);
             

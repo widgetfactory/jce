@@ -126,9 +126,6 @@ WFAggregator.add('video', {
                 return true;
             }
 
-            // remove from data object
-            delete data[key];
-
             // remove video_ prefix
             key = key.substr(key.indexOf('_') + 1);
 

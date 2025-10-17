@@ -1920,6 +1920,9 @@
         var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), '[data-mce-object]');
         var boolAttrs = ed.schema.getBoolAttrs();
 
+        // add preload to boolAttrs so it is removed if false
+        boolAttrs.preload = true;
+
         var nodeName = node.nodeName.toLowerCase();
 
         // clean up classes
@@ -1956,7 +1959,7 @@
             }
 
             // remove "false" boolean attributes
-            if (tinymce.is(boolAttrs[name]) && !value) {
+            if (name in boolAttrs && (value == "false" || !value)) {
                 value = null;
 
                 // remove autoplay fallback
@@ -1984,15 +1987,19 @@
             }
 
             // update styles then continue
-            if (name == 'style' && value) {
+            if (name == 'style') {
 
-                if (tinymce.is(value, 'object')) {
-                    value = ed.dom.serializeStyle(value);
+                if (value) {
+                    if (tinymce.is(value, 'object')) {
+                        value = ed.dom.serializeStyle(value);
+                    }
+
+                    ed.dom.setStyles(node, ed.dom.parseStyle(value));
+
+                    return true;
                 }
 
-                ed.dom.setStyles(node, ed.dom.parseStyle(value));
-
-                return true;
+                value = null;
             }
 
             // set value to null to remove
@@ -2487,7 +2494,7 @@
                 return isMediaHtml(ed, html);
             },
 
-            convertMediaToPlaceholder: function (node) {                
+            convertMediaToPlaceholder: function (node) {
                 return convertMediaToPlaceholder(ed, node);
             }
         });
