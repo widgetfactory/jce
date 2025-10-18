@@ -260,8 +260,14 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $folders = array();
 
-        $restrictedPaths = array_map(function ($val) use ($path) {
-            return WFUtility::makePath($path, $val);
+        $restrictedPaths = array_map(function ($val) use ($relative) {
+            $absolute = $this->toAbsolute($val);
+            $absolute = WFUtility::makePath($absolute, $relative);
+
+            // trim trailing slashes
+            $absolute = rtrim($absolute, '/');
+
+            return $absolute;
         }, $this->restricted);
 
         if (!empty($list)) {
