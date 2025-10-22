@@ -154,10 +154,6 @@ class WFApplication extends CMSObject
                 }
             }
 
-            if ($this->isFileBrowser()) {
-                $settings['option'] = 'com_jce.browser';
-            }
-
             $profile_id = $app->input->getInt('profile_id');
 
             if ($profile_id) {
@@ -349,7 +345,7 @@ class WFApplication extends CMSObject
                 }
 
                 // check component, but skip if this is the file browser
-                if (!empty($item->components) && $vars['option'] != 'com_jce.browser') {
+                if (!empty($item->components)) {
                     $components = explode(',', $item->components);
 
                     // remove duplicates
