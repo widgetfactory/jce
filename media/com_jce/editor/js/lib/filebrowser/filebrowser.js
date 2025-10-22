@@ -1090,6 +1090,25 @@
 
                     $.each(e.properties, function (k, v) {
                         if (v !== '') {
+                            
+                            if (k == 'attribution') {
+                                var val = [];
+
+                                if (v && v.name) {
+                                    val.push(v.name);
+                                }
+
+                                if (v && v.handle) {
+                                    val.push(v.handle);
+                                }
+
+                                if (v && v.link) {
+                                    val.push(v.link);
+                                }
+
+                                v = val.join('|');
+                            }
+                            
                             data.push('data-' + k + '="' + v + '"');
                         }
                     });
@@ -3205,14 +3224,6 @@
                     '</li>';
             }
 
-            // check if item websafe - show warning
-            /*if ($(item).hasClass('notsafe')) {
-                comments +=
-                    '<li class="comments ' + type + ' notsafe">' +
-                    '<span class="hastip" title="' + self._translate('bad_name_desc', 'Bad file or folder name') + '">' + self._translate('bad_name', 'Bad file or folder name') + '</span>' +
-                    '</li>';
-            }*/
-
             // process triggered buttons
             if ($(item).data('trigger')) {
                 $.each($(item).data('trigger').split(','), function (i, v) {
@@ -3250,6 +3261,20 @@
             if (type === "folder") {
                 self._trigger('onFolderDetails', null, item);
             } else {
+                // Attribution
+                if ($(item).data('attribution')) {
+                    var values = $(item).data('attribution').split('|'), value = '';
+
+                    // create a link if there is a URL, using the name and handle as the link text
+                    if (values.length > 2 && values[2]) {
+                        value = '<a href="' + values[2] + '" target="_blank" rel="noopener noreferrer">' + values[0] + '</a>';
+                    } else {
+                        value = values[0] || '';
+                    }
+                    
+                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-attribution">' + tinyMCEPopup.getLang('dlg.attribution', 'Attribution') + ': ' + value + '</div>');
+                }
+                
                 // Process properties callback
                 self.serializeItemData(item).then(function (data) {
 

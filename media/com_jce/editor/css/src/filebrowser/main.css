@@ -493,7 +493,7 @@ div#info-comment {
 
 #browser-details-comment li.comments {
   line-height: 20px;
-  padding: 0px 0px 0px 22px;
+  padding: 0;
 }
 
 .uk-comment-header {
