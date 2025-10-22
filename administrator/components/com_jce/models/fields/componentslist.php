@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Admin
@@ -13,13 +14,14 @@
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\ListField;
 use Joomla\CMS\Language\Text;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Form Field class for the Joomla Framework.
  *
  * @since       11.4
  */
-class JFormFieldComponents extends ListField
+class JFormFieldComponentsList extends ListField
 {
     /**
      * The field type.
@@ -28,7 +30,7 @@ class JFormFieldComponents extends ListField
      *
      * @since  11.4
      */
-    protected $type = 'Components';
+    protected $type = 'ComponentsList';
 
     /**
      * Method to get a list of options for a list input.
@@ -50,7 +52,6 @@ class JFormFieldComponents extends ListField
             'com_fields',
             'com_finder',
             'com_installer',
-            'com_jce',
             'com_languages',
             'com_login',
             'com_mailto',
@@ -78,27 +79,35 @@ class JFormFieldComponents extends ListField
             ->order('ordering, name');
         $db->setQuery($query);
 
-        $components = $db->loadObjectList();
+        $items = $db->loadObjectList();
 
         $options = array();
 
-        // load component languages
-        for ($i = 0; $i < count($components); ++$i) {
-            if (!in_array($components[$i]->value, $exclude)) {
-                // load system language file
-                $language->load($components[$i]->value . '.sys', JPATH_ADMINISTRATOR);
-                $language->load($components[$i]->value, JPATH_ADMINISTRATOR);
+        foreach ($items as $item) {
+            // Load language
+            $extension = $item->value;
 
-                // translate name
-                $components[$i]->text = Text::_($components[$i]->text, true);
+            $language->load("$extension.sys", JPATH_ADMINISTRATOR)
+                || $language->load("$extension.sys", JPATH_ADMINISTRATOR . '/components/' . $extension);
 
-                $components[$i]->disable = '';
+            $text = strtoupper($item->text);
 
-                $options[] = $components[$i];
+            if ($text === 'COM_JCE') {
+                $text = 'WF_CPANEL_BROWSER';
             }
+
+            // Translate component name
+            $item->text = Text::_($text);
+
+            $options[] = $item;
         }
 
+        // Sort by component name
+        $options = ArrayHelper::sortObjects($options, 'text', 1, true, true);
+
         // Merge any additional options in the XML definition.
-        return array_merge(parent::getOptions(), $options);
+        $options = array_merge(parent::getOptions(), $options);
+
+        return $options;
     }
 }
