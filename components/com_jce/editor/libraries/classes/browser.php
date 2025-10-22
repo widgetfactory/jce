@@ -161,6 +161,9 @@ class WFFileBrowser extends CMSObject
         // assign form action
         $view->action = $this->getFormAction();
 
+        $view->list_limit_options = $this->get('list_limit_options', array());
+        $view->list_limit = $this->get('list_limit', 25);
+
         // return view output
         $view->display();
     }

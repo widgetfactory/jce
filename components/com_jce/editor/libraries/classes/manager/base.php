@@ -275,7 +275,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             if (empty($dir)) {
                 $dir = $baseDir;
 
-            // otherwise, if it is an array, check if it has a path value, if not use the base directory    
+                // otherwise, if it is an array, check if it has a path value, if not use the base directory    
             } else if (is_array($dir) && count(array_filter(array_column($dir, 'path'))) === 0) {
                 $dir = $baseDir;
             }
@@ -347,6 +347,32 @@ class WFMediaManagerBase extends WFEditorPlugin
         return $dirStore;
     }
 
+    private function getFeatures($filesystem)
+    {
+        $isReadOnly = $filesystem->get('readonly', false);
+
+        $allow = function ($param, $default = 1) use ($isReadOnly) {
+            return $isReadOnly ? false : $this->getParam($param, $default);
+        };
+
+        $features = array(
+            'upload' => $allow('upload'),
+            'folder' => array(
+                'create' => $allow('folder_new'),
+                'delete' => $allow('folder_delete'),
+                'rename' => $allow('folder_rename'),
+                'move'   => $allow('folder_move'),
+            ),
+            'file' => array(
+                'delete' => $allow('file_delete'),
+                'rename' => $allow('file_rename'),
+                'move'   => $allow('file_move'),
+            ),
+        );
+
+        return $features;
+    }
+
     /**
      * Get the Media Manager configuration.
      *
@@ -406,6 +432,8 @@ class WFMediaManagerBase extends WFEditorPlugin
             $list_limit = 0;
         }
 
+        $features = $this->getFeatures($filesystem);
+
         $base = array(
             'dir' => $dirStore,
             'filesystem' => $filesystem,
@@ -421,20 +449,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             ),
             'folder_tree' => $this->getParam('editor.folder_tree', 1),
             'list_limit' => $list_limit,
-            'features' => array(
-                'upload' => $this->getParam('upload', 1),
-                'folder' => array(
-                    'create' => $this->getParam('folder_new', 1),
-                    'delete' => $this->getParam('folder_delete', 1),
-                    'rename' => $this->getParam('folder_rename', 1),
-                    'move' => $this->getParam('folder_move', 1),
-                ),
-                'file' => array(
-                    'delete' => $this->getParam('file_delete', 1),
-                    'rename' => $this->getParam('file_rename', 1),
-                    'move' => $this->getParam('file_move', 1),
-                ),
-            ),
+            'features' => $features,
             'websafe_mode' => $this->getParam('editor.websafe_mode', 'utf-8'),
             'websafe_spaces' => $websafe_spaces,
             'websafe_textcase' => $textcase,
@@ -443,6 +458,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             'use_state_cookies' => $this->getParam('editor.use_cookies', true),
             'search_depth' => $this->getParam('editor.filebrowser_search_depth', 3),
             'allow_download' => $this->getParam('allow_download', 0),
+            'list_limit_options' => $filesystem->get('list_limit_options', array(10, 25, 50, 100, 0))
         );
 
         return WFUtility::array_merge_recursive_distinct($base, $config);

@@ -28,6 +28,14 @@ class WFFileSystem extends WFExtension
         if (!isset($config['local'])) {
             $config['local'] = true;
         }
+
+        if (!isset($config['readonly'])) {
+            $config['readonly'] = false;
+        }
+
+        if (!isset($config['list_limit_options'])) {
+            $config['list_limit_options'] = array(10, 25, 50, 0);
+        }
         
         parent::__construct($config);
     }
