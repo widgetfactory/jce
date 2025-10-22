@@ -1178,7 +1178,20 @@
             ed.onSetContent.add(function (ed, e) {
                 cleanup(true);
 
-                ed.dom.addClass(ed.dom.select('table'), 'mce-item-table');
+                ed.onSetContent.add(function (ed, e) {
+                    cleanup(true);
+
+                    each(ed.dom.select('table'), function (table) {
+                        ed.dom.addClass(table, 'mce-item-table');
+                        
+                        // Ensure empty cells have a <br> to avoid empty cell issues
+                        each(ed.dom.select('td,th', table), function (cell) {
+                            if (!cell.hasChildNodes()) {
+                                cell.innerHTML = '<br data-mce-bogus="1" />';
+                            }
+                        });
+                    });
+                });
             });
 
             ed.onPastePostProcess.add(function (ed, args) {
