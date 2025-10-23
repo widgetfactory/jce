@@ -584,6 +584,7 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/fonts',
             $site . '/editor/libraries/img',
             $site . '/editor/libraries/js',
+            $site . '/editor/libraries/jquery',
             $site . '/editor/libraries/pro/css',
             $site . '/editor/libraries/pro/fonts',
             $site . '/editor/libraries/pro/img',
