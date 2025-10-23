@@ -66,6 +66,12 @@ class WFPreviewPlugin extends WFEditorPlugin
 
         if ($extension->load($extension_id)) {
             $option = $extension->element;
+
+            // set a default value
+            if (!$extension->params) {
+                $extension->params = '{}';
+            }
+
             // process attribs (com_content etc.)
             $params->loadString($extension->params);
             // create context
