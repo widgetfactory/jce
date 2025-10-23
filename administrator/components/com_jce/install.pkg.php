@@ -584,7 +584,7 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/fonts',
             $site . '/editor/libraries/img',
             $site . '/editor/libraries/js',
-            $site . '/editor/libraries/jquery',
+            $site . '/editor/libraries/vendor',
             $site . '/editor/libraries/pro/css',
             $site . '/editor/libraries/pro/fonts',
             $site . '/editor/libraries/pro/img',
@@ -615,6 +615,17 @@ class pkg_jceInstallerScript
             $site . '/editor/plugins/source/tmpl',
             $site . '/editor/plugins/templatemanager',
             $site . '/editor/plugins/textpattern'
+        );
+
+        // clean up editor vendor libraries
+        $folders['2.9.96'] = array(
+            $site . '/editor/libraries/vendor',
+            $site . '/editor/libraries/pro'
+        );
+
+        // remove jQuery UI Touch
+        $files['2.9.96'] = array(
+            $media . '/editor/vendor/jquery/js/jquery-ui.touch.min.js'
         );
 
         // remove pro source plugin
