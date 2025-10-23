@@ -2111,11 +2111,6 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Rename Failed: The file name is invalid.');
         }
 
-        // check access
-        if (!$this->checkPathAccess($destination)) {
-            throw new InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
-        }
-
         // extract the path from the complex path, removing the prefix
         $source = $this->resolvePath($source);
 
