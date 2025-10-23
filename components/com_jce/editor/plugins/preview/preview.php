@@ -68,7 +68,7 @@ class WFPreviewPlugin extends WFEditorPlugin
             $option = $extension->element;
 
             // set a default value
-            if (!$extension->params) {
+            if (empty($extension->params)) {
                 $extension->params = '{}';
             }
 
