@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -75,52 +76,71 @@ class WFBrowserPlugin extends WFMediaManager
         $browser = $this->getFileBrowser();
 
         // get mediatype from xml
-        $mediatype = $app->input->getString('mediatype', $app->input->getString('filter', 'files'));
+        $mediatypes = $app->input->getString('mediatype', $app->input->getString('filter', 'files'));
 
-        if ($mediatype) {
+        if ($mediatypes) {
+            // add upload event
+            $browser->addEvent('onUpload', array($this, 'onUpload'));
+
             // clean and lowercase filter value
-            $mediatype = (string) preg_replace('/[^\w_,]/i', '', strtolower($mediatype));
+            $mediatypes = (string) preg_replace('/[^\w_,]/i', '', strtolower($mediatypes));
 
             // get filetypes from params
             $filetypes = $this->getParam('extensions', $this->get('_filetypes'));
 
-            // add upload event
-            $browser->addEvent('onUpload', array($this, 'onUpload'));
-
             // map to comma seperated list
             $filetypes = $browser->getFileTypes('list', $filetypes);
 
+            $accept = explode(',', $filetypes);
+
             $map = array(
-                'images' => 'jpg,jpeg,png,apng,gif,webp,avif',
-                'media' => 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
-                'documents' => 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv',
-                'html' => 'html,htm,txt,md',
-                'files' => $filetypes,
+                'images' => array('jpg', 'jpeg', 'png', 'apng', 'gif', 'webp', 'avif'),
+                'media' => array('avi', 'wmv', 'wm', 'asf', 'asx', 'wmx', 'wvx', 'mov', 'qt', 'mpg', 'mpeg', 'm4a', 'm4v', 'swf', 'dcr', 'rm', 'ra', 'ram', 'divx', 'mp4', 'ogv', 'ogg', 'webm', 'flv', 'f4v', 'mp3', 'ogg', 'wav', 'xap'),
+                'documents' => array('doc', 'docx', 'odg', 'odp', 'ods', 'odt', 'pdf', 'ppt', 'pptx', 'txt', 'xcf', 'xls', 'xlsx', 'csv'),
+                'html' => array('html', 'htm', 'txt', 'md'),
+                'files' => $accept, // “files” == everything allowed
             );
 
             // add svg support to images if it is allowed in filetypes
-            if (in_array('svg', explode(',', $filetypes))) {
-                $map['images'] .= ',svg';
+            if (in_array('svg', $accept)) {
+                $map['images'][] = 'svg';
             }
 
-            $accept = explode(',', $filetypes);
+            // explode the mediatypes
+            $mediatypes = explode(',', $mediatypes);
 
-            if (array_key_exists($mediatype, $map)) {
-                // process the map to filter permitted extensions
-                array_walk($map, function (&$item, $key) use ($accept) {
-                    $items = explode(',', $item);
+            // selected filetypes
+            $selected = array();
 
-                    $values = array_intersect($items, $accept);
-                    $item = empty($values) ? '' : implode(',', $values);
-                });
+            foreach ($mediatypes as $mediatype) {
+                // trim the value
+                $mediatype = trim($mediatype);
 
-                $filetypes = $map[$mediatype];
-            } else {
-                $filetypes = implode(',', array_intersect(explode(',', $mediatype), $accept));
+                // strtolower the value
+                $mediatype = strtolower($mediatype);
+                
+                // mediaypes contains a mapped type
+                if (array_key_exists($mediatype, $map)) {
+                    // process the map to filter permitted extensions
+                    array_walk($map, function (&$items, $key) use ($accept) {
+                        $values = array_intersect($items, $accept);
+                        $item = empty($values) ? '' : implode(',', $values);
+                    });
+
+                    $selected = $map[$mediatype];
+                } else {
+                    if (in_array($mediatype, $accept)) {
+                        // add the mediatype to the selected filetypes
+                        $selected[] = $mediatype;
+                    }
+                }
             }
+
+            // remove duplicates
+            $selected = array_values(array_unique($selected));
 
             // set updated filetypes
-            $this->setFileTypes($filetypes);
+            $this->setFileTypes(implode(',', $selected));
         }
 
         $folder = $this->getMediaFolder();
