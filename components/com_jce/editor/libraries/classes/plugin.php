@@ -287,7 +287,6 @@ class WFEditorPlugin extends CMSObject
 
         $document->addScript(array('jquery.min'), 'jquery');
         $document->addScript(array('jquery-ui.min'), 'jquery');
-        $document->addScript(array('jquery-ui.touch.min'), 'jquery');
 
         $document->addScript(array('plugin.min.js'));
         $document->addStyleSheet(array('plugin.min.css'), 'media');
