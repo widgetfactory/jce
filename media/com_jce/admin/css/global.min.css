@@ -348,6 +348,9 @@
 .form-field-repeatable .form-field-repeatable-item .control-group:first-child {
   margin: 0;
 }
+.form-field-repeatable .form-field-repeatable-item .form-field-repeatable-item-group {
+  flex: 1;
+}
 .form-field-repeatable .form-field-repeatable-item .form-field-repeatable-item-control {
   display: flex;
   flex-direction: row;
