@@ -170,7 +170,7 @@
 
 				<field type="spacer" label="WF_LABEL_OR" />
 
-				<field type="textarea" name="startup_content_html" filter="html" rows="2" cols="3" class="input-xlarge" default="" label="WF_PARAM_STARTUP_CONTENT_HTML" spellcheck="false" description="WF_PARAM_STARTUP_CONTENT_HTML_DESC" />
+				<field type="code" name="startup_content_html" filter="JComponentHelper::filterText" rows="4" cols="3" class="input-xlarge" default="" label="WF_PARAM_STARTUP_CONTENT_HTML" spellcheck="false" description="WF_PARAM_STARTUP_CONTENT_HTML_DESC" />
             </field>
 
             <field type="spacer" />
