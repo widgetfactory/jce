@@ -82,24 +82,31 @@ class JFormFieldContainer extends FormField
      * @param  string           $name       Form name
      * @return \Joomla\CMS\Form\Form
      */
-    private function buildContainerSubForm(SimpleXMLElement $container, array $data, string $control, string $name): Form
+    private function buildContainerSubForm(SimpleXMLElement $container, array $data, string $control, string $name)
     {
-        // 1) Create a minimal wrapper <form><fields/></form>
+        // Create a minimal wrapper <form><fields/></form>
         $wrapper   = new SimpleXMLElement('<form><fields/></form>');
         $fieldsDst = $wrapper->fields;
 
-        // 2) Take only the container’s *direct* children (field / fieldset)
-        //    but strip any descendant <field> nodes inside them.
+        // Take only the container’s *direct* children (field / fieldset)
+        // but strip any descendant <field> nodes inside them.
         $directNodes = $container->xpath('./field | ./fieldset');
+
+        // Types that must KEEP their inner <field> schema
+        $keepInnerFor = array('repeatable', 'subform'); // add more as needed
 
         foreach ($directNodes as $node) {
             // Clone the node
             $clone = new SimpleXMLElement($node->asXML());
 
-            // Remove ALL descendant <field> nodes from the clone
-            foreach ($clone->xpath('.//field') as $desc) {
-                $d = dom_import_simplexml($desc);
-                $d->parentNode->removeChild($d);
+            $type = (string) $node['type'];
+
+            if (!in_array($type, $keepInnerFor, true)) {
+                // Remove ALL descendant <field> nodes from the clone
+                foreach ($clone->xpath('.//field') as $desc) {
+                    $d = dom_import_simplexml($desc);
+                    $d->parentNode->removeChild($d);
+                }
             }
 
             // Append the cleaned clone to the wrapper
@@ -108,12 +115,12 @@ class JFormFieldContainer extends FormField
             $to->appendChild($to->ownerDocument->importNode($from, true));
         }
 
-        // 3) Load the cleaned XML into a new Form (no setFields!)
+        // Load the cleaned XML into a new Form (no setFields!)
         $subForm = new Form($name, ['control' => $control]);
 
         $subForm->load($wrapper);
 
-        // 4) Bind values
+        // Bind values
         $subForm->bind($data);
 
         return $subForm;
@@ -204,7 +211,7 @@ class JFormFieldContainer extends FormField
 
             $control = $this->formControl . '[' . str_replace('.', '][', $group) . ']';
             $subForm = $this->buildContainerSubForm($this->element, (array) $data, $control, $this->fieldname);
-            
+
             $fields = $subForm->getFieldset();
 
             $defaultValues = array();
