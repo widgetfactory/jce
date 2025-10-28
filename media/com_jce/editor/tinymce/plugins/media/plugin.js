@@ -464,32 +464,79 @@
         }
     }
 
+    function normalizeUrl(u) {
+        u = (u || '').trim();
+
+        // Add placeholder scheme if none, so URL() can parse
+        if (u.startsWith('//')) {
+            u = 'placeholder:' + u;
+        } else if (!/:\/\//i.test(u)) {
+            u = 'placeholder://' + u;
+        }
+
+        try {
+            var p = new URL(u);
+            var host = p.hostname.replace(/^www\./i, '');
+            var path = p.pathname.replace(/\/+$/, '');
+
+            return (host + path).toLowerCase();
+        } catch (e) {
+            // Fallback: crude normalization
+            return u
+                .replace(/^https?:\/\//i, '')
+                .replace(/^www\./i, '')
+                .replace(/\/+$/, '')
+                .toLowerCase();
+        }
+    }
+
     /**
-     * Validate a url against a list default or custom providers urls, eg: Youtube, Vimeo etc.
-     * @param {Object} editor 
-     * @param {String} url 
-     * @returns Supportd provide value
+     * Validate a url against a list of default or custom provider URLs, eg: Youtube, Vimeo, etc.
+     * @param {Object} editor
+     * @param {String} url
+     * @returns {String|Boolean} Supported provider key or false
      */
+    function escapeRegex(s) {
+        return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     function isSupportedProvider(editor, url) {
         var providers = editor.settings.media_iframes_supported_media || Object.keys(mediaProviders);
         var supported = false;
 
-        if (typeof providers == 'string') {
-            providers = providers.split(',');
+        if (typeof providers === 'string') {
+            providers = providers.split(',').map(function (s) { 
+                return s.trim(); 
+            });
         }
 
-        for (var i = 0; i < providers.length; i++) {
-            var value = providers[i];
+        // Normalize the candidate URL once (scheme-less, no www, lowercase, no trailing slash)
+        var testUrl = normalizeUrl(url);
 
-            if (!value) {
+        for (var i = 0; i < providers.length; i++) {
+            var key = providers[i];
+
+            if (!key) {
                 continue;
             }
 
-            value = value.replace(/\/$/, '');
-            var rx = mediaProviders[value] || new RegExp(value + '\/(.+)/');
+            // Keep original key for lookup; make a trimmed version for custom matching
+            var trimmed = key.replace(/\/+$/, '');
 
-            if (rx.test(url)) {
-                supported = mediaProviders[value] ? value : 'iframe';
+            var rx;
+
+            if (mediaProviders[key]) {
+                rx = mediaProviders[key];
+            } else {
+                // Custom: normalize and escape the provider value, then match as a prefix
+                var base = escapeRegex(normalizeUrl(trimmed));
+
+                // allow exact match or any deeper path afterwards
+                rx = new RegExp('^' + base);
+            }
+
+            if (rx.test(testUrl)) {
+                supported = mediaProviders[key] ? key : 'iframe';
                 break;
             }
         }
