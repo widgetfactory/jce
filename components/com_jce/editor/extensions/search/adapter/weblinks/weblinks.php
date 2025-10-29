@@ -157,9 +157,9 @@ class PlgWfSearchWeblinks extends CMSPlugin
 
         // Joomla 3 compatibility
         if (method_exists($query, 'castAsChar')) {
-            $c_id = $query->castAsChar('b.id');
+            $c_id = $query->castAsChar('c.id');
         } else {
-            $c_id = $query->castAs('CHAR', 'b.id');
+            $c_id = $query->castAs('CHAR', 'c.id');
         }
 
         $case_when1 .= $query->concatenate(array($c_id, 'c.alias'), ':');
