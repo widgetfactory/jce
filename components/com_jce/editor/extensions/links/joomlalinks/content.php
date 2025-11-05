@@ -81,6 +81,8 @@ class JoomlalinksContent extends CMSObject
 
                     $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
 
+                    $url = $id;
+
                     if (strpos($id, 'index.php?Itemid=') !== false) {
                         $url = self::getMenuLink($id);
                         $id = 'index.php?option=com_content&view=category&id=' . $category->id;
@@ -141,8 +143,8 @@ class JoomlalinksContent extends CMSObject
                             $language = $category->language;
                         }
 
-                        $url = '';
                         $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
+                        $url = $id;
 
                         // get sub-categories
                         if (count($sub)) {
@@ -152,7 +154,7 @@ class JoomlalinksContent extends CMSObject
                         } else {
                             // no com_content, might be link like index.php?ItemId=1
                             if (strpos($id, 'index.php?Itemid=') !== false) {
-                                $url = $id; //$id;
+                                $url = $id;
                                 $id = 'index.php?option=com_content&view=category&id=' . $category->id;
                             }
                         }

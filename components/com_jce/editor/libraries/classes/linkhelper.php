@@ -37,9 +37,25 @@ abstract class WFLinkHelper
         return $url;
     }
 
-    public static function removeItemId($url)
+    private static function getDefaultItemId()
     {
-        $url = preg_replace('#&Itemid=[0-9]+#', '', $url);
+        // get menus
+        $menus = Factory::getApplication()->getMenu('site');
+
+        // get "default" menu
+        $default = $menus->getDefault();
+
+        return $default ? (int) $default->id : 0;
+    }
+
+    public static function removeItemId($url, $defaultId = 0)
+    {
+        if (!$defaultId) {
+            $defaultId = self::getDefaultItemId();
+        }
+        
+        $url = preg_replace('/([&?])Itemid=' . $defaultId . '(&|$)/', '$1', $url);
+        $url = rtrim($url, '?&');
 
         return $url;
     }
@@ -66,18 +82,13 @@ abstract class WFLinkHelper
             return $url;
         }
 
-        // get menus
-        $menus = Factory::getApplication()->getMenu('site');
-        // get "default" menu
-        $default = $menus->getDefault();
+        $defaultId = self::getDefaultItemId();
 
         // Itemid is unique
-        if ($default->id != $vars['Itemid']) {
-            return $url;
+        if ((int) $defaultId === (int) $vars['Itemid']) {            
+            // remove "default" Itemid
+            $url = self::removeItemId($url, $defaultId);
         }
-
-        // remove "default" Itemid
-        $url = self::removeItemId($url);
 
         return $url;
     }
