@@ -30448,10 +30448,18 @@
 
         if (self.selected.length) {
           var el = DOM.get(self.selected[0].id);
-          self.scrollTo(el);
+
+          if (el) {
+            self.scrollTo(el);
+          }
+
         } else {
+          var el = DOM.get('menu_' + self.id + '_items');
+
           // reset scroll position
-          DOM.get('menu_' + self.id + '_items').scrollTop = 0;
+          if (el) {
+            el.scrollTop = 0;
+          }
         }
 
         if (s.keyboard_focus) {
