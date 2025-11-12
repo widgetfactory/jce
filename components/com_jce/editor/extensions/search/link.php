@@ -59,7 +59,7 @@ class WFLinkSearchExtension extends WFSearchExtension
             ),
         );
 
-        // Joomla 4
+        // Joomla 4+
         if (method_exists($app, 'getDispatcher')) {
             $dispatcher = $app->getDispatcher();
             $instance = new $className($dispatcher, (array) $config);
