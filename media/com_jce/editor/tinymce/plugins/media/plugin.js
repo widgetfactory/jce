@@ -444,19 +444,52 @@
         }
 
         try {
-            // get the uri of the src
             var url = new URL(src);
 
-            // create a "site" string from the host and path, eg: google.com/maps
-            var host = url.host.toLowerCase();
-            var path = url.pathname.toLowerCase();
-            var site = (host.startsWith('www.') ? host.slice(4) : host) + path;
+            var host = url.host.toLowerCase(); // e.g. "www.mysite.com"
+            var path = url.pathname.toLowerCase(); // e.g. "/maps"
+            var cleanHost = host.indexOf('www.') === 0 ? host.substring(4) : host;
 
-            // remove sandbox on exclusions
-            if (sandbox_iframes_exclusions.some(function (value) {
-                var exclusion = value.toLowerCase();
-                return site.indexOf(exclusion) === 0 || host.indexOf(exclusion) === 0;
-            })) {
+            // site = mysite.com/maps
+            var site = cleanHost + path;
+
+            var shouldExclude = sandbox_iframes_exclusions.some(function (value) {
+                if (!value) {
+                    return false;
+                }
+
+                var exclusion = String(value).toLowerCase();
+
+                // strip protocol: http://, https://, ftp://, etc.
+                exclusion = exclusion.replace(/^[a-z0-9.+-]+:\/\//, '');
+
+                // strip leading "www."
+                if (exclusion.indexOf('www.') === 0) {
+                    exclusion = exclusion.substring(4);
+                }
+
+                // normalise exclusion path (ensure leading slash where appropriate)
+                // so 'mysite.com/maps' becomes 'mysite.com/maps'
+                // and 'mysite.com' becomes 'mysite.com'
+                // and 'mysite.com/' becomes 'mysite.com/'
+                exclusion = exclusion.replace(/\/+$/, '');
+
+                // match either the full site (host + path) or only the host
+                // Example: exclusion = "mysite.com/maps"
+                // Example: exclusion = "mysite.com"
+                if (site.indexOf(exclusion) === 0) {
+                    return true;
+                }
+
+                // Also allow host-only matching
+                if (cleanHost.indexOf(exclusion) === 0) {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if (shouldExclude) {
                 node.attr('sandbox', null);
             }
         } catch (e) {
@@ -505,8 +538,8 @@
         var supported = false;
 
         if (typeof providers === 'string') {
-            providers = providers.split(',').map(function (s) { 
-                return s.trim(); 
+            providers = providers.split(',').map(function (s) {
+                return s.trim();
             });
         }
 
