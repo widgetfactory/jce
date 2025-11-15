@@ -77,12 +77,13 @@ class WFJoomlaFileSystem extends WFFileSystem
             // Clean empty values
             $restricted = array_filter($restricted);
 
-            // remove root folder restrictions
-            if ($this->allowroot === false) {
-                $restricted = [];
-            }
+            // update class property
+            $this->restricted = $restricted;
+        }
 
-            $config['restrict_dir'] = $restricted;
+        // remove root folder restrictions
+        if ($this->allowroot === false) {
+            $this->restricted = [];
         }
 
         if (!isset($config['root'])) {
