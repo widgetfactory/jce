@@ -87,6 +87,21 @@ WFAggregator.add('audio', {
         // get source values for audio
         var sources = [];
 
+        $('input[id], select[id]', '#video_options').each(function () {
+            var key = $(this).attr('id');
+            var val = $(this).val();
+
+            if (!key) {
+                return true;
+            }
+
+            if (this.type === 'checkbox') {
+                val = this.checked ? true : false;
+            }
+
+            data[key] = val;
+        });
+
         $('input[name="audio_source[]"]').each(function () {
             var val = $(this).val();
 
