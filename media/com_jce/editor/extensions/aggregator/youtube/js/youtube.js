@@ -271,6 +271,8 @@ WFAggregator.add('youtube', {
 
         if (src.indexOf('youtube-nocookie') !== -1) {
             data.youtube_privacy = 1;
+        } else {
+            data.youtube_privacy = 0;
         }
 
         if (u.query.v) {
