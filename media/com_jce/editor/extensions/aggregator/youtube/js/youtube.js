@@ -278,7 +278,7 @@ WFAggregator.add('youtube', {
         if (u.query.v) {
             id = u.query.v;
         } else {
-            var s = /\/?(embed|live|v)?\/([\w-]+)\b/.exec(u.path);
+            var s = /\/?(embed|live|shorts|v)?\/([\w-]+)\b/.exec(u.path);
 
             if (s && $.type(s) === "array") {
                 id = s.pop();
@@ -437,10 +437,19 @@ WFAggregator.add('youtube', {
             args[k] = v;
         });
 
+        var width = this.params.width;
+        var height = this.params.height;
+
+        if (src.indexOf('/shorts/') !== -1) {
+            // For YouTube Shorts, use a different aspect ratio
+            width = this.params.height; // Shorter width for Shorts
+            height = this.params.width; // Taller height for Shorts
+        }
+
         args = $.extend(args, {
             'src': data.src || src,
-            'width': this.params.width,
-            'height': this.params.height
+            'width': width,
+            'height': height
         });
 
         return args;
