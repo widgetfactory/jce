@@ -2163,8 +2163,8 @@ input.colour {
     .uk-form-constrain label .uk-icon-lock,
     .uk-form-constrain label .uk-icon-unlocked {
         position: absolute;
-        left: 0.75em;
-        top: 0.5em;
+        left: 5px;
+        top: 8px;
         cursor: pointer;
     }
 
