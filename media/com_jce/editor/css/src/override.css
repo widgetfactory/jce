@@ -74,6 +74,7 @@ html {
 
 .uk-placeholder-small {
     padding: 5px;
+    margin: 5px 0;
 }
 
 
@@ -768,6 +769,10 @@ input[type="range"]::-ms-thumb {
 
     .uk-placeholder {
         padding: 10px;
+    }
+
+    .uk-placeholder-small {
+        padding: 5px;
     }
 }
 

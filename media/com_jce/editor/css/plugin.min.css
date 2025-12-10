@@ -941,6 +941,7 @@ html {
 
 .uk-placeholder-small {
     padding: 5px;
+    margin: 5px 0;
 }
 
 
@@ -1636,6 +1637,10 @@ input[type="range"]::-ms-thumb {
     .uk-placeholder {
         padding: 10px;
     }
+
+    .uk-placeholder-small {
+        padding: 5px;
+    }
 }
 
 .uk-icon-none {
@@ -1747,460 +1752,382 @@ select:not([multiple]):not([size]) {
     gap: 0.5em;
 }
 .uk-datalist-control {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border: 1px solid #ddd;
-    width: 100%;
-    border-radius: 2px;
-    align-items: center;
-    padding: 0;
-    box-sizing: border-box;
-
-    transition: all 0.2s linear;
-    transition-property: border, background;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: 1px solid #ddd;
+  width: 100%;
+  border-radius: 2px;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.2s linear;
+  transition-property: border, background;
 }
-
 .uk-datalist-loading:after {
-    display: block;
-    content: attr(data-label-loading);
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    padding: 5px;
-    box-sizing: border-box;
+  display: block;
+  content: attr(data-label-loading);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  box-sizing: border-box;
 }
-
 .uk-datalist-control.uk-focus {
-    border-color: #66afe9;
-    background-color: #f5fbfe;
+  border-color: #66afe9;
+  background-color: #f5fbfe;
 }
-
 .uk-form .uk-datalist-control input[type="text"] {
-    border: 0 none;
-    width: calc(100% - 2em);
+  border: 0 none;
+  width: calc(100% - 2em);
 }
-
 .uk-datalist-loading .uk-datalist-combobox input[type="text"]::placeholder {
-    color: #fff
+  color: #fff;
 }
-
 .uk-datalist-combobox {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 1;
 }
-
 .uk-datalist-placeholder {
-    height: 32px;
+  height: 32px;
 }
-
 .uk-datalist-dropdown {
-    position: fixed;
-    padding: 0 10px;
-    overflow-x: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+  position: fixed;
+  padding: 0 10px;
+  overflow-x: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 .uk-datalist-dropdown li:focus {
-    background-color: #eee;
-    outline: 1px dotted #ccc;
+  background-color: #eee;
+  outline: 1px dotted #ccc;
 }
-
 .uk-datalist-dropdown li a {
-    box-sizing: border-box;
-    height: 30px;
-    padding: 5px 15px 5px 30px;
-    position: relative;
+  box-sizing: border-box;
+  height: 30px;
+  padding: 5px 15px 5px 30px;
+  position: relative;
 }
-
 .uk-datalist-dropdown li.uk-active a:before {
-    content: "\2713";
-    position: absolute;
-    left: 1em;
-    top: 0.5em;
+  content: "\2713";
+  position: absolute;
+  left: 1em;
+  top: 0.5em;
 }
-
 .uk-datalist-dropdown .uk-nav-header {
-    margin: 0;
-    text-transform: inherit;
-    font-weight: bold;
-    font-size: inherit;
+  margin: 0;
+  text-transform: inherit;
+  font-weight: bold;
+  font-size: inherit;
 }
-
 .uk-datalist-dropdown .uk-nav-indent {
-    margin-left: 0.5em;
+  margin-left: 0.5em;
 }
-
 .uk-datalist-control .uk-datalist-button {
-    background-color: #fff;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
-    background-repeat: no-repeat;
-    background-position: 100% 50%;
-    border: 0 none;
-    width: 2em;
-
-    transition: all 0.2s linear;
-    transition-property: border, background;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: 100% 50%;
+  border: 0 none;
+  width: 2em;
+  transition: all 0.2s linear;
+  transition-property: border, background;
 }
-
 .uk-datalist-control .uk-datalist-placeholder input[readonly] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    pointer-events: none;
-    z-index: 1;
-    padding-left: 0.5em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 1;
+  padding-left: 0.5em;
 }
-
 .uk-datalist-control .uk-datalist-placeholder .uk-datalist-button {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
 }
-
-.uk-datalist-control input:focus+.uk-datalist-button {
-    border-color: #66afe9;
-    background-color: #f5fbfe;
+.uk-datalist-control input:focus + .uk-datalist-button {
+  border-color: #66afe9;
+  background-color: #f5fbfe;
 }
-
 .uk-datalist-control .uk-datalist-button:disabled {
-    background-color: #fafafa;
+  background-color: #fafafa;
 }
-
 .uk-datalist-control .uk-datalist-tag {
-    position: relative;
-    height: 28px;
-    min-width: 5em;
-    min-height: inherit;
-    margin: 1px 2px;
-    padding: 0 1.25em 0 0;
-    box-sizing: border-box;
+  position: relative;
+  height: 28px;
+  min-width: 5em;
+  min-height: inherit;
+  margin: 1px 2px;
+  padding: 0 1.25em 0 0;
+  box-sizing: border-box;
 }
-
 .uk-datalist-control .uk-datalist-tag label {
-    padding-left: 0.25em;
+  padding-left: 0.25em;
 }
-
 .uk-datalist-control .uk-datalist-tag:before {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: block;
-    text-align: center;
-    text-indent: 0;
-    content: "\00d7";
-    color: #444;
-    line-height: 1.5;
-    font-size: 1.25em;
-    font-weight: 700;
-    height: 100%;
-    width: 1em;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  text-align: center;
+  text-indent: 0;
+  content: "\00d7";
+  color: #444;
+  line-height: 1.5;
+  font-size: 1.25em;
+  font-weight: 700;
+  height: 100%;
+  width: 1em;
 }
-
 /* Repeatable */
 .uk-repeatable {
-    display: flex;
+  display: flex;
 }
-
 .uk-repeatable .uk-flex {
-    gap: 5px;
+  gap: 5px;
 }
-
 .uk-repeatable .uk-repeatable-create,
 .uk-repeatable .uk-repeatable-delete {
-    display: none;
+  display: none;
 }
-
 .uk-repeatable .uk-repeatable-create:first-child {
-    display: block;
+  display: block;
 }
-
-.uk-repeatable+.uk-repeatable .uk-repeatable-delete {
-    display: block;
+.uk-repeatable + .uk-repeatable .uk-repeatable-delete {
+  display: block;
 }
-
-.uk-repeatable+.uk-repeatable .uk-repeatable-create {
-    display: none;
+.uk-repeatable + .uk-repeatable .uk-repeatable-create {
+  display: none;
 }
-
 .uk-repeatable .uk-repeatable-hidden-first {
-    display: none;
+  display: none;
 }
-
-.uk-repeatable+.uk-repeatable .uk-repeatable-hidden-first {
-    display: block;
+.uk-repeatable + .uk-repeatable .uk-repeatable-hidden-first {
+  display: block;
 }
-
 .uk-repeatable.uk-placeholder {
-    padding: 10px;
+  padding: 10px;
 }
-
 /* Color Picker */
 .uk-form-icon input.color {
-    padding-left: 20px !important;
-    text-transform: lowercase;
+  padding-left: 20px !important;
+  text-transform: lowercase;
 }
-
-.uk-form-icon input.color:disabled~span {
-    opacity: 0.5;
+.uk-form-icon input.color:disabled ~ span {
+  opacity: 0.5;
 }
-
 .uk-icon-colorpicker {
-    height: 22px;
+  height: 22px;
 }
-
 input.color,
 input.colour {
-    width: 100px;
+  width: 100px;
 }
-
 .wf-colorpicker {
-    height: 350px;
-    max-height: inherit;
-    max-width: inherit;
-    width: 310px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    color: #444;
-    font-size: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    box-sizing: border-box;
-    bottom: 100%;
-    right: inherit;
+  height: 350px;
+  max-height: inherit;
+  max-width: inherit;
+  width: 310px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #444;
+  font-size: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  bottom: 100%;
+  right: inherit;
 }
-
 .wf-colorpicker-simple {
-    height: auto;
-    width: inherit;
-    max-width: 100px;
-    ;
-    padding: 5px;
+  height: auto;
+  width: inherit;
+  max-width: 100px;
+  padding: 5px;
 }
-
 .wf-colorpicker-simple .uk-icon-close {
-    visibility: hidden;
+  visibility: hidden;
 }
-
 .wf-colorpicker-simple #colorpicker {
-    min-width: inherit;
-    margin: 0;
+  min-width: inherit;
+  margin: 0;
 }
-
-.wf-colorpicker-simple .wf-colorpicker-simple-colors>div {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    margin: 1px;
-    cursor: pointer;
+.wf-colorpicker-simple .wf-colorpicker-simple-colors > div {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin: 1px;
+  cursor: pointer;
 }
-
 .wf-colorpicker .uk-tabs {
-    height: calc(100% - 49px);
-    position: relative;
+  height: calc(100% - 49px);
+  position: relative;
 }
-
-.wf-colorpicker>div {
-    height: calc(100% - 10px);
+.wf-colorpicker > div {
+  height: calc(100% - 10px);
 }
-
-.wf-colorpicker>div>div {
-    width: 100%;
-    height: 100%;
-    position: relative;
+.wf-colorpicker > div > div {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
-
 .wf-colorpicker.uk-tooltip-left:after {
-    border-left-color: #fff
+  border-left-color: #fff;
 }
-
 .wf-colorpicker.uk-tooltip-right:after {
-    border-right-color: #fff
+  border-right-color: #fff;
 }
-
 .wf-colorpicker.uk-tooltip-left.uk-tooltip-bottom:after,
 .wf-colorpicker.uk-tooltip-right.uk-tooltip-bottom:after,
 .wf-colorpicker.uk-tooltip-left.uk-tooltip-top:after,
 .wf-colorpicker.uk-tooltip-right.uk-tooltip-top:after {
-    display: none;
+  display: none;
 }
-
 .wf-colorpicker .uk-modal-footer {
-    position: relative;
-    margin: 5px -8px 0;
-    height: 49px;
-    box-sizing: border-box;
+  position: relative;
+  margin: 5px -8px 0;
+  height: 49px;
+  box-sizing: border-box;
 }
-
 .wf-colorpicker #colorpicker_insert {
-    margin: 0;
+  margin: 0;
 }
-
 .wf-colorpicker .uk-switcher {
-    padding: 0 1px;
+  padding: 0 1px;
 }
-
 .wf-colorpicker #colorpicker {
-    position: relative;
-    top: inherit;
-    left: inherit;
-    right: inherit;
-    bottom: inherit;
+  position: relative;
+  top: inherit;
+  left: inherit;
+  right: inherit;
+  bottom: inherit;
 }
-
 .wf-colorpicker #colorpicker_tabs .uk-switcher {
-    padding: 0;
+  padding: 0;
 }
-
 .wf-colorpicker.uk-tooltip-top::after,
 .wf-colorpicker.uk-tooltip-top-left::after,
 .wf-colorpicker.uk-tooltip-top-right::after {
-    border-top-color: #fff;
+  border-top-color: #fff;
 }
-
 .uk-tooltip {
-    text-shadow: inherit;
-    right: inherit;
-    bottom: inherit;
+  text-shadow: inherit;
+  right: inherit;
+  bottom: inherit;
 }
-
 .uk-tooltip .uk-icon-close {
-    position: absolute;
-    right: 3px;
-    cursor: pointer;
-    z-index: 10;
-    padding: 5px;
-    top: 0;
-    font-size: 0;
+  position: absolute;
+  right: 3px;
+  cursor: pointer;
+  z-index: 10;
+  padding: 5px;
+  top: 0;
+  font-size: 0;
 }
-
 .uk-tooltip .uk-icon-close:before {
-    font-size: 10px;
+  font-size: 10px;
 }
-
 .uk-tooltip h4,
 .uk-tooltip p {
-    margin: 0;
-    color: #fff;
+  margin: 0;
+  color: #fff;
 }
-
 .uk-tooltip h4 {
-    font-size: 1.1em;
-    font-weight: bold;
+  font-size: 1.1em;
+  font-weight: bold;
 }
-
 .uk-tooltip .tooltip-arrow {
-    display: none;
+  display: none;
 }
-
 .uk-constrain-icon,
 .uk-equalize-icon {
-    position: relative;
-    vertical-align: middle;
-    width: 2em;
-    text-align: center;
-    cursor: pointer;
-    line-height: 2em;
-    margin: 0;
-    padding: 0;
-    float: left;
+  position: relative;
+  vertical-align: middle;
+  width: 2em;
+  text-align: center;
+  cursor: pointer;
+  line-height: 2em;
+  margin: 0;
+  padding: 0;
+  float: left;
 }
-
 .uk-form .uk-constrain-icon input,
 .uk-form .uk-equalize-icon input {
-    opacity: 0;
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    margin: 0 !important;
-    padding: 0;
-    width: 100%;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  margin: 0 !important;
+  padding: 0;
+  width: 100%;
 }
-
 .uk-form .uk-form-constrain .uk-constrain-checkbox,
 .uk-form .uk-form-equalize .uk-equalize-checkbox {
-    margin: 5px;
+  margin: 5px;
 }
-
 .uk-isdirty {
-    color: inherit !important
+  color: inherit !important;
 }
-
 .uk-form .uk-constrain-container input[type="text"],
 .uk-form .uk-constrain-container input[type="number"] {
-    width: 65px;
+  width: 65px;
 }
-
 .uk-constrain-container {
-    padding-left: 10px;
+  padding-left: 10px;
 }
-
 .uk-constrain-label .uk-icon-lock,
 .uk-constrain-label .uk-icon-unlocked {
+  display: none;
+}
+@media (max-width: 960px) {
+  .uk-flex-wrap .uk-constrain-label {
+    font-size: 0;
+    max-width: 2em;
+    text-align: center;
+    position: relative;
+  }
+  .uk-flex-wrap .uk-constrain-label input {
+    visibility: hidden;
+  }
+  .uk-flex-wrap .uk-form-constrain label .uk-icon-lock,
+  .uk-flex-wrap .uk-form-constrain label .uk-icon-unlocked {
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    cursor: pointer;
+  }
+  .uk-flex-wrap .uk-form-constrain label input:disabled + i {
+    color: #888;
+  }
+  .uk-flex-wrap .uk-form-constrain label .uk-icon-unlocked {
+    display: inherit;
+  }
+  .uk-flex-wrap .uk-constrain-active label .uk-icon-lock {
+    display: inherit;
+  }
+  .uk-flex-wrap .uk-constrain-active label .uk-icon-unlocked {
     display: none;
+  }
 }
-
-@media (max-width: 640px) {
-    .uk-constrain-label {
-        font-size: 0;
-        max-width: 2em;
-        text-align: center;
-
-        position: relative;
-    }
-
-    .uk-constrain-label input {
-        visibility: hidden;
-    }
-
-    .uk-form-constrain label .uk-icon-lock,
-    .uk-form-constrain label .uk-icon-unlocked {
-        position: absolute;
-        left: 5px;
-        top: 8px;
-        cursor: pointer;
-    }
-
-    .uk-form-constrain label input:disabled + i {
-        color: #888;
-    }
-
-    .uk-form-constrain label .uk-icon-unlocked {
-        display: inherit;
-    }
-
-    .uk-constrain-active label .uk-icon-lock {
-        display: inherit;
-    }
-
-    .uk-constrain-active label .uk-icon-unlocked {
-        display: none;
-    }
-}
-
 .uk-button.uk-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 .uk-input-clear .uk-icon {
-    opacity: 0.5;
+  opacity: 0.5;
 }
-
 .uk-input-clear .uk-icon:hover {
-    opacity: 0.75;
+  opacity: 0.75;
 }
-
 .uk-input-clear .uk-icon:before {
-    font-size: 0.625em;
+  font-size: 0.625em;
 }
 /**
  * @package   	JCE
@@ -2655,6 +2582,7 @@ span.uk-slider {
     left: 0;
     width: 100%;
     top: 0;
+    display: flex;
 }
 
 .uk-switcher {

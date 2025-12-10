@@ -7,19 +7,30 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-div#upload-body {
+#upload-body {
 	height: 100%;
 	position: static !important;
 	z-index: 10;
 }
 
-div#upload-queue-block {
+#upload-queue-block {
 	clear: both;
 	height: 14rem;
 	overflow: auto;
 	box-sizing: border-box;
 	padding: 5px;
 	margin: 0;
+}
+
+#upload-body fieldset {
+	border: 1px solid #ddd;
+	margin: 0;
+	padding: 0 5px;
+}
+
+#upload-body fieldset legend {
+	width: auto;
+	padding: 0 5px;
 }
 
 #upload-options {
