@@ -356,6 +356,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         };
 
         $features = array(
+            'help' => $allow('help_button', 1),
             'upload' => $allow('upload'),
             'folder' => array(
                 'create' => $allow('folder_new'),

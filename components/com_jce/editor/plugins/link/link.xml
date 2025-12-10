@@ -35,6 +35,11 @@
                 <option value="0">JNO</option>
             </field>
 
+            <field name="help_button" type="yesno" default="1" label="WF_LINK_HELP_BUTTON" description="WF_LINK_HELP_BUTTON_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
             <field name="custom_classes" type="repeatable" default="" label="WF_LABEL_CUSTOM_CLASSES" description="WF_LABEL_CUSTOM_CLASSES_DESC">
                 <field type="text" size="50" hiddenLabel="true" />
             </field>

@@ -63,6 +63,7 @@ class WFFileBrowser extends CMSObject
 
     /* @var array */
     public $features = array(
+        'help' => 1,
         'upload' => 1,
         'folder' => array(
             'create' => 1,
@@ -1550,7 +1551,9 @@ class WFFileBrowser extends CMSObject
      */
     private function addDefaultActions()
     {
-        $this->addAction('help', array('title' => Text::_('WF_BUTTON_HELP')));
+        if ($this->checkFeature('help')) {
+            $this->addAction('help', array('title' => Text::_('WF_BUTTON_HELP')));
+        }
 
         if ($this->checkFeature('upload')) {
             $this->addAction('upload');

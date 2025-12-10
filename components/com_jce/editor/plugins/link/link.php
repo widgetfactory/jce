@@ -68,6 +68,11 @@ class WFLinkPlugin extends WFEditorPlugin
         $document->addScript(array('link'), 'plugins');
     }
 
+    public function showHelp()
+    {
+        return (bool) $this->getParam('help_button', 1);
+    }
+
     public function getLinks()
     {
         static $links;

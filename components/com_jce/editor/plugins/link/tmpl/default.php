@@ -24,6 +24,10 @@ $tabs = WFTabs::getInstance();
 </form>
 <div class="actionPanel">
 	<button class="button" id="cancel"><?php echo Text::_('WF_LABEL_CANCEL')?></button>
-	<button class="button" id="help"><?php echo Text::_('WF_LABEL_HELP')?></button>
+
+	<?php if ($this->plugin->showHelp()): ?>
+		<button class="button" id="help"><?php echo Text::_('WF_LABEL_HELP')?></button>
+	<?php endif; ?>
+
 	<button class="button" id="insert"><?php echo Text::_('WF_LABEL_INSERT')?></button>
 </div>

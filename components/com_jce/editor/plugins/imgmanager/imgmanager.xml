@@ -205,6 +205,11 @@
                 </field>
             </field>
 
+            <field name="help_button" type="yesno" default="1" label="WF_PARAM_HELP_BUTTON" description="WF_PARAM_HELP_BUTTON_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
             <field name="upload" type="yesno" default="1" label="WF_PARAM_UPLOAD" description="WF_PARAM_UPLOAD_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
