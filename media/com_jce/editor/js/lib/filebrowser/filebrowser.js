@@ -2520,7 +2520,12 @@
                 }
 
                 $('#browser-buttons').append(button);
+
                 $(button).addClass('uk-button uk-button-link button ' + o.name + ' uk-hidden');
+
+                /*if (o.mobile === false) {
+                    $(button).addClass('uk-hidden-medium');
+                }*/
             }
 
             this._buttons[type][o.name] = {
