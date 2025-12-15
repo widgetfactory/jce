@@ -884,3 +884,15 @@ select:not([multiple]):not([size]) {
     justify-content: center;
     gap: 0.5em;
 }
+
+.uk-flex-gap {
+    gap: 0.5em;
+}
+
+.uk-flex-gap-small {
+    gap: 0.25em;
+}
+
+.uk-flex-gap-large {
+    gap: 0.75em;
+}

@@ -1751,6 +1751,18 @@ select:not([multiple]):not([size]) {
     justify-content: center;
     gap: 0.5em;
 }
+
+.uk-flex-gap {
+    gap: 0.5em;
+}
+
+.uk-flex-gap-small {
+    gap: 0.25em;
+}
+
+.uk-flex-gap-large {
+    gap: 0.75em;
+}
 .uk-datalist-control {
   position: relative;
   display: flex;
@@ -2085,6 +2097,40 @@ input.colour {
 .uk-constrain-label .uk-icon-unlocked {
   display: none;
 }
+/* 1) Apply at ANY width when parent has .uk-form-constrain-icon */
+.uk-form-constrain-icon .uk-constrain-label {
+  font-size: 0;
+  max-width: 2em;
+  text-align: center;
+  position: relative;
+}
+.uk-form-constrain-icon .uk-constrain-label .uk-text {
+  display: none;
+}
+.uk-form-constrain-icon .uk-constrain-label input {
+  visibility: hidden;
+}
+.uk-form-constrain-icon .uk-constrain-label input:disabled + i {
+  color: #888;
+}
+.uk-form-constrain-icon .uk-constrain-label .uk-icon-lock,
+.uk-form-constrain-icon .uk-constrain-label .uk-icon-unlocked {
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  cursor: pointer;
+  display: inherit;
+}
+.uk-form-constrain-icon .uk-constrain-label .uk-icon-lock {
+  display: none;
+}
+.uk-form-constrain-icon .uk-constrain-label.uk-constrain-active .uk-icon-lock {
+  display: inherit;
+}
+.uk-form-constrain-icon .uk-constrain-label.uk-constrain-active .uk-icon-unlocked {
+  display: none;
+}
+/* 2) Apply below 960px even without the parent class */
 @media (max-width: 960px) {
   .uk-flex-wrap .uk-constrain-label {
     font-size: 0;
@@ -2092,26 +2138,30 @@ input.colour {
     text-align: center;
     position: relative;
   }
+  .uk-flex-wrap .uk-constrain-label .uk-text {
+    display: none;
+  }
   .uk-flex-wrap .uk-constrain-label input {
     visibility: hidden;
   }
-  .uk-flex-wrap .uk-form-constrain label .uk-icon-lock,
-  .uk-flex-wrap .uk-form-constrain label .uk-icon-unlocked {
+  .uk-flex-wrap .uk-constrain-label input:disabled + i {
+    color: #888;
+  }
+  .uk-flex-wrap .uk-constrain-label .uk-icon-lock,
+  .uk-flex-wrap .uk-constrain-label .uk-icon-unlocked {
     position: absolute;
     left: 5px;
     top: 8px;
     cursor: pointer;
-  }
-  .uk-flex-wrap .uk-form-constrain label input:disabled + i {
-    color: #888;
-  }
-  .uk-flex-wrap .uk-form-constrain label .uk-icon-unlocked {
     display: inherit;
   }
-  .uk-flex-wrap .uk-constrain-active label .uk-icon-lock {
+  .uk-flex-wrap .uk-constrain-label .uk-icon-lock {
+    display: none;
+  }
+  .uk-flex-wrap .uk-constrain-label.uk-constrain-active .uk-icon-lock {
     display: inherit;
   }
-  .uk-flex-wrap .uk-constrain-active label .uk-icon-unlocked {
+  .uk-flex-wrap .uk-constrain-label.uk-constrain-active .uk-icon-unlocked {
     display: none;
   }
 }
@@ -2128,6 +2178,19 @@ input.colour {
 }
 .uk-input-clear .uk-icon:before {
   font-size: 0.625em;
+}
+.uk-toggle path {
+  display: none;
+  fill: #444;
+}
+.uk-toggle path:first-child {
+  display: block;
+}
+.uk-toggle.uk-toggle-active path:first-child {
+  display: none;
+}
+.uk-toggle.uk-toggle-active path:last-child {
+  display: block;
 }
 /**
  * @package   	JCE
