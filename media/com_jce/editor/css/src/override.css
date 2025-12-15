@@ -896,3 +896,7 @@ select:not([multiple]):not([size]) {
 .uk-flex-gap-large {
     gap: 0.75em;
 }
+
+.uk-button-text {
+    width: 100%;
+}

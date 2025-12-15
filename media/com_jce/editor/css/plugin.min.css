@@ -1763,6 +1763,10 @@ select:not([multiple]):not([size]) {
 .uk-flex-gap-large {
     gap: 0.75em;
 }
+
+.uk-button-text {
+    width: 100%;
+}
 .uk-datalist-control {
   position: relative;
   display: flex;
