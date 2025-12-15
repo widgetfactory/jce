@@ -109,10 +109,10 @@
                 });
             });
 
-            $(this).parents('.uk-form-constrain').toggleClass('uk-constrain-active', this.checked);
+            $(this).parent('label').toggleClass('uk-constrain-active', this.checked);
 
             $(cb).on('click', function () {
-                $(this).parents('.uk-form-constrain').toggleClass('uk-constrain-active', this.checked);
+                $(this).parent('label').toggleClass('uk-constrain-active', this.checked);
             });
 
             $(cb).parent().append('<i class="uk-icon-lock" role="presentation"></i><i class="uk-icon-unlocked" role="presentation"></i>');
