@@ -7,76 +7,77 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global $ */
+
 var WFFileBrowser = {
 
-    settings 	: {},
+    settings: {},
 
-    element 	: '',
+    element: '',
 
     /**
-	 * Initialize FileBrowser
-	 * @param element Mixed Element or Element Selector
-	 * @params options Object
-	 */
-    init : function(element, options) {
-				var self = this;
+     * Initialize FileBrowser
+     * @param element Mixed Element or Element Selector
+     * @params options Object
+     */
+    init: function (element, options) {
+        $.extend(true, this.settings, options);
 
-				$.extend(true, this.settings, options);
-
-				this.element = element;
-				$(this.element).filebrowser(this.settings);
+        this.element = element;
+        $(this.element).filebrowser(this.settings);
     },
 
     /**
-	 * Get the base directory
-	 */
-    getBaseDir : function() {
+     * Get the base directory
+     */
+    getBaseDir: function () {
         return $.fn.filebrowser.getbasedir();
     },
 
     /**
-	 * Get current directory
-	 */
-    getCurrentDir : function() {
+     * Get current directory
+     */
+    getCurrentDir: function () {
         return $.fn.filebrowser.getcurrentdir();
     },
 
     /**
-	 * Get a list of selected items optionally fitlered by key
-	 */
-    getSelectedItems : function(key) {
+     * Get a list of selected items optionally fitlered by key
+     */
+    getSelectedItems: function (key) {
         return $.fn.filebrowser.getselected(key);
     },
 
     /**
-	 * Set a list of selected items
-	 */
-    setSelectedItems : function(items) {
-				return $.fn.filebrowser.setselected(items);
+     * Set a list of selected items
+     */
+    setSelectedItems: function (items) {
+        return $.fn.filebrowser.setselected(items);
     },
 
     /**
-	 * Refresh the browser
-	 */
-    refresh : function() {
+     * Refresh the browser
+     */
+    refresh: function () {
         return $.fn.filebrowser.refresh();
     },
 
-    status : function(message, state) {
-				return $.fn.filebrowser.status(message, state);
+    status: function (message, state) {
+        return $.fn.filebrowser.status(message, state);
     },
 
     /**
-	 * Load the browser and set optional return items to select
-	 */
-    load : function(items) {
-				$(this.element).trigger('filebrowser:load', items);
+     * Load the browser and set optional return items to select
+     */
+    load: function (items) {
+        $(this.element).trigger('filebrowser:load', items);
     },
 
     /**
-	 * Compatability function
-	 */
-    get : function(fn, args) {
+     * Compatability function
+     */
+    get: function (fn, args) {
         return WFFileBrowser[fn](args);
     }
 };
