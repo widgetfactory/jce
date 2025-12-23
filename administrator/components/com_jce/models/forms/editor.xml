@@ -175,10 +175,21 @@
 
             <field type="spacer" />
             
-            <field name="invalid_elements" type="text" size="50" default="" label="WF_PARAM_NO_ELEMENTS" description="WF_PARAM_NO_ELEMENTS_DESC" />
-            <field name="invalid_attributes" type="text" size="50" default="dynsrc,lowsrc" label="WF_PARAM_INVALID_ATTRIBUTES" description="WF_PARAM_INVALID_ATTRIBUTES_DESC" />
-            <field name="invalid_attribute_values" type="text" size="50" default="" label="WF_PARAM_INVALID_ATTRIBUTE_VALUES" description="WF_PARAM_INVALID_ATTRIBUTE_VALUES_DESC" />
-            <field name="extended_elements" type="textarea" rows="2" cols="46" default="" label="WF_PARAM_ELEMENTS" description="WF_PARAM_ELEMENTS_DESC" />
+            <field name="invalid_elements" type="repeatable" default="" label="WF_PARAM_NO_ELEMENTS" description="WF_PARAM_NO_ELEMENTS_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field name="invalid_attributes" type="repeatable" default="" label="WF_PARAM_INVALID_ATTRIBUTES" description="WF_PARAM_INVALID_ATTRIBUTES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+            
+            <field name="invalid_attribute_values" type="repeatable" default="" label="WF_PARAM_INVALID_ATTRIBUTE_VALUES" description="WF_PARAM_INVALID_ATTRIBUTE_VALUES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+            
+            <field name="extended_elements" type="repeatable" default="" label="WF_PARAM_ELEMENTS" description="WF_PARAM_ELEMENTS_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
 
             <field name="validate_styles" type="yesno" default="1" label="WF_PARAM_VALIDATE_STYLES" description="WF_PARAM_VALIDATE_STYLES_DESC">
                 <option value="1">JYES</option>
