@@ -493,7 +493,7 @@ img.mce-object.mce-object-img {
 }
 .mceContentBody pre[data-mce-code].mce-code-toggle,
 .mceContentBody div[data-mce-code].mce-code-toggle {
-  height: 32px;
+  height: 28px;
   overflow: hidden;
 }
 .mceContentBody.mceVisualBlocks pre[data-mce-code],
@@ -544,6 +544,7 @@ img.mce-object.mce-object-img {
 }
 .mceContentBody pre[data-mce-code].mce-code-toggle:after {
   content: "\25BE";
+  height: 26px;
 }
 .mceContentBody img[data-mce-code] {
   display: block;
