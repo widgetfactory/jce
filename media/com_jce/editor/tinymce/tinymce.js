@@ -20105,14 +20105,14 @@
    */
 
 
-  var DomParser$2 = tinymce.html.DomParser, Schema$1 = tinymce.html.Schema, each$4 = tinymce.each, DOM = tinymce.DOM;
+  var DomParser$2 = tinymce.html.DomParser, Schema$1 = tinymce.html.Schema, each$6 = tinymce.each, DOM = tinymce.DOM;
 
   var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
   var resetStyleAttribute = function (content) {
     var div = DOM.create('div', {}, content);
 
-    each$4(DOM.select('[style]', div), function (elm) {
+    each$6(DOM.select('[style]', div), function (elm) {
         elm.setAttribute('style', elm.getAttribute('data-mce-style') || '');
     });
 
@@ -20122,7 +20122,7 @@
   var updateInternalStyleAttribute = function (content) {
     var div = DOM.create('div', {}, content);
 
-    each$4(DOM.select('[style]', div), function (elm) {
+    each$6(DOM.select('[style]', div), function (elm) {
       var style = elm.getAttribute('style');
 
       if (style) {
@@ -20157,12 +20157,12 @@
       return Object.values(value).length;
     }
 
-    each$4(rules, function (r) {
+    each$6(rules, function (r) {
 
       if (r.selectorText) {
         var styles = {};
 
-        each$4(r.style, function (name) {
+        each$6(r.style, function (name) {
           var value = r.style.getPropertyValue(name);
 
           if (isValue(value)) {
@@ -20171,7 +20171,7 @@
 
         });
 
-        each$4(r.selectorText.split(','), function (selector) {
+        each$6(r.selectorText.split(','), function (selector) {
           selector = selector.trim();
 
           if (selector.indexOf('.mce') == 0 || selector.indexOf('.mce-') !== -1 || selector.indexOf('.mso-') !== -1) {
@@ -20196,7 +20196,7 @@
 
     styles = tinymce.extend(styles, parseCSS(content));
 
-    each$4(styles, function (value, selector) {
+    each$6(styles, function (value, selector) {
       // skip Word stuff
       if (selector.indexOf('Mso') !== -1) {
         return true;
@@ -20401,7 +20401,7 @@
    */
 
 
-  var each$3 = tinymce.each;
+  var each$5 = tinymce.each;
 
   /**
    * Removes BR elements after block elements. IE9 has a nasty bug where it puts a BR element after each
@@ -20417,7 +20417,7 @@
       // Produce block regexp based on the block elements in schema
       var blockElements = [];
 
-      each$3(editor.schema.getBlockElements(), function (block, blockName) {
+      each$5(editor.schema.getBlockElements(), function (block, blockName) {
           blockElements.push(blockName);
       });
 
@@ -20774,11 +20774,11 @@
    */
 
 
-  var each$2 = tinymce.each,
+  var each$4 = tinymce.each,
       Schema = tinymce.html.Schema,
       DomParser$1 = tinymce.html.DomParser,
       Serializer$1 = tinymce.html.Serializer,
-      Node = tinymce.html.Node;
+      Node$1 = tinymce.html.Node;
 
   // Open Office
   var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
@@ -20787,9 +20787,9 @@
       var classes = [],
           rules = parseCssToRules(content);
 
-      each$2(rules, function (r) {
+      each$4(rules, function (r) {
           if (r.selectorText) {
-              each$2(r.selectorText.split(','), function (v) {
+              each$4(r.selectorText.split(','), function (v) {
                   v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                   // Is internal or it doesn't contain a class
@@ -20861,7 +20861,7 @@
 
       text = text.replace(/^[\u00a0 ]+/, '');
 
-      each$2(patterns, function (pattern, type) {
+      each$4(patterns, function (pattern, type) {
           if (pattern.test(text)) {
               found = type;
               return false;
@@ -20882,10 +20882,10 @@
       var borderColors = ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'];
       var positions = ['top', 'right', 'bottom', 'left'];
 
-      each$2(dom.select('table[style], td[style], th[style]', node), function (n) {
+      each$4(dom.select('table[style], td[style], th[style]', node), function (n) {
           var styles = {};
 
-          each$2(borderStyles, function (name) {
+          each$4(borderStyles, function (name) {
               // process each side, eg: border-left-width
               if (/-(top|right|bottom|left)-/.test(name)) {
                   // get style
@@ -20894,7 +20894,7 @@
                   // replace default values with black
                   if (name.indexOf('color') !== -1) {
                       if (value === 'currentcolor' || value === 'windowtext') {
-                          each$2(borderColors, function (str) {
+                          each$4(borderColors, function (str) {
                               if (str === name) {
                                   return true;
                               }
@@ -20932,7 +20932,7 @@
           });
 
           // convert padding and margin to pixels
-          each$2(positions, function (pos) {
+          each$4(positions, function (pos) {
               var padding = dom.getStyle(n, 'padding-' + pos);
               var margin = dom.getStyle(n, 'margin-' + pos);
 
@@ -20945,7 +20945,7 @@
               }
           });
 
-          each$2(styles, function (value, name) {
+          each$4(styles, function (value, name) {
 
               // remove styles with no width value
               if (name.indexOf('-width') !== -1 && value === "") {
@@ -20962,7 +20962,7 @@
               }
           });
 
-          each$2(backgroundStyles, function (def, name) {
+          each$4(backgroundStyles, function (def, name) {
               var value = dom.getStyle(n, name);
 
               if (value === def) {
@@ -20982,7 +20982,7 @@
       });
 
       // update indent conversion
-      each$2(dom.select('[data-mce-indent]', node), function (el) {
+      each$4(dom.select('[data-mce-indent]', node), function (el) {
           if (el.nodeName === "p") {
               var value = dom.getAttrib(el, 'data-mce-indent');
               var style = editor.settings.indent_use_margin ? 'margin-left' : 'padding-left';
@@ -20993,7 +20993,7 @@
           dom.setAttrib(el, 'data-mce-indent', '');
       });
 
-      each$2(dom.select('[data-mce-word-list]', node), function (el) {
+      each$4(dom.select('[data-mce-word-list]', node), function (el) {
           el.removeAttribute('data-mce-word-list');
       });
   }
@@ -21079,7 +21079,7 @@
           if (keepStyles && tinymce.is(keepStyles, 'string')) {
               var styleProps$1 = tinymce.explode(keepStyles);
 
-              each$2(styleProps$1, function (style, i) {
+              each$4(styleProps$1, function (style, i) {
                   if (style === "border") {
                       // add expanded border styles
                       styleProps$1 = styleProps$1.concat(borderStyles);
@@ -21092,7 +21092,7 @@
           if (removeStyles && tinymce.is(removeStyles, 'string')) {
               var removeProps = tinymce.explode(removeStyles);
 
-              each$2(removeProps, function (style, i) {
+              each$4(removeProps, function (style, i) {
                   if (style === "border") {
                       // add expanded border styles
                       removeProps = removeProps.concat(borderStyles);
@@ -21107,10 +21107,10 @@
           }
       }
 
-      each$2(styleProps$1, function (style) {
+      each$4(styleProps$1, function (style) {
           // add all border styles if "border" is set
           if (style === "border") {
-              each$2(borderStyles, function (name) {
+              each$4(borderStyles, function (name) {
                   validStyles[name] = {};
               });
 
@@ -21195,7 +21195,7 @@
 
               if (!currentListNode || currentListNode.name != listName) {
                   prevListNode = prevListNode || currentListNode;
-                  currentListNode = new Node(listName, 1);
+                  currentListNode = new Node$1(listName, 1);
 
                   // add list style if any
                   if (type && /roman|alpha/.test(type)) {
@@ -21311,7 +21311,7 @@
           var outputStyles = {},
               matches, styles = editor.dom.parseStyle(styleValue);
 
-          each$2(styles, function (value, name) {
+          each$4(styles, function (value, name) {
               // Convert various MS styles to W3C styles
               switch (name) {
                   case 'mso-list':
@@ -21413,13 +21413,13 @@
           // Convert bold style to "b" element
           if (/(bold|700|800|900)/i.test(outputStyles["font-weight"]) && editor.schema.isValidChild('strong', node.name)) {
               delete outputStyles["font-weight"];
-              node.wrap(new Node("strong", 1));
+              node.wrap(new Node$1("strong", 1));
           }
 
           // Convert italic style to "i" element
           if (/(italic)/i.test(outputStyles["font-style"]) && editor.schema.isValidChild('em', node.name)) {
               delete outputStyles["font-style"];
-              node.wrap(new Node("em", 1));
+              node.wrap(new Node$1("em", 1));
           }
 
           // Serialize the styles and see if there is something left to keep
@@ -21456,7 +21456,7 @@
 
       // Add style/class attribute to all element rules since the user might have removed them from
       // paste_word_valid_elements config option and we need to check them for properties
-      each$2(schema.elements, function (rule) {
+      each$4(schema.elements, function (rule) {
           /*eslint dot-notation:0*/
           if (!rule.attributes["class"]) {
               rule.attributes["class"] = {};
@@ -21673,7 +21673,7 @@
    */
 
 
-  var each$1 = tinymce.each;
+  var each$3 = tinymce.each;
   var isIE$1 = tinymce.isIE || tinymce.isIE12;
 
   function preProcess(editor, o) {
@@ -21713,20 +21713,20 @@
       }
 
       // Remove Apple style spans
-      each$1(dom.select('span.Apple-style-span', o.node), function (n) {
+      each$3(dom.select('span.Apple-style-span', o.node), function (n) {
           dom.remove(n, 1);
       });
 
       // Remove all classes
       if (settings.paste_strip_class_attributes == 1) {
           // Remove class attribute
-          each$1(dom.select('*[class]', o.node), function (el) {
+          each$3(dom.select('*[class]', o.node), function (el) {
               el.removeAttribute('class');
           });
       }
 
       // Convert width and height attributes to styles
-      each$1(dom.select('table, td, th', o.node), function (n) {
+      each$3(dom.select('table, td, th', o.node), function (n) {
           var width = dom.getAttrib(n, 'width');
 
           if (width) {
@@ -21745,7 +21745,7 @@
       // Remove all styles if none are retained
       if (settings.paste_remove_styles !== false && !settings.paste_retain_style_properties) {
           // Remove style attribute
-          each$1(dom.select('*[style]', o.node), function (el) {            
+          each$3(dom.select('*[style]', o.node), function (el) {            
               el.removeAttribute('style');
               el.removeAttribute('data-mce-style');
           });
@@ -21763,7 +21763,7 @@
       }
 
       // Process images - remove local
-      each$1(dom.select('img', o.node), function (el) {
+      each$3(dom.select('img', o.node), function (el) {
           var src = dom.getAttrib(el, 'src');
 
           // remove or processs for upload img element if blank, local file url or base64 encoded
@@ -21783,8 +21783,8 @@
 
       // remove font and underline tags in IE
       if (isIE$1) {
-          each$1(dom.select('a', o.node), function (el) {
-              each$1(dom.select('font,u'), function (n) {
+          each$3(dom.select('a', o.node), function (el) {
+              each$3(dom.select('font,u'), function (n) {
                   dom.remove(n, 1);
               });
           });
@@ -21809,7 +21809,7 @@
       } else {
           dom.remove(dom.select('span:empty', o.node));
 
-          each$1(dom.select('span', o.node), function (n) {
+          each$3(dom.select('span', o.node), function (n) {
               // remove span without children eg: <span></span>
               if (!n.childNodes || n.childNodes.length === 0) {
                   dom.remove(n);
@@ -21825,7 +21825,7 @@
       if (settings.paste_remove_empty_paragraphs !== false) {
           dom.remove(dom.select('p:empty', o.node));
 
-          each$1(dom.select('p', o.node), function (n) {
+          each$3(dom.select('p', o.node), function (n) {
               var h = n.innerHTML;
 
               // remove paragraph without children eg: <p></p>
@@ -21867,7 +21867,7 @@
       if (keepStyles && tinymce.is(keepStyles, 'string')) {
           var styleProps$1 = tinymce.explode(keepStyles);
 
-          each$1(styleProps$1, function (style, i) {
+          each$3(styleProps$1, function (style, i) {
               if (style == "border") {
                   // add expanded border styles
                   styleProps$1 = styleProps$1.concat(borderStyles);
@@ -21881,7 +21881,7 @@
               }
 
               if (style == "padding" || style == "margin") {
-                  each$1(['top', 'bottom', 'right', 'left'], function (side) {
+                  each$3(['top', 'bottom', 'right', 'left'], function (side) {
                       styleProps$1.push(style + '-' + side);
                   });
 
@@ -21894,7 +21894,7 @@
       if (removeStyles && tinymce.is(removeStyles, 'string')) {
           var removeProps = tinymce.explode(removeStyles);
 
-          each$1(removeProps, function (style, i) {
+          each$3(removeProps, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
                   removeProps = removeProps.concat(borderStyles);
@@ -21908,7 +21908,7 @@
               }
 
               if (style == "padding" || style == "margin") {
-                  each$1(['top', 'bottom', 'right', 'left'], function (side) {
+                  each$3(['top', 'bottom', 'right', 'left'], function (side) {
                       removeProps.push(style + '-' + side);
                   });
 
@@ -21923,7 +21923,7 @@
       }
 
       // Retains some style properties
-      each$1(dom.select('*[style]', node), function (n) {
+      each$3(dom.select('*[style]', node), function (n) {
           var ns = {},
               x = 0;
 
@@ -21931,7 +21931,7 @@
           var styles = dom.parseStyle(n.style.cssText);
 
           // check style against styleProps array
-          each$1(styles, function (v, k) {
+          each$3(styles, function (v, k) {
               if (tinymce.inArray(styleProps$1, k) != -1) {
                   ns[k] = v;
                   x++;
@@ -21961,7 +21961,7 @@
       });
 
       // convert some attributes
-      each$1(dom.select('*[align]', node), function (el) {
+      each$3(dom.select('*[align]', node), function (el) {
           var v = dom.getAttrib(el, 'align');
 
           if (v === "left" || v === "right" || v === "center") {
@@ -22084,7 +22084,7 @@
    */
 
 
-  var each = tinymce.each,
+  var each$2 = tinymce.each,
       VK = tinymce.VK,
       DomParser = tinymce.html.DomParser,
       Serializer = tinymce.html.Serializer,
@@ -22386,7 +22386,7 @@
           if (editor.settings.paste_filter) {
               var re, rules = editor.settings.paste_filter.split(';');
 
-              each(rules, function (s) {
+              each$2(rules, function (s) {
                   // if it is already in Regular Expression format...
                   if (/^\/.*\/(g|i|m)*$/.test(s)) {
                       re = (new Function('return ' + s))();
@@ -48480,557 +48480,492 @@
     });
   })();
 
-  /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-   * JCE is free software. This version may have been modified pursuant
-   * to the GNU General Public License, and as distributed it includes or
-   * is derivative of works licensed under the GNU General Public License or
-   * other free or open source software licenses.
-   */
+  function split(str, delim) {
+      return (str || '').split(',');
+  }
 
-  /*global tinymce:true */
+  // list of HTML tags
+  var TAGS = [
+      'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'bgsound', 'big',
+      'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'content', 'data',
+      'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'embed', 'fieldset', 'figcaption', 'figure',
+      'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe',
+      'image', 'img', 'input', 'ins', 'isindex', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'listing', 'main', 'map', 'mark', 'marquee',
+      'menu', 'menuitem', 'meta', 'meter', 'multicol', 'nav', 'nobr', 'noembed', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option',
+      'output', 'p', 'param', 'picture', 'plaintext', 'pre', 'progress', 'q', 'rp', 'rt', 'rtc', 'ruby', 's', 'samp', 'script', 'section', 'select',
+      'shadow', 'slot', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template',
+      'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr', 'xmp'
+  ];
 
-  (function () {
-    var each = tinymce.each,
-      Node = tinymce.html.Node;
+  var FONT_ICON_RE = /<([a-z0-9]+)([^>]+)class="([^"]*)(glyph|uk-)?(fa|icon|bi)-([\w-]+)([^"]*)"([^>]*)><\/\1>/gi;
 
-    function split(str, delim) {
-      return str.split(',');
-    }
+  var PADDED_RX = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
 
-    // list of HTML tags
-    var tags = [
-      'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'bgsound', 'big', 'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'content', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'image', 'img', 'input', 'ins', 'isindex', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'listing', 'main', 'map', 'mark', 'marquee', 'menu', 'menuitem', 'meta', 'meter', 'multicol', 'nav', 'nobr', 'noembed', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'picture', 'plaintext', 'pre', 'progress', 'q', 'rp', 'rt', 'rtc', 'ruby', 's', 'samp', 'script', 'section', 'select', 'shadow', 'slot', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr', 'xmp'
-    ];
-
-    var fontIconRe = /<([a-z0-9]+)([^>]+)class="([^"]*)(glyph|uk-)?(fa|icon|bi)-([\w-]+)([^"]*)"([^>]*)><\/\1>/gi;
-    var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
-
-    tinymce.PluginManager.add('cleanup', function (ed, url) {
-      // set validate value to verify_html value
-      if (ed.settings.verify_html === false) {
-        ed.settings.validate = false;
-      }
-
+  function createPadding(Node) {
       function paddEmptyTags(content) {
-          // pad bootstrap icons
-          content = content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
-
-          // padd some empty tags
+          content = content.replace(FONT_ICON_RE, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
           content = content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2 data-mce-empty="1">&nbsp;</$1>');
-
-          // padd list elements
           content = content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
 
           return content;
       }
 
-      ed.onPreInit.add(function () {      
-        // Remove bogus elements
-        ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
+      function ensureEmptyInlineNodes(nodes, name) {
           var i = nodes.length;
+          var node, cls;
 
           while (i--) {
-            nodes[i].remove();
-          }
-        });
-
-        // cleanup data-mce-bogus tags
-        if (ed.settings.remove_trailing_brs === false) {
-          // Remove bogus elements
-          ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes, name, args) {
-            var i = nodes.length, node, textNode;
-
-            while (i--) {
               node = nodes[i];
+              cls = (node.attr('class') || name === "li");
 
-              if (node.name !== 'br') {
-                continue;
+              if (cls && !node.firstChild) {
+                  node.attr('data-mce-empty', '1');
+                  node.append(new Node('#text', '3')).value = '\u00a0';
               }
-
-              if (!node.prev && !node.next) {
-                textNode = new Node('#text', 3);
-                textNode.value = '\u00a0';
-                node.replace(textNode);
-              } else {
-                node.remove();
-              }
-            }
-          });
-        }
-
-        // cleanup tmp attributes
-        ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          while (i--) {
-            node = nodes[i];
-            node.attr('data-mce-tmp', null);
           }
-        });
-
-        // cleanup tmp attributes
-        ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          while (i--) {
-            node = nodes[i];
-            node.attr('data-mce-tmp', null);
-          }
-        });
-
-        function removeEventAttributes() {
-          // remove all event attributes
-          each(ed.schema.elements, function (elm) {
-            // no attributes on this element
-            if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
-              return true;
-            }
-
-            each(elm.attributes, function (obj, name) {
-              if (name.indexOf('on') === 0) {
-                delete elm.attributes[name];
-                elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
-              }
-            });
-          });
-        }
-
-        if (ed.settings.verify_html !== false) {
-          if (!ed.settings.allow_event_attributes) {
-            removeEventAttributes();
-          }
-
-          // add support for "bootstrap" icons
-          var elements = ed.schema.elements;
-
-          // allow empty elements. There really is no need to remove them...
-          each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
-            if (elements[name]) {
-              elements[name].removeEmpty = false;
-            }
-          });
-
-          if (!ed.getParam('pad_empty_tags', true)) {
-            each(elements, function (v, k) {
-              if (v.paddEmpty) {
-                v.paddEmpty = false;
-              }
-            });
-          }
-
-          if (!ed.getParam('table_pad_empty_cells', true)) {
-            elements.th.paddEmpty = false;
-            elements.td.paddEmpty = false;
-          }
-
-          each(elements, function (v, k) {
-            // skip internal elements
-            if (k.indexOf('mce:') == 0) {
-              return true;
-            }
-
-            // custom element
-            if (tinymce.inArray(tags, k) === -1) {
-              ed.schema.addCustomElements(k);
-            }
-          });
-        }
-
-        // only if "Cleanup HTML" enabled
-        if (ed.settings.verify_html !== false) {
-          // Invalid Attribute Values cleanup
-          var invalidAttribValue = ed.getParam('invalid_attribute_values', '');
-
-          if (invalidAttribValue) {
-            /**
-                         * adapted from https://github.com/tinymce/tinymce/blob/master/src/core/src/main/js/ui/Selector.js
-                         * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
-                         */
-            function attrFilter(value, expr, check) {
-              return !expr ? !!check :
-                expr === "=" ? value === check :
-                  expr === "*=" ? value.indexOf(check) >= 0 :
-                    expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
-                      expr === "!=" ? value != check :
-                        expr === "^=" ? value.indexOf(check) === 0 :
-                          expr === "$=" ? value.substr(value.length - check.length) === check :
-                            false;
-            }
-
-            function replaceAttributeValue(nodes, name, expr, check) {
-              var i = nodes.length,
-                node;
-
-              while (i--) {
-                node = nodes[i];
-
-                var value = node.attr(name);
-
-                if (!value) {
-                  continue;
-                }
-
-                // remove attribute if it matches expression
-                if (!expr || attrFilter(value, expr, check)) {
-                  node.attr(name, null);
-                  // remove temp attribute
-                  if (name === 'src' || name === 'href' || name === 'style') {
-                    node.attr('data-mce-' + name, null);
-                  }
-
-                  // remove <a> nodes without attributes
-                  if (node.name === "a" && !node.attributes.length) {
-                    node.unwrap();
-                  }
-                }
-              }
-            }
-
-            each(tinymce.explode(invalidAttribValue), function (item) {
-              var matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~\*]?=)?["']?([^"']+)?["']?\]/i.exec(item);
-
-              if (matches && matches.length == 5) {
-                var tag = matches[1],
-                  attrib = matches[2],
-                  expr = matches[3],
-                  value = matches[4];
-
-                // remove the entire attribute
-                if (attrib && !expr && !value) {
-                  expr = '';
-                }
-
-                if (typeof expr !== "undefined") {
-                  // all tags
-                  if (tag == '*') {
-                    ed.parser.addAttributeFilter(attrib, function (nodes, name) {
-                      replaceAttributeValue(nodes, name, expr, value);
-                    });
-                    ed.serializer.addAttributeFilter(attrib, function (nodes, name) {
-                      replaceAttributeValue(nodes, name, expr, value);
-                    });
-                    // specific tag
-                  } else {
-                    ed.parser.addNodeFilter(tag, function (nodes, name) {
-                      replaceAttributeValue(nodes, attrib, expr, value);
-                    });
-                    ed.serializer.addNodeFilter(tag, function (nodes, name) {
-                      replaceAttributeValue(nodes, attrib, expr, value);
-                    });
-                  }
-                }
-              }
-            });
-          }
-        }
-
-        ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          if (ed.schema.isValidChild('body', name)) {
-            while (i--) {
-              node = nodes[i];
-              node.remove();
-            }
-          }
-        });
-
-        ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          if (ed.schema.isValidChild('body', name)) {
-            while (i--) {
-              node = nodes[i];
-
-              // don't remove system spans
-              if (name === 'span' && node.attr('data-mce-type')) {
-                continue;
-              }
-
-              node.unwrap();
-            }
-          }
-        });
-
-        // try and keep empty a tags that are not anchors, process bootstrap icons
-        ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
-          var i = nodes.length,
-            node, cls;
-
-          while (i--) {
-            node = nodes[i], cls = (node.attr('class') || name === "li");
-            // padd it with a space if its empty and has a class, eg: <i class="icon-ok"></i>
-            if (cls && !node.firstChild) {
-              node.attr('data-mce-empty', '1');
-              node.append(new Node('#text', '3')).value = '\u00a0';
-            }
-          }
-        });
-
-        // cleanup padded "bootstrap" tags
-        ed.serializer.addAttributeFilter('data-mce-empty', function (nodes, name) {
-          var i = nodes.length,
-            node, fc;
-
-          while (i--) {
-            node = nodes[i], fc = node.firstChild;
-            node.attr('data-mce-empty', null);
-
-            if (fc && (fc.value === '\u00a0' || fc.value === '&nbsp;')) {
-              fc.remove();
-            }
-          }
-        });
-
-        // disable onclick etc.
-        ed.parser.addAttributeFilter('onclick,ondblclick,onmousedown,onmouseup', function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          while (i--) {
-            node = nodes[i];
-
-            node.attr('data-mce-' + name, node.attr(name));
-            node.attr(name, 'return false;');
-          }
-        });
-
-        ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick,data-mce-onmousedown,data-mce-onmouseup', function (nodes, name) {
-          var i = nodes.length,
-            node, k;
-
-          while (i--) {
-            node = nodes[i], k = name.replace('data-mce-', '');
-
-            node.attr(k, node.attr(name));
-            node.attr(name, null);
-          }
-        });
-
-        ed.serializer.addNodeFilter('br', function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          if (i) {
-            while (i--) {
-              node = nodes[i];
-
-              // parent node is body
-              if (node.parent && node.parent.name === "body" && !node.prev) {
-                node.remove();
-              }
-            }
-          }
-        });
-
-        // remove br in Gecko
-        ed.parser.addNodeFilter('br', function (nodes, name) {
-          var i = nodes.length,
-            node;
-
-          if (i) {
-            while (i--) {
-              node = nodes[i];
-
-              // parent node is body
-              if (node.parent && node.parent.name === "body" && !node.prev) {
-                node.remove();
-              }
-            }
-          }
-        });
-      });
-
-      // run cleanup with default settings
-      if (ed.settings.verify_html === false) {
-        ed.addCommand('mceCleanup', function () {
-          var s = ed.settings,
-            se = ed.selection,
-            bm;
-          bm = se.getBookmark();
-
-          var content = ed.getContent({
-            cleanup: true
-          });
-
-          // set verify to true
-          s.verify_html = true;
-
-          // create new schema
-          var schema = new tinymce.html.Schema(s);
-
-          // clean content
-          content = new tinymce.html.Serializer({
-            validate: true
-          }, schema).serialize(new tinymce.html.DomParser({
-            validate: true,
-            allow_event_attributes: !!ed.settings.allow_event_attributes
-          }, schema).parse(content));
-
-          ed.setContent(content, {
-            cleanup: true
-          });
-
-          se.moveToBookmark(bm);
-        });
       }
 
-      ed.onBeforeSetContent.add(function (ed, o) {
-        // remove br tag added by Firefox
-        o.content = o.content.replace(/^<br>/, '');
+      function cleanupEmptyInlineNodes(nodes) {
+          var i = nodes.length;
+          var node, fc;
 
-        // Geshi
-        o.content = convertFromGeshi(o.content);
+          while (i--) {
+              node = nodes[i];
+              fc = node.firstChild;
 
-        // only if "Cleanup HTML" enabled
-        if (ed.settings.validate) {
-          // remove attributes
-          if (ed.getParam('invalid_attributes')) {
-            var s = ed.getParam('invalid_attributes', '');
+              node.attr('data-mce-empty', null);
 
-            o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function () {
-              // get tag an attributes (if any) from arguments array, eg: match, p1,p2...pn, offset, string
-              var args = arguments, tag = args[1], attribs = args[args.length - 3] || '';
-              return '<' + tag + attribs + '>';
-            });
+              if (fc && (fc.value === '\u00a0' || fc.value === '&nbsp;')) {
+                  fc.remove();
+              }
           }
-        }
+      }
 
-        // padd various empty tags
-        o.content = paddEmptyTags(o.content);
-      });
+      return {
+          paddEmptyTags: paddEmptyTags,
+          ensureEmptyInlineNodes: ensureEmptyInlineNodes,
+          cleanupEmptyInlineNodes: cleanupEmptyInlineNodes
+      };
+  }
 
-      // Cleanup callback
-      ed.onPostProcess.add(function (ed, o) {
-        if (o.set) {
-          // Geshi
-          o.content = convertFromGeshi(o.content);
-        }
+  const explode$1 = tinymce.explode;
 
-        if (o.get) {
-          // Geshi
-          o.content = convertToGeshi(o.content);
+  function compileInvalidAttrRules(list) {
+      var items = explode$1(list);
+      var matchers = [];
+      var i, s, rx;
 
-          // Remove empty jcemediabox / jceutilities anchors
-          o.content = o.content.replace(/<a([^>]*)class="jce(box|popup|lightbox|tooltip|_tooltip)"([^>]*)><\/a>/gi, '');
-          // Remove span elements with jcemediabox / jceutilities classes
-          o.content = o.content.replace(/<span class="jce(box|popup|lightbox|tooltip|_tooltip)">(.*?)<\/span>/gi, '$2');
-          // legacy mce stuff
-          o.content = o.content.replace(/_mce_(src|href|style|coords|shape)="([^"]+)"\s*?/gi, '');
+      for (i = 0; i < items.length; i++) {
+          s = (items[i] || '').trim();
 
-          if (ed.settings.validate === false) {
-            // fix body content
-            o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
-
-            if (!ed.getParam('remove_tag_padding')) {
-              // pad empty elements
-              o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
-            }
+          if (!s) {
+              continue;
           }
 
-          if (!ed.getParam('table_pad_empty_cells', true)) {
-            o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+          try {
+              rx = new RegExp('^(?:' + s + ')$', 'i');
+              matchers.push(rx);
+          } catch (e) {
+              s = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              matchers.push(new RegExp('^' + s + '$', 'i'));
+          }
+      }
+
+      return matchers;
+  }
+
+  function isInvalidAttribute(name, rules) {
+      var i;
+
+      if (!name) {
+          return false;
+      }
+
+      for (i = 0; i < rules.length; i++) {
+          if (rules[i].test(name)) {
+              return true;
+          }
+      }
+
+      return false;
+  }
+
+  const each$1 = tinymce.each, explode = tinymce.explode;
+
+  function compileInvalidAttrValueRules(list) {
+      var rules = [];
+      var items = explode(list);
+
+      each$1(items, function (item) {
+          var m;
+
+          item = (item || '').trim();
+          
+          if (!item) {
+              return;
           }
 
-          // clean empty tags
-          o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
-            // remove data-mce-empty attribute
-            attribs = attribs.replace('data-mce-empty="1"', '');
-            // return empty tag
-            return '<' + tag + ' ' + tinymce.trim(attribs) + '></' + tag + '>';
+          m = /([a-z0-9\*]+)\[([a-z0-9\-]+)([\^\$\!~\*]?=)?["']?([^"']+)?["']?\]/i.exec(item);
+
+          if (m && m.length === 5) {
+              rules.push({
+                  type: 'bracket',
+                  tag: m[1].toLowerCase(),
+                  attrib: m[2].toLowerCase(),
+                  expr: typeof m[3] === 'undefined' ? null : (m[3] || ''),
+                  check: (m[4] || '')
+              });
+
+              return;
+          }
+
+          rules.push({
+              type: 'pattern',
+              tag: '*',
+              pattern: item
           });
-
-          // clean empty list tags
-          o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
-
-          // remove padding on div (legacy)
-          if (ed.getParam('remove_div_padding')) {
-            o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
-          }
-
-          // remove padding on everything
-          if (ed.getParam('pad_empty_tags', true) === false) {
-            o.content = o.content.replace(paddedRx, '<$1$2></$1>');
-          }
-
-          // convert multiple consecutive non-breaking spaces
-          if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
-            o.content = o.content.replace(/\u00a0/g, '&nbsp;');
-          }
-
-          // fix boolean custom attributes
-          o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
-
-          // Remove empty contents
-          if (ed.settings.padd_empty_editor) {
-            o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
-          }
-
-          // fix self-closing hr tags for pagebreak
-          o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*?)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
-          // fix self-closing hr tags for readmore
-          o.content = o.content.replace(/<hr id="system-readmore"(.*?)>/gi, '<hr id="system-readmore" />');
-        }
       });
 
-      ed.onSaveContent.add(function (ed, o) {
-        // Convert entities to characters
-        if (ed.getParam('cleanup_pluginmode')) {
+      return rules;
+  }
 
-          var entities = {
-            '&#39;': "'",
-            '&amp;': '&',
-            '&quot;': '"',
-            '&apos;': "'"
-          };
+  function attrFilter(value, expr, check) {
+      return !expr ? !!check :
+          expr === "=" ? value === check :
+              expr === "*=" ? value.indexOf(check) >= 0 :
+                  expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
+                      expr === "!=" ? value != check :
+                          expr === "^=" ? value.indexOf(check) === 0 :
+                              expr === "$=" ? value.substr(value.length - check.length) === check :
+                                  false;
+  }
 
-          o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
-            return entities[a];
-          });
-        }
-      });
+  function isInvalidAttributeValue(tag, name, value, rules) {
+      var r, rx, k;
 
-      // Register buttons
-      ed.addButton('cleanup', {
-        title: 'advanced.cleanup_desc',
-        cmd: 'mceCleanup'
-      });
+      for (k = 0; k < rules.length; k++) {
+          r = rules[k];
 
-      function convertFromGeshi(h) {
-        h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
+          if (r.type === 'pattern') {
+              try {
+                  rx = new RegExp('^' + r.pattern + '$', 'i');
+              } catch (e) {
+                  rx = null;
+              }
+
+              if ((rx && rx.test(name)) || r.pattern.toLowerCase() === name) {
+                  return true;
+              }
+          } else if (r.type === 'bracket') {            
+              if (r.tag !== '*' && tag !== r.tag) {                
+                  continue;
+              }
+
+              if (name !== r.attrib) {
+                  continue;
+              }
+
+              if (!r.expr || attrFilter(value, r.expr, r.check)) {
+                  return true;
+              }
+          }
+      }
+
+      return false;
+  }
+
+  function processAttributes(editor, content) {
+      var invalidAttribRules = editor.getParam('invalid_attributes', '');
+      var invalidAttribValueRules = editor.getParam('invalid_attribute_values', '');
+
+      if (!invalidAttribRules && !invalidAttribValueRules) {
+          return content;
+      }
+
+      var doc = document.createElement('div');
+      doc.innerHTML = content;
+      var nodes = doc.querySelectorAll('*');
+      var i = nodes.length;
+      var node;
+
+      var attrRules = compileInvalidAttrRules(invalidAttribRules);
+      var valueRules = compileInvalidAttrValueRules(invalidAttribValueRules);
+
+      while (i--) {
+          node = nodes[i];
+
+          var nodeName = node.tagName.toLowerCase();
+          var attributes = node.attributes || [];
+          var x, attrName, attrValue;
+
+          for (x = attributes.length - 1; x >= 0; x--) {
+              var attr = attributes[x];
+
+              if (!attr || !attr.name) {
+                  continue;
+              }
+
+              attrName = attr.name.toLowerCase();
+              attrValue = node.getAttribute(attrName);
+
+              if (isInvalidAttribute(attrName, attrRules) ||
+                  isInvalidAttributeValue(nodeName, attrName, attrValue, valueRules)) {
+                  node.removeAttribute(attrName);
+                  node.removeAttribute('data-mce-' + attrName);
+              }
+          }
+      }
+
+      return doc.innerHTML;
+  }
+
+  function convertFromGeshi(h) {
+      return (h || '').replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
           var attr = '';
 
           if (c && /\w/.test(c)) {
-            attr = c.split(' ').join(' data-geshi-');
+              attr = c.split(' ').join(' data-geshi-');
           }
 
           return '<pre data-geshi-lang="' + b + '"' + attr + '>' + d + '</pre>';
-        });
+      });
+  }
 
-        return h;
-      }
-
-      function convertToGeshi(h) {
-        h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
+  function convertToGeshi(h) {
+      return (h || '').replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
           var s = b + d;
           s = s.replace(/data-geshi-/gi, '').replace(/\s+/g, ' ').replace(/\s$/, '');
 
           return '<pre xml:lang="' + c + '"' + s + '>' + e + '</pre>';
-        });
+      });
+  }
 
-        return h;
+  var each = tinymce.each;
+  var Node = tinymce.html.Node;
+
+  tinymce.PluginManager.add('cleanup', function (ed, url) {
+    if (ed.settings.verify_html === false) {
+      ed.settings.validate = false;
+    }
+
+    var padding = createPadding(Node);
+
+    ed.onPreInit.add(function () {
+      ed.serializer.addAttributeFilter('data-mce-caret', function (nodes) {
+        var i = nodes.length;
+
+        while (i--) {
+          nodes[i].remove();
+        }
+      });
+
+      if (ed.settings.remove_trailing_brs === false) {
+        ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes) {
+          var i = nodes.length;
+          var node, textNode;
+
+          while (i--) {
+            node = nodes[i];
+
+            if (node.name !== 'br') {
+              continue;
+            }
+
+            if (!node.prev && !node.next) {
+              textNode = new Node('#text', 3);
+              textNode.value = '\u00a0';
+              node.replace(textNode);
+            } else {
+              node.remove();
+            }
+          }
+        });
       }
 
-      this.paddEmptyTags = paddEmptyTags;
+      ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+        var i = nodes.length;
+        while (i--) {
+          nodes[i].attr('data-mce-tmp', null);
+        }
+      });
+
+      ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+        var i = nodes.length;
+        while (i--) {
+          nodes[i].attr('data-mce-tmp', null);
+        }
+      });
+
+      function removeEventAttributes() {
+        each(ed.schema.elements, function (elm) {
+          if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
+            return true;
+          }
+
+          each(elm.attributes, function (obj, name) {
+            if (name.indexOf('on') === 0) {
+              delete elm.attributes[name];
+              elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
+            }
+          });
+        });
+      }
+
+      if (ed.settings.verify_html !== false) {
+        if (!ed.settings.allow_event_attributes) {
+          removeEventAttributes();
+        }
+
+        var elements = ed.schema.elements;
+
+        each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
+          if (elements[name]) {
+            elements[name].removeEmpty = false;
+          }
+        });
+
+        if (!ed.getParam('pad_empty_tags', true)) {
+          each(elements, function (v, k) {
+            if (v.paddEmpty) {
+              v.paddEmpty = false;
+            }
+          });
+        }
+
+        if (!ed.getParam('table_pad_empty_cells', true)) {
+          elements.th.paddEmpty = false;
+          elements.td.paddEmpty = false;
+        }
+
+        each(elements, function (v, k) {
+          if (k.indexOf('mce:') === 0) {
+            return true;
+          }
+
+          if (tinymce.inArray(TAGS, k) === -1) {
+            ed.schema.addCustomElements(k);
+          }
+        });
+      }
+
+      ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
+        padding.ensureEmptyInlineNodes(nodes, name);
+      });
+
+      ed.serializer.addAttributeFilter('data-mce-empty', function (nodes) {
+        padding.cleanupEmptyInlineNodes(nodes);
+      });
     });
-  })();
+
+    if (ed.settings.verify_html === false) {
+      ed.addCommand('mceCleanup', function () {
+        var s = ed.settings;
+        var se = ed.selection;
+        var bm = se.getBookmark();
+
+        var content = ed.getContent({ cleanup: true });
+
+        s.verify_html = true;
+
+        var schema = new tinymce.html.Schema(s);
+
+        content = new tinymce.html.Serializer({ validate: true }, schema)
+          .serialize(
+            new tinymce.html.DomParser({
+              validate: true,
+              allow_event_attributes: !!ed.settings.allow_event_attributes
+            }, schema).parse(content)
+          );
+
+        ed.setContent(content, { cleanup: true });
+        se.moveToBookmark(bm);
+      });
+    }
+
+    ed.onBeforeSetContent.add(function (ed, o) {
+      o.content = o.content.replace(/^<br>/, '');
+      o.content = convertFromGeshi(o.content);
+      o.content = padding.paddEmptyTags(o.content);
+
+      o.content = processAttributes(ed, o.content);
+    });
+
+    ed.onPostProcess.add(function (ed, o) {
+      if (o.set) {
+        o.content = convertFromGeshi(o.content);
+      }
+
+      if (o.get) {
+        o.content = convertToGeshi(o.content);
+
+        o.content = o.content.replace(/<a([^>]*)class="jce(box|popup|lightbox|tooltip|_tooltip)"([^>]*)><\/a>/gi, '');
+        o.content = o.content.replace(/<span class="jce(box|popup|lightbox|tooltip|_tooltip)">(.*?)<\/span>/gi, '$2');
+        o.content = o.content.replace(/_mce_(src|href|style|coords|shape)="([^"]+)"\s*?/gi, '');
+
+        if (ed.settings.validate === false) {
+          o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
+
+          if (!ed.getParam('remove_tag_padding')) {
+            o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+          }
+        }
+
+        if (!ed.getParam('table_pad_empty_cells', true)) {
+          o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+        }
+
+        o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
+          attribs = attribs.replace('data-mce-empty="1"', '');
+          return '<' + tag + ' ' + tinymce.trim(attribs) + '></' + tag + '>';
+        });
+
+        o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
+
+        if (ed.getParam('remove_div_padding')) {
+          o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
+        }
+
+        if (ed.getParam('pad_empty_tags', true) === false) {
+          o.content = o.content.replace(PADDED_RX, '<$1$2></$1>');
+        }
+
+        if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
+          o.content = o.content.replace(/\u00a0/g, '&nbsp;');
+        }
+
+        o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
+
+        if (ed.settings.padd_empty_editor) {
+          o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
+        }
+
+        o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*?)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
+        o.content = o.content.replace(/<hr id="system-readmore"(.*?)>/gi, '<hr id="system-readmore" />');
+      }
+    });
+
+    ed.onSaveContent.add(function (ed, o) {
+      if (ed.getParam('cleanup_pluginmode')) {
+        var entities = {
+          '&#39;': "'",
+          '&amp;': '&',
+          '&quot;': '"',
+          '&apos;': "'"
+        };
+
+        o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
+          return entities[a];
+        });
+      }
+    });
+
+    ed.addButton('cleanup', {
+      title: 'advanced.cleanup_desc',
+      cmd: 'mceCleanup'
+    });
+
+    this.paddEmptyTags = padding.paddEmptyTags;
+  });
 
   /**
    * @package   	JCE
@@ -49096,6 +49031,18 @@
 
     tinymce.PluginManager.add('code', function (ed, url) {
 
+      function canKeepCode(type) {
+        if (ed.settings.validate === false) {
+          return true;
+        }
+
+        if (ed.getParam('code_allow_' + type)) {
+          return true;
+        } 
+
+        return false;
+      }
+
       var blockElements = [], inlineElements = [],
         htmlSchema = new tinymce.html.Schema({
           schema: 'mixed',
@@ -49137,7 +49084,7 @@
           value = processShortcode(value, tagName);
         }
 
-        if (ed.settings.code_allow_custom_xml) {
+        if (canKeepCode('custom_xml')) {
           value = processXML(value);
         }
 
@@ -49145,7 +49092,7 @@
         if (/<(\?|script|style)/.test(value)) {
           // process script and style tags
           value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
-            if (!ed.getParam('code_allow_' + type)) {
+            if (!canKeepCode(type)) {
               return '';
             }
 
@@ -49160,7 +49107,7 @@
         // link[rel="stylesheet"]
         if (/<link[^>]*?rel="stylesheet"[^>]*?>/gi.test(value)) {
           value = value.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, function (match) {
-            if (!ed.getParam('code_allow_style')) {
+            if (!canKeepCode('style')) {
               return '';
             }
 
@@ -49227,7 +49174,7 @@
 
       function processPhp(content) {
         // Remove PHP if not enabled
-        if (!ed.settings.code_allow_php) {
+        if (!canKeepCode('php')) {
           return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
         }
 
@@ -49651,7 +49598,7 @@
               ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
             }
 
-            if (ed.getParam('code_allow_' + key) && code_blocks) {
+            if (canKeepCode(key) && code_blocks) {
               ctrl.add(title, key, {
                 class: 'mce-code-' + key
               });
@@ -50115,7 +50062,7 @@
           }
         }
 
-        if (ed.settings.code_allow_custom_xml) {
+        if (canKeepCode('custom_xml')) {
           // only process content on "load"
           if (o.content && o.load) {
             o.content = processXML(o.content);
@@ -50125,11 +50072,11 @@
         // test for PHP, Script or Style
         if (/<(\?|script|style|link)/.test(o.content)) {
           // Remove javascript if not enabled
-          if (!ed.settings.code_allow_script) {
+          if (!canKeepCode('script')) {
             o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
           }
 
-          if (!ed.settings.code_allow_style) {
+          if (!canKeepCode('style')) {
             o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
             o.content = o.content.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, '');
           }
