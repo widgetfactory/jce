@@ -62,6 +62,18 @@
 
   tinymce.PluginManager.add('code', function (ed, url) {
 
+    function canKeepCode(type) {
+      if (ed.settings.validate === false) {
+        return true;
+      }
+
+      if (ed.getParam('code_allow_' + type)) {
+        return true;
+      } 
+
+      return false;
+    }
+
     var blockElements = [], inlineElements = [],
       htmlSchema = new tinymce.html.Schema({
         schema: 'mixed',
@@ -103,7 +115,7 @@
         value = processShortcode(value, tagName);
       }
 
-      if (ed.settings.code_allow_custom_xml) {
+      if (canKeepCode('custom_xml')) {
         value = processXML(value);
       }
 
@@ -111,7 +123,7 @@
       if (/<(\?|script|style)/.test(value)) {
         // process script and style tags
         value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
-          if (!ed.getParam('code_allow_' + type)) {
+          if (!canKeepCode(type)) {
             return '';
           }
 
@@ -126,7 +138,7 @@
       // link[rel="stylesheet"]
       if (/<link[^>]*?rel="stylesheet"[^>]*?>/gi.test(value)) {
         value = value.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, function (match) {
-          if (!ed.getParam('code_allow_style')) {
+          if (!canKeepCode('style')) {
             return '';
           }
 
@@ -193,7 +205,7 @@
 
     function processPhp(content) {
       // Remove PHP if not enabled
-      if (!ed.settings.code_allow_php) {
+      if (!canKeepCode('php')) {
         return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
       }
 
@@ -617,7 +629,7 @@
             ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
           }
 
-          if (ed.getParam('code_allow_' + key) && code_blocks) {
+          if (canKeepCode(key) && code_blocks) {
             ctrl.add(title, key, {
               class: 'mce-code-' + key
             });
@@ -1081,7 +1093,7 @@
         }
       }
 
-      if (ed.settings.code_allow_custom_xml) {
+      if (canKeepCode('custom_xml')) {
         // only process content on "load"
         if (o.content && o.load) {
           o.content = processXML(o.content);
@@ -1091,11 +1103,11 @@
       // test for PHP, Script or Style
       if (/<(\?|script|style|link)/.test(o.content)) {
         // Remove javascript if not enabled
-        if (!ed.settings.code_allow_script) {
+        if (!canKeepCode('script')) {
           o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
         }
 
-        if (!ed.settings.code_allow_style) {
+        if (!canKeepCode('style')) {
           o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
           o.content = o.content.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, '');
         }
