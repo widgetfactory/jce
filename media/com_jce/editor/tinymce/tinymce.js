@@ -19935,14 +19935,17 @@
 
   function getData$1(mimetype) {
       if (mimetype) {
-          return clipboardData[mimetype] || '';
+          return clipboardData[mimetype] || null;
       }
       
       return clipboardData;
   }
 
   function setData(mimetype, content) {
-      clipboardData[mimetype] = content;
+      clipboardData[mimetype] = {
+          timestamp: Date.now(),
+          content: content
+      };
   }
 
   function clearData() {
@@ -22241,12 +22244,19 @@
    * @return {Object} Object with mime types and data for those mime types.
    */
   function getClipboardContent(editor, clipboardEvent) {
+      var eventTimestamp = clipboardEvent.timeStamp;
+      
       if (hasData()) {
-          content = getData$1();
+          var data = getData$1();
+
+          if (data.timeStamp && data.timeStamp > eventTimestamp) {
+              content = data.content;
+
+              clearData();
+              return content;
+          }
 
           clearData();
-
-          return content;
       }
       
       var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
@@ -22733,11 +22743,18 @@
       });
 
       editor.addCommand('mcePasteFakeClipboard', function (ui, e) {
-          var content = getData$1();
+          var data = getData$1();
+
+          console.log(data);
+
+          var content = data.content || '';
+
+          // If the content is empty, we don't need to do anything
+          if (!content) {
+              return;
+          }
 
           insertClipboardContent(editor, content, true, e.isPlainText === true);
-
-          clearData();
       });
   };
 
