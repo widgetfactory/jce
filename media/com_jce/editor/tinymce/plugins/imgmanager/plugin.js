@@ -18,6 +18,24 @@
         return node && node.nodeName === "IMG" && !isMediaObject(node);
     }
 
+    function getUploadConfig(ed) {
+        var data = ed.getParam('imgmanager', {});
+
+        return data.upload || {};
+    }
+
+    function getUploadURL(ed, file) {
+        var data = getUploadConfig(ed);
+
+        if (data && data.filetypes) {
+            if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
+                return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image';
+            }
+        }
+
+        return false;
+    }
+
     tinymce.PluginManager.add('imgmanager', function (ed, url) {
         var self = this;
 
@@ -136,13 +154,13 @@
 
             var isMobile = window.matchMedia("(max-width: 600px)").matches;
 
-			function hasFileBrowser() {
-				if (params.basic_dialog_filebrowser === false) {
-					return false;
-				}
+            function hasFileBrowser() {
+                if (params.basic_dialog_filebrowser === false) {
+                    return false;
+                }
 
-				return params.basic_dialog_filebrowser || isMobile;
-			}
+                return params.basic_dialog_filebrowser || isMobile;
+            }
 
             // use basic dialog if set in param or device screen size < 768px
             var isBasicDialog = params.basic_dialog === true || isMobile;
@@ -185,6 +203,74 @@
                             filter: params.filetypes || 'images',
                             value: urlCtrl.value()
                         });
+                    }
+                });
+            }
+
+            var uploader = ed.plugins.upload || false;
+
+            if (params.upload && uploader) {
+
+                extend(args, {
+                    upload_label: 'upload.label',
+                    upload_accept: params.upload.filetypes,
+                    upload: function (e, file) {
+                        if (file && file.name) {
+                            var url = getUploadURL(ed, file);
+
+                            if (!url) {
+
+                                ed.windowManager.alert({
+                                    text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+                                    title: ed.getLang('upload.error', 'Upload Error')
+                                });
+
+                                return false;
+                            }
+
+                            // set disabled
+                            urlCtrl.setLoading(true);
+
+                            extend(file, {
+                                filename: file.name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, ''),
+                                upload_url: url
+                            });
+
+
+                            uploader.upload(file, function (response) {
+                                urlCtrl.setLoading(false);
+
+                                // select the first file in the response
+                                var files = response.files || [], item = files.length ? files[0] : {};
+
+                                if (item.file) {
+                                    urlCtrl.value(item.file);
+
+                                    var description = item.alt || item.name || '';
+                                    
+                                    // clean up description by removing extension
+                                    description = description.replace(/\.[^.]+$/i, '');
+
+                                    descriptionCtrl.value(description);
+
+                                    return true;
+                                }
+
+                                ed.windowManager.alert({
+                                    text: 'File upload failed!',
+                                    title: ed.getLang('upload.error', 'Upload Error')
+                                });
+
+                            }, function (message) {
+
+                                ed.windowManager.alert({
+                                    text: message,
+                                    title: ed.getLang('upload.error', 'Upload Error')
+                                });
+
+                                urlCtrl.setLoading(false);
+                            });
+                        }
                     }
                 });
             }
@@ -370,26 +456,16 @@
         };
 
         this.getUploadURL = function (file) {
-            var data = this.getUploadConfig();
-
             // default to using Image Manager Extended if it is available
             if (ed.plugins.imgmanager_ext) {
                 return false;
             }
 
-            if (data && data.filetypes) {
-                if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
-                    return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image';
-                }
-            }
-
-            return false;
+            return getUploadURL(ed, file);
         };
 
         this.getUploadConfig = function () {
-            var data = ed.getParam('imgmanager', {});
-
-            return data.upload || {};
+            return getUploadConfig(ed);
         };
     });
 })();
