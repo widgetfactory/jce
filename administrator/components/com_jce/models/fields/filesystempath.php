@@ -104,7 +104,7 @@ class JFormFieldFilesystemPath extends TextField
         $this->value = $path;
 
         // collect the layout data...
-        $layoutData = $this->collectLayoutData();
+        $layoutData = $this->getLayoutData();
 
         // ...and reset the value to the processed value
         $layoutData['value'] = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
