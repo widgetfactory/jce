@@ -22745,8 +22745,6 @@
       editor.addCommand('mcePasteFakeClipboard', function (ui, e) {
           var data = getData$1();
 
-          console.log(data);
-
           var content = data.content || '';
 
           // If the content is empty, we don't need to do anything
@@ -32325,6 +32323,10 @@
         s.onpick = s.onpick || function () { };
 
         s["class"] = 'mceUrlBox';
+
+        if (s.upload && typeof s.upload !== 'function') {
+          s.upload = false;
+        }
 
         this._super(id, s, ed);
       },
