@@ -3270,6 +3270,10 @@ select.mceNativeListBox {
     border-color: transparent;
 
     min-width: inherit;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .mceModalContent .mceButton.mceClear:after {
