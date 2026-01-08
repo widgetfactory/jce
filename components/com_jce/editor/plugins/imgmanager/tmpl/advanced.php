@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Text;
     <label for="style" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10" title="<?php echo Text::_('WF_LABEL_STYLE_DESC'); ?>"><?php echo Text::_('WF_LABEL_STYLE'); ?></label>
     <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="style" type="text" value="" /></div>
 </div>
-<div class="uk-form-row uk-grid uk-grid-small">
+<div class="uk-form-row uk-grid uk-grid-small" id="attributes-classes">
     <label for="classlist" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10" title="<?php echo Text::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo Text::_('WF_LABEL_CLASSES'); ?></label>
     <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10">
         <input type="text" id="classes" class="uk-datalist" multiple="multiple" list="classes_datalist" />

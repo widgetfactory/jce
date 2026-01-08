@@ -169,7 +169,7 @@
                 return;
             }
 
-            var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, descriptionCtrl;
+            var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, descriptionCtrl, stylesListCtrl;
 
             var args = {
                 label: ed.getLang('dlg.url', 'URL'),
@@ -247,7 +247,7 @@
                                     urlCtrl.value(item.file);
 
                                     var description = item.alt || item.name || '';
-                                    
+
                                     // clean up description by removing extension
                                     description = description.replace(/\.[^.]+$/i, '');
 
@@ -287,14 +287,16 @@
 
             form.add(descriptionCtrl);
 
-            var stylesListCtrl = cm.createStylesBox('image_class', {
-                label: ed.getLang('image.class', 'Classes'),
-                onselect: function () { },
-                name: 'classes',
-                styles: params.custom_classes || []
-            });
+            if (params.basic_dialog_classes !== false) {
+                stylesListCtrl = cm.createStylesBox('image_class', {
+                    label: ed.getLang('image.class', 'Classes'),
+                    onselect: function () { },
+                    name: 'classes',
+                    styles: params.custom_classes || []
+                });
 
-            form.add(stylesListCtrl);
+                form.add(stylesListCtrl);
+            }
 
             // Register commands
             ed.addCommand('mceImage', function () {
@@ -325,14 +327,17 @@
                             classes = ed.dom.getAttrib(node, 'class');
                         }
 
-                        // clean
-                        classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
-                            return cls.trim() !== '';
-                        });
-
                         urlCtrl.value(src);
                         descriptionCtrl.value(alt);
-                        stylesListCtrl.value(classes);
+
+                        if (stylesListCtrl) {
+                            // clean
+                            classes = classes.replace(/mce-[\w\-]+/g, '').replace(/\s+/g, ' ').trim().split(' ').filter(function (cls) {
+                                return cls.trim() !== '';
+                            });
+
+                            stylesListCtrl.value(classes);
+                        }
 
                         window.setTimeout(function () {
                             urlCtrl.focus();
@@ -364,11 +369,13 @@
 
                                 var args = {
                                     src: data.url,
-                                    alt: data.alt,
-                                    'class': data.classes
+                                    alt: data.alt
                                 };
 
                                 args = extend(args, self.getAttributes(params));
+                                
+                                // reset params class value if set in field
+                                args['class'] = data.classes || args['class'] || '';
 
                                 getDataAndInsert(args).then();
                             },

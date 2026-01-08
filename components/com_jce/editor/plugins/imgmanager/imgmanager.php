@@ -96,6 +96,19 @@ class WFImgManagerPlugin extends WFMediaManager
             'always_include_dimensions' => (bool) $this->getParam('always_include_dimensions', 1),
         );
 
+        $params = $this->getParams()->get('imgmanager');
+
+        $attributes = array();
+
+        foreach($params as $name => $value) {
+            if (strpos($name, 'attributes_') === 0) {
+                $attr = substr($name, 11);
+                $attributes[$attr] = (bool) $value;
+            }
+        }
+
+        $settings['attributes'] = $attributes;
+
         return parent::getSettings($settings);
     }
 }

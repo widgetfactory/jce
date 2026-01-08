@@ -44,7 +44,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field type="container" showon="basic_dialog:1" class="inset">
+            <field type="container" showon="basic_dialog:1">
                 <field name="basic_dialog_filebrowser" type="yesno" default="1" label="WF_URL_FILE_BROWSER" description="WF_URL_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
@@ -54,7 +54,6 @@
             <fieldset name="defaults">
                 <field type="heading" label="WF_PROFILES_PLUGINS_DEFAULTS" />
 
-                <field name="alt" type="text" default="" size="50" label="WF_LABEL_ALT" description="WF_LABEL_ALT_DESC" />
                 <field name="margin_top" type="list" default="" class="editable" label="WF_PARAM_MARGIN_TOP" description="WF_PARAM_MARGIN_TOP_DESC">
                     <option value="">WF_OPTION_NOT_SET</option>
                     <option value="0">0</option>
@@ -69,6 +68,7 @@
                     <option value="9">9</option>
                     <option value="10">10</option>
                 </field>
+
                 <field name="margin_right" type="list" default="" class="editable" label="WF_PARAM_MARGIN_RIGHT" description="WF_PARAM_MARGIN_RIGHT_DESC">
                     <option value="">WF_OPTION_NOT_SET</option>
                     <option value="0">0</option>
@@ -83,6 +83,7 @@
                     <option value="9">9</option>
                     <option value="10">10</option>
                 </field>
+
                 <field name="margin_bottom" type="list" default="" class="editable" label="WF_PARAM_MARGIN_BOTTOM" description="WF_PARAM_MARGIN_BOTTOM_DESC">
                     <option value="">WF_OPTION_NOT_SET</option>
                     <option value="0">0</option>
@@ -97,6 +98,7 @@
                     <option value="9">9</option>
                     <option value="10">10</option>
                 </field>
+
                 <field name="margin_left" type="list" default="" class="editable" label="WF_PARAM_MARGIN_LEFT" description="WF_PARAM_MARGIN_LEFT_DESC">
                     <option value="">WF_OPTION_NOT_SET</option>
                     <option value="0">0</option>
@@ -111,10 +113,12 @@
                     <option value="9">9</option>
                     <option value="10">10</option>
                 </field>
+
                 <field name="border" type="yesno" default="0" label="WF_PARAM_BORDER_ENABLE" description="WF_PARAM_BORDER_ENABLE_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+
                 <field name="border_width" type="list" default="1" class="editable" label="WF_PARAM_BORDER_WIDTH" description="WF_PARAM_BORDER_WIDTH_DESC">
                     <option value="inherit">WF_OPTION_NOT_SET</option>
                     <option value="0">0</option>
@@ -131,6 +135,7 @@
                     <option value="medium">WF_OPTION_BORDER_MEDIUM</option>
                     <option value="thick">WF_OPTION_BORDER_THICK</option>
                 </field>
+
                 <field name="border_style" type="list" default="solid" label="WF_PARAM_BORDER_STYLE" description="WF_PARAM_BORDER_STYLE_DESC">
                     <option value="inherit">WF_OPTION_NOT_SET</option>
                     <option value="none">JNONE</option>
@@ -143,7 +148,9 @@
                     <option value="outset">WF_OPTION_BORDER_OUTSET</option>
                     <option value="ridge">WF_OPTION_BORDER_RIDGE</option>
                 </field>
+
                 <field name="border_color" type="color" class="color" size="10" default="#000000" label="WF_PARAM_BORDER_COLOR" description="WF_PARAM_BORDER_COLOR_DESC"/>
+
                 <field name="align" type="list" default="" label="WF_PARAM_ALIGN_DEFAULT" description="WF_PARAM_ALIGN_DEFAULT_DESC">
                     <option value="">WF_OPTION_NOT_SET</option>
                     <option value="left">WF_OPTION_ALIGN_LEFT</option>
@@ -203,6 +210,11 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+            </field>
+
+            <field name="attributes_classes" type="yesno" default="1" label="WF_IMGMANAGER_SHOW_CLASSES" description="WF_IMGMANAGER_SHOW_CLASSES_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
             </field>
 
             <field name="help_button" type="yesno" default="1" label="WF_PARAM_HELP_BUTTON" description="WF_PARAM_HELP_BUTTON_DESC">
