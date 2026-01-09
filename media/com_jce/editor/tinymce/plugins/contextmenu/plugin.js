@@ -25,6 +25,10 @@
 
         contextmenuNeverUseNative = ed.settings.contextmenu_never_use_native;
 
+        function isContentEditable(elm) {
+            return ed.dom.getContentEditableParent(elm) !== "false";
+        }
+
         var isNativeOverrideKeyEvent = function (e) {
             return e.ctrlKey && !contextmenuNeverUseNative;
         };
@@ -34,11 +38,11 @@
         };
 
         var isImage = function (elm) {
-            return elm && elm.nodeName === 'IMG';
+            return elm && elm.nodeName === 'IMG' && isContentEditable(elm);
         };
 
         var isLink = function (elm) {
-            return elm && elm.nodeName === 'A';
+            return elm && elm.nodeName === 'A' && isContentEditable(elm);
         };
 
         /**
