@@ -3938,7 +3938,7 @@
 
         // Workaround for bug, http://bugs.webkit.org/show_bug.cgi?id=12250
         // WebKit can't even do simple things like selecting an image
-        if (/^(IMG|HR)$/.test(target.nodeName)) {
+        if (/^(IMG|HR)$/.test(target.nodeName) && dom.getContentEditableParent(target) !== "false") {
           selectElm(e);
         }
 
