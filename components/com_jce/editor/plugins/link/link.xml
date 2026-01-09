@@ -35,6 +35,11 @@
                 <option value="0">JNO</option>
             </field>
 
+            <field name="attributes_classes" type="yesno" default="1" label="WF_LINK_SHOW_CLASSES" description="WF_LINK_SHOW_CLASSES_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
             <field name="help_button" type="yesno" default="1" label="WF_LINK_HELP_BUTTON" description="WF_LINK_HELP_BUTTON_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

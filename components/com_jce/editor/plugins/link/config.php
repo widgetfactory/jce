@@ -43,6 +43,7 @@ class WFLinkPluginConfig
 
             $config['target_ctrl']  = $plugin->getParam('attributes_target', 1, 1, 'boolean');
             $config['title_ctrl']   = $plugin->getParam('attributes_title', 1, 1, 'boolean');
+            $config['classes_ctrl']   = $plugin->getParam('attributes_classes', 1, 1, 'boolean');
         }
 
         $settings['link'] = $config;

@@ -106,8 +106,10 @@ class WFLinkPlugin extends WFEditorPlugin
         $settings = array(
             'file_browser' => $this->getParam('file_browser', 1) && in_array('browser', explode(',', $profile->plugins)),
             'attributes' => array(
-                'target' => $this->getParam('attributes_target', 1),
-                'anchor' => $this->getParam('attributes_anchor', 1),
+                'target'    => $this->getParam('attributes_target', 1),
+                'anchor'    => $this->getParam('attributes_anchor', 1),
+                'classes'   => $this->getParam('attributes_classes', 1),
+                'title'     => $this->getParam('attributes_title', 1),
             ),
         );
 
