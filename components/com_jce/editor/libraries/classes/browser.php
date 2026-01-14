@@ -788,10 +788,18 @@ class WFFileBrowser extends CMSObject
         $allowFilters = [];
         $denyFilters = [];
 
+        $store = $this->getPathFromDirectoryStore($path);
+
         // Categorize filters into allow and deny lists
         foreach ($filters as $filter) {
             // remove leading and trailing slash    
             $filter = trim($filter, '/');
+
+            // resolve to full path, eg: stories -> images/stories
+            $filterPath = WFUtility::makePath($store['path'], $filter);
+
+            // trim leading and trailing slash
+            $filterPath = trim($filterPath, '/');
 
             if (strpos($filter, '+') === 0) {
                 $allowFilters[] = substr($filter, 1);
@@ -844,7 +852,7 @@ class WFFileBrowser extends CMSObject
                 $this->processPath($filter);
 
                 // explode to array
-                $filterParts = explode('/', $filter);
+                $filter_parts = explode('/', $filter);
 
                 // filter match
                 if (false === empty(array_intersect($filter_parts, $path_parts))) {
