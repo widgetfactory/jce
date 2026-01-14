@@ -46358,21 +46358,31 @@
 
         function getEditableRoot(node) {
           var root = dom.getRoot(),
-            parent, editableRoot;
+            parent = node,
+            editableRoot = null,
+            ce;
 
-          // Get all parents until we hit a non editable parent or the root
-          parent = node;
+          while (parent && parent !== root) {
+            ce = dom.getContentEditable(parent);
 
-          while (parent && parent !== root && dom.getContentEditable(parent) !== "false") {
+            if (ce === "false" || ce === false) {
+              break;
+            }
 
-            if (dom.getContentEditable(parent) === "true") {
+            if (ce === "true" || ce === true) {
               editableRoot = parent;
             }
 
             parent = parent.parentNode;
           }
 
-          return parent !== root ? editableRoot : root;
+          // If we hit a non-editable boundary, return last editable root if we found one
+          if (parent && parent !== root) {
+            return editableRoot || root;
+          }
+
+          // Otherwise we're in the main editor root / no explicit editable region
+          return root;
         }
 
         // Adds a BR at the end of blocks that only contains an IMG or INPUT since
