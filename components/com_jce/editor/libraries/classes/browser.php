@@ -772,6 +772,32 @@ class WFFileBrowser extends CMSObject
         return $path;
     }
 
+    /**
+     * Resolve a filter path relative to the store's base path.
+     *
+     * @param array  $store  The store array containing 'path' and 'prefix'.
+     * @param string $filter The filter path to resolve.
+     *
+     * @return string The resolved filter path.
+     */
+    private function resolveFilterPath($store, $filter) {
+        // remove leading and trailing slash
+        $filter = trim($filter, '/');
+
+        // make the source relative to the store path, eg: stories => images/stories
+        $filterPath = WFUtility::makePath($store['path'], $filter);
+
+        // trim leading and trailing slash
+        return trim($filterPath, '/');
+    }
+    
+    /**
+     * Check if a path is accessible based on the defined filters.
+     *
+     * @param string $path The path to check.
+     *
+     * @return bool True if access is allowed, false otherwise.
+     */
     public function checkPathAccess($path)
     {
         $path = trim($path, '/');
@@ -783,8 +809,6 @@ class WFFileBrowser extends CMSObject
             return true;
         }
 
-        $filesystem = $this->getFileSystem();
-
         $allowFilters = [];
         $denyFilters = [];
 
@@ -795,20 +819,22 @@ class WFFileBrowser extends CMSObject
             // remove leading and trailing slash    
             $filter = trim($filter, '/');
 
-            // resolve to full path, eg: stories -> images/stories
-            $filterPath = WFUtility::makePath($store['path'], $filter);
-
-            // trim leading and trailing slash
-            $filterPath = trim($filterPath, '/');
-
             if (strpos($filter, '+') === 0) {
-                $allowFilters[] = substr($filter, 1);
+                $filter = substr($filterPath, 1);
+            
+                $filterPath = $this->resolveFilterPath($store, $filter);
+            
+                $allowFilters[] = $filterPath;
             } else if (strpos($filter, '-') === 0) {
                 $filter = ltrim($filter, '-');
 
-                $denyFilters[] = $filter;
+                $filterPath = $this->resolveFilterPath($store, $filter);
+
+                $denyFilters[] = $filterPath;
             } else {
-                $denyFilters[] = $filter;
+                $filterPath = $this->resolveFilterPath($store, $filter);
+            
+                $denyFilters[] = $filterPath;
             }
         }
 
