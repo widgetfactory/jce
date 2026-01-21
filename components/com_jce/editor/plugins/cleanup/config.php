@@ -59,7 +59,9 @@ class WFCleanupPluginConfig
         $settings['invalid_elements'] = self::processValue($wf->getParam('editor.invalid_elements', ''));
 
         // Add elements to invalid list (removed by plugin)
-        $settings['invalid_elements'] = array_unique(array_merge($settings['invalid_elements'], self::$invalid_elements));
+        $settings['invalid_elements'] = self::normalizeList(
+            array_merge($settings['invalid_elements'], self::$invalid_elements)
+        );
 
         // process extended_valid_elements
         if ($settings['extended_valid_elements']) {
@@ -94,15 +96,8 @@ class WFCleanupPluginConfig
             }
         }
 
-        // clean invalid_elements
-        $settings['invalid_elements'] = array_filter($settings['invalid_elements'], function ($value) {
-            return $value !== '';
-        });
-
-        // remove it if it is the same as the default
-        if ($settings['invalid_elements'] === self::$invalid_elements) {
-            $settings['invalid_elements'] = array();
-        }
+        // Final cleanup + reindex
+        $settings['invalid_elements'] = self::normalizeList($settings['invalid_elements']);
 
         $settings['invalid_attributes'] = self::processValue($wf->getParam('editor.invalid_attributes', 'dynsrc,lowsrc'));
         $settings['invalid_attribute_values'] = self::processValue($wf->getParam('editor.invalid_attribute_values'));
@@ -113,6 +108,17 @@ class WFCleanupPluginConfig
         if ($allow_script || (bool) $wf->getParam('editor.allow_event_attributes')) {
             $settings['allow_event_attributes'] = true;
         }
+    }
+
+    private static function normalizeList($values)
+    {
+        $values = array_map('trim', (array) $values);
+        $values = array_filter($values, 'strlen');      // removes '' and whitespace-only
+        $values = array_values(array_unique($values));  // reindex + unique
+        // optional, but helps stable comparisons:
+        // sort($values, SORT_STRING);
+
+        return $values;
     }
 
     /**
