@@ -337,6 +337,10 @@
     content: "\ec7f";
 }
 
+.mceModernSkin span.mce_cloud_upload:before {
+  content: "\f0ee";
+}
+
 .mceModernSkin span.mce_star:before {
     content: "\ece2";
 }
