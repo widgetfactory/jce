@@ -69,7 +69,7 @@
 
       if (ed.getParam('code_allow_' + type)) {
         return true;
-      } 
+      }
 
       return false;
     }
@@ -712,7 +712,12 @@
           node;
 
         while (i--) {
-          var node = nodes[i];
+          var node = nodes[i], parent = node.parent;
+
+          if (parent && parent.name === 'pre') {
+            // don't process script/style/link inside pre blocks
+            continue;
+          }
 
           // only allow link[rel="stylesheet"]
           if (node.name == 'link' && node.attr('rel') != 'stylesheet') {
