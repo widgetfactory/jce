@@ -646,7 +646,8 @@ class WFFileBrowser extends CMSObject
 
         // no prefix?
         if (empty($prefix)) {
-            $default = array_shift(array_values($store));
+            $values  = array_values($store);
+            $default = array_shift($values);
             return $default;
         }
 
@@ -1769,7 +1770,7 @@ class WFFileBrowser extends CMSObject
      *
      * @param string $type Button type
      * @param string $name Button name
-     * @param string $keys Button keys
+     * @param array $keys Button keys
      */
     public function changeButton($type, $name, $keys)
     {
@@ -2505,7 +2506,7 @@ class WFFileBrowser extends CMSObject
      */
     public function getDimensions($file)
     {
-        return $this->getFileSystem()->getDimensions($path);
+        return $this->getFileSystem()->getDimensions($file);
     }
 
     /**
