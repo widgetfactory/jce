@@ -10498,23 +10498,17 @@
                   return;
               }
 
-              if (node && node.nodeName === 'IFRAME') {
-                  while (node.firstChild) {
-                      node.removeChild(node.firstChild);
-                  }
-              }
-
               var rule = schema.getElementRule(tag);
 
               if (settings.validate && !rule) {
                   if (tag in special) {
                       // Special elements are always removed
                       removeNode(node);
-                      return;
                   } else {
                       // unwrap others
                       removeNode(node, true);
                   }
+                  return;
               } else {
                   if (evt) {
                       evt.allowedTags[tag] = true;
@@ -28049,7 +28043,7 @@
       // Force script into CDATA sections and remove the mce- prefix also add comments around styles
       htmlParser.addNodeFilter('script,style', function (nodes, name) {
         var i = nodes.length,
-          node, firstChild, value, type;
+          node, firstChild, value, type, parent;
 
         function trim(value) {
           /* jshint maxlen:255 */
@@ -28064,6 +28058,13 @@
           node = nodes[i];
           firstChild = node.firstChild;
           value = firstChild ? firstChild.value : '';
+
+          parent = node.parent;
+
+          // If the parent is a pre element, skip it since we don't want to convert script elements inside pre elements
+          if (parent && parent.name === 'pre') {
+            continue;
+          }
 
           if (name === "script") {
             // Remove mce- prefix from script elements and remove default type since the user specified
@@ -49124,7 +49125,7 @@
 
         if (ed.getParam('code_allow_' + type)) {
           return true;
-        } 
+        }
 
         return false;
       }
@@ -49767,7 +49768,12 @@
             node;
 
           while (i--) {
-            var node = nodes[i];
+            var node = nodes[i], parent = node.parent;
+
+            if (parent && parent.name === 'pre') {
+              // don't process script/style/link inside pre blocks
+              continue;
+            }
 
             // only allow link[rel="stylesheet"]
             if (node.name == 'link' && node.attr('rel') != 'stylesheet') {
