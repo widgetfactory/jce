@@ -569,7 +569,11 @@ class WFFileBrowser extends CMSObject
             }
 
             $processedPath = $this->processPath($item['path']);
-            $label         = (isset($item['label']) && $item['label'] !== '') ? $item['label'] : basename($processedPath);
+            $label         = isset($item['label']) ? $item['label'] : '';
+
+            if (count($dir) > 1 && $label === '') {
+                $label = basename($processedPath);
+            }
 
             // Process both path and label via the event
             Factory::getApplication()->triggerEvent('onWfFileSystemGetRootDir', array(&$processedPath, &$label));
@@ -1372,6 +1376,8 @@ class WFFileBrowser extends CMSObject
 
         $folders = array();
 
+        $label = '';
+
         if (empty($path)) {
             $store = $this->getDirectoryStore();
             $storeArray = array_values($store);
@@ -1388,6 +1394,8 @@ class WFFileBrowser extends CMSObject
             } else {
                 $store = $storeArray[0];
                 $folders = $this->getFolders($store['path']);
+
+                $label = isset($store['label']) ? $store['label'] : '';
 
                 array_walk($folders, function (&$item) use ($store) {
                     $path = $item['id'];
@@ -1436,7 +1444,8 @@ class WFFileBrowser extends CMSObject
         }
 
         $result = array(
-            'folders' => $folders,
+            'label'     => $label,
+            'folders'   => $folders
         );
 
         return $result;
@@ -1481,6 +1490,11 @@ class WFFileBrowser extends CMSObject
         if ($init) {
             $treedir = $path;
 
+            $items = $this->getTreeItem();
+            $folders = $items['folders'];
+
+            $label = $items['label'] ? $items['label'] :  Text::_('WF_LABEL_HOME', 'Home');
+
             if ($root) {
                 $result .= '
                 <ul>
@@ -1490,14 +1504,11 @@ class WFFileBrowser extends CMSObject
                                 <span class="uk-tree-icon" role="presentation">
                                     <i class="uk-icon uk-icon-home"></i>
                                 </span>
-                                <span class="uk-tree-text">' . Text::_('WF_LABEL_HOME', 'Home') . '</span>
+                                <span class="uk-tree-text">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</span>
                             </a>
                         </div>
                 ';
             }
-
-            $items = $this->getTreeItem();
-            $folders = $items['folders'];
         } else {
             $items = $this->getTreeItem($path);
             $folders = $items['folders'];
