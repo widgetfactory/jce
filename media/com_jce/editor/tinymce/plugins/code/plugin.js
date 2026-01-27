@@ -437,8 +437,7 @@
       data = data.replace(/[\n\r]/gi, '<br />');
 
       return ed.dom.createHTML(tag || 'pre', {
-        'data-mce-code': 'shortcode',
-        'data-mce-type': 'shortcode'
+        'data-mce-code': 'shortcode'
       }, ed.dom.encode(data));
     }
 
@@ -1121,7 +1120,7 @@
       }
     });
 
-    ed.onPostProcess.add(function (ed, o) {
+    ed.onPostProcess.add(function (ed, o) {      
       if (o.get) {
         // Process converted php
         if (/(data-mce-php|__php_start__)/.test(o.content)) {
