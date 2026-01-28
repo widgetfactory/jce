@@ -164,10 +164,10 @@ class WFApplication extends CMSObject
         // get the Joomla! area, default to "site"
         $settings['area'] = $app->getClientId() === 0 ? 1 : 2;
 
-        $mobile = new Wf\Detection\MobileDetect();
+        $mobile = new WFDeviceDetect();
 
         // phone
-        if ($mobile->isMobile()) {
+        if ($mobile->isPhone()) {
             $settings['device'] = 'phone';
         }
 

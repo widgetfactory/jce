@@ -43,7 +43,7 @@ JLoader::register('WFSearchExtension', WF_EDITOR_CLASSES . '/extensions/search.p
 JLoader::register('WFMediaManagerBase', WF_EDITOR_CLASSES . '/manager/base.php');
 JLoader::register('WFMediaManager', WF_EDITOR_CLASSES . '/manager.php');
 JLoader::register('WFFileBrowser', WF_EDITOR_CLASSES . '/browser.php');
-//JLoader::register('Wf_Mobile_Detect', WF_EDITOR_CLASSES . '/mobile.php');
+JLoader::register('WFDeviceDetect', WF_EDITOR_CLASSES . '/devicedetect.php');
 
 JLoader::register('JcePluginsHelper', WF_ADMINISTRATOR . '/helpers/plugins.php');
 JLoader::register('JceEncryptHelper', WF_ADMINISTRATOR . '/helpers/encrypt.php');
@@ -54,7 +54,7 @@ JLoader::register('WFLinkHelper', WF_EDITOR_CLASSES . '/linkhelper.php');
 JLoader::registerNamespace('Defuse\\Crypto', WF_ADMINISTRATOR . '/vendor/Defuse/Crypto', false, false, 'psr4');
 
 // Mobile Detect
-JLoader::registerNamespace('Wf\\Detection', WF_EDITOR_CLASSES . '/vendor/MobileDetect/src', false, false, 'psr4');
+//JLoader::registerNamespace('Wf\\Detection', WF_EDITOR_CLASSES . '/vendor/MobileDetect/src', false, false, 'psr4');
 
 // CssMin
 JLoader::registerNamespace('tubalmartin\CssMin', WF_EDITOR_CLASSES . '/vendor/cssmin/src', false, false, 'psr4');
