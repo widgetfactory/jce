@@ -115,13 +115,14 @@
         value = processShortcode(value, tagName);
       }
 
+      // process custom xml if enabled, otherwise it will be removed by the parser
       if (canKeepCode('custom_xml')) {
         value = processXML(value);
       }
 
       // script / style
       if (/<(\?|script|style)/.test(value)) {
-        // process script and style tags
+        // process script and style tags, remove if not allowed
         value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
           if (!canKeepCode(type)) {
             return '';
@@ -694,6 +695,17 @@
         }
       });
 
+      ed.selection.onBeforeSetContent.addToTop(function (sel, o) {
+        var target = sel.getNode();
+
+        // don't process into PRE tags
+        if (target && target.nodeName === 'PRE') {
+          return;
+        }
+
+        o.content = processOnInsert(o.content, target);
+      });
+
       // remove paragraph parent of a pre block
       ed.onSetContent.add(function (ed, o) {
         each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
@@ -723,6 +735,9 @@
             node.remove();
             continue;
           }
+
+          // remove data-mce-fragment attribute added by insertContent
+          node.attr('data-mce-fragment', null);
 
           // remove any code spans that are added to json-like syntax in code blocks
           if (node.firstChild) {
@@ -1008,7 +1023,7 @@
         }
       });
 
-      ed.onPaste.addToTop(function (ed, e) {
+      /*ed.onPaste.addToTop(function (ed, e) {
         var clipboardData = e.clipboardData || window.clipboardData || null;
 
         if (!clipboardData) {
@@ -1036,18 +1051,6 @@
             e.preventDefault();
             ed.execCommand('mceInsertContent', false, value);
           }
-        }
-      });
-
-      /*ed.onNodeChange.add(function (ed, cm, node) {
-        var toolbar = DOM.get(ed.id + '_toolbar');
-        
-        if (node && node.hasAttribute('data-mce-code')) {
-          if (toolbar) {
-            DOM.addClass(toolbar, 'mceDisabled');
-          }
-        } else {
-          DOM.removeClass(toolbar, 'mceDisabled');
         }
       });*/
 
@@ -1120,7 +1123,7 @@
       }
     });
 
-    ed.onPostProcess.add(function (ed, o) {      
+    ed.onPostProcess.add(function (ed, o) {
       if (o.get) {
         // Process converted php
         if (/(data-mce-php|__php_start__)/.test(o.content)) {
