@@ -12106,10 +12106,18 @@
 
           var content = isSpecialRoot ? `<${rootName}>${html}</${rootName}>` : html;
 
-          // If parsing XHTML then the content must contain the xmlns declaration, see https://www.w3.org/TR/xhtml1/normative.html#strict
-          var wrappedHtml = format === 'xhtml' ? `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${content}</body></html>` : `<body>${content}</body>`;
+          const makeWrap = function () {
+            if (format === 'xhtml') {
+              // If parsing XHTML then the content must contain the xmlns declaration, see https://www.w3.org/TR/xhtml1/normative.html#strict
+              return `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${content}</body></html>`;
+            } else if (/^[\s]*<head/i.test(html) || /^[\s]*<html/i.test(html) || /^[\s]*<!DOCTYPE/i.test(html)) {
+              return `<html>${content}</html>`;
+            } else {
+              return `<body>${content}</body>`;
+            }
+          };
 
-          var body = DomParser.parseFromString(wrappedHtml, mimeType).body;
+          var body = DomParser.parseFromString(makeWrap(), mimeType).body;
 
           body = Sanitizer.sanitize(body, mimeType);
 
@@ -12196,7 +12204,7 @@
         function addRootBlocks(rootNode, rootBlockName) {
           var node = rootNode.firstChild, rootBlockNode = null;
 
-          function isWrappableNode(node) {          
+          function isWrappableNode(node) {
             // text node with non-whitespace
             if (node.type === 3) {
               return !!tinymce.trim(node.value);
@@ -41199,6 +41207,7 @@
 
       // Get current selection
       rng = selection.getRng();
+
       if (rng.setStart) {
         startContainer = rng.startContainer;
         startOffset = rng.startOffset;
@@ -41233,10 +41242,10 @@
       // Wrap non block elements and text nodes
       node = rootNode.firstChild;
       rootNodeName = rootNode.nodeName.toLowerCase();
+
       while (node) {
         // TODO: Break this up, too complex
-        if (((node.nodeType === 3 || (node.nodeType == 1 && !blockElements[node.nodeName]))) &&
-                  schema.isValidChild(rootNodeName, forcedRootBlock.toLowerCase())) {
+        if (((node.nodeType === 3 || (node.nodeType == 1 && !blockElements[node.nodeName]))) && schema.isValidChild(rootNodeName, forcedRootBlock.toLowerCase())) {
           // Remove empty text nodes
           if (node.nodeType === 3 && node.nodeValue.length === 0) {
             tempNode = node;
@@ -49171,13 +49180,14 @@
           value = processShortcode(value, tagName);
         }
 
+        // process custom xml if enabled, otherwise it will be removed by the parser
         if (canKeepCode('custom_xml')) {
           value = processXML(value);
         }
 
         // script / style
         if (/<(\?|script|style)/.test(value)) {
-          // process script and style tags
+          // process script and style tags, remove if not allowed
           value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
             if (!canKeepCode(type)) {
               return '';
@@ -49750,6 +49760,17 @@
           }
         });
 
+        ed.selection.onBeforeSetContent.addToTop(function (sel, o) {
+          var target = sel.getNode();
+
+          // don't process into PRE tags
+          if (target && target.nodeName === 'PRE') {
+            return;
+          }
+
+          o.content = processOnInsert(o.content);
+        });
+
         // remove paragraph parent of a pre block
         ed.onSetContent.add(function (ed, o) {
           each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
@@ -49779,6 +49800,9 @@
               node.remove();
               continue;
             }
+
+            // remove data-mce-fragment attribute added by insertContent
+            node.attr('data-mce-fragment', null);
 
             // remove any code spans that are added to json-like syntax in code blocks
             if (node.firstChild) {
@@ -50064,7 +50088,7 @@
           }
         });
 
-        ed.onPaste.addToTop(function (ed, e) {
+        /*ed.onPaste.addToTop(function (ed, e) {
           var clipboardData = e.clipboardData || window.clipboardData || null;
 
           if (!clipboardData) {
@@ -50085,25 +50109,13 @@
               return;
             }
 
-            value = processOnInsert(text);
+            value = processOnInsert(text, node);
 
             // update with processed text
             if (value !== text) {
               e.preventDefault();
               ed.execCommand('mceInsertContent', false, value);
             }
-          }
-        });
-
-        /*ed.onNodeChange.add(function (ed, cm, node) {
-          var toolbar = DOM.get(ed.id + '_toolbar');
-          
-          if (node && node.hasAttribute('data-mce-code')) {
-            if (toolbar) {
-              DOM.addClass(toolbar, 'mceDisabled');
-            }
-          } else {
-            DOM.removeClass(toolbar, 'mceDisabled');
           }
         });*/
 
@@ -50176,7 +50188,7 @@
         }
       });
 
-      ed.onPostProcess.add(function (ed, o) {      
+      ed.onPostProcess.add(function (ed, o) {
         if (o.get) {
           // Process converted php
           if (/(data-mce-php|__php_start__)/.test(o.content)) {
