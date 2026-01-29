@@ -53,10 +53,10 @@
             // convert to relative
             src = ed.convertURL(src);
 
-            // Show / hide attributes
-            $.each(this.settings.attributes, function (k, v) {
-                if (!parseFloat(v)) {
-                    $('#attributes-' + k).hide();
+            // Enable / disable attributes
+            $.each(this.settings.attributes, function (key, val) {
+                if (!val) {
+                    $('#attributes-' + key).hide();
                 }
             });
 
