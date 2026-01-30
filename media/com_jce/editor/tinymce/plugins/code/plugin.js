@@ -877,6 +877,14 @@
               if (node.parent && isInlineTextNode(node.parent)) {
                 node.name = 'span';
               }
+              
+              if (node.name == 'pre' && parent && parent.name == 'p') {
+                // if the pre is the only child of the parent, replace the parent
+                if (isOnlyChild(node)) {
+                  parent.replace(node);
+                }
+              }
+
             }
 
             // add whitespace after the span so a cursor can be set
@@ -1094,7 +1102,7 @@
     });
 
     ed.onBeforeSetContent.addToTop(function (ed, o) {
-      if (ed.settings.code_protect_shortcode) {
+      if (ed.settings.code_protect_shortcode) {        
         if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
           o.content = processShortcode(o.content);
         }
