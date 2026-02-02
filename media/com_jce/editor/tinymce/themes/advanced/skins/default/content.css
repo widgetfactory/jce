@@ -615,10 +615,10 @@ img.mce-object {
   outline: 1.5px dashed #ccc;
   border-color: var(--mce-guidelines);
   background-position: center;
+  background-size: 16px;
   background-repeat: no-repeat;
   background-color: #fafafa;
   background-color: var(--mce-placeholder);
-  background-size: 16px;
 }
 img.mce-object.mce-object-generic {
   min-width: 50px;
@@ -628,7 +628,6 @@ img.mce-object.mce-object-generic,
 img.mce-object.mce-object-embed,
 img.mce-object.mce-object-object {
   background-image: url(img/media/generic.svg);
-  background-size: 16px;
 }
 img.mce-object.mce-object-shockwave {
   background-image: url(img/media/shockwave.svg);
@@ -659,10 +658,10 @@ img.mce-object[data-mce-p-data$=".xlsx"] {
 }
 img.mce-object.mce-object-iframe {
   background-image: url(img/media/iframe.svg);
+  background-size: 256px;
 }
 img.mce-object.mce-object-audio {
   background-image: url(img/media/audio.svg);
-  background-size: 16px;
   /* default for Chrome */
   min-width: 300px;
   height: 54px;
