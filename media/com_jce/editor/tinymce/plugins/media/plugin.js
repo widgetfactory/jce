@@ -65,7 +65,7 @@
     function isResponsiveMedia(node) {
         var parent = node.parent;
 
-        if (parent.name != 'div') {
+        if (!parent || parent.name != 'div') {
             return false;
         }
 
@@ -354,6 +354,10 @@
             }
 
             defaultValues[provider].src = 'https://dailymotion.com/embed/video/' + id;
+
+            if (s.indexOf('player.html?video=') !== -1) {
+                defaultValues[provider].src = s;
+            }
         }
 
         if (provider === 'spotify') {
@@ -1316,6 +1320,13 @@
      */
     function nodeToMedia(editor, node) {
         var elm, tag = node.attr('data-mce-object'), attribs = {};
+
+        if (isResponsiveMedia(node)) {
+            var parent = node.parent;
+            
+            parent.attr('contenteditable', null);
+            parent.attr('data-mce-contenteditable', null);
+        }
 
         elm = new Node(tag, 1);
 
