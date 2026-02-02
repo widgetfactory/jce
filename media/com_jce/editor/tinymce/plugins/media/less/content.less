@@ -2,11 +2,10 @@ img.mce-object {
     outline: 1.5px dashed #ccc;
     border-color: var(--mce-guidelines);
     background-position: center;
+    background-size: 16px;
     background-repeat: no-repeat;
     background-color: #fafafa;
     background-color: var(--mce-placeholder);
-
-    background-size: 16px;
 
     &.mce-object-generic {
         min-width: 50px;
@@ -17,7 +16,6 @@ img.mce-object {
     &.mce-object-embed,
     &.mce-object-object {
         background-image: url(img/media/generic.svg);
-        background-size: 16px;
     }
 
     &.mce-object-shockwave {
@@ -57,11 +55,11 @@ img.mce-object {
 
     &.mce-object-iframe {
         background-image: url(img/media/iframe.svg);
+        background-size: 256px;
     }
 
     &.mce-object-audio {
         background-image: url(img/media/audio.svg);
-        background-size: 16px;
 
         /* default for Chrome */
         min-width: 300px;

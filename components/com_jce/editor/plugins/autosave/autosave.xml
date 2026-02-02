@@ -12,6 +12,18 @@
 	<icon>autosave</icon>
 	<files></files>
 	<languages></languages>
+
+	<fields name="autosave">
+        <fieldset name="config">
+            <field name="ask_before_unload" type="yesno" default="0" label="WF_AUTOSAVE_ASK_BEFORE_UNLOAD" description="WF_AUTOSAVE_ASK_BEFORE_UNLOAD_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+			<field name="retention" type="text" default="20" label="WF_AUTOSAVE_RETENTION" description="WF_AUTOSAVE_RETENTION_DESC" />
+			<field name="interval" type="text" default="30" label="WF_AUTOSAVE_INTERVAL" description="WF_AUTOSAVE_INTERVAL_DESC" />
+		</fieldset>
+	</fields>
+
 	<help></help>
 </extension>
  

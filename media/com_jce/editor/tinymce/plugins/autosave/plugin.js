@@ -25,7 +25,7 @@
         return;
     }
 
-    tinymce._beforeUnloadHandler = function (e) {
+    tinymce.onBeforeUnload.add(function (tinymce, e) {
         var msg;
 
         tinymce.each(tinymce.editors, function (editor) {
@@ -37,6 +37,7 @@
             // Setup a return message if the editor is dirty
             if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload")) {
                 msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
+
                 // hide joomla loader
                 if (typeof Joomla !== "undefined" && Joomla.loadingLayer) {
                     Joomla.loadingLayer('hide');
@@ -44,8 +45,11 @@
             }
         });
 
-        return msg;
-    };
+        if (msg) {
+            e.preventDefault();
+            e.returnValue = msg;
+        }
+    });
 
     tinymce.PluginManager.add('autosave', function (ed) {
         var self = this,
@@ -215,6 +219,6 @@
 
         self.storeDraft = storeDraft;
 
-        window.onbeforeunload = tinymce._beforeUnloadHandler;
+        //window.onbeforeunload = tinymce._beforeUnloadHandler;
     });
 })(tinymce);

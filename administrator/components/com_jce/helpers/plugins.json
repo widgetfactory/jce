@@ -27,7 +27,7 @@
         "title": "WF_AUTOSAVE_TITLE",
         "description": "WF_AUTOSAVE_DESC",
         "icon": "autosave",
-        "editable": 0,
+        "editable": 1,
         "row": 4,
         "core": 1
     },
