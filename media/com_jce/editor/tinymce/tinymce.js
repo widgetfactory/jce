@@ -36154,7 +36154,7 @@
           self.onSubmit.addToTop(function () {
             if (self.initialized) {
               self.save();
-              self.isNotDirty = 1;
+              self.isNotDirty = true;
             }
           });
         }
@@ -36192,7 +36192,7 @@
               n.submit = function () {
                 // Save all instances
                 tinymce.triggerSave();
-                self.isNotDirty = 1;
+                self.isNotDirty = true;
 
                 return self.formElement._mceOldSubmit(self.formElement);
               };
