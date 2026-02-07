@@ -1995,10 +1995,18 @@
 
         // get integer width and height values
         each(['width', 'height'], function (key) {
-            var val = ed.dom.getStyle(node, key) || ed.dom.getAttrib(node, key);
+            var val = ed.dom.getAttrib(node, key);
 
+            // if an attribute value, use as is
             if (val) {
-                data[key] = parseInt(val, 10);
+                data[key] = val;
+            } else {
+                val = ed.dom.getStyle(node, key);
+
+                // only use style values if they are not percentage values
+                if (val && val.indexOf('%') === -1 && !isNaN(parseInt(val, 10))) {
+                    data[key] = parseInt(val, 10);
+                }
             }
         });
 
