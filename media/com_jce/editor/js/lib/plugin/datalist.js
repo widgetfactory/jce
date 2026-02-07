@@ -97,7 +97,7 @@
                 var values = $(select).val();
 
                 if (typeof values === 'string') {
-                    values = values.split(settings.seperator);
+                    values = values.trim().split(settings.seperator);
                 }
 
                 values = values.filter(function (value) {
@@ -166,7 +166,8 @@
                 var values = $(select).val();
 
                 if (typeof values === 'string') {
-                    values = values.split(settings.seperator);
+                    // split by seperator
+                    values = values.trim().split(settings.seperator);
                 }
 
                 if (!Array.isArray(values)) {
@@ -490,7 +491,7 @@
                 }
 
                 // action is inside the menu
-                if (menu.find(elm).length) {              
+                if (menu.find(elm).length) {
                     return;
                 }
 
@@ -547,7 +548,7 @@
 
                 if (values) {
                     if (typeof values === 'string') {
-                        values = values.split(settings.seperator);
+                        values = values.trim().split(settings.seperator);
                     }
 
                     $.each(values, function (i, value) {
