@@ -91,10 +91,38 @@ WFAggregator.add('dailymotion', {
 
         return false;
     },
+
+    extractSource: function (src) {
+        var matches, id;
+
+        // 1) If it is already a known embed URL, keep it (don’t normalise)
+        if (/\/\/(?:[\w-]+\.)?dailymotion\.com\/embed\/video\/[a-z0-9]+/i.test(src) || /\/\/geo\.dailymotion\.com\/player\.html/i.test(src)) {
+            return src;
+        }
+
+        // 2) If it is a standard video URL, extract the ID and normalise
+
+        matches = src.match(/(?:^|\/\/)(?:[\w-]+\.)?dai\.?ly(?:motion\.com)?\/(?:embed\/)?(?:swf\/|video\/)?([a-z0-9]+)_?/i);
+
+        if (matches && matches[1]) {
+            id = matches[1];
+            src = 'https://www.dailymotion.com/embed/video/' + id;
+        } else {
+            // optional: last-resort query-param extraction (covers some odd URLs)
+            matches = src.match(/[?&]video=([a-z0-9]+)/i);
+
+            if (matches && matches[1]) {
+                id = matches[1];
+                src = 'https://www.dailymotion.com/embed/video/' + id;
+            }
+        }
+
+        return src;
+    },
+
     getValues: function (data) {
         var self = this,
-            args = {},
-            id = '';
+            args = {};
 
         var src = data.src;
 
@@ -130,24 +158,20 @@ WFAggregator.add('dailymotion', {
             args[k] = v;
         });
 
-        var m = src.match(/dai\.?ly(motion\.com)?\/(embed)?\/?(swf|video)?\/?([a-z0-9]+)_?/);
+        src = this.extractSource(src);
 
-        if (m) {
-            id = m.pop();
+        // Only continue if we have a src
+        if (src) {
+            // convert args to URL query string
+            var query = $.param(args);
+
+            // add to src if not empty
+            if (query) {
+                src = src + (/\?/.test(src) ? '&' : '?') + query;
+            }
+
+            data.src = src;
         }
-
-        // protocol / scheme relative url
-        src = 'https://www.dailymotion.com/embed/video/' + id;
-
-        // convert args to URL query string
-        var query = $.param(args);
-
-        // add to src if not empty
-        if (query) {
-            src = src + (/\?/.test(src) ? '&' : '?') + query;
-        }
-
-        data.src = src;
 
         $.extend(data, {
             frameborder: 0,
@@ -169,8 +193,7 @@ WFAggregator.add('dailymotion', {
         return data;
     },
     setValues: function (data) {
-        var self = this, src = data.src || data.data || '',
-            id = '';
+        var self = this, src = data.src || data.data || '';
 
         if (!src) {
             return data;
@@ -190,14 +213,11 @@ WFAggregator.add('dailymotion', {
         // replace &amp; with &
         src = src.replace(/&amp;/g, '&');
 
-        var m = src.match(/dai\.?ly(motion\.com)?\/(embed)?\/?(swf|video)?\/?([a-z0-9]+)_?/);
+        src = this.extractSource(src);
 
-        if (m) {
-            id = m.pop();
+        if (src) {
+            data.src = src;
         }
-
-        // simplify url
-        data.src = 'https://www.dailymotion.com/embed/video/' + id;
 
         return data;
     },
@@ -214,6 +234,7 @@ WFAggregator.add('dailymotion', {
 
             args['dailymotion_' + k] = v;
         });
+
         $.extend(args, {
             'src': data.src || src,
             'width': this.params.width,
