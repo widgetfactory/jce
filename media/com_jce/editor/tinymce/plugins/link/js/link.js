@@ -322,7 +322,7 @@
 
                 var x = 0, attribs = getAttributes(anchorElm);
 
-                 var $repeatable = $('.uk-repeatable', '#custom_attributes');
+                var $repeatable = $('.uk-repeatable', '#custom_attributes');
 
                 // process remaining attributes
                 $.each(attribs, function (key, val) {
@@ -341,7 +341,9 @@
                     }
 
                     if (x > 0) {
-                        $repeatable.clone(true).appendTo($repeatable.parent());
+                        $repeatable.eq(0).clone(true).appendTo($repeatable.parent());
+
+                        $repeatable = $('.uk-repeatable', '#custom_attributes');
                     }
 
                     var elements = $repeatable.eq(x).find('input, select');
