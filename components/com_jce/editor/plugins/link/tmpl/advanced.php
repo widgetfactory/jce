@@ -118,11 +118,11 @@ use Joomla\CMS\Language\Text;
         <div class="uk-form-row uk-repeatable uk-width-1-1">
             <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
                 <label class="uk-form-label uk-width-1-1 uk-width-small-1-10"><?php echo Text::_('WF_LABEL_NAME'); ?></label>
-                <div class="uk-form-controls uk-width-1-1 uk-width-small-4-10">
+                <div class="uk-form-controls uk-width-1-1 uk-width-small-3-10">
                     <input type="text" name="custom_attributes_name[]" />
                 </div>
                 <label class="uk-form-label uk-width-1-1 uk-width-small-1-10"><?php echo Text::_('WF_LABEL_VALUE'); ?></label>
-                <div class="uk-form-controls uk-width-1-1 uk-width-small-4-10">
+                <div class="uk-form-controls uk-width-1-1 uk-width-small-5-10">
                     <input type="text" name="custom_attributes_value[]" />
                 </div>
             </div>

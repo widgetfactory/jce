@@ -194,6 +194,13 @@
     font-weight: 600;
 }
 
+.mceModernSkin span.mce_q:before {
+    content: "\201C\201D";
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.75em;
+    font-weight: 600;
+}
+
 .mceModernSkin span.mce_abbr:before {
     content: "ABBR";
     font-family: Tahoma, Arial, sans-serif;

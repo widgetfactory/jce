@@ -44,10 +44,17 @@
         function openDialog(tag) {
             var cm = ed.controlManager, form = cm.createForm('reference_form');
 
-            form.add(cm.createTextBox('attributes_title', {
-                label: ed.getLang('attributes.label_title', 'Title'),
-                name: 'title'
-            }));
+            if (tag == 'q') {
+                form.add(cm.createTextBox('reference_cite', {
+                    label: ed.getLang('reference.label_cite', 'Cite'),
+                    name: 'cite'
+                }));
+            } else {
+                form.add(cm.createTextBox('attributes_title', {
+                    label: ed.getLang('attributes.label_title', 'Title'),
+                    name: 'title'
+                }));
+            }
 
             if (tag == 'ins' || tag == 'del') {
                 form.add(cm.createTextBox('reference_cite', {
@@ -136,6 +143,13 @@
             }
         });
 
+        ed.addButton('q', {
+            title: 'reference.q_title',
+            onclick: function () {
+                openDialog('q');
+            }
+        });
+
         // acronym is deprecated in HTML5
         if (ed.settings.schema !== "html5-strict") {
             ed.addButton('acronym', {
@@ -168,19 +182,21 @@
         });
 
         ed.onNodeChange.add(function (ed, cm, n, co) {
-            var p = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS');
+            var p = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS,Q');
 
             cm.setDisabled('cite', co);
             cm.setDisabled('acronym', co);
             cm.setDisabled('abbr', co);
             cm.setDisabled('del', co);
             cm.setDisabled('ins', co);
+            cm.setDisabled('q', co);
 
             cm.setActive('cite', 0);
             cm.setActive('acronym', 0);
             cm.setActive('abbr', 0);
             cm.setActive('del', 0);
             cm.setActive('ins', 0);
+            cm.setActive('q', 0);
 
             // Activate all
             if (p) {
@@ -197,7 +213,7 @@
 
             var formats = {};
 
-            each(['cite', 'acronym', 'abbr', 'del', 'ins'], function (name) {
+            each(['cite', 'acronym', 'abbr', 'del', 'ins', 'q'], function (name) {
                 formats[name] = {
                     inline: name,
                     remove: 'all',

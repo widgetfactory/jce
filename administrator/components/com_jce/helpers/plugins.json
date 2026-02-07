@@ -341,7 +341,7 @@
     "reference": {
         "title": "WF_REFERENCE_TITLE",
         "description": "WF_REFERENCE_DESC",
-        "icon": "cite,abbr,acronym,del,ins",
+        "icon": "cite,q,abbr,acronym,del,ins",
         "editable": 1,
         "row": 4,
         "core": 1
