@@ -628,6 +628,11 @@ class pkg_jceInstallerScript
             $media . '/editor/vendor/jquery/js/jquery-ui.touch.min.js'
         );
 
+        // remove MobileDetect
+        $folders['2.9.98'] = array(
+            $site . '/editor/libraries/classes/vendor/MobileDetect'
+        );
+
         // remove pro source plugin
         $files['2.9.70'] = array(
             $site . '/editor/plugins/source/config.php',
