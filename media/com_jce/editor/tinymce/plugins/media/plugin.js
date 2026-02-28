@@ -1323,7 +1323,7 @@
 
         if (isResponsiveMedia(node)) {
             var parent = node.parent;
-            
+
             parent.attr('contenteditable', null);
             parent.attr('data-mce-contenteditable', null);
         }
@@ -2139,7 +2139,14 @@
     // Register plugin
     tinymce.PluginManager.add('media', function (ed, url) {
         // get custom sandbox exclusions
-        var custom_sandbox_iframes_exclusions = ed.getParam('media_iframes_sandbox_exclusions', []);
+        var custom_sandbox_iframes_exclusions = ed.getParam('media_iframes_sandbox_exclusions');
+
+        // if it is string, explode to array
+        if (custom_sandbox_iframes_exclusions && typeof custom_sandbox_iframes_exclusions === 'string') {
+            custom_sandbox_iframes_exclusions = custom_sandbox_iframes_exclusions.split(',').map(function (item) {
+                return item.trim();
+            });
+        }
 
         // combine with defined sandbox_iframes_exclusions
         sandbox_iframes_exclusions = sandbox_iframes_exclusions.concat(custom_sandbox_iframes_exclusions);
