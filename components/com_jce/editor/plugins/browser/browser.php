@@ -122,14 +122,16 @@ class WFBrowserPlugin extends WFMediaManager
                 // mediaypes contains a mapped type
                 if (array_key_exists($mediatype, $map)) {
                     // process the map to filter permitted extensions
-                    array_walk($map, function (&$items, $key) use ($accept) {
+                    /*array_walk($map, function (&$items, $key) use ($accept) {
                         $values = array_intersect($items, $accept);
-                        $item = empty($values) ? '' : implode(',', $values);
-                    });
+                        $items = empty($values) ? [] : $values;
+                    });*/
 
-                    $selected = $map[$mediatype];
+                    //$selected = $map[$mediatype];
+
+                    $selected = array_values(array_intersect($map[$mediatype], $accept));
                 } else {
-                    if (in_array($mediatype, $accept)) {
+                    if (in_array($mediatype, $accept, true)) {
                         // add the mediatype to the selected filetypes
                         $selected[] = $mediatype;
                     }
