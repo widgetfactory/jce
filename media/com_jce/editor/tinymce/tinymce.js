@@ -8182,7 +8182,7 @@
        *
        * @method children
        * @return {Array} Array containing child nodes.
-     */
+       */
       children: function () {
         var self = this,
           node, collection = [];
@@ -49775,16 +49775,29 @@
           o.content = processOnInsert(o.content);
         });
 
-        // remove paragraph parent of a pre block
-        ed.onSetContent.add(function (ed, o) {
+        var onSetContent = function () {
           each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
-            var p = ed.dom.getParent(elm, 'p');
+            var parent = ed.dom.getParent(elm, 'p');
 
-            if (p && p.childNodes.length === 1) {
-              ed.dom.remove(p, 1);
+            if (parent) {
+              // clone p and remove elm from clone to check if p has other meaningful content (ignores bookmarks, whitespace)
+              var clone = parent.cloneNode(true);
+              var clonedElm = clone.querySelector('[data-mce-code]');
+
+              if (clonedElm) {
+                clone.removeChild(clonedElm);
+              }
+
+              if (ed.dom.isEmpty(clone)) {
+                ed.dom.remove(parent, 1);
+              }
             }
           });
-        });
+        };
+
+        // remove paragraph parent of a pre block
+        ed.onSetContent.add(onSetContent);
+        ed.selection.onSetContent.add(onSetContent);
 
         // Convert script elements to span placeholder
         ed.parser.addNodeFilter('script,style,link', function (nodes) {
@@ -49950,10 +49963,11 @@
                 if (node.name == 'pre' && parent && parent.name == 'p') {
                   // if the pre is the only child of the parent, replace the parent
                   if (isOnlyChild(node)) {
-                    parent.replace(node);
+                    if (parent.parent) {
+                      parent.replace(node);
+                    }
                   }
                 }
-
               }
 
               // add whitespace after the span so a cursor can be set
