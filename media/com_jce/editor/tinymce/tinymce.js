@@ -29641,8 +29641,6 @@
   		this.lookup[ctrl.id] = ctrl;
   		this.controls.push(ctrl);
 
-  		ctrl.parent(this);
-
   		return ctrl;
   	},
 
@@ -29702,6 +29700,176 @@
 
   (function (tinymce) {
     // Shorten class names
+    var dom = tinymce.DOM,
+      Event = tinymce.dom.Event;
+
+    /**
+     * This class is used to create layouts. A layout is a container for other controls like buttons etc.
+     *
+     * @class tinymce.ui.TabPanel
+     * @extends tinymce.ui.Container
+     */
+    tinymce.create('tinymce.ui.TabPanel:tinymce.ui.Container', {
+      /**
+       * Base contrustor a new container control instance.
+       *
+       * @constructor
+       * @method Container
+       * @param {String} id Control id to use for the container.
+       * @param {Object} settings Optional name/value settings object.
+       */
+      TabPanel: function (id, settings, editor) {
+        settings = settings || {};
+
+        this._super(id, settings, editor);
+
+        /**
+         * Array of items added to the tab panel.
+         *
+         * @property items
+         * @type Array
+         */
+        this.items = [];
+      },
+      /**
+         * Renders the tab panel as a HTML string.
+         *
+         * @method renderHTML
+         * @return {String} HTML for the tab panel control.
+         */
+      renderHTML: function () {
+        var self = this, html = '';
+
+        if (this.items.length > 1) {
+          html += '<ul class="mceTabs" role="tablist">';
+
+          for (var i = 0; i < this.items.length; i++) {
+            var tab = this.items[i];
+            html += '<li id="' + self.id + '_tab_' + i + '" role="tab" aria-selected="' + (i === 0 ? 'true' : 'false') + '" aria-controls="' + self.id + '_panel_' + i + '">' + tab.title + '</li>';
+          }
+
+          html += '</ul>';
+        }
+
+        html += '<div class="mceTabPanels">';
+
+        for (var i = 0; i < this.items.length; i++) {
+          var tab = this.items[i], items = tab.items || [];
+
+          html += '<div id="' + self.id + '_panel_' + i + '" class="mceTab" role="tabpanel"' + (i === 0 ? '' : ' style="display:none"') + '>';
+
+          for (var x = 0; x < items.length; x++) {
+            html += items[x].renderHTML();
+          }
+
+          html += '</div>';
+        }
+
+        html += '</div>';
+
+        return dom.createHTML('div', {
+          id: this.id,
+          'class': 'mceTabPanel' + (this.settings['class'] ? ' ' + this.settings['class'] : '')
+        }, html);
+      },
+
+      _activateTab: function (index) {
+        var i, tabEl, panelEl;
+
+        for (i = 0; i < this.items.length; i++) {
+          tabEl = dom.get(this.id + '_tab_' + i);
+          panelEl = dom.get(this.id + '_panel_' + i);
+
+          if (!panelEl) {
+            continue;
+          }
+
+          if (i === index) {
+            dom.addClass(tabEl, 'mceActive');
+            dom.setAttrib(tabEl, 'aria-selected', 'true');
+            panelEl.style.display = '';
+          } else {
+            dom.removeClass(tabEl, 'mceActive');
+            dom.setAttrib(tabEl, 'aria-selected', 'false');
+            panelEl.style.display = 'none';
+          }
+        }
+      },
+
+      add: function (item) {
+        this.items.push(item);
+      },
+
+      submit: function () {
+        var data = {};
+
+        for (var i = 0; i < this.items.length; i++) {
+          var tab = this.items[i], items = tab.items || [];
+
+          for (var x = 0; x < items.length; x++) {
+            var values = items[x].submit();
+
+            for (var key in values) {
+              // eslint-disable-next-line no-prototype-builtins
+              if (values.hasOwnProperty(key)) {
+                data[key] = values[key];
+              }
+            }
+          }
+        }
+
+        return data;
+      },
+
+      update: function (data) {
+        for (var i = 0; i < this.items.length; i++) {
+          var tab = this.items[i], items = tab.items || [];
+
+          for (var x = 0; x < items.length; x++) {
+            items[x].update(data);
+          }
+        }
+      },
+
+      postRender: function () {
+        var self = this, i;
+
+        this._super();
+
+        for (i = 0; i < this.items.length; i++) {
+          var tab = this.items[i], items = tab.items || [];
+
+          for (var x = 0; x < items.length; x++) {
+            items[x].postRender();
+          }
+        }
+
+        this._activateTab(0);
+
+        for (i = 0; i < this.items.length; i++) {
+          (function (index) {
+            Event.add(self.id + '_tab_' + index, 'click', function (e) {
+              Event.cancel(e);
+              self._activateTab(index);
+            });
+          })(i);
+        }
+      }
+    });
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  (function (tinymce) {
+    // Shorten class names
     var dom = tinymce.DOM;
     /**
      * This class is used to create layouts. A layout is a container for other controls like buttons etc.
@@ -29712,11 +29880,10 @@
     tinymce.create('tinymce.ui.Form:tinymce.ui.Container', {
 
       /**
-         * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
-         * creating a whole toolbar with buttons it does make a lot of difference.
+         * Renders the form as a HTML string.
          *
          * @method renderHTML
-         * @return {String} HTML for the toolbar control.
+         * @return {String} HTML for the form control.
          */
       renderHTML: function () {
         var html = '',
@@ -32244,6 +32411,10 @@
         }
 
         DOM.setValue(this.id, val);
+
+        if (this.settings.subtype == 'color') {
+          DOM.setValue(this.id + '_color', val);
+        }
       },
 
       /**
@@ -32277,6 +32448,16 @@
         if (s.multiline) {
           html += DOM.createHTML('textarea', attribs, '');
         } else {
+          if (s.subtype == 'color') {
+            attribs.type = 'text';
+
+            html += DOM.createHTML('input', {
+              type: 'color',
+              id: this.id + '_color'
+            });
+
+          }
+
           html += DOM.createHTML('input', attribs);
         }
 
@@ -32324,6 +32505,16 @@
             e.preventDefault();
 
             s.button.click.apply(self);
+          });
+        }
+
+        if (s.subtype == 'color') {
+          Event.add(this.id, 'change', function (e) {
+            DOM.setValue(this.id + '_color', DOM.get(self.id).value);
+          });
+
+          Event.add(this.id + '_color', 'change', function (e) {
+            DOM.setValue(self.id, DOM.get(self.id + '_color').value);
           });
         }
         
@@ -32575,17 +32766,11 @@
       },
 
       value: function (val) {
-        var elm = DOM.get(this.id);
-
         if (!arguments.length) {
-          if (elm.checked) {
-            return elm.value || 1;
-          }
-
-          return '';
+          return this.checked();
         }
 
-        elm.value = val;
+        this.checked(val);
       },
 
       /**
@@ -42107,6 +42292,29 @@
       },
 
       /**
+       * Creates a tab panel container control instance by id.
+       *
+       * @method createTabs
+       * @param {String} id Unique id for the new tab panel control instance. For example "tabs1".
+       * @param {Object} s Optional settings object for the control.
+       * @param {Object} cc Optional control class to use instead of the default one.
+       * @return {tinymce.ui.Control} Control instance that got created and added.
+       */
+      createTabs: function (id, s, cc) {
+        var c, self = this,
+          cls;
+
+        cls = cc || self._cls.tabPanel || tinymce.ui.TabPanel;
+        c = new cls(id, s, self.editor);
+
+        if (self.get(id)) {
+          return null;
+        }
+
+        return self.add(c);
+      },
+
+      /**
        * Creates a toolbar container control instance by id.
        *
        * @method createToolbar
@@ -42171,7 +42379,7 @@
       /**
        * Creates a form container control instance by id.
        *
-       * @method createLayout
+       * @method createForm
        * @param {String} id Unique id for the new toolbar container control instance. For example "toolbar1".
        * @param {Object} s Optional settings object for the control.
        * @return {tinymce.ui.Control} Control instance that got created and added.
