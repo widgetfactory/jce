@@ -115,6 +115,8 @@ class WFLinkSearchExtension extends WFSearchExtension
                 $this->enabled[] = $plugin;
             }
         }
+
+        PluginHelper::importPlugin('jce');
     }
 
     public function display()
