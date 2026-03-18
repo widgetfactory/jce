@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -48,23 +49,46 @@ abstract class WFLinkHelper
         return $default ? (int) $default->id : 0;
     }
 
-    public static function removeItemId($url, $defaultId = 0)
+    public static function removeAlias($url)
     {
-        if (!$defaultId) {
-            $defaultId = self::getDefaultItemId();
-        }
-        
-        $url = preg_replace('/([&?])Itemid=' . $defaultId . '(&|$)/', '$1', $url);
-        $url = rtrim($url, '?&');
+        // Only strip alias after a numeric ID (e.g. id=1:article-alias)
+        $url = preg_replace('#(?<=\d):[\w-]+#u', '', $url);
 
         return $url;
     }
 
-    public static function removeAlias($url)
+    private static function parseQueryVars($url)
     {
-        $url = preg_replace('#\:[\w-]+#ui', '', $url);
+        $parsed = parse_url($url, PHP_URL_QUERY);
+        $parsed = str_replace('&amp;', '&', $parsed);
+        parse_str($parsed, $vars);
+        return $vars;
+    }
 
-        return $url;
+    public static function removeItemId($url)
+    {
+        if (strpos($url, 'Itemid') === false) {
+            return $url;
+        }
+
+        $vars = self::parseQueryVars($url);
+
+        if (!array_key_exists('Itemid', $vars)) {
+            return $url;
+        }
+
+        // only remove the Itemid if it is not the only query value
+        if (count($vars) === 1) {
+            return $url;
+        }
+
+        // remove the itemid
+        unset($vars['Itemid']);
+
+        // rebuild the query string, preserving colons (valid in query values)
+        $query = str_replace('%3A', ':', http_build_query($vars));
+
+        return 'index.php?' . $query;
     }
 
     public static function removeHomeItemId($url)
@@ -73,10 +97,7 @@ abstract class WFLinkHelper
             return $url;
         }
 
-        $parsed = parse_url($url, PHP_URL_QUERY);
-        $parsed = str_replace('&amp;', '&', $parsed);
-
-        parse_str($parsed, $vars);
+        $vars = self::parseQueryVars($url);
 
         if (!array_key_exists('Itemid', $vars)) {
             return $url;
@@ -84,10 +105,8 @@ abstract class WFLinkHelper
 
         $defaultId = self::getDefaultItemId();
 
-        // Itemid is unique
-        if ((int) $defaultId === (int) $vars['Itemid']) {            
-            // remove "default" Itemid
-            $url = self::removeItemId($url, $defaultId);
+        if ((int) $defaultId === (int) $vars['Itemid']) {
+            $url = self::removeItemId($url);
         }
 
         return $url;
