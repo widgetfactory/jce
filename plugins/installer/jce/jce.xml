@@ -13,14 +13,9 @@
   <namespace path="src">Joomla\Plugin\Installer\Jce</namespace>
 
   <files folder="plugins/installer/jce">
-    <filename plugin="jce">jce.php</filename>
+    <folder plugin="jce">language</folder>
     <folder>services</folder>
     <folder>src</folder>
   </files>
-
-  <languages folder="administrator/language/en-GB">
-    <language tag="en-GB">en-GB.plg_installer_jce.ini</language>
-    <language tag="en-GB">en-GB.plg_installer_jce.sys.ini</language>
-  </languages>
 
 </extension>

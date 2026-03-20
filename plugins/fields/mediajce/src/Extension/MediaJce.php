@@ -26,4 +26,11 @@ use Joomla\Plugin\Fields\MediaJce\PluginTraits\FormTrait;
 final class MediaJce extends FieldsPlugin
 {   
     use FormTrait;
+
+    public static function getSubscribedEvents(): array
+    {
+        return array_merge(parent::getSubscribedEvents(), [
+            'onCustomFieldsBeforePrepareField' => 'onCustomFieldsBeforePrepareField',
+        ]);
+    }
 }

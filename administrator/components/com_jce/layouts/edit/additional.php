@@ -18,7 +18,7 @@ $plugins = $displayData->get('additional');
                         </label>
                         <span class="help-block form-text text-muted w-100"><?php echo Text::_($plugin->description); ?></span>
                     </div>
-                <?php endforeach;?>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

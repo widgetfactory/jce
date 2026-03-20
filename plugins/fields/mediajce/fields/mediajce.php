@@ -7,21 +7,23 @@
  * @copyright   Copyright (C) 2020 - 2024 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+namespace Joomla\Plugin\Fields\MediaJce\Fields;
 
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Form\Field\MediaField;
-use Joomla\CMS\Form\Form;
 use Joomla\CMS\Helper\MediaHelper;
+
+use Joomla\Component\Jce\Administrator\Helper\BrowserHelper;
 
 /**
  * Provides a modal media selector field for the JCE File Browser
  *
  * @since  2.6.17
  */
-class JFormFieldMediaJce extends MediaField
+class MediaJceField extends MediaField
 {
     /**
      * The form field type.
@@ -49,7 +51,7 @@ class JFormFieldMediaJce extends MediaField
     /**
      * Method to attach a JForm object to the field.
      *
-     * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the `<field>` tag for the form field object.
+     * @param   \SimpleXMLElement  $element  The SimpleXMLElement object representing the `<field>` tag for the form field object.
      * @param   mixed             $value    The form field value to validate.
      * @param   string            $group    The field name group control value. This acts as an array container for the field.
      *                                      For example if the field has name="foo" and the group value is set to "bar" then the
@@ -59,7 +61,7 @@ class JFormFieldMediaJce extends MediaField
      *
      * @see     JFormField::setup()
      */
-    public function setup(SimpleXMLElement $element, $value, $group = null)
+    public function setup(\SimpleXMLElement $element, $value, $group = null)
     {
         // decode value if it is a string
         if (is_string($value)) {
@@ -93,6 +95,11 @@ class JFormFieldMediaJce extends MediaField
      *
      * @return  array
      */
+    /**
+     * Get the data that is going to be passed to the layout
+     *
+     * @return  array
+     */
     public function getLayoutData()
     {
         // Get the basic field data
@@ -108,29 +115,38 @@ class JFormFieldMediaJce extends MediaField
             return $data;
         }
 
+        $data['class'] .= ' input-medium wf-media-input';
+
+        // not enabled for media field
+        if (!BrowserHelper::isMediaFieldEnabled()) {
+            $data['readonly'] = true;
+            $data['link'] = '';
+            return $data;
+        }
+
+        $converted = (bool) $this->element['converted'];
+
         $config = array(
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
-            'converted' => false,
+            'converted' => $converted,
             'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : '',
         );
 
-        $options = WfBrowserHelper::getMediaFieldOptions($config);
-
-        $this->link = $options['url'];
-
-        $data['class'] .= ' input-medium wf-media-input';
-
-        // not a valid file browser link
-        if (!$this->link) {
-            $data['readonly'] = true;
-            return $data;
-        }
+        // get individual field link
+        $this->link = BrowserHelper::getMediaFieldUrl($config);
 
         $extraData = array(
             'link'  => $this->link,
             'class' => $data['class'] .= ' wf-media-input-active',
         );
+
+        if ($converted) {
+            $extraData['class'] .= ' wf-media-input-converted';;
+        }
+
+        // get global field options
+        $options = BrowserHelper::getMediaFieldOptions();
 
         if ($options['upload'] == 1) {
             $extraData['class'] .= ' wf-media-input-upload';

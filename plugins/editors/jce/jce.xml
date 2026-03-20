@@ -13,14 +13,19 @@
     <namespace path="src">Joomla\Plugin\Editors\Jce</namespace>
 
     <files folder="plugins/editors/jce">
-        <file plugin="jce">jce.php</file>
+        <folder plugin="jce">language</folder>
         <folder>layouts</folder>
         <folder>services</folder>
         <folder>src</folder>
+        <folder>Wfe</folder>
     </files>
 
     <!-- Media -->
     <media folder="media/jce" destination="jce">
+        <folder>icons</folder>
+    </media>
+
+    <media folder="media/editors/jce" destination="jce">
         <folder>icons</folder>
     </media>
 

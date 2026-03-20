@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.8" type="plugin" group="extension" method="upgrade">
-	<name>plg_extension_jce</name>
-	<version>@@version@@</version>
+  <name>plg_extension_jce</name>
+  <version>@@version@@</version>
   <creationDate>@@date@@</creationDate>
   <author>Ryan Demmer</author>
   <authorEmail>@@email@@</authorEmail>
   <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
   <copyright>@@copyright@@</copyright>
   <license>@@licence@@</license>
-	<description>PLG_EXTENSION_JCE_XML_DESCRIPTION</description>
-	<files folder="plugins/extension/jce">
-		<filename plugin="jce">jce.php</filename>
-	</files>
-	<languages folder="administrator/language/en-GB">
-      <language tag="en-GB">en-GB.plg_extension_jce.ini</language>
-      <language tag="en-GB">en-GB.plg_extension_jce.sys.ini</language>
-  </languages>
+  <description>PLG_EXTENSION_JCE_XML_DESCRIPTION</description>
+
+  <namespace path="src">Joomla\Plugin\Extension\Jce</namespace>
+
+  <files folder="plugins/extension/jce">
+    <folder plugin="jce">language</folder>
+    <folder>services</folder>
+    <folder>src</folder>
+  </files>
+
 </extension>

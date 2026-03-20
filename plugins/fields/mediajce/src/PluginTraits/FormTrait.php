@@ -12,13 +12,11 @@ namespace Joomla\Plugin\Fields\MediaJce\PluginTraits;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
+use Joomla\Event\Event;
+use Joomla\CMS\Event\CustomFields\PrepareDomEvent;
+use Joomla\CMS\Event\CustomFields\BeforePrepareFieldEvent;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
 
 /**
  * Fields MediaJce FormTrait
@@ -28,13 +26,11 @@ use Joomla\CMS\Uri\Uri;
 trait FormTrait
 {
     private $mediaLoaded = false;
-    
+
     /**
      * Transforms the field into a DOM XML element and appends it as a child on the given parent.
      *
-     * @param   stdClass    $field   The field.
-     * @param   DOMElement  $parent  The field node parent.
-     * @param   Form        $form    The form.
+     * @param   PrepareDomEvent  $event  The event.
      *
      * @return  DOMElement
      *
@@ -60,9 +56,18 @@ trait FormTrait
 
         $field->fieldparams = clone $fieldParams;
 
-        $form->addFieldPath(JPATH_PLUGINS . '/fields/mediajce/fields');
+        FormHelper::addFieldPrefix('Joomla\\Plugin\\Fields\\MediaJce\\Fields');
 
-        Factory::getApplication()->triggerEvent('onWfCustomFieldsPrepareDom', array($field, $fieldNode, $form));
+        $event = new Event('onWfCustomFieldsPrepareDom', array(
+            'subject' => $this,
+            'field' => $field,
+            'fieldNode' => $fieldNode,
+            'form' => $form,
+        ));
+
+        $this->getApplication()->getDispatcher()->dispatch('onWfCustomFieldsPrepareDom', $event);
+
+        $fieldNode = $event->getArgument('fieldNode');
 
         return $fieldNode;
     }
@@ -78,8 +83,10 @@ trait FormTrait
      *
      * @since   3.7.0
      */
-    public function onCustomFieldsBeforePrepareField($context, $item, $field)
+    public function onCustomFieldsBeforePrepareField(BeforePrepareFieldEvent $event)
     {
+        $field = $event->getArgument('field');
+
         // Check if the field should be processed by us
         if ($field->type !== 'mediajce') {
             return;

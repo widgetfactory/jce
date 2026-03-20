@@ -7,21 +7,27 @@
  * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_PLATFORM') or die('RESTRICTED');
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Table\Table;
+use Joomla\CMS\Table\Extension as ExtensionTable;
+use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
+use Joomla\Component\Jce\Administrator\Table\ProfilesTable;
+use Joomla\Database\DatabaseAwareInterface;
+use Joomla\Database\DatabaseAwareTrait;
 
-class pkg_jceInstallerScript
+
+class pkg_jceInstallerScript implements DatabaseAwareInterface
 {
+	use DatabaseAwareTrait;
+
     /**
      * The current installed version
      * @var string
@@ -56,14 +62,15 @@ class pkg_jceInstallerScript
 
     private function installProfiles()
     {
-        include_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/profiles.php';
-        return JceProfilesHelper::installProfiles();
+        return ProfilesHelper::installProfiles();
     }
 
     public function install($installer)
     {
+        $db = $this->getDatabase();
+
         // enable plugins
-        $plugin = Table::getInstance('extension');
+        $plugin = new ExtensionTable($db);
 
         $plugins = array(
             'jce' => array('content', 'system', 'quickicon', 'extension', 'installer'),
@@ -88,7 +95,7 @@ class pkg_jceInstallerScript
         // install profiles
         $this->installProfiles();
 
-        $language = Factory::getLanguage();
+        $language = Factory::getApplication()->getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
@@ -134,15 +141,14 @@ class pkg_jceInstallerScript
 
     private function checkTable()
     {
-        $db = Factory::getDBO();
+        $db = $this->getDatabase();
 
         $tables = $db->getTableList();
 
         if (!empty($tables)) {
             // swap array values with keys, convert to lowercase and return array keys as values
             $tables = array_keys(array_change_key_case(array_flip($tables)));
-            $app = Factory::getApplication();
-            $match = str_replace('#__', strtolower($app->getCfg('dbprefix', '')), '#__wf_profiles');
+            $match = str_replace('#__', strtolower(Factory::getApplication()->get('dbprefix', '')), '#__wf_profiles');
 
             return in_array($match, $tables);
         }
@@ -158,7 +164,7 @@ class pkg_jceInstallerScript
 
     public function uninstall()
     {
-        $db = Factory::getDBO();
+        $db = $this->getDatabase();
 
         if ($this->checkTable() === false) {
             return true;
@@ -209,13 +215,13 @@ class pkg_jceInstallerScript
         $requirements = '<a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" title="Editor Requirements" target="_blank" rel="noopener">https://www.joomlacontenteditor.net/support/documentation/editor/requirements</a>';
 
         // php version check
-        if (version_compare(PHP_VERSION, '7.4', 'lt')) {
-            throw new RuntimeException('JCE requires PHP 7.4 or later - ' . $requirements);
+        if (version_compare(PHP_VERSION, '8.0', 'lt')) {
+            throw new RuntimeException('JCE requires PHP 8.0 or later - ' . $requirements);
         }
 
         // joomla version check
-        if (version_compare(JVERSION, '3.10', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 3.10 or later - ' . $requirements);
+        if (version_compare(JVERSION, '5.0', 'lt')) {
+            throw new RuntimeException('JCE requires Joomla 5.0 or later - ' . $requirements);
         }
 
         // set current package version and variant
@@ -237,7 +243,7 @@ class pkg_jceInstallerScript
             return true;
         }
 
-        $extension = Table::getInstance('extension');
+        $extension = new ExtensionTable($this->getDatabase());
 
         // disable content, system and quickicon plugins. This is to prevent errors if the install fails and some core files are missing
         foreach (array('system', 'quickicon') as $folder) {
@@ -278,7 +284,7 @@ class pkg_jceInstallerScript
 
     private function checkTableUpdate()
     {
-        $db = Factory::getDBO();
+        $db = $this->getDatabase();
 
         $state = true;
 
@@ -322,13 +328,9 @@ class pkg_jceInstallerScript
 			return true;
 		}
         
-        $app = Factory::getApplication();
-        $extension = Table::getInstance('extension');
+        $db = $this->getDatabase();
+        $extension = new ExtensionTable($db);
         $parent = $installer->getParent();
-
-        $db = Factory::getDBO();
-
-        Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
         // remove legacy jcefilebrowser quickicon and jce content plugins
         $plugins = [
@@ -340,7 +342,7 @@ class pkg_jceInstallerScript
             $plugin = PluginHelper::getPlugin($folder, $element);
 
             if ($plugin) {
-                $inst = new Installer();
+                $inst = Installer::getInstance();
 
                 // try uninstall
                 if (!$inst->uninstall('plugin', $plugin->id)) {
@@ -373,12 +375,16 @@ class pkg_jceInstallerScript
                 $id = $db->loadResult();
 
                 if ($id) {
-                    BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_installer/models');
-                    $model = BaseDatabaseModel::getInstance('Updatesites', 'InstallerModel');
+                    // remove the old core update site and its extension links
+                    $query = $db->getQuery(true)
+                        ->delete('#__update_sites_extensions')
+                        ->where($db->quoteName('update_site_id') . ' = ' . (int) $id);
+                    $db->setQuery($query)->execute();
 
-                    if ($model) {
-                        $model->delete(array($id));
-                    }
+                    $query = $db->getQuery(true)
+                        ->delete('#__update_sites')
+                        ->where($db->quoteName('update_site_id') . ' = ' . (int) $id);
+                    $db->setQuery($query)->execute();
                 }
             }
 
@@ -396,7 +402,7 @@ class pkg_jceInstallerScript
 
             // update toolbar_theme if one has been set
             if ($theme) {
-                $table = Table::getInstance('Profiles', 'JceTable');
+                $table = new ProfilesTable($db);
 
                 $query = $db->getQuery(true);
 
@@ -473,56 +479,20 @@ class pkg_jceInstallerScript
                 $db->execute();
             }
 
-            $this->cleanupInstall($installer);
+            $this->cleanupInstall();
         }
 
-        // Borrowed from the script.ats.php file from Akeeba Ticket System
-		// Forcibly create the autoload_psr4.php file afresh.
-		if (class_exists(JNamespacePsr4Map::class))
-		{
-			try
-			{
-				$nsMap = new JNamespacePsr4Map();
+        // Rebuild the extension namespace map so autoloading picks up new classes immediately.
+        $app = Factory::getApplication();
 
-				@clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
-
-				if (function_exists('opcache_invalidate'))
-				{
-					@opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
-				}
-
-				@clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
-				$nsMap->create();
-
-				if (function_exists('opcache_invalidate'))
-				{
-					@opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
-				}
-
-				$nsMap->load();
-			}
-			catch (\Throwable $e)
-			{
-				// In case of failure, just try to delete the old autoload_psr4.php file
-				if (function_exists('opcache_invalidate'))
-				{
-					@opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
-				}
-
-				@unlink(JPATH_CACHE . '/autoload_psr4.php');
-				@clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
-
-                Factory::getApplication()->createExtensionNamespaceMap();
-			}
-		}
+        if (method_exists($app, 'createExtensionNamespaceMap')) {
+            $app->createExtensionNamespaceMap();
+        }
     }
 
-    protected static function cleanupInstall($installer)
+    protected static function cleanupInstall()
     {
-        $app = Factory::getApplication();
-        
-        $parent = $installer->getParent();
-        $current_version = self::$current_version; //$parent->get('current_version');
+        $current_version = self::$current_version;
 
         $admin = JPATH_ADMINISTRATOR . '/components/com_jce';
         $site = JPATH_SITE . '/components/com_jce';
@@ -531,150 +501,35 @@ class pkg_jceInstallerScript
         $folders = array();
         $files = array();
 
-        $folders['2.6.38'] = array(
-            // admin
-            $admin . '/classes',
-            $admin . '/elements',
-            $admin . '/media/fonts',
-            $admin . '/img/menu',
-            $admin . '/views/preferences',
-            $admin . '/views/users',
-            // site
-            $site . '/editor/elements',
-            $site . '/editor/extensions/aggregator/vine',
-            $site . '/editor/extensions/popups/window'
-        );
-
-        // remove flexicontent
-        if (!ComponentHelper::isInstalled('com_flexicontent')) {
-            $files['2.7.0'] = array(
-                $site . '/editor/extensions/links/flexicontentlinks.php',
-                $site . '/editor/extensions/links/flexicontentlinks.xml',
-            );
-
-            $folders['2.7.0'] = array(
-                $site . '/editor/extensions/links/flexicontentlinks',
-            );
-        }
-
-        // remove help files
-        $folders['2.8.6'] = array(
-            $admin . '/views/help',
-        );
-
-        // remove mediaplayer
-        $folders['2.8.11'] = array(
-            $site . '/editor/libraries/mediaplayer',
-        );
-
-        // remove fields folder
-        $folders['2.9.7'] = array(
+        // J4 -> J5: remove legacy non-namespaced MVC structure replaced by src/ and clean up
+        $folders['3.0.0'] = array(
+            // remove fields folder
             JPATH_PLUGINS . '/system/jce/fields',
-        );
-
-        // remove media folder
-        $folders['2.9.17'] = array(
+            JPATH_PLUGINS . '/editors/jce/src/Provider',
+             // remove old layout file
+            JPATH_PLUGINS . '/editors/jce/layouts/editor/textarea.php',
+            // mediafield files
+            JPATH_PLUGINS . '/fields/mediajce/fields/extendedmedia.php',
+        
+            $admin . '/controller',
+            $admin . '/helpers',
+            $admin . '/models',
+            $admin . '/views',
+            $admin . '/includes',
+            $admin . '/tables',
             $admin . '/media',
-        );
 
-        // remove folders moved to media/com_jce
-        $folders['2.9.50'] = array(
-            $site . '/editor/tiny_mce',
-            $site . '/editor/libraries/css',
-            $site . '/editor/libraries/fonts',
-            $site . '/editor/libraries/img',
-            $site . '/editor/libraries/js',
-            $site . '/editor/libraries/pro/css',
-            $site . '/editor/libraries/pro/fonts',
-            $site . '/editor/libraries/pro/img',
-            $site . '/editor/libraries/pro/js',
+            $site . '/editor',
+
+            $media . '/editor',
             $media . '/css',
             $media . '/img',
-            $media . '/js'
+            $media . '/js',
         );
 
-        // clean up editor folder
-        $folders['2.9.60'] = array(
-            JPATH_PLUGINS . '/editors/jce/src/Provider'
-        );
-
-        // remove old layout file
-        $files['2.9.60'] = array(
-            JPATH_PLUGINS . '/editors/jce/layouts/editor/textarea.php'
-        );
-
-        // remove pro plugins
-        $folders['2.9.70'] = array(
-            $site . '/editor/plugins/caption',
-            $site . '/editor/plugins/columns',
-            $site . '/editor/plugins/iframe',
-            $site . '/editor/plugins/imgmanager_ext',
-            $site . '/editor/plugins/mediamanager',
-            $site . '/editor/plugins/microdata',
-            $site . '/editor/plugins/source/tmpl',
-            $site . '/editor/plugins/templatemanager',
-            $site . '/editor/plugins/textpattern'
-        );
-
-        // remove pro source plugin
-        $files['2.9.70'] = array(
-            $site . '/editor/plugins/source/config.php',
-            $site . '/editor/plugins/source/source.php',
-            // mediafield files
-            JPATH_PLUGINS . '/fields/mediajce/fields/extendedmedia.php'
-        );
-
-        $files['2.6.38'] = array(
-            $admin . '/install.php',
-            $admin . '/install.script.php',
-            // controller
-            $admin . '/controller/preferences.php',
-            $admin . '/controller/popups.php',
-            $admin . '/controller/updates.php',
-            // helpers
-            $admin . '/helpers/cacert.pem',
-            $admin . '/helpers/editor.php',
-            $admin . '/helpers/toolbar.php',
-            $admin . '/helpers/updates.php',
-            $admin . '/helpers/xml.php',
-            // includes
-            $admin . '/includes/loader.php',
-            // models
-            $admin . '/models/commands.json',
-            $admin . '/models/config.xml',
-            $admin . '/models/cpanel.xml',
-            $admin . '/models/model.php',
-            $admin . '/models/plugins.json',
-            $admin . '/models/plugins.php',
-            $admin . '/models/preferences.php',
-            $admin . '/models/preferences.xml',
-            $admin . '/models/pro.json',
-            $admin . '/models/updates.php',
-            $admin . '/models/users.php',
-            // views
-            $admin . '/views/cpanel/tmpl/default_pro_footer.php',
-            $admin . '/views/profiles/tmpl/form_editor.php',
-            $admin . '/views/profiles/tmpl/form_features.php',
-            $admin . '/views/profiles/tmpl/form_plugin.php',
-            $admin . '/views/profiles/tmpl/form_setup.php',
-            $admin . '/views/profiles/tmpl/form.php',
-            // site - extensions
-            $site . '/editor/extensions/aggregator/vine.php',
-            $site . '/editor/extensions/aggregator/vine.xml',
-            $site . '/editor/extensions/popups/window.php',
-            $site . '/editor/extensions/popups/window.xml',
-            // site - libraries
-            $site . '/editor/libraries/classes/token.php'
-        );
-
-        // remove help files
-        $files['2.8.6'] = array(
-            $admin . '/controller/help.php',
-            $admin . '/models/help.php',
-        );
-
-        $files['2.8.11'] = array(
-            $admin . '/views/cpanel/default_pro.php',
+        $files['3.0.0'] = array(
+            $admin . '/controller.php',
+            $admin . '/jce.php'
         );
 
         foreach ($folders as $version => $list) {

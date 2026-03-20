@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editors.Jce
  *
  * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -16,6 +17,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Event\Event;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -32,6 +34,8 @@ trait DisplayTrait
 
     protected function getEditorInstance()
     {
+        $app = $this->getApplication();
+
         // pass config to WFEditor
         $config = array(
             'profile_id' => $this->params->get('profile_id', 0),
@@ -45,7 +49,7 @@ trait DisplayTrait
             require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
             // create editor
-            self::$instances[$signature] = new \WFEditor($config);
+            self::$instances[$signature] = new \Wfe\Editor\Editor($config, $db);
         }
 
         return self::$instances[$signature];
@@ -115,9 +119,9 @@ trait DisplayTrait
             }
         }
 
-        $language = Factory::getLanguage();
-        $document = Factory::getDocument();
+        $app = $this->getApplication();
 
+        $language = $app->getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
         $editor = $this->getEditorInstance();
@@ -125,18 +129,28 @@ trait DisplayTrait
         // setup editor without initializing
         $editor->setup(false);
 
-        foreach ($editor->getScripts() as $script => $type) {
-            $document->addScript($script, array(), array('type' => $type));
+        $doc = $app->getDocument();
+        $wa = $doc->getWebAssetManager();
+
+        foreach ($editor->getScripts() as $script => $name) {
+            $type = 'text/javascript';
+
+            if ($name == 'editor.module') {
+                $type = 'module';
+            }
+
+            $wa->registerAndUseScript('wfe.' . $name, $script, [], ['type' => $type, 'data-cfasync' => 'false']);
         }
 
-        foreach ($editor->getStyleSheets() as $style) {
-            $document->addStylesheet($style);
+        foreach ($editor->getStyleSheets() as $style => $name) {
+            $wa->registerAndUseStyle($name, $style);
         }
 
-        $document->addScriptOptions('plg_editor_jce',
-            array(
+        $doc->addScriptOptions(
+            'plg_editor_jce',
+            [
                 'editor' => $editor->getScriptOptions(),
-            )
+            ]
         );
     }
 
@@ -159,6 +173,8 @@ trait DisplayTrait
      */
     public function onDisplay($name, $content, $width = '100%', $height = '500', $col = 20, $row = 4, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
     {
+        $app = $this->getApplication();
+
         if ($this->isEditorEnabled() === false) {
 
             $ed = $this->getFallbackEditor();
@@ -205,7 +221,7 @@ trait DisplayTrait
                         'joomla_xtd_buttons' => $list,
                     );
 
-                    Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
+                    $app->getDocument()->addScriptOptions('plg_editor_jce', $options, true);
                 }
 
                 $buttonsStr = $this->displayXtdButtons($id, $buttons, $asset, $author, true);

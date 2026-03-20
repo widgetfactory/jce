@@ -11,11 +11,6 @@
   <description>PLG_CONTENT_JCE_XML_DESCRIPTION</description>
   
   <files folder="plugins/content/jce">
-    <file plugin="jce">jce.php</file>
+    <folder plugin="jce">language</folder>
   </files>
-
-  <languages folder="administrator/language/en-GB">
-    <language tag="en-GB">en-GB.plg_content_jce.ini</language>
-    <language tag="en-GB">en-GB.plg_content_jce.sys.ini</language>
-  </languages>
 </extension>

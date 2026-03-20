@@ -1,6 +1,7 @@
 <?php 
+namespace Joomla\Plugin\Fields\MediaJce\Helper;
 
-final class WfMediaHelper {
+final class MediaHelper {
     /**
      * An array of supported embed types and their mime types
      */

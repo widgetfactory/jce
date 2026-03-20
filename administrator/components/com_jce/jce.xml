@@ -10,6 +10,10 @@
     <version>@@version@@</version>
     <description>COM_JCE_XML_DESCRIPTION</description>
 
+    <variant>@@variant@@</variant>
+
+    <namespace path="src">Joomla\Component\Jce</namespace>
+
     <files folder="components/com_jce">
         <folder>editor</folder>
         <folder>views</folder>
@@ -66,6 +70,7 @@
             <file>controller.php</file>
             <file>index.html</file>
             <file>jce.php</file>
+            <file>joomla.asset.json</file>
             <file>LICENCE.txt</file>
         </files>
 

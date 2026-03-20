@@ -11,13 +11,12 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Path;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Path;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 
-// load helper
-require_once JPATH_PLUGINS . '/fields/mediajce/helper/mediahelper.php';
+use Joomla\Plugin\Fields\MediaJce\Helper\MediaHelper;
 
 if (empty($field->value)) {
     return;
@@ -27,7 +26,7 @@ if (empty($field->value)) {
 if (is_string($field->value)) {
     $field->value = array(
         'media_src' => $field->value,
-        'media_type' => WfMediaHelper::isImage($field->value) ? 'embed' : 'link'
+        'media_type' => MediaHelper::isImage($field->value) ? 'embed' : 'link'
     );
 }
 
@@ -77,7 +76,7 @@ $extension = File::getExt($data->media_src);
 $extension = strtolower($extension);
 
 // get layout from extension
-$layout = WfMediaHelper::getLayoutFromExtension($extension);
+$layout = MediaHelper::getLayoutFromExtension($extension);
 
 // reset to link if not extended media
 if ((int) $fieldParams->get('extendedmedia') == 0 && $layout !== 'image') {
@@ -158,7 +157,7 @@ if ($layout == 'object') {
 
     $attribs['data'] = $data->media_src;
 
-    $mimetype = WfMediaHelper::getMimeType($extension);
+    $mimetype = MediaHelper::getMimeType($extension);
 
     if ($mimetype) {
         $attribs['type'] = $mimetype;
