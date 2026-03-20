@@ -1,12 +1,4 @@
-/**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
- */
+// out: false
 
 html {
     overflow-y: visible !important;
@@ -22,9 +14,8 @@ html {
     }
 }
 
-.com_jce {
+.jce-ui{
     & .mce-tinymce {
-        border-width: 1px;
         box-sizing: content-box;
 
         & .mce-statusbar {
@@ -32,7 +23,7 @@ html {
         }
 
         & .mce-edit-area {
-            border-width: 1px 1px 0px;
+            border-width: 1px;
 
             &>div {
                 min-height: 120px;
@@ -60,7 +51,7 @@ html {
     }
 
     & .widthMarker {
-        border-style: dashed;
+        border: 1px dashed var(--border-color);
         border-bottom-width: 0;
         display: block;
         left: 0;
@@ -78,6 +69,7 @@ html {
             top: -1em;
             width: 4em;
             text-align: center;
+            background: var(--body-bg);
         }
     }
 
@@ -88,6 +80,14 @@ html {
         &.sortable-row-highlight {
             margin: 0 0 2px 0;
         }
+    }
+
+    & .sortable-btn-highlight {
+        display: inline-block;
+    }
+
+    & .sortable-list-item {
+        min-height: 32px;
     }
 
     & .sortable-handle {
@@ -159,7 +159,7 @@ html {
 }
 
 html[dir="rtl"] {
-    .com_jce {
+    .jce-ui {
         & .sortable-handle {
             left: -30px;
             right: auto;
@@ -194,7 +194,6 @@ html[dir="rtl"] {
         background-color: #f5f5f5;
         border: 1px solid #ddd;
         padding: 1px;
-        margin-bottom: 2px;
 
         &>div {
             font-size: 0;
@@ -208,7 +207,6 @@ html[dir="rtl"] {
 
     & .mce-listbox,
     & .mce-splitbtn {
-        border: 1px solid #ddd;
         height: 26px;
         box-sizing: border-box;
         border-radius: 2px;
@@ -273,17 +271,3 @@ html[dir="rtl"] {
     display: block;
 }
 
-/*.defaultSkin .mceLayout .mceToolbarRow:after {
-      content: "::";
-      display: block;
-      width: 20px;
-      line-height: 20px;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      margin-top: -10px;
-      font-size: 1.2rem;
-      color: #aaa;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-weight: bold;
-  }*/

@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<extension type="plugin" group="jce" method="upgrade">
+    <name>WF_LINKS_JOOMLALINKS_TITLE</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>@@e-mail@@</authorEmail>
+    <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+    <copyright>@@copyright@@</copyright>
+    <license>@@licence@@</license>
+    <description>WF_LINKS_JOOMLALINKS_DESC</description>
+
+    <files></files>
+
+    <fields name="joomla">
+
+        <fields name="list">
+            <fieldset name="joomla.list">
+
+                <field name="enable" type="yesno" default="1" label="WF_LINKS_LIST_ENABLE" description="WF_LINKS_LIST_ENABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="providers" type="providerlist" multiple="true" label="WF_LINKS_JOOMLA_LIST_PROVIDERS" description="WF_LINKS_JOOMLA_LIST_PROVIDERS_DESC" default="contacts,content,weblinks,tags" layout="joomla.form.field.list-fancy-select">
+                    <option value="contacts">Contacts</option>
+                    <option value="content">Content</option>
+                    <option value="weblinks">Weblinks</option>
+                    <option value="tags">Tags</option>
+                </field>
+
+                <field name="article_unpublished" type="yesno" default="0" label="WF_LINKS_JOOMLA_ARTICLE_UNPUBLISHED" description="WF_LINKS_JOOMLA_ARTICLE_UNPUBLISHED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+            </fieldset>
+
+        </fields>
+
+        <fields name="search">
+            <fieldset name="joomla.search">
+
+                <field name="enable" type="yesno" default="1" label="WF_LINKS_SEARCH_ENABLE" description="WF_LINKS_SEARCH_ENABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="providers" type="providerlist" multiple="true" label="WF_LINKS_JOOMLA_SEARCH_PROVIDERS" description="WF_LINKS_JOOMLA_SEARCH_PROVIDERS_DESC" default="categories,contacts,content,weblinks,tags" layout="joomla.form.field.list-fancy-select">
+                    <option value="categories">Categories</option>
+                    <option value="contacts">Contacts</option>
+                    <option value="content">Content</option>
+                    <option value="weblinks">Weblinks</option>
+                    <option value="tags">Tags</option>
+                </field>
+
+            </fieldset>
+
+        </fields>
+
+        <fields>
+            <field name="itemid" type="yesno" default="1" label="WF_LINKS_JOOMLA_ITEMID" description="WF_LINKS_JOOMLA_ITEMID_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="sef_url" type="yesno" default="0" label="WF_LINKS_JOOMLA_SEF_URL" description="WF_LINKS_JOOMLA_SEF_URL_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="alias" type="yesno" default="0" label="WF_LINKS_JOOMLA_ALIAS" description="WF_LINKS_JOOMLA_ALIAS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+            </field>
+        </fields>
+
+    </fields>
+</extension>

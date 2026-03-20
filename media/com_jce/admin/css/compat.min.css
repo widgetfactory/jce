@@ -1,97 +1,97 @@
-.ui-jce .row {
+.jce-ui .row {
   margin-left: -10px;
 }
-.ui-jce nav .quickicon {
+.jce-ui nav .quickicon {
   margin-right: 1rem;
 }
-.ui-jce nav .quickicon .btn {
+.jce-ui nav .quickicon .btn {
   background-color: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   transition: all 0.25s ease;
 }
-.ui-jce .checkboxes.sortable .checkbox,
-.ui-jce .checkboxes.sortable .form-check {
+.jce-ui .checkboxes.sortable .checkbox,
+.jce-ui .checkboxes.sortable .form-check {
   border: 1px solid #ccc;
   background-color: #fff;
 }
-.ui-jce .checkboxes.sortable .sortable-placeholder {
+.jce-ui .checkboxes.sortable .sortable-placeholder {
   border-color: #ccc;
 }
-.ui-jce .blockformats .blockformat-item {
+.jce-ui .blockformats .blockformat-item {
   border: 1px solid #ccc;
   background-color: #fff;
 }
-.ui-jce .blockformats .blockformat-item.sortable-placeholder {
+.jce-ui .blockformats .blockformat-item.sortable-placeholder {
   border-color: #ccc;
 }
-.ui-jce .filetype .filetype-list .filetype-item {
+.jce-ui .filetype .filetype-list .filetype-item {
   border: 1px solid #ccc;
   background-color: #fff;
 }
-.ui-jce .filetype .filetype-group {
+.jce-ui .filetype .filetype-group {
   background-color: #eee;
 }
-.ui-jce .fontlist .font-item,
-.ui-jce .fontlist .font-item-plus {
+.jce-ui .fontlist .font-item,
+.jce-ui .fontlist .font-item-plus {
   border: 1px solid #ccc;
   background-color: #fff;
 }
-.ui-jce .fontlist .font-item:hover,
-.ui-jce .fontlist .font-item-plus:hover {
+.jce-ui .fontlist .font-item:hover,
+.jce-ui .fontlist .font-item-plus:hover {
   text-decoration: none;
 }
-.ui-jce .fontlist .font-item[hidden] {
+.jce-ui .fontlist .font-item[hidden] {
   display: none;
 }
-.ui-jce .fontlist .sortable-placeholder {
+.jce-ui .fontlist .sortable-placeholder {
   border-color: #ccc;
 }
-.ui-jce .styleformat-list .styleformat-item-title {
+.jce-ui .styleformat-list .styleformat-item-title {
   background-color: #eee;
 }
-.ui-jce .styleformat-list .styleformat,
-.ui-jce .styleformat-list .styleformat-highlight {
+.jce-ui .styleformat-list .styleformat,
+.jce-ui .styleformat-list .styleformat-highlight {
   border: 1px solid #ccc;
   background-color: #fff;
 }
-.ui-jce .styleformat-list .styleformat-item-plus {
+.jce-ui .styleformat-list .styleformat-item-plus {
   border: 1px solid #ccc;
 }
-.ui-jce .styleformat-list .styleformat-item-plus:hover {
+.jce-ui .styleformat-list .styleformat-item-plus:hover {
   text-decoration: none;
 }
-.ui-jce .styleformat-list .sortable-placeholder {
+.jce-ui .styleformat-list .sortable-placeholder {
   border-color: #ccc;
 }
-.ui-jce .widthMarker {
+.jce-ui .widthMarker {
   border: 1px dashed #999;
 }
-.ui-jce .widthMarker span {
+.jce-ui .widthMarker span {
   outline: 2px solid #fff;
   border-radius: 2px;
 }
-.ui-jce .form-field-repeatable .form-field-repeatable-item.well {
+.jce-ui .form-field-repeatable .form-field-repeatable-item.well {
   padding: 20px;
 }
-.ui-jce .form-field-repeatable .form-field-repeatable-item.well .form-field-repeatable-item-control {
+.jce-ui .form-field-repeatable .form-field-repeatable-item.well .form-field-repeatable-item-control {
   margin: -12px -20px 0 0;
 }
-.ui-jce .form-field-repeatable .sortable-placeholder {
+.jce-ui .form-field-repeatable .sortable-placeholder {
   border-color: #ccc;
 }
-.ui-jce .mceDefaultSkin.checkboxes .mceButton {
+.jce-ui .mceDefaultSkin.checkboxes .mceButton {
   border: 1px solid #ddd;
 }
-.ui-jce .mceDefaultSkin.checkboxes .mceButton:hover {
+.jce-ui .mceDefaultSkin.checkboxes .mceButton:hover {
   border: 1px solid #ccc;
 }
-.ui-jce .tabs-left {
+.jce-ui .tabs-left {
   --border-width: 1px;
   --border-color: #ddd;
 }
-.ui-jce .tabs-left > .nav-tabs .active > a,
-.ui-jce .tabs-left > .nav-tabs .active > a:hover,
-.ui-jce .tabs-left > .nav-tabs .active > a:focus {
+.jce-ui .tabs-left > .nav-tabs .active > a,
+.jce-ui .tabs-left > .nav-tabs .active > a:hover,
+.jce-ui .tabs-left > .nav-tabs .active > a:focus {
   border-color: #ddd transparent #ddd #ddd;
   border-right-color: #fff;
 }

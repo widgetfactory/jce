@@ -1,0 +1,183 @@
+@import url('ui.css?@@etag@@');
+@import url('ui_touch.css?@@etag@@');
+@import url('../default/ui.admin.css?@@etag@@');
+
+/*.mceModernSkin .mceToolbarRow .mceToolbarItem {
+  height: 32px;
+}*/
+
+.mceModernSkin .mceToolbarItem .mceListBox::after, .mceModernSkin .mceToolbarItem .mceSplitButton::after {
+  width: 14px;
+}
+
+.mceModernSkin .mceToolbarItem .mceSplitButton .mceIcon {
+  width: 30px;
+  max-width: 30px;
+  line-height: 2;
+  vertical-align: middle;
+  height: 2em;
+  margin: 0;
+}
+
+.nav-item .mceToolbarItem,
+.nav-item .mceToolbarItem .mceButton {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mceModernSkin .mceToolbarItem .mceButton:not(.mceListBox),
+.mceModernSkin .mceToolbarItem .mceSplitButton:after {
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.nav-item .mceModernSkin .mceToolbarItem .mceButton,
+.mceModernSkin .mceToolbarItem .mceButton:hover,
+.mceModernSkin .mceToolbarItem.ui-sortable-helper .mceButton {
+  border-color: #ddd;
+  background-color: #eee;
+}
+
+.mceModernSkin .mceToolbarItem.ui-sortable-helper .mceSplitButton:after,
+.mceModernSkin .mceToolbarItem .mceSplitButton:hover:after {
+  border-left-color: #ddd;
+  background-color: #eee;
+}
+
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_forecolor,
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_backcolor {
+  line-height: 1.5;
+}
+
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_forecolor:after,
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_backcolor:after {
+  content: "";
+  width: 16px;
+  height: 4px;
+  outline: 1px solid #eee;
+  display: block;
+  margin: -3px auto;
+}
+
+.mceModernSkin span.mce_forecolor:after {
+  background-color: black;
+}
+
+.mceModernSkin span.mce_backcolor:after {
+  background-color: yellow;
+}
+
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_textcase {
+  line-height: 1.75;
+}
+
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_textcase:before {
+  left: 0.25em;
+}
+
+.mceModernSkin .mceToolbarItem .mceSplitButton span.mce_textcase:after {
+  right: 0.25em;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceListBox,
+.mceModernSkinTouch .mceToolbarItem .mceSplitButton {
+  border-color: #dcdcdc;
+  height: 40px;
+}
+
+.mceModernSkinTouch .mceLayout .mceToolbar .mceToolbarRow {
+  min-height: 40px;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceButton {
+  padding: 11px;
+  border-color: #dcdcdc;
+  background-color: #fafafa;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceListBox {
+  width: 112px;
+  padding: 0;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceSplitButton {
+  width: 52px;
+  padding: 0;
+  height: 40px;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceSplitButton .mceIcon {
+  max-width: 32px;
+  height: 36px;
+  width: 32px;
+  line-height: 2.25;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceListBox .mceIcon {
+  width: 92px;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceListBox .mceIcon:before {
+  width: 92px;
+  line-height: 34px;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceListBox:after,
+.mceModernSkinTouch .mceToolbarItem .mceSplitButton:after {
+  line-height: 38px;
+  width: 18px;
+}
+
+.mceModernSkinTouch .mceLayout .mceStatusbar {
+  border-color: #dcdcdc;
+}
+
+.mceModernSkinTouch .mceLayout .mceIframeContainer {
+  border-color: #dcdcdc;
+}
+
+.mceModernSkinTouch .mceLayout .mceToolbarRow {
+  background-color: #fafafa;
+  border-color: #dcdcdc;
+}
+
+.mceModernSkinTouch .mceToolbar .sortableRowHandle {
+  height: 42px;
+}
+
+.mceModernSkinTouch .mceToolbar .sortableRowHandle .uk-icon {
+  margin: 12px 0 0;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceSeparator {
+  height: 34px;
+  background: #dcdcdc;
+}
+
+.mceModernSkinTouch .sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
+  height: 38px;
+}
+
+.mceModernSkinTouch .sortableList .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
+  height: 36px;
+}
+
+.mceModernSkinTouch .mceLayout,
+.mceModernSkinTouch .mceLayout .mceToolbar {
+  border: 0 none !important;
+  background: #fff;
+}
+
+.mceModernSkinTouch .mceLayout .mceFirst,
+.mceModernSkinTouch .mceLayout .mceLast {
+  background-color: #fff !important;
+}
+
+.mceModernSkinTouch .mceLayout .mceStatusbar {
+  background-color: #fafafa !important;
+}
+
+.mceModernSkinTouch .mceToolbarItem .mceListBox::before {
+  line-height: 38px;
+  width: 90px;
+}

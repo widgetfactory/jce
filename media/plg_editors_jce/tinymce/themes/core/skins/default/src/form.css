@@ -1,0 +1,85 @@
+.mceForm {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mceFormRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+    min-height: 32px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.mceRepeatable .mceRepeatableItem {
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.mceRepeatable .mceRepeatableItem .mceFormRow {
+    flex-wrap: nowrap;
+}
+
+.mceRepeatable .mceRepeatableItem .mceFormRow label {
+    min-width: inherit;
+}
+
+.mceRepeatableItem .mce_plus {
+    display: none !important;
+}
+
+.mceRepeatableItem:first-child .mce_plus {
+    display: inherit !important;
+}
+.mceRepeatableItem .mce_trash {
+    display: inherit !important;
+}
+
+.mceRepeatableItem:first-child .mce_trash {
+    display: none !important;
+}
+
+.mceFormControl {
+    width: 100%;
+    min-height: 2em;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1 0 70%;
+}
+
+.mceFormControl .mceListBox {
+    width: 100%;
+}
+
+.mceFormControl .mceListBox .mceText {
+    width: 100%;
+    align-self: flex-start;
+}
+
+.mceForm .mceFormRow label {
+    flex: 1 0 30%;
+    padding: 0.5em 0;
+    min-width: 6em;
+}
+
+.mceFormControl .mceTextBox + .mceButton {
+    position: absolute;
+    right: 0;
+}
+
+.mceFormControl .mceListBox:focus .mceText,
+.mceFormControl .mceListBox:focus .mceOpen {
+    border-color: #66afe9;
+    background: #f5fbfe;
+}
+
+.mceFormControl:has(.mceTextBoxDescription) {
+    flex-direction: column;
+}

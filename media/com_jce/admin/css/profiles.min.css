@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
- .ui-jce table .ui-sortable .ui-sortable-helper {
+ .jce-ui table .ui-sortable .ui-sortable-helper {
      max-height: 2rem;
  }
 

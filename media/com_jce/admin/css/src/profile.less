@@ -1,0 +1,273 @@
+// out: false
+
+.extensions-select {
+    &.radio {
+        padding: 0;
+
+        input[type="radio"] {
+            display: inline-block;
+            margin: 0 5px 0 0;
+            float: none;
+        }
+    }
+
+    label {
+        display: inline-block;
+        margin: 0 10px 0 0;
+        vertical-align: middle;
+        padding: 0;
+    }
+}
+
+html[dir="rtl"] .jce-ui .ui-tabs-vertical {
+    .ui-tabs-nav {
+        border-width: 0 0 0 1px;
+        float: right;
+        padding: 0 0.2em 0 0.1em;
+
+        li {
+            margin: 0 1px 0.2em 0;
+            border-left: 0 none;
+
+            &.ui-tabs-selected {
+                padding-left: 0.1em;
+                border-right-width: 1px;
+                margin-right: -1px;
+            }
+        }
+    }
+
+    .ui-tabs-panel {
+        margin: 0 13em 0 0;
+    }
+}
+
+.ui-bootstrap #jce div.tab-pane.tabbable.tabs-left ul li>a:first-child {
+    max-width: 100px;
+    padding: 20px 0;
+    white-space: pre-wrap;
+    cursor: pointer;
+}
+
+#jce #tabs ul li span.tabs-label {
+    margin: 5px 0;
+    display: block;
+}
+
+input#profile_description {
+    width: 500px;
+}
+
+/* Mobile stuff */
+
+@media (max-width: 767px) {
+    input[type="text"] {
+        max-width: 250px;
+    }
+}
+
+a.browser {
+    display: inline-block;
+    margin: 8px 0;
+}
+
+.com_jce .tabs-left .tab-content {
+    overflow: visible;
+}
+
+#tabs-editor .nav-tabs>li>a,
+#tabs-plugins .nav-tabs>li>a {
+    padding: 24px 12px;
+    min-height: 72px;
+}
+
+[data-toggle="tab"] .mce-toolbar .mce-ico,
+.checkboxes .mce-toolbar .mce-ico {
+    line-height: inherit;
+}
+
+.tab-disabled {
+    display: none;
+}
+
+.nav-tabs .mce-toolbar {
+    max-width: 180px;
+    white-space: normal;
+    margin: 0 0 15px 0;
+
+    .mce-btn {
+        margin: 2px 2px 0 0;
+        height: 32px;
+    }
+
+    .mce-list-box,
+    .mceListBox {
+        max-width: 95px;
+        max-height: 32px;
+    }
+}
+
+.wf-repeatable-collapse .icon-bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 1px;
+}
+
+.mceDefaultSkin.checkboxes .mceButton {
+    text-align: left;
+    max-width: 250px;
+    padding: 5px;
+    display: block;
+    cursor: default;
+    background-color: var(--list-group-bg);
+    color: var(--list-group-color);
+
+    &:hover {
+        background-color: var(--list-group-bg);
+        color: var(--list-group-color);
+        border-color: var(--list-group-border-color);
+    }
+
+    >input[type="checkbox"] {
+        vertical-align: middle;
+        line-height: 20px;
+        margin: 5px 10px 5px 5px;
+    }
+
+    .mceIcon,
+    >label {
+        line-height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 5px;
+        color: var(--list-group-color);
+    }
+}
+
+.tabs-left {
+    .nav-tabs,
+    .tab-content {
+        flex-direction: column !important;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .nav-tabs {
+        flex: 0 0 calc(100% / 12 * 2);
+        width: calc(100% / 12 * 2);
+    }
+
+    .tab-content {
+        flex: 0 0 calc(100% / 12 * 9);
+        width: calc(100% / 12 * 9);
+    }
+
+    >.nav-tabs>li>a {
+        min-height: 100px;
+    }
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.jce-ui {
+    .donut {
+        display: none;
+        position: relative;
+        top: 0;
+        left: 0;
+        z-index: 1001;
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #888;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: donut-spin 1.2s linear infinite;
+    }
+
+    &.loading {
+        position: static;
+
+        .donut {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 1001;
+            margin: -15px 0 0 -15px;
+        }
+
+        &:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+        }
+    }
+
+    legend {
+        font-size: 1.25em;
+    }
+
+    .adapter-plugins legend {
+        font-size: 1.5em;
+    }
+
+    /* Joomla 4 */
+    .options-grid-form>legend {
+        font-size: 1.75em;
+        font-weight: 700;
+        line-height: 3.5em;
+    }
+
+    .row-fluid .form-horizontal .control-label {
+        width: auto;
+        min-width: 160px;
+
+        &:empty {
+            min-width: inherit;
+            padding: 0;
+            width: 0;
+        }
+    }
+
+    .checkboxes .sortable-placeholder {
+        border-style: dashed;
+        min-height: 32px;
+        display: block;
+        padding: 0.5rem;
+        cursor: move;
+        max-width: 300px;
+        box-sizing: border-box;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .textarea-code {
+        font-family: monospace;
+        font-size: 12px;
+        color: #444;
+    }
+
+    .input-group-text {
+        border-radius: 0 0.25em 0.25em 0;
+    }
+
+    .form-check {
+        padding: 0;
+    }
+}

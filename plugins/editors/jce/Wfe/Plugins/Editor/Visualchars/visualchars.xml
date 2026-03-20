@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
+	<name>WF_VISUALCHARS_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>Ryan Demmer</copyright>
+	<license>@@licence@@</license>
+	<description>WF_VISUALCHARS_DESC</description>
+	<icon>visualchars</icon>
+	<fields name="visualchars">
+		<fieldset name="config">
+			<field name="state" type="yesno" default="1" label="WF_LABEL_STATE" description="WF_LABEL_STATE_DESC">
+				<option value="1">JON</option>
+				<option value="0">JOFF</option>
+			</field>
+		</fieldset>
+	</fields>
+	<help>
+		<topic key="visualchars.about" title="WF_VISUALCHARS_HELP_ABOUT" />
+	</help>
+	<languages></languages>
+</extension>

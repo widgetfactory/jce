@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
+	<name>WF_WORDCOUNT_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>Ryan Demmer</copyright>
+	<license>@@licence@@</license>
+	<description>WF_WORDCOUNT_DESC</description>
+	<icon></icon>
+	<fields></fields>
+	<help></help>
+	<languages></languages>
+</extension>

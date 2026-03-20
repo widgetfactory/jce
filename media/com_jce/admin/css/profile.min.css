@@ -1,3 +1,667 @@
+.jce-ui .control-label label {
+  width: 12rem;
+  min-width: 6rem;
+}
+.jce-ui .row-fluid .form-horizontal .field-spacer .control-label {
+  width: 100%;
+  padding: 0;
+}
+.jce-ui .row-fluid .form-horizontal .field-spacer .control-label hr {
+  width: 100%;
+}
+.jce-ui .radio label,
+.jce-ui .checkbox label,
+.jce-ui .radio,
+.jce-ui .checkbox {
+  display: inline-block;
+}
+.jce-ui .checkboxes.buttons {
+  max-width: 30em;
+}
+.jce-ui .checkboxes input[type="checkbox"] {
+  float: initial;
+  margin-left: 0;
+  width: 1em;
+  height: 1em;
+}
+.jce-ui .form-field-container legend {
+  line-height: 2em;
+  font-size: 1.25em;
+  font-weight: bold;
+  border: 0 none;
+  color: inherit;
+  margin: 0;
+}
+.jce-ui .form-horizontal .control-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.jce-ui .form-horizontal .controls {
+  margin-left: inherit;
+}
+.jce-ui .form-horizontal .control-label + .controls {
+  width: calc(100% - 12.5rem);
+}
+.jce-ui .control-group .description {
+  display: block;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  background: rgba(0, 0, 0, 0.03);
+  margin: 0.5rem 0;
+  font-size: 90%;
+  box-sizing: border-box;
+}
+.jce-ui .control-group .help-block {
+  width: 100%;
+}
+.jce-ui .control-group .chzn-container {
+  min-width: 260px;
+}
+.jce-ui .form-horizontal .control-label {
+  width: auto;
+  min-width: 160px;
+}
+.jce-ui .form-horizontal .control-label:empty {
+  min-width: inherit;
+  padding: 0;
+  width: 0;
+}
+.jce-ui .control-group .controls + .description {
+  display: none;
+}
+.jce-ui .form-help-inline .control-group .controls + .description {
+  display: block;
+}
+.jce-ui .form-help-inline .control-group .control-label {
+  cursor: default;
+}
+.jce-ui .form-check input[type="radio"] {
+  vertical-align: middle;
+}
+.jce-ui .choices.is-disabled .choices__inner {
+  padding: 0;
+}
+.jce-ui .choices.is-disabled .choices__inner input[type="text"] {
+  width: 100% !important;
+  height: 100%;
+  padding: 0.5rem 1rem;
+}
+.jce-ui .choices.is-disabled .choices__inner input[type="text"]::placeholder {
+  color: #aaa;
+}
+.jce-ui .checkboxes.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.jce-ui .checkboxes.flex-row .form-check-inline {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  margin: 0;
+  padding: 0.25em 1em;
+  border: 1px solid var(--list-group-border-color);
+  border-radius: 0.25rem;
+  min-width: 10rem;
+}
+.jce-ui [data-showon].hidden {
+  display: none;
+}
+.jce-ui .hide-aware-inline-help {
+  padding: 1em;
+  background-color: var(--lightbluegray);
+  margin: 1em 0;
+}
+.jce-ui {
+  /* fix for profiles list checkbox */
+}
+.jce-ui .checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.jce-ui .checkboxes.inline {
+  flex-direction: row;
+}
+.jce-ui .checkboxes .checkbox input {
+  margin: 3px 0.3125rem 0 0;
+}
+.jce-ui .checkboxes.sortable .checkbox,
+.jce-ui .checkboxes.sortable .form-check {
+  display: block;
+  padding: 0.5rem;
+  cursor: move;
+  max-width: 300px;
+  box-sizing: border-box;
+  margin: 0;
+}
+.jce-ui .input-group-append {
+  display: inline-block;
+  vertical-align: middle;
+}
+.jce-ui .input-group-append .btn {
+  margin-left: -1px;
+}
+.jce-ui .input-append .form-text {
+  font-size: 11px;
+  line-height: 28px;
+}
+.jce-ui .tabs-left .nav.nav-tabs {
+  margin-right: -4px;
+  box-shadow: initial;
+  border-bottom: transparent;
+  border-right: var(--border-width) solid var(--border-color);
+}
+.jce-ui .tabs-left > .nav-tabs > li > a {
+  margin-right: -1px;
+  box-shadow: initial;
+  color: inherit;
+  text-align: left;
+}
+.jce-ui .tabs-left > .nav-tabs .active > a,
+.jce-ui .tabs-left > .nav-tabs .active > a:hover,
+.jce-ui .tabs-left > .nav-tabs .active > a:focus {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: var(--border-color-translucent);
+  border-right-color: var(--body-bg);
+}
+.jce-ui .tabs-left .tab-content {
+  border-radius: 0 0 0.25rem 0;
+  border: 0;
+  padding: 0 15px;
+}
+.jce-ui .nav.nav-tabs .nav-item:last-of-type .nav-link {
+  box-shadow: initial;
+}
+.jce-ui table td.order + td label {
+  min-width: inherit;
+}
+.jce-ui .tooltip {
+  position: absolute;
+  z-index: 1030;
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  visibility: visible;
+  text-align: left;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  min-width: 200px;
+}
+.jce-ui .tooltip.in {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.jce-ui .tooltip.top,
+.jce-ui .tooltip.right,
+.jce-ui .tooltip.bottom,
+.jce-ui .tooltip.left {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.jce-ui .tooltip.top {
+  padding: 5px 0;
+  margin-top: -3px;
+}
+.jce-ui .tooltip.top .tooltip-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-top-color: #000000;
+  border-width: 5px 5px 0;
+}
+.jce-ui .tooltip.right {
+  padding: 0 5px;
+  margin-left: 3px;
+}
+.jce-ui .tooltip.right .tooltip-arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-right-color: #000000;
+  border-width: 5px 5px 5px 0;
+}
+.jce-ui .tooltip.bottom {
+  padding: 5px 0;
+  margin-top: 3px;
+}
+.jce-ui .tooltip.bottom .tooltip-arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-color: #000000;
+  border-width: 0 5px 5px;
+}
+.jce-ui .tooltip.left {
+  padding: 0 5px;
+  margin-left: -3px;
+}
+.jce-ui .tooltip.left .tooltip-arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-left-color: #000000;
+  border-width: 5px 0 5px 5px;
+}
+.jce-ui .tooltip .tooltip-inner {
+  max-width: inherit;
+  padding: 8px;
+  color: #ffffff;
+  text-align: left;
+  text-decoration: none;
+  background-color: #000000;
+  border-radius: 4px;
+}
+.jce-ui .tooltip .tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.jce-ui .tooltip .close {
+  opacity: 1;
+  color: #fff;
+  padding: 0 5px;
+  text-shadow: inherit;
+  float: inherit;
+  position: absolute;
+  right: 0;
+  top: 5px;
+}
+.jce-ui .tooltip .close:hover,
+.jce-ui .tooltip .close:focus {
+  color: #fff;
+  opacity: 1;
+}
+.jce-ui .tooltip p {
+  margin: 0;
+}
+.jce-ui .tooltip .tooltip-inner h4 {
+  margin: 5px 0px;
+  font-size: 12px;
+}
+.jce-ui .popover[role="tooltip"] {
+  background-color: #fff;
+  padding: 0.25em;
+}
+.jce-ui .popover[role="tooltip"].center {
+  text-align: initial;
+}
+.jce-ui .popover[role="tooltip"] .close {
+  padding: 5px 10px;
+  font-size: 24px;
+  float: right;
+  line-height: 18px;
+  font-weight: bold;
+  color: #000;
+  opacity: 0.2;
+  cursor: pointer;
+}
+.jce-ui .popover[role="tooltip"] .close::after {
+  content: "\00d7";
+}
+.jce-ui .popover[role="tooltip"] .popover-header {
+  margin: 0;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  background-color: inherit;
+  border-bottom: 1px solid #ebebeb;
+  border-radius: 5px 5px 0 0;
+}
+.jce-ui .popover[role="tooltip"] .popover-content {
+  min-height: 1em;
+  padding: 0.5rem;
+}
+.jce-ui .popover[role="tooltip"] .popover-arrow {
+  left: calc(50% - 0.5em);
+}
+.wf-repeatable-item {
+  position: relative;
+}
+.wf-repeatable-item:first-of-type .wf-repeatable-remove {
+  display: none;
+}
+.wf-repeatable .close {
+  font-size: 16px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+.wf-repeatable .wf-repeatable-remove {
+  top: inherit;
+  bottom: 10px;
+}
+.form-field-repeatable {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.form-field-repeatable .form-field-repeatable-item {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+.form-field-repeatable .form-field-repeatable-item.ui-sortable-handle {
+  cursor: move;
+}
+.form-field-repeatable .form-field-repeatable-item > button {
+  max-height: 28px;
+}
+.form-field-repeatable .form-field-repeatable-item .control-group {
+  margin: 5px 0 0 0;
+}
+.form-field-repeatable .form-field-repeatable-item .control-group:first-child {
+  margin: 0;
+}
+.form-field-repeatable .form-field-repeatable-item .form-field-repeatable-item-group {
+  flex: 1;
+}
+.form-field-repeatable .form-field-repeatable-item .form-field-repeatable-item-control {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+}
+.form-field-repeatable .form-field-repeatable-item .form-field-repeatable-add {
+  visibility: hidden;
+  display: inline-block;
+  order: 99;
+}
+.form-field-repeatable .form-field-repeatable-item .form-field-repeatable-remove {
+  visibility: visible;
+  display: inline-block;
+}
+.form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-add {
+  visibility: visible;
+  display: inline-block;
+}
+.form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-remove {
+  visibility: visible;
+  display: inline-block;
+}
+.form-horizontal .form-field-repeatable-item textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+.form-horizontal .form-field-repeatable-item .control-group {
+  margin: 5px 0 0 0;
+}
+.form-horizontal .form-field-repeatable-item .control-group:first-child {
+  margin: 0;
+}
+.form-horizontal .form-field-repeatable-item .control-group .controls:first-child,
+.form-horizontal .form-field-repeatable-item .control-group .sr-only + .controls {
+  margin: 0;
+}
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+#colorpicker {
+  margin: 10px 0 0 0;
+  min-width: 250px;
+  top: 5px;
+  right: 5px;
+  left: 5px;
+  bottom: 56px;
+  position: absolute;
+}
+body > #colorpicker {
+  margin: 0;
+}
+#colorpicker #colorpicker_tabs ul {
+  margin: 0;
+}
+#colorpicker #colorpicker_web ul,
+#colorpicker #colorpicker_named ul,
+#colorpicker #colorpicker_template ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 8px;
+}
+#colorpicker_web ul li,
+#colorpicker_named ul li,
+#colorpicker_template ul li {
+  display: inline-block;
+  margin: 0 1px 1px 0;
+  line-height: 10px;
+}
+#colorpicker canvas {
+  width: 10px;
+  height: 10px;
+  margin: 0 1px 1px 0;
+}
+#colorpicker span.mceVoiceLabel {
+  display: none;
+}
+#colorpicker_insert {
+  float: right;
+  margin: 0;
+}
+#colorpicker_color {
+  padding: 2px;
+  width: 60px;
+  margin: 5px 0;
+  min-height: 18px;
+}
+#colorpicker_tabs .uk-switcher {
+  overflow: hidden;
+  padding: 0 32px;
+  top: 35px;
+}
+#colorpicker .uk-switcher > div {
+  margin: 0;
+  padding: 0;
+}
+#colorpicker #colorpicker_tabs a {
+  text-decoration: none;
+}
+#colorpicker_tab table {
+  margin: auto;
+}
+#colorpicker_preview_text {
+  position: relative;
+  float: left;
+  height: 28px;
+  vertical-align: middle;
+}
+#colorpicker_preview_text label {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+#colorpicker_preview_color {
+  width: 24px;
+  height: 24px;
+  cursor: inherit;
+  border-radius: 2px;
+  margin-top: -10px;
+  right: 4px;
+  padding: 0;
+  top: 50%;
+}
+#colorpicker_preview {
+  position: absolute;
+  left: 10px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+#colorpicker_named div,
+#colorpicker_web div,
+#colorpicker_template div {
+  margin: 10px auto 0 auto;
+}
+#colorpicker_template p {
+  margin: 1em auto;
+}
+#colorpicker_named span,
+#colorpicker_web span,
+#colorpicker_template span {
+  display: block;
+  float: left;
+  width: 15px;
+  height: 15px;
+  overflow: hidden;
+  cursor: pointer;
+}
+#colorpicker_colorname {
+  margin-top: 5px;
+  color: #444;
+}
+#colorpicker_action {
+  position: absolute;
+  width: 100%;
+}
+#template_tab p {
+  margin: auto;
+  padding: 0;
+  width: 200px;
+}
+div.colorpicker_generated div fieldset {
+  height: 155px;
+}
+iframe.colorpicker_blocker {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-color: #F6F6F6;
+  padding: 1px;
+}
+#colorpicker_color {
+  padding: 2px 32px 2px 24px !important;
+  margin: 0;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  font-size: 14px;
+  width: 120px;
+  border-radius: 3px;
+}
+/* Panels */
+div.colorpicker_tabs {
+  width: 100%;
+  margin-right: 20px;
+}
+iframe.blocker {
+  height: 100%;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  background-color: #FFFFFF;
+}
+#colorpicker_named,
+#colorpicker_web,
+#colorpicker_template {
+  position: relative;
+}
+div#previewblock {
+  margin-top: 5px;
+  float: left;
+}
+#colorpicker_picker {
+  height: 100%;
+}
+#colorpicker_picker div.farbtastic {
+  margin: 30px auto 0 auto;
+  position: relative;
+  width: 200px;
+  height: 88%;
+  height: calc(100% - 30px);
+}
+/**
+ * Farbtastic Color Picker 1.2
+ * (c) 2008 Steven Wittens
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+.colorwheel {
+  position: relative;
+  margin: 0 auto;
+}
+.colorwheel * {
+  position: absolute;
+  cursor: crosshair;
+}
+.colorwheel .wheel {
+  width: 200px;
+  height: 200px;
+}
+.colorwheel .color,
+.colorwheel .overlay {
+  top: 47px;
+  left: 47px;
+  width: 101px;
+  height: 101px;
+}
+.colorwheel .wheel {
+  background: url("../../../../plg_editors_jce/editor/img/wheel.png") no-repeat;
+  width: 195px;
+  height: 195px;
+}
+.colorwheel .overlay {
+  background: url("../../../../plg_editors_jce/editor/img/mask.png") no-repeat;
+}
+.colorwheel .marker {
+  width: 17px;
+  height: 17px;
+  margin: -8px 0 0 -8px;
+  overflow: hidden;
+  background: url("../../../../plg_editors_jce/editor/img/marker.png") no-repeat;
+}
+/* Mobile Stuff */
+/*@media (max-width: 979px) {
+    #colorpicker {
+        min-width: 410px;
+    }
+
+    #colorpicker_named div, #colorpicker_web div, #colorpicker_template div {
+        width : 400px;
+    }
+
+    #colorpicker_web ul li, #colorpicker_named ul li, #colorpicker_template ul li {
+        margin: 0 4px 0 0;
+    }
+
+    #colorpicker_named span, #colorpicker_web span, #colorpicker_template span {width:20px; height:20px;}
+
+    #colorpicker #colorpicker_tabs div > div.tab-pane {
+        height : 280px;
+    }
+
+    #jce-tooltip.wf-colorpicker {
+        max-width : 420px;
+    }
+}*/
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
@@ -152,11 +816,11 @@
  * is derivative of works ddcensed under the GNU General Pubddc ddcense or
  * other free or open source software ddcenses.
  */
-.ui-jce .filetype {
+.jce-ui .filetype {
   display: inline-block;
+  min-width: 300px;
 }
-.ui-jce .filetype .filetype-list {
-  display: none;
+.jce-ui .filetype .filetype-list {
   list-style: none;
   padding: 0;
   margin: 5px 0 10px 0;
@@ -164,7 +828,7 @@
   box-sizing: border-box;
   position: relative;
 }
-.ui-jce .filetype .filetype-list .filetype-item {
+.jce-ui .filetype .filetype-list .filetype-item {
   padding: 5px;
   margin: 2px 0;
   box-sizing: border-box;
@@ -172,90 +836,87 @@
   flex-wrap: nowrap;
   align-items: center;
 }
-.ui-jce .filetype .filetype-list .filetype-item .file {
+.jce-ui .filetype .filetype-list .filetype-item .file {
   width: 20px;
   height: 20px;
-  display: inline-block;
-  vertical-align: middle;
   margin: 0 5px;
 }
-.ui-jce .filetype .filetype-list .filetype-item .file.filetype-custom {
+.jce-ui .filetype .filetype-list .filetype-item .file.filetype-custom {
   margin: 5px;
   min-height: 20px;
 }
-.ui-jce .filetype .filetype-list .filetype-item label {
+.jce-ui .filetype .filetype-list .filetype-item label {
   padding: 0;
   margin: 0;
   display: flex;
   align-items: center;
   width: 100%;
   line-height: 28px;
-  max-width: inherit;
 }
-.ui-jce .filetype .filetype-list .filetype-item input[type="text"] {
+.jce-ui .filetype .filetype-list .filetype-item input[type="text"] {
   margin: 0;
   flex: 1;
 }
-.ui-jce .filetype .filetype-list .filetype-item input[type="checkbox"] {
+.jce-ui .filetype .filetype-list .filetype-item input[type="checkbox"] {
   margin: 9px;
 }
-.ui-jce .filetype .filetype-list .filetype-item .filetype-remove {
-  display: inline-block;
-}
-.ui-jce .filetype .filetype-list .filetype-item.filetype-custom .filetype-remove {
-  display: inline-block;
-}
-.ui-jce .filetype .filetype-list .filetype-item.filetype-custom .filetype-add {
+.jce-ui .filetype .filetype-list .filetype-item .filetype-remove {
   display: none;
 }
-.ui-jce .filetype .filetype-list .filetype-item.filetype-custom:last-child .filetype-add {
+.jce-ui .filetype .filetype-list .filetype-item.filetype-custom .filetype-remove {
   display: inline-block;
 }
-.ui-jce .filetype .filetype-list .btn {
+.jce-ui .filetype .filetype-list .filetype-item.filetype-custom .filetype-add {
+  display: none;
+}
+.jce-ui .filetype .filetype-list .filetype-item.filetype-custom:last-child .filetype-add {
+  display: inline-block;
+}
+.jce-ui .filetype .filetype-list .btn {
   color: #ccc;
   max-width: 40px;
 }
-.ui-jce .filetype .filetype-list .btn span {
+.jce-ui .filetype .filetype-list .btn span {
   vertical-align: middle;
 }
-.ui-jce .filetype .filetype-edit span {
+.jce-ui .filetype .filetype-edit span {
   visibility: hidden;
   width: 0;
   display: inline-block;
 }
-.ui-jce .filetype .filetype-group {
+.jce-ui .filetype .filetype-group {
   font-size: 14px;
   padding: 5px;
 }
-.ui-jce .filetype .filetype-group input[type="checkbox"] {
+.jce-ui .filetype .filetype-group input[type="checkbox"] {
   margin: 5px 15px 5px 7px;
 }
-.ui-jce .filetype .ui-sortable-handle {
+.jce-ui .filetype .ui-sortable-handle {
   cursor: move;
 }
-.ui-jce .filetype .ui-sortable-handle label {
+.jce-ui .filetype .ui-sortable-handle label {
   cursor: move;
 }
-.ui-jce .styleformat .icon-chevron-up {
+.jce-ui .styleformat .icon-chevron-up {
   display: inline-block;
 }
-.ui-jce .styleformat .icon-chevron-down {
+.jce-ui .styleformat .icon-chevron-down {
   display: none;
 }
-.ui-jce .styleformat.styleformat-collapse > div {
+.jce-ui .styleformat.styleformat-collapse > div {
   display: none;
 }
-.ui-jce .styleformat.styleformat-collapse .styleformat-header,
-.ui-jce .styleformat.styleformat-collapse .styleformat-item-title {
+.jce-ui .styleformat.styleformat-collapse .styleformat-header,
+.jce-ui .styleformat.styleformat-collapse .styleformat-item-title {
   display: block;
 }
-.ui-jce .styleformat.styleformat-collapse .icon-chevron-down {
+.jce-ui .styleformat.styleformat-collapse .icon-chevron-down {
   display: inline-block;
 }
-.ui-jce .styleformat.styleformat-collapse .icon-chevron-up {
+.jce-ui .styleformat.styleformat-collapse .icon-chevron-up {
   display: none;
 }
-.ui-jce .styleformat-list .styleformat-item-plus {
+.jce-ui .styleformat-list .styleformat-item-plus {
   padding: 5px 10px;
   margin: 2px 0;
   max-width: 400px;
@@ -265,7 +926,7 @@
   border-style: dashed;
   display: flex;
 }
-.ui-jce .styleformat-list .styleformat-item-plus span {
+.jce-ui .styleformat-list .styleformat-item-plus span {
   display: inline-block;
   font-size: 1.2rem;
   vertical-align: middle;
@@ -273,18 +934,18 @@
   text-align: left;
   width: 100%;
 }
-.ui-jce .styleformat-list .styleformat-item-plus .icon {
+.jce-ui .styleformat-list .styleformat-item-plus .icon {
   line-height: 2rem;
   width: 2em;
   height: 2em;
 }
-.ui-jce .styleformat-list .styleformat-item-trash {
+.jce-ui .styleformat-list .styleformat-item-trash {
   position: absolute;
   right: 0;
   top: 5px;
   padding: 4px 8px;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-handle {
+.jce-ui .styleformat-list .styleformat .styleformat-item-handle {
   position: absolute;
   left: 40px;
   top: 0;
@@ -294,7 +955,7 @@
   height: 32px;
   right: 40px;
 }
-.ui-jce .styleformat-list .styleformat .collapse {
+.jce-ui .styleformat-list .styleformat .collapse {
   position: absolute;
   left: 0;
   top: 5px;
@@ -305,7 +966,7 @@
   padding: 4px 8px;
   line-height: 1;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-header {
+.jce-ui .styleformat-list .styleformat .styleformat-header {
   position: absolute;
   top: 0;
   width: 100%;
@@ -314,116 +975,116 @@
   margin: 0;
   padding: 0;
 }
-.ui-jce .styleformat-list .styleformat .control-group {
+.jce-ui .styleformat-list .styleformat .control-group {
   margin: 0;
 }
-.ui-jce .styleformat-list .styleformat .control-group .control-label,
-.ui-jce .styleformat-list .styleformat .control-group .controls {
+.jce-ui .styleformat-list .styleformat .control-group .control-label,
+.jce-ui .styleformat-list .styleformat .control-group .controls {
   width: 100%;
 }
-.ui-jce .styleformat-list .styleformat + div {
+.jce-ui .styleformat-list .styleformat + div {
   margin-top: 10px;
 }
-.ui-jce .styleformat-list .styleformat > div {
+.jce-ui .styleformat-list .styleformat > div {
   margin: 5px 0;
   padding: 5px 10px 5px 5px;
   position: relative;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title {
   /*background-color: #eee;*/
 }
-.ui-jce .styleformat-list .styleformat div input,
-.ui-jce .styleformat-list .styleformat div select {
+.jce-ui .styleformat-list .styleformat div input,
+.jce-ui .styleformat-list .styleformat div select {
   max-width: 100%;
   width: 365px;
 }
-.ui-jce .styleformat-list .styleformat div select {
+.jce-ui .styleformat-list .styleformat div select {
   width: 100%;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title {
   /* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input {
   font-size: inherit;
   color: inherit;
   float: none;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_code,
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_samp {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_code,
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_samp {
   font-family: monospace;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_strong {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_strong {
   font-weight: bolder;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_em {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_em {
   font-style: italic;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_sub {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_sub {
   vertical-align: sub;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_sup {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_sup {
   vertical-align: super;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_h1 {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_h1 {
   font-size: 2em;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_h2 {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_h2 {
   font-size: 1.5em;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_h3 {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_h3 {
   font-size: 1.17em;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_h4 {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_h4 {
   font-size: 1em;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_h5 {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_h5 {
   font-size: 0.83em;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-title input.stc_h6 {
+.jce-ui .styleformat-list .styleformat .styleformat-item-title input.stc_h6 {
   font-size: 0.75em;
 }
-.ui-jce .styleformat-list .styleformat label {
+.jce-ui .styleformat-list .styleformat label {
   display: block;
   min-width: 100px;
 }
-.ui-jce .styleformat-list .styleformat label + input,
-.ui-jce .styleformat-list .styleformat label + select {
+.jce-ui .styleformat-list .styleformat label + input,
+.jce-ui .styleformat-list .styleformat label + select {
   margin: 0;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-element {
+.jce-ui .styleformat-list .styleformat .styleformat-item-element {
   clear: left;
 }
-.ui-jce .styleformat-list .styleformat .styleformat-item-element option:first-child {
+.jce-ui .styleformat-list .styleformat .styleformat-item-element option:first-child {
   margin: 5px 0;
 }
-.ui-jce .styleformat-list .styleformat,
-.ui-jce .styleformat-list .styleformat-highlight {
+.jce-ui .styleformat-list .styleformat,
+.jce-ui .styleformat-list .styleformat-highlight {
   padding: 30px 5px 5px;
   max-width: 400px;
   position: relative;
   box-sizing: border-box;
 }
-.ui-jce .styleformat-list .styleformat-highlight {
+.jce-ui .styleformat-list .styleformat-highlight {
   border-style: dashed;
   min-height: 46px;
   margin: 10px 0;
 }
-[dir="rtl"] .ui-jce .styleformat-list .styleformat-item-plus span {
+[dir="rtl"] .jce-ui .styleformat-list .styleformat-item-plus span {
   text-align: right;
 }
-.ui-jce .fontlist {
+.jce-ui .fontlist {
   position: relative;
   list-style: none outside none;
   margin: 0 !important;
   min-width: 200px;
   padding: 0;
 }
-.ui-jce .fontlist input[type="checkbox"] {
+.jce-ui .fontlist input[type="checkbox"] {
   margin: 5px 10px;
   width: auto;
 }
-.ui-jce .fontlist .font-item,
-.ui-jce .fontlist .font-item-plus {
+.jce-ui .fontlist .font-item,
+.jce-ui .fontlist .font-item-plus {
   padding: 5px 10px;
   max-width: 480px;
   position: relative;
@@ -433,18 +1094,18 @@
   display: flex;
   flex-wrap: nowrap;
 }
-.ui-jce .fontlist .font-item > div,
-.ui-jce .fontlist .font-item-plus > div {
+.jce-ui .fontlist .font-item > div,
+.jce-ui .fontlist .font-item-plus > div {
   padding: 0 5px 0 0;
 }
-.ui-jce .fontlist .font-item-highlight.sortable-placeholder {
+.jce-ui .fontlist .font-item-highlight.sortable-placeholder {
   max-width: 480px;
   padding: 5px 10px;
 }
-.ui-jce .fontlist .font-item-plus {
+.jce-ui .fontlist .font-item-plus {
   border-style: dashed;
 }
-.ui-jce .fontlist .font-item-plus span {
+.jce-ui .fontlist .font-item-plus span {
   display: inline-block;
   font-size: 1.2rem;
   vertical-align: middle;
@@ -452,30 +1113,30 @@
   text-align: left;
   width: 100%;
 }
-.ui-jce .fontlist .font-item-plus .icon {
+.jce-ui .fontlist .font-item-plus .icon {
   line-height: 2rem;
   width: 2rem;
   height: 2rem;
 }
-.ui-jce .fontlist > div,
-.ui-jce .fontlist label {
+.jce-ui .fontlist > div,
+.jce-ui .fontlist label {
   cursor: move;
 }
-.ui-jce .fontlist .font-item input[type="text"] {
+.jce-ui .fontlist .font-item input[type="text"] {
   margin: 0;
   float: none;
 }
-.ui-jce .fontlist .font-item[title="Webdings"] label,
-.ui-jce .fontlist .font-item[title="Wingdings"] label {
+.jce-ui .fontlist .font-item[title="Webdings"] label,
+.jce-ui .fontlist .font-item[title="Wingdings"] label {
   font-family: inherit !important;
 }
-[dir="rtl"] .ui-jce .fontlist .font-item-plus span {
+[dir="rtl"] .jce-ui .fontlist .font-item-plus span {
   text-align: right;
 }
-.ui-jce .blockformats {
+.jce-ui .blockformats {
   position: relative;
 }
-.ui-jce .blockformats .blockformat-item {
+.jce-ui .blockformats .blockformat-item {
   padding: 5px;
   min-width: 200px;
   max-width: 300px;
@@ -484,53 +1145,53 @@
   cursor: move;
   line-height: 30px;
 }
-.ui-jce .blockformats .blockformat-item i {
+.jce-ui .blockformats .blockformat-item i {
   margin: 10px 0;
 }
-.ui-jce .blockformats .blockformat-item label {
+.jce-ui .blockformats .blockformat-item label {
   display: inline-block;
   vertical-align: middle;
 }
-.ui-jce .blockformats .blockformat-item input {
+.jce-ui .blockformats .blockformat-item input {
   margin: 8px 10px;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-code,
-.ui-jce .blockformats .blockformat-item .blockformat-samp {
+.jce-ui .blockformats .blockformat-item .blockformat-code,
+.jce-ui .blockformats .blockformat-item .blockformat-samp {
   font-family: monospace;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-strong {
+.jce-ui .blockformats .blockformat-item .blockformat-strong {
   font-weight: bolder;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-em {
+.jce-ui .blockformats .blockformat-item .blockformat-em {
   font-style: italic;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-sub {
+.jce-ui .blockformats .blockformat-item .blockformat-sub {
   vertical-align: sub;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-sup {
+.jce-ui .blockformats .blockformat-item .blockformat-sup {
   vertical-align: super;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-h1 {
+.jce-ui .blockformats .blockformat-item .blockformat-h1 {
   font-size: 2em;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-h2 {
+.jce-ui .blockformats .blockformat-item .blockformat-h2 {
   font-size: 1.5em;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-h3 {
+.jce-ui .blockformats .blockformat-item .blockformat-h3 {
   font-size: 1.17em;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-h5 {
+.jce-ui .blockformats .blockformat-item .blockformat-h5 {
   font-size: 0.83em;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-h6 {
+.jce-ui .blockformats .blockformat-item .blockformat-h6 {
   font-size: 0.75em;
 }
-.ui-jce .blockformats .blockformat-item .blockformat-span {
+.jce-ui .blockformats .blockformat-item .blockformat-span {
   float: none;
   margin: 0;
   display: inline;
 }
-.ui-jce .blockformats > div:after {
+.jce-ui .blockformats > div:after {
   content: "::";
   display: block;
   position: absolute;
@@ -545,7 +1206,7 @@
 }
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2025 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -563,36 +1224,35 @@ html {
   min-width: 600px;
   display: inline-block;
 }
-.com_jce .mce-tinymce {
-  border-width: 1px;
+.jce-ui .mce-tinymce {
   box-sizing: content-box;
 }
-.com_jce .mce-tinymce .mce-statusbar {
+.jce-ui .mce-tinymce .mce-statusbar {
   border-width: 1px;
 }
-.com_jce .mce-tinymce .mce-edit-area {
-  border-width: 1px 1px 0px;
+.jce-ui .mce-tinymce .mce-edit-area {
+  border-width: 1px;
 }
-.com_jce .mce-tinymce .mce-edit-area > div {
+.jce-ui .mce-tinymce .mce-edit-area > div {
   min-height: 120px;
 }
-.com_jce .mce-tinymce .mce-edit-area > div > p {
+.jce-ui .mce-tinymce .mce-edit-area > div > p {
   white-space: pre-wrap;
   margin: 5px;
 }
-.com_jce .mce-tinymce .mce-panel.mce-edit-area {
+.jce-ui .mce-tinymce .mce-panel.mce-edit-area {
   background: #fff;
 }
-.com_jce .mce-toolbar .mce-btn,
-.com_jce .mce-toolbar .mce-btn button {
+.jce-ui .mce-toolbar .mce-btn,
+.jce-ui .mce-toolbar .mce-btn button {
   cursor: move;
 }
-.com_jce .mce-btn {
+.jce-ui .mce-btn {
   display: inline-block;
   font-size: 0;
 }
-.com_jce .widthMarker {
-  border-style: dashed;
+.jce-ui .widthMarker {
+  border: 1px dashed var(--border-color);
   border-bottom-width: 0;
   display: block;
   left: 0;
@@ -602,7 +1262,7 @@ html {
   top: -2.25em;
   box-sizing: border-box;
 }
-.com_jce .widthMarker span {
+.jce-ui .widthMarker span {
   display: inline-block;
   left: 50%;
   margin: 0 0 0 -2em;
@@ -610,16 +1270,23 @@ html {
   top: -1em;
   width: 4em;
   text-align: center;
+  background: var(--body-bg);
 }
-.com_jce .sortable-row-highlight,
-.com_jce .sortable-btn-highlight {
+.jce-ui .sortable-row-highlight,
+.jce-ui .sortable-btn-highlight {
   border: 1px dashed #9FBBDD !important;
 }
-.com_jce .sortable-row-highlight.sortable-row-highlight,
-.com_jce .sortable-btn-highlight.sortable-row-highlight {
+.jce-ui .sortable-row-highlight.sortable-row-highlight,
+.jce-ui .sortable-btn-highlight.sortable-row-highlight {
   margin: 0 0 2px 0;
 }
-.com_jce .sortable-handle {
+.jce-ui .sortable-btn-highlight {
+  display: inline-block;
+}
+.jce-ui .sortable-list-item {
+  min-height: 32px;
+}
+.jce-ui .sortable-handle {
   height: 32px;
   border: 1px solid #ddd;
   cursor: move;
@@ -631,14 +1298,14 @@ html {
   top: 0;
   right: -20px;
 }
-.com_jce .sortable-handle i {
+.jce-ui .sortable-handle i {
   height: 28px;
   line-height: 28px;
   text-align: center;
   vertical-align: middle;
   margin: 0;
 }
-.com_jce .sortable-option {
+.jce-ui .sortable-option {
   margin: 0;
   width: 20px;
   opacity: 0;
@@ -648,10 +1315,10 @@ html {
   right: -60px;
   height: 28px;
 }
-.com_jce .sortable-option i {
+.jce-ui .sortable-option i {
   line-height: 28px;
 }
-.com_jce .sortable-option.sortable-option-hover {
+.jce-ui .sortable-option.sortable-option-hover {
   opacity: 0.8;
 }
 .mce-btn-group:empty {
@@ -675,18 +1342,18 @@ html {
 .editor-button-pool .sortable-option {
   display: none;
 }
-html[dir="rtl"] .com_jce .sortable-handle {
+html[dir="rtl"] .jce-ui .sortable-handle {
   left: -30px;
   right: auto;
 }
-html[dir="rtl"] .com_jce .sortable-option {
+html[dir="rtl"] .jce-ui .sortable-option {
   left: -60px;
   right: auto;
 }
-html[dir="rtl"] .com_jce .widthMarker {
+html[dir="rtl"] .jce-ui .widthMarker {
   left: auto;
 }
-html[dir="rtl"] .com_jce .form-horizontal .control-label {
+html[dir="rtl"] .jce-ui .form-horizontal .control-label {
   float: right;
 }
 .mce-container .mce-btn .mce-caret {
@@ -701,7 +1368,6 @@ html[dir="rtl"] .com_jce .form-horizontal .control-label {
   background-color: #f5f5f5;
   border: 1px solid #ddd;
   padding: 1px;
-  margin-bottom: 2px;
 }
 .mce-container .mce-toolbar > div {
   font-size: 0;
@@ -712,7 +1378,6 @@ html[dir="rtl"] .com_jce .form-horizontal .control-label {
 }
 .mce-container .mce-listbox,
 .mce-container .mce-splitbtn {
-  border: 1px solid #ddd;
   height: 26px;
   box-sizing: border-box;
   border-radius: 2px;
@@ -771,109 +1436,83 @@ html[dir="rtl"] .com_jce .form-horizontal .control-label {
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       font-weight: bold;
   }*/
-.ui-jce .users-select {
+.jce-ui .users-select {
   position: relative;
   margin: 10px 0;
 }
-joomla-field-user + .ui-jce .users-select {
+joomla-field-user + .jce-ui .users-select {
   position: absolute;
   left: 0;
   top: 0;
   margin: 0;
   width: calc(100% - 48px);
 }
-joomla-field-user + .ui-jce .users-select joomla-field-fancy-select {
+joomla-field-user + .jce-ui .users-select joomla-field-fancy-select {
   width: 100%;
 }
-joomla-field-user + .ui-jce .users-select joomla-field-fancy-select .choices__inner {
+joomla-field-user + .jce-ui .users-select joomla-field-fancy-select .choices__inner {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
-/**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
- */
-
 .extensions-select.radio {
-    padding: 0;
+  padding: 0;
 }
-
 .extensions-select.radio input[type="radio"] {
-    display: inline-block;
-    margin: 0 5px 0 0;
-    float: none;
+  display: inline-block;
+  margin: 0 5px 0 0;
+  float: none;
 }
-
 .extensions-select label {
-    display: inline-block;
-    margin: 0 10px 0 0;
-    vertical-align: middle;
-    padding: 0;
+  display: inline-block;
+  margin: 0 10px 0 0;
+  vertical-align: middle;
+  padding: 0;
 }
-
-html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
-    border-width: 0 0 0 1px;
-    float: right;
-    padding: 0 0.2em 0 0.1em;
+html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav {
+  border-width: 0 0 0 1px;
+  float: right;
+  padding: 0 0.2em 0 0.1em;
 }
-
-html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
-    padding-left: 0.1em;
-    border-right-width: 1px;
-    margin-right: -1px;
+html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
+  padding-left: 0.1em;
+  border-right-width: 1px;
+  margin-right: -1px;
 }
-
-html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li {
-    margin: 0 1px 0.2em 0;
-    border-left: 0 none;
+html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav li {
+  margin: 0 1px 0.2em 0;
+  border-left: 0 none;
 }
-
-html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
-    margin: 0 13em 0 0;
+html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-panel {
+  margin: 0 13em 0 0;
 }
-
-.ui-bootstrap #jce div.tab-pane.tabbable.tabs-left ul li>a:first-child {
-    max-width: 100px;
-    padding-bottom: 20px;
-    padding-top: 20px;
-    white-space: pre-wrap;
-    cursor: pointer;
-
+.ui-bootstrap #jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
+  max-width: 100px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  white-space: pre-wrap;
+  cursor: pointer;
 }
-
 #jce #tabs ul li span.tabs-label {
-    margin: 5px 0;
-    display: block;
+  margin: 5px 0;
+  display: block;
 }
-
 input#profile_description {
-    width: 500px;
+  width: 500px;
 }
-
 /* Mobile stuff */
-
 @media (max-width: 767px) {
-    input[type="text"] {
-        max-width: 250px;
-    }
+  input[type="text"] {
+    max-width: 250px;
+  }
 }
-
 a.browser {
-    display: inline-block;
-    margin: 8px 0;
+  display: inline-block;
+  margin: 8px 0;
 }
-
 /*.com_jce .tabs-left .nav-tabs li a {font-size: 18px;line-height: 20px;font-weight: bold;padding: 16px 8px;}*/
-
 .com_jce .tabs-left .tab-content {
-    overflow: visible;
+  overflow: visible;
 }
-
 /*.com_jce .form-horizontal .control-label {}
 
 .com_jce .form-horizontal .controls {
@@ -884,201 +1523,170 @@ a.browser {
 .com_jce .form-horizontal .control-label + .controls {
     margin-left: 180px;
 }*/
-
-#tabs-editor .nav-tabs>li>a,
-#tabs-plugins .nav-tabs>li>a {
-    padding: 24px 12px;
-    min-height: 72px;
+#tabs-editor .nav-tabs > li > a,
+#tabs-plugins .nav-tabs > li > a {
+  padding: 24px 12px;
+  min-height: 72px;
 }
-
 [data-toggle="tab"] .mce-toolbar .mce-ico {
-    line-height: inherit;
+  line-height: inherit;
 }
-
 .checkboxes .mce-toolbar .mce-ico {
-    line-height: inherit;
+  line-height: inherit;
 }
-
 .tab-disabled {
-    display: none;
+  display: none;
 }
-
 .nav-tabs .mce-toolbar {
-    max-width: 180px;
-    white-space: normal;
+  max-width: 180px;
+  white-space: normal;
 }
-
 .nav-tabs .mce-toolbar .mce-btn {
-    margin: 2px 2px 0 0;
-    height: 32px;
+  margin: 2px 2px 0 0;
+  height: 32px;
 }
-
 .nav-tabs .mce-toolbar .mce-list-box,
 .nav-tabs .mce-toolbar .mceListBox {
-    max-width: 95px;
-    max-height: 32px;
+  max-width: 95px;
+  max-height: 32px;
 }
-
 .nav-tabs .mce-toolbar {
-    margin: 0 0 15px 0
+  margin: 0 0 15px 0;
 }
-
 .wf-repeatable-collapse .icon-bar {
-    display: block;
-    width: 18px;
-    height: 2px;
-    /*background-color: #f5f5f5;*/
-    border-radius: 1px;
+  display: block;
+  width: 18px;
+  height: 2px;
+  /*background-color: #f5f5f5;*/
+  border-radius: 1px;
 }
-
 .mceDefaultSkin.checkboxes .mceButton {
-    text-align: left;
-    max-width: 250px;
-    padding: 5px;
-    display: block;
-    cursor: default;
-
-    background-color: var(--list-group-bg);
-    color: var(--list-group-color);
+  text-align: left;
+  max-width: 250px;
+  padding: 5px;
+  display: block;
+  cursor: default;
+  background-color: var(--list-group-bg);
+  color: var(--list-group-color);
 }
-
 .mceDefaultSkin.checkboxes .mceButton:hover {
-    background-color: var(--list-group-bg);
-    color: var(--list-group-color);
-    border-color: var(--list-group-border-color);
+  background-color: var(--list-group-bg);
+  color: var(--list-group-color);
+  border-color: var(--list-group-border-color);
 }
-
-.mceDefaultSkin.checkboxes .mceButton>input[type="checkbox"] {
-    vertical-align: middle;
-    line-height: 20px;
-    margin: 5px 10px 5px 5px;
+.mceDefaultSkin.checkboxes .mceButton > input[type="checkbox"] {
+  vertical-align: middle;
+  line-height: 20px;
+  margin: 5px 10px 5px 5px;
 }
-
 .mceDefaultSkin.checkboxes .mceButton .mceIcon,
-.mceDefaultSkin.checkboxes .mceButton>label {
-    line-height: 20px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 5px;
-
-    color: var(--list-group-color);
+.mceDefaultSkin.checkboxes .mceButton > label {
+  line-height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 5px;
+  color: var(--list-group-color);
 }
-
 .tabs-left .nav-tabs,
 .tabs-left .tab-content {
-    flex-direction: column !important;
-    display: inline-block;
-    vertical-align: top;
+  flex-direction: column !important;
+  display: inline-block;
+  vertical-align: top;
 }
-
 .tabs-left .nav-tabs {
-    flex: 0 0 calc(100% / 12 * 2);
-    width: calc(100% / 12 * 2);
+  flex: 0 0 calc(100% / 12 * 2);
+  width: calc(100% / 12 * 2);
 }
-
 .tabs-left .tab-content {
-    flex: 0 0 calc(100% / 12 * 9);
-    width: calc(100% / 12 * 9);
+  flex: 0 0 calc(100% / 12 * 9);
+  width: calc(100% / 12 * 9);
 }
-
-.tabs-left>.nav-tabs>li>a {
-    min-height: 100px;
+.tabs-left > .nav-tabs > li > a {
+  min-height: 100px;
 }
-
 @keyframes donut-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
-
-.ui-jce .donut {
-    display: inline-block;
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: #888;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    animation: donut-spin 1.2s linear infinite;
+.jce-ui .donut {
+  display: inline-block;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #888;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: donut-spin 1.2s linear infinite;
 }
-
-.ui-jce .donut {
-    display: none;
-    position: relative;
-    top: 0;
-    left: 0;
-    z-index: 1001;
+.jce-ui .donut {
+  display: none;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1001;
 }
-
-.ui-jce.loading .donut {
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1001;
-    margin: -15px 0 0 -15px;
+.jce-ui.loading .donut {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1001;
+  margin: -15px 0 0 -15px;
 }
-
-.ui-jce.loading {
-    position: static;
+.jce-ui.loading {
+  position: static;
 }
-
-.ui-jce.loading:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    z-index: 1000;
+.jce-ui.loading:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
 }
-
-.ui-jce legend {
-    font-size: 1.25em;
+.jce-ui legend {
+  font-size: 1.25em;
 }
-
 /* Joomla 4 */
-.ui-jce .options-grid-form > legend {
-    font-size: 1.5em;
-    font-weight: 700;
-    line-height: 3em;
+.jce-ui .options-grid-form > legend {
+  font-size: 1.75em;
+  font-weight: 700;
+  line-height: 3.5em;
 }
-
-.ui-jce .row-fluid .form-horizontal .control-label {
-    width: auto;
-    min-width: 160px;
+.jce-ui .row-fluid .form-horizontal .control-label {
+  width: auto;
+  min-width: 160px;
 }
-
-.ui-jce .row-fluid .form-horizontal .control-label:empty {
-    min-width: inherit;
-    padding: 0;
-    width: 0;
+.jce-ui .row-fluid .form-horizontal .control-label:empty {
+  min-width: inherit;
+  padding: 0;
+  width: 0;
 }
-
-.ui-jce .checkboxes .sortable-placeholder {
-    border-style: dashed;
-    min-height: 32px;
-    display: block;
-    padding: 0.5rem;
-    cursor: move;
-    max-width: 300px;
-    box-sizing: border-box;
+.jce-ui .checkboxes .sortable-placeholder {
+  border-style: dashed;
+  min-height: 32px;
+  display: block;
+  padding: 0.5rem;
+  cursor: move;
+  max-width: 300px;
+  box-sizing: border-box;
 }
-
-.ui-jce .hide {
-    display: none;
+.jce-ui .hide {
+  display: none;
 }
-
-.ui-jce .textarea-code {
-    font-family: monospace;
-    font-size: 12px;
-    color: #444;
+.jce-ui .textarea-code {
+  font-family: monospace;
+  font-size: 12px;
+  color: #444;
 }
-
-.ui-jce .input-group-text {
-    border-radius: 0 0.25em 0.25em 0;
+.jce-ui .input-group-text {
+  border-radius: 0 0.25em 0.25em 0;
+}
+.jce-ui .form-check {
+  padding: 0;
 }

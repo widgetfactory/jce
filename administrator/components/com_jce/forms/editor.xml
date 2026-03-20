@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <config>
+        <inlinehelp button="show"/>
+    </config>
+    
+    <fields name="editor">
+        <fieldset name="editor.features" addfieldpath="/administrator/components/com_categories/models/fields">
+            <field name="width" type="text" size="5" default="" placeholder="auto" label="WF_PARAM_EDITOR_WIDTH" description="WF_PARAM_EDITOR_WIDTH_DESC" />
+            <field name="height" type="text" size="5" default="" placeholder="auto" label="WF_PARAM_EDITOR_HEIGHT" description="WF_PARAM_EDITOR_HEIGHT_DESC" />
+            <field name="toolbar_theme" type="list" default="modern" label="WF_PARAM_EDITOR_TOOLBAR_THEME" description="WF_PARAM_EDITOR_TOOLBAR_THEME_DESC">
+                <option value="modern">WF_PARAM_EDITOR_SKIN_RETINA</option>
+                <option value="modern.touch">WF_PARAM_EDITOR_SKIN_RETINA_TOUCH</option>
+                <option value="modern.dark">WF_PARAM_EDITOR_SKIN_RETINA_DARK</option>
+                <option value="default">WF_PARAM_EDITOR_SKIN_CLASSIC</option>
+                <option value="default.touch">WF_PARAM_EDITOR_SKIN_CLASSIC_TOUCH</option>
+                <option value="o2k7">WF_PARAM_EDITOR_SKIN_OFFICE_BLUE</option>
+                <option value="o2k7.silver">WF_PARAM_EDITOR_SKIN_OFFICE_SILVER</option>
+                <option value="o2k7.black">WF_PARAM_EDITOR_SKIN_OFFICE_BLACK</option>
+            </field>
+            <field name="toolbar_align" type="list" default="left" label="WF_PARAM_EDITOR_TOOLBAR_ALIGN" description="WF_PARAM_EDITOR_TOOLBAR_ALIGN_DESC">
+                <option value="left">WF_OPTION_LEFT</option>
+                <option value="center">WF_OPTION_CENTER</option>
+                <option value="right">WF_OPTION_RIGHT</option>
+            </field>
+            <field name="toolbar_location" type="list" default="top" label="WF_PARAM_EDITOR_TOOLBAR_LOCATION" description="WF_PARAM_EDITOR_TOOLBAR_LOCATION_DESC">
+                <option value="top">WF_OPTION_TOP</option>
+                <option value="bottom">WF_OPTION_BOTTOM</option>
+            </field>
+            <field name="statusbar_location" type="list" default="bottom" label="WF_PARAM_EDITOR_STATUSBAR_LOCATION" description="WF_PARAM_EDITOR_STATUSBAR_LOCATION_DESC">
+                <option value="top">WF_OPTION_TOP</option>
+                <option value="bottom">WF_OPTION_BOTTOM</option>
+                <option value="none">JNONE</option>
+            </field>
+            <field name="path" type="yesno" default="1" label="WF_PARAM_EDITOR_PATH" description="WF_PARAM_EDITOR_PATH_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="wordcount" type="yesno" default="1" label="WF_PARAM_EDITOR_WORDCOUNT" description="WF_PARAM_EDITOR_WORDCOUNT_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="resizing" type="list" default="1" label="WF_PARAM_EDITOR_RESIZING" description="WF_PARAM_EDITOR_RESIZING_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="resize_horizontal" type="yesno" default="1" label="WF_PARAM_EDITOR_RESIZE_HORIZONTAL" description="WF_PARAM_EDITOR_RESIZE_HORIZONTAL_DESC" showon="resizing:1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="xtd_buttons" type="yesno" default="1" label="WF_PARAM_EDITOR_XTD_BUTTONS" description="WF_PARAM_EDITOR_XTD_BUTTONS_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="active_tab" type="list" default="wysiwyg" label="WF_PARAM_EDITOR_ACTIVE_TAB" description="WF_PARAM_EDITOR_ACTIVE_TAB_DESC">
+                <option value="wysiwyg">WF_PARAM_EDITOR_ACTIVE_TAB_WYSIWYG</option>
+                <option value="source">WF_PARAM_EDITOR_ACTIVE_TAB_CODE</option>
+                <option value="preview">WF_PARAM_EDITOR_ACTIVE_TAB_PREVIEW</option>
+            </field>
+        </fieldset>
+        <fieldset name="editor.setup">
+            <field name="convert_urls" type="list" default="relative" label="WF_PARAM_EDITOR_CONVERT_URLS" description="WF_PARAM_EDITOR_CONVERT_URLS_DESC">
+                <option value="none">WF_OPTION_NONE</option>
+                <option value="relative">WF_OPTION_RELATIVE</option>
+                <option value="absolute">WF_OPTION_ABSOLUTE</option>
+            </field>
+            <field name="verify_html" type="list" default="" label="WF_PARAM_CLEANUP" description="WF_PARAM_EDITOR_PROFILE_CLEANUP_DESC" class="btn-group btn-group-yesno">
+                <option value="">WF_OPTION_INHERIT</option>
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="sanitize_html" type="radio" default="1" label="WF_PARAM_SANITIZE_HTML" description="WF_PARAM_EDITOR_PROFILE_SANITIZE_HTML_DESC" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="schema" type="list" default="" label="WF_PARAM_DOCTYPE" description="WF_PARAM_EDITOR_PROFILE_DOCTYPE_DESC">
+                <option value="">WF_OPTION_INHERIT</option>
+                <option value="mixed">WF_PARAM_DOCTYPE_MIXED</option>
+                <option value="html4">HTML4</option>
+                <option value="html5">HTML5</option>
+            </field>
+        </fieldset>
+        <fieldset name="editor.typography">
+            <field name="forced_root_block" type="list" default="" label="WF_PARAM_ROOT_BLOCK" description="WF_PARAM_EDITOR_PROFILE_ROOT_BLOCK_DESC">
+                <option value="">WF_OPTION_INHERIT</option>
+                
+                <option value="p">WF_OPTION_PARAGRAPH</option>
+                <option value="div">WF_OPTION_DIV</option>
+                <option value="forced_root_block:p|force_block_newlines:0">WF_OPTION_PARAGRAPH_LINEBREAK</option>
+                <option value="forced_root_block:div|force_block_newlines:0">WF_OPTION_DIV_LINEBREAK</option>
+                <option value="forced_root_block:0|force_block_newlines:1">WF_OPTION_PARAGRAPH_MIXED</option>
+                <option value="0">WF_OPTION_LINEBREAK</option>
+            </field>
+
+            <field name="profile_content_css" type="list" default="2" label="WF_PARAM_EDITOR_PROFILE_CSS" description="WF_PARAM_EDITOR_PROFILE_CSS_DESC">
+                <option value="0">WF_PARAM_CSS_ADD</option>
+                <option value="1">WF_PARAM_CSS_OVERWRITE</option>
+                <option value="2">WF_PARAM_CSS_INHERIT</option>
+            </field>
+
+            <field name="profile_content_css_custom" type="repeatable" default="" label="WF_PARAM_CSS_CUSTOM" description="WF_PARAM_CSS_CUSTOM_DESC" showon="profile_content_css:0[OR]profile_content_css:1">
+                <field type="text" size="50" hiddenLabel="true" hint="eg: templates/$template/css/content.css" />
+            </field>
+
+            <field name="custom_css" type="repeatable" default="" label="WF_PARAM_EDITOR_CUSTOM_CSS" description="WF_PARAM_EDITOR_CUSTOM_CSS_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+            
+            <field name="custom_colors" type="textarea" rows="3" cols="50" default="" label="WF_PARAM_CUSTOM_COLORS" description="WF_PARAM_CUSTOM_COLORS_DESC" placeholder="eg: #CC0000,#FF0000" />
+        </fieldset>
+        
+        <fieldset name="editor.filesystem">
+            <field name="dir" type="filesystempath" default="" size="50" placeholder="images" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC" />
+
+            <field name="dir_filter" type="repeatable" default="" label="WF_PARAM_DIRECTORY_FILTER" description="WF_PARAM_DIRECTORY_FILTER_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field name="filesystem" type="filesystem" default="joomla" label="WF_PARAM_FILESYSTEM" description="WF_PARAM_FILESYSTEM_DESC" />
+
+            <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" default="" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" />
+
+            <field name="upload_conflict" type="list" default="overwrite" label="WF_PARAM_UPLOAD_EXISTS" description="WF_PARAM_UPLOAD_EXISTS_DESC">
+                <option value="unique">WF_PARAM_UPLOAD_EXISTS_UNIQUE</option>
+                <option value="overwrite">WF_PARAM_UPLOAD_EXISTS_OVERWRITE</option>
+            </field>
+
+            <field name="upload_suffix" placeholder="_copy" type="text" default="" label="WF_PARAM_UPLOAD_SUFFIX" description="WF_PARAM_UPLOAD_SUFFIX_DESC" />
+
+            <field name="browser_position" type="list" default="bottom" label="WF_PARAM_BROWSER_POSITION" description="WF_PARAM_BROWSER_POSITION_DESC">
+                <option value="top">WF_LABEL_TOP</option>
+                <option value="bottom">WF_LABEL_BOTTOM</option>
+            </field>
+
+            <field name="folder_tree" type="yesno" default="1" label="WF_PARAM_FOLDER_TREE" description="WF_PARAM_FOLDER_TREE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="list_limit" type="list" default="all" label="WF_PARAM_LIST_LIMIT" description="WF_PARAM_LIST_LIMIT_DESC">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">WF_OPTION_ALL</option>
+            </field>
+            <field name="validate_mimetype" type="yesno" default="1" label="WF_PARAM_VALIDATE_MIMETYPE" description="WF_PARAM_VALIDATE_MIMETYPE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="websafe_mode" type="list" default="utf-8" label="WF_PARAM_WEBSAFE_MODE" description="WF_PARAM_WEBSAFE_MODE_DESC">
+                <option value="utf-8">UTF-8</option>
+                <option value="ascii">ASCII</option>
+            </field>
+            <field name="websafe_allow_spaces" type="list" default="_" label="WF_PARAM_WEBSAFE_ALLOW_SPACES" description="WF_PARAM_WEBSAFE_ALLOW_SPACES_DESC">
+                <option value="1">JYES</option>
+                <option value="_">WF_OPTION_WEBSAFE_ALLOW_SPACES_UNDERSCORE</option>
+                <option value="-">WF_OPTION_WEBSAFE_ALLOW_SPACES_DASH</option>
+                <option value=".">WF_OPTION_WEBSAFE_ALLOW_SPACES_PERIOD</option>
+            </field>
+            <field name="websafe_textcase" type="checkboxes" multiple="multiple" default="uppercase,lowercase" label="WF_PARAM_WEBSAFE_TEXTCASE" description="WF_PARAM_WEBSAFE_TEXTCASE_DESC">
+                <option value="uppercase">WF_OPTION_UPPERCASE</option>
+                <option value="lowercase">WF_OPTION_LOWERCASE</option>
+            </field>
+            <field name="upload_add_random" type="yesno" default="0" label="WF_PARAM_UPLOAD_ADD_RANDOM" description="WF_PARAM_UPLOAD_ADD_RANDOM_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="date_format" type="text" default="" hint="eg: %d/%m/%Y, %H:%M" label="WF_PARAM_DATE_FORMAT" description="WF_PARAM_DATE_FORMAT_DESC" />
+            <field name="total_files" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_LIMIT" description="WF_PARAM_TOTAL_FILES_LIMIT_DESC" />
+            <field name="total_size" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_SIZE_LIMIT" description="WF_PARAM_TOTAL_FILES_SIZE_LIMIT_DESC" />
+        </fieldset>
+
+        <fieldset name="editor.advanced">
+            <field type="container" label="WF_PARAM_STARTUP_CONTENT" description="WF_PARAM_STARTUP_CONTENT_DESC">
+				<field type="mediajce" name="startup_content_url" size="30" mediatype="html,htm,txt,md" default="" label="WF_PARAM_STARTUP_CONTENT_URL" description="WF_PARAM_STARTUP_CONTENT_URL_DESC" />
+
+				<field type="spacer" label="WF_LABEL_OR" />
+
+				<field type="code" name="startup_content_html" filter="JComponentHelper::filterText" rows="4" cols="3" class="input-xlarge" default="" label="WF_PARAM_STARTUP_CONTENT_HTML" spellcheck="false" description="WF_PARAM_STARTUP_CONTENT_HTML_DESC" />
+            </field>
+
+            <field type="spacer" />
+            
+            <field name="invalid_elements" type="repeatable" default="" label="WF_PARAM_NO_ELEMENTS" description="WF_PARAM_NO_ELEMENTS_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field name="invalid_attributes" type="repeatable" default="" label="WF_PARAM_INVALID_ATTRIBUTES" description="WF_PARAM_INVALID_ATTRIBUTES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+            
+            <field name="invalid_attribute_values" type="repeatable" default="" label="WF_PARAM_INVALID_ATTRIBUTE_VALUES" description="WF_PARAM_INVALID_ATTRIBUTE_VALUES_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+            
+            <field name="extended_elements" type="repeatable" default="" label="WF_PARAM_ELEMENTS" description="WF_PARAM_ELEMENTS_DESC">
+                <field type="text" size="50" hiddenLabel="true" />
+            </field>
+
+            <field name="validate_styles" type="yesno" default="1" label="WF_PARAM_VALIDATE_STYLES" description="WF_PARAM_VALIDATE_STYLES_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field type="container" class="inset bg-light p-3" label="WF_PARAM_CODE_BLOCKS" description="WF_PARAM_CODE_BLOCKS_DESC_WARNING" descriptionclass="alert alert-error">
+
+                <field name="code_blocks" type="yesno" default="1" label="WF_PARAM_CODE_BLOCKS_ENABLE" description="WF_PARAM_CODE_BLOCKS_ENABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                
+                <field name="allow_javascript" type="yesno" default="0" label="WF_PARAM_JAVASCRIPT" description="WF_PARAM_JAVASCRIPT_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="allow_css" type="yesno" default="0" label="WF_PARAM_CSS" description="WF_PARAM_CSS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="allow_php" type="yesno" default="0" label="WF_PARAM_PHP" description="WF_PARAM_PHP_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="allow_custom_xml" type="yesno" default="0" label="WF_PARAM_ALLOW_CUSTOM_XML" description="WF_PARAM_ALLOW_CUSTOM_XML_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </field>
+
+            <field name="protect_shortcode" type="yesno" default="0" label="WF_PARAM_PROTECT_SHORTCODE" description="WF_PARAM_PROTECT_SHORTCODE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="allow_event_attributes" type="yesno" default="0" label="WF_PARAM_ALLOW_EVENT_ATTRIBUTES" description="WF_PARAM_ALLOW_EVENT_ATTRIBUTES_DESC" showon="allow_javascript:0">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+             <field name="object_resizing" type="yesno" default="1" label="WF_PARAM_OBJECT_RESIZING" description="WF_PARAM_OBJECT_RESIZING_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field type="spacer" hr="true" />
+
+            <field type="container" showon="wordcount:1" label="WF_PARAM_EDITOR_WORDCOUNT" description="">
+
+                <field name="wordcount_limit" type="number" default="0" hint="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
+                <field name="wordcount_alert" type="yesno" default="0" label="WF_PARAM_WORDCOUNT_ALERT" description="WF_PARAM_WORDCOUNT_ALERT_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+            </field>
+
+            <field type="spacer" hr="true" />
+           
+            <field type="container" label="WF_NONEDITABLE_TITLE" description="WF_NONEDITABLE_DESC">
+
+                <field name="noneditable_class" type="text" default="" hint="mceNonEditable" label="WF_NONEDITABLE_NONEDITABLE_CLASS" description="WF_NONEDITABLE_NONEDITABLE_CLASS_DESC" />
+			    <field name="editable_class" type="text" default="" hint="mceEditable" label="WF_NONEDITABLE_EDITABLE_CLASS" description="WF_NONEDITABLE_EDITABLE_CLASS_DESC" />
+
+            </field>
+
+            <!--field name="figure_tag_style" type="yesno" default="1" label="WF_PARAM_FIGURE_TAG_STYLE" description="WF_PARAM_FIGURE_TAG_STYLE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field-->
+        </fieldset>
+    </fields>
+</form>

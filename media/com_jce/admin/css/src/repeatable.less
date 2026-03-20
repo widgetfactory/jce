@@ -1,3 +1,5 @@
+// out: false
+
 .wf-repeatable-item {
   position: relative;
 
@@ -49,6 +51,10 @@
       }
     }
 
+    .form-field-repeatable-item-group {
+      flex: 1;
+    }
+
     .form-field-repeatable-item-control {
       display: flex;
       flex-direction: row;
@@ -69,12 +75,6 @@
     &:first-child {
       .form-field-repeatable-add {
         visibility: visible;
-        display: inline-block;
-      }
-
-      .form-field-repeatable-remove {
-        visibility: visible;
-        display: inline-block;
       }
     }
   }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2048 256" width="2048pt" height="256pt">
+    <title>Real Player®</title>
+    <g>
+        <text transform="matrix(1,0,0,1,490.781,177.656)" style='font-family:-apple-systrem,BlinkMacSystremFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;font-weight:bold;font-size:128px;fill:#444;stroke:none;'>Real Player®</text>
+        <path d="M 260 64 L 260 192 L 430.667 192 L 430.667 64 L 260 64 Z  M 292 181.333 L 270.667 181.333 L 270.667 160 L 292 160 L 292 181.333 Z  M 292 138.667 L 270.667 138.667 L 270.667 117.333 L 292 117.333 L 292 138.667 Z  M 292 96 L 270.667 96 L 270.667 74.667 L 292 74.667 L 292 96 Z  M 388 181.333 L 302.667 181.333 L 302.667 74.667 L 388 74.667 L 388 181.333 Z  M 420 181.333 L 398.667 181.333 L 398.667 160 L 420 160 L 420 181.333 Z  M 420 138.667 L 398.667 138.667 L 398.667 117.333 L 420 117.333 L 420 138.667 Z  M 420 96 L 398.667 96 L 398.667 74.667 L 420 74.667 L 420 96 Z  M 324 96 L 324 160 L 366.667 128 L 324 96 Z" fill="#444"/>
+    </g>
+</svg>

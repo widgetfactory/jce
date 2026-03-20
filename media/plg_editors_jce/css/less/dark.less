@@ -1,0 +1,321 @@
+.uk-jce-theme-dark {
+    --wfe-bg: #2B3035;
+    --wfe-bg-active: rgba(255, 255, 255, 0.2);
+    --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+    --wfe-border-color: rgba(255, 255, 255, 0.15);
+    --wfe-color: #dee2e6;
+    --wfe-modal-bg: #212529;
+    --wfe-modal-border-color: rgba(255, 255, 255, 0.15);
+    --wfe-modal-input-focus: #86b7fe;
+
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+
+    input[type],
+    select,
+    textarea,
+    .uk-datalist-control {
+        background-color: var(--wfe-modal-bg);
+        border-color: var(--wfe-modal-border-color);
+        color: var(--wfe-color);
+
+        &:focus,
+        &:active {
+            border-color: var(--wfe-modal-input-focus);
+            background-color: var(--wfe-modal-bg);
+            color: var(--wfe-color);
+        }
+
+        &:disabled {
+            border-color: var(--wfe-modal-border-color);
+            background-color: var(--wfe-bg-hover);
+            color: var(--wfe-bg-hover);
+        }
+
+        .uk-datalist-button {
+            &:disabled {
+                background-color: transparent;
+                color: var(--wfe-bg-hover);
+            }
+        }
+
+        input {
+            &:focus {
+                +.uk-datalist-button {
+                    border-color: var(--wfe-modal-input-focus);
+                    background-color: var(--wfe-modal-bg);
+                    color: var(--wfe-color);
+                }
+            }
+        }
+    }
+
+    .uk-dropdown {
+        background-color: var(--wfe-modal-bg);
+        border-color: var(--wfe-modal-border-color);
+        color: var(--wfe-color);
+
+        li {
+            &:focus {
+                background-color: var(--wfe-modal-input-focus);
+            }
+
+            >a {
+                color: var(--wfe-color);
+            }
+        }
+    }
+
+    .uk-button {
+        background-color: var(--wfe-modal-bg);
+        border-color: var(--wfe-modal-border-color);
+        color: var(--wfe-color);
+        text-shadow: none;
+
+        &.uk-button-primary {
+            background-color: #337ab7;
+        }
+
+        &:hover {
+            color: var(--wfe-color);
+        }
+    }
+
+    .uk-tab {
+        border-color: var(--wfe-modal-border-color);
+
+        >li {
+
+            >a,
+            >button {
+                background-color: var(--wfe-modal-bg);
+                border-color: transparent;
+                color: var(--wfe-color);
+                text-shadow: none;
+                padding-bottom: 7px;
+                margin-bottom: 1px;
+            }
+
+            &.uk-active {
+
+                >button,
+                >a {
+                    border-color: var(--wfe-modal-border-color) var(--wfe-modal-border-color) transparent;
+                    padding-bottom: 8px;
+                    margin-bottom: -1px;
+                }
+            }
+        }
+    }
+
+    .uk-placeholder {
+        border-color: var(--wfe-modal-border-color);
+        background-color: var(--wfe-bg-hover);
+        color: var(--wfe-color);
+    }
+
+    .uk-modal-footer {
+        border-color: var(--wfe-modal-border-color);
+        background-color: var(--wfe-modal-bg);
+
+        .uk-button-primary {
+            &:hover {
+                background-color: #286090;
+            }
+        }
+
+        .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success) {
+            background-color: var(--wfe-modal-bg);
+            border-color: var(--wfe-modal-border-color);
+
+            &:hover {
+                color: var(--wfe-color);
+                background-color: var(--wfe-bg-hover);
+            }
+        }
+    }
+
+    .wf-colorpicker {
+        border-color: var(--wfe-modal-border-color);
+        background-color: var(--wfe-modal-bg);
+        color: var(--wfe-color);
+
+        #colorpicker_colorname {
+            color: var(--wfe-color);
+        }
+    }
+
+    .preview {
+        border-color: var(--wfe-modal-border-color);
+        background-color: transparent;
+        color: var(--wfe-color);
+    }
+
+    /* File Browser */
+    #browser {
+        background-color: var(--wfe-modal-bg);
+
+        main {
+            >div {
+                border-color: var(--wfe-modal-border-color);
+            }
+        }
+
+        .uk-navbar,
+        #tree-body,
+        #info-body {
+            border-color: var(--wfe-modal-border-color);
+            background-color: transparent;
+            color: var(--wfe-color);
+        }
+
+        .uk-navbar {
+            .uk-navbar-content {
+                text-shadow: none;
+            }
+
+            .uk-button {
+                &.action {
+                    background-color: transparent;
+                    border-color: var(--wfe-modal-border-color);
+                }
+
+                &:hover,
+                &:focus {
+                    background-color: transparent;
+                }
+
+                &:first-child {
+                    border-color: var(--wfe-modal-border-color);
+                }
+            }
+        }
+
+        .uk-tree-active>.uk-tree-row,
+        .uk-tree-row:hover {
+            background-color: var(--wfe-bg-hover);
+        }
+
+        .item-list {
+            li {
+                border-color: transparent;
+
+                &.selected {
+                    color: var(--wfe-color);
+                    background-color: var(--wfe-bg-hover);
+                }
+            }
+        }
+
+        #browser-buttons {
+            border-color: var(--wfe-modal-border-color);
+
+            .button {
+                color: var(--wfe-color);
+            }
+        }
+
+        &.view-mode-grid {
+            .item-list {
+                li {
+                    border-color: var(--wfe-modal-border-color);
+
+                    &.folder:not(.selected) {
+                        background-color: transparent;
+                    }
+
+                    .uk-item-checkbox {
+                        background-color: var(--wfe-modal-bg);
+                    }
+
+                    &:after {
+                        background-color: transparent;
+                    }
+                }
+
+                &.ui-sortable {
+                    .file {
+                        &.selected {
+                            &:after {
+                                color: var(--wfe-color);
+                            }
+                        }
+                    }
+                }
+            }
+
+            .gif:not(.selected),
+            .png:not(.selected) {
+                .uk-thumbnail {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+
+    .uk-modal-dialog,
+    .uk-modal-header {
+        background-color: var(--wfe-modal-bg);
+        border-color: var(--wfe-modal-border-color);
+    }
+
+    .uk-modal-header,
+    .uk-modal-footer {
+        border-color: transparent;
+    }
+
+    .uk-modal-dialog {
+        * {
+            color: var(--wfe-color);
+        }
+
+        .uk-close {
+
+            &:focus,
+            &:hover {
+                color: var(--wfe-color);
+                background-color: var(--wfe-bg-hover);
+            }
+        }
+    }
+
+    .uk-comment * {
+        color: var(--wfe-color);
+    }
+
+    .uk-tree-active {
+        >.uk-tree-row {
+            background-color: var(--wfe-bg-active);
+        }
+
+    }
+
+    .uk-tree-row:hover {
+        background-color: var(--wfe-bg-hover);
+    }
+
+    .uk-pagination {
+        >li {
+            >a {
+                background-color: var(--wfe-modal-bg);
+                color: var(--wfe-color);
+                text-shadow: none;
+            }
+        }
+    }
+
+    .uk-accordion-title {
+        background-color: var(--wfe-bg-hover);
+        border-color: var(--wfe-modal-border-color);
+    }
+
+    .uk-panel-box {
+        background-color: var(--wfe-bg-hover);
+        border-color: var(--wfe-modal-border-color);
+        color: var(--wfe-color);
+    }
+
+    .uk-form-icon>[class*=uk-icon-] {
+        color: var(--wfe-color);
+    }
+}

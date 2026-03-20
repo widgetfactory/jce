@@ -1,0 +1,209 @@
+/* Progress,Resize */
+
+.mceDefaultSkin .mceBlocker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    background: #fff;
+    opacity: 0.8;
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.mceDefaultSkin .mceProgress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+}
+
+.mceDefaultSkin .mceProgress:after {
+    content: "";
+    display: block;
+    border: 0.25rem solid rgba(0, 0, 0, 0.3);
+    border-left-color: #444;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    animation: donut-spin 1.2s linear infinite;
+    z-index: 10001;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -1rem 0 0 -1rem;
+    box-sizing: border-box;
+}
+
+.mceDefaultSkin .mcePlaceHolder {
+    border: 1px dotted gray
+}
+
+.mceDefaultSkin .mcePanel.mceContextPanel::before,
+.mceDefaultSkin .mcePanel.mceContextPanel::after {
+    position: absolute;
+    left: 50%;
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    border-bottom-color: transparent;
+    content: "";
+}
+
+.mceDefaultSkin .mcePanel.mceContextPanel::before {
+    top: -9px;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    border-width: 0 9px 9px;
+    margin-left: -9px;
+}
+
+.mceDefaultSkin .mcePanel.mceContextPanel::after {
+    top: -8px;
+    border-bottom-color: #fff;
+    border-width: 0 8px 8px;
+    margin-left: -8px;
+}
+
+.mceDefaultSkin.mceArrowDown .mcePanel.mceContextPanel::before {
+    bottom: -9px;
+    border-top-color: rgba(0, 0, 0, 0.2);
+    border-width: 9px 9px 0;
+    margin-left: -9px;
+    top: initial;
+}
+
+.mceDefaultSkin.mceArrowDown .mcePanel.mceContextPanel::after {
+    bottom: -8px;
+    border-top-color: #fff;
+    border-width: 8px 8px 0;
+    margin-left: -8px;
+    top: initial;
+}
+
+.mceDefaultSkin .mceMenu div[class*="mceFontSize"] {
+    margin: 0.125em;
+}
+
+.mceCharacterMap {
+    padding: 0;
+}
+
+.mceCharacterMap>div {
+    flex: 1;
+}
+
+.mceModal .mceModalBody[dir="rtl"] .mceCharacterMap>div {
+    text-align: right;
+}
+
+.mceCharacterMap>div+div {
+    max-width: 11em;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+.mceModal .mceModalContent .mceCharacterMap button {
+    background: #fff;
+    width: 1.5em;
+    min-width: inherit;
+    height: 1.5em;
+    padding: 0;
+    line-height: 1rem;
+    vertical-align: middle;
+    appearance: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+
+    border: 1px solid #ddd;
+    display: inline-block;
+    margin: 0 1px 1px 0;
+}
+
+.mceModal .mceModalContent .mceModalRow.mceCharacterMap {
+    align-items: inherit;
+}
+
+.mceModal .mceModalContent .mceCharacterMap button:hover,
+.mceModal .mceModalContent .mceCharacterMap button:focus {
+    border: 1px solid #ccc;
+    background-color: #e6e6e6;
+}
+
+.mceCharacterMapDescription h1 {
+    line-height: 2;
+    font-size: 5em;
+    height: 2em;
+    text-align: center;
+    vertical-align: middle;
+
+    flex: 1;
+}
+
+.mceCharacterMapDescription h3 {
+    line-height: 2em;
+    font-size: 1.25em;
+    height: 2em;
+    text-align: center;
+}
+
+.mceCharacterMapDescription h4 {
+    line-height: 1.5em;
+    font-size: 1em;
+    text-align: center;
+    color: #888;
+}
+
+.mceCharacterMapDescription {
+    font-size: 1em;
+}
+
+.mceCharacterMap ul li:hover,
+.mceCharacterMap ul li:hover button {
+    background: #f5f5f5;
+    color: #444;
+    text-decoration: none;
+}
+
+/*.mceDefaultSkin .mceButton:focus::after,
+.mceDefaultSkin .mceSplitButton:focus::after,
+.mceDefaultSkin .mceListBox:focus::after {
+    content: attr(title);
+    position: absolute;
+    background: #444;
+    color: #fff;
+    font-size: 12px;
+    width: 64px;
+    line-height: 1;
+    z-index: 100;
+    padding: 4px;
+    border-radius: 2px;
+    white-space: pre-wrap;
+    word-wrap: normal;
+    left: -20px;
+    top: 36px;
+    text-align: center;
+}*/
+
+input::placeholder,
+textarea::placeholder {
+    margin: 0 0.5em;
+}
+
+.mceSearchCount {
+    font-size: 14px;
+    line-height: 2em;
+    display: inline-block;
+    min-width: 2em;
+}

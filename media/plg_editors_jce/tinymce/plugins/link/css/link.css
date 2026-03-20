@@ -1,0 +1,112 @@
+/* CSS file for advimage plugin popup */
+
+#href {
+    padding-right: 2px !important;
+    width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#link_tab {
+    height: 100%;
+}
+
+#link_tab fieldset {
+    margin: 10px 0;
+    padding: 2px;
+}
+
+#link-options {
+    padding: 5px;
+    margin: 5px 0;
+    height: calc(100% - 200px);
+    box-sizing: border-box;
+}
+
+#link-browser {
+    overflow: auto;
+    padding: 0 5px;
+    box-sizing: border-box;
+    height: calc(100% - 42px);
+    margin-top: 5px;
+}
+
+#text::-moz-placeholder {
+    color: transparent !important;
+}
+
+#text::-webkit-input-placeholder {
+    color: transparent !important;
+}
+
+#text:-ms-input-placeholder {
+    color: transparent !important;
+}
+
+#text[disabled]::-moz-placeholder {
+    color: inherit !important;
+}
+
+#text[disabled]::-webkit-input-placeholder {
+    color: inherit !important;
+}
+
+#text[disabled]::-moz-placeholder {
+    color: inherit !important;
+}
+
+.anchor .uk-icon-file-text:before {
+    content: "\eca0";
+}
+
+.uk-tree {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.uk-tree li {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+.uk-tree-node li {
+    position: relative;
+}
+
+.file .uk-tree-row > a {
+    padding: 0 0 0 32px;
+}
+
+.uk-tree-node li.anchor {
+    padding: 0 0 0 64px;
+}
+
+.uk-tree-node li button.link-preview {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.uk-tree-node li.file:hover button.link-preview,
+.uk-tree-node li.file:focus button.link-preview {
+    visibility: visible;
+    pointer-events: inherit;
+}
+
+.uk-tree a {
+    width: calc(100% - 64px);
+}
+
+.uk-tree-row .uk-tree-text {
+    width: calc(100% - 38px);
+}
+
+.uk-button-link:hover {
+    text-decoration: none;
+}
+
+.uk-icon {
+    pointer-events: none;
+}

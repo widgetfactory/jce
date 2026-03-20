@@ -1,0 +1,14 @@
+/* CSS file for table dialog in the table plugin */
+
+#merge_tab .uk-width-3-10 {
+    width: 30% !important;
+}
+
+#merge_tab .uk-width-7-10 {
+    width: 70% !important;
+}
+
+#numcols,
+#numrows {
+    width: 50px;
+}

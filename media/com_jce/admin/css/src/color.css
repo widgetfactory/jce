@@ -26,20 +26,20 @@
     overflow: hidden;
 }
 
-.ui-jce .wf-colorpicker .close {
+.jce-ui .wf-colorpicker .close {
     position: absolute;
     right: 0.5rem;
     top: 0.25rem;
     z-index: 10;
 }
 
-.ui-jce .wf-colorpicker.tooltip {
+.jce-ui .wf-colorpicker.tooltip {
     margin: 0;
     padding: 0;
     font-size: 12px;
 }
 
-.ui-jce .wf-colorpicker.tooltip.in {
+.jce-ui .wf-colorpicker.tooltip.in {
     opacity: 1;
     filter: alpha(opacity=100);
 }
@@ -49,7 +49,7 @@
     height: calc(100% - 49px);
 }
 
-.ui-jce .wf-colorpicker>div {
+.jce-ui .wf-colorpicker>div {
     height: 100%;
     background: inherit;
     box-sizing: border-box;
@@ -119,21 +119,21 @@
     content: "#";
 }
 
-.ui-jce .wf-colorpicker #colorpicker_color {
+.jce-ui .wf-colorpicker #colorpicker_color {
     width: 50px;
     font-size: 14px;
     height: 24px;
 }
 
-.ui-jce .tooltip.wf-colorpicker .close,
-.ui-jce .tooltip.wf-colorpicker .close:hover {
+.jce-ui .tooltip.wf-colorpicker .close,
+.jce-ui .tooltip.wf-colorpicker .close:hover {
     position: absolute;
     right: 5px;
     color: #444;
     z-index: 100;
 }
 
-.ui-jce .wf-colorpicker .tooltip-inner {
+.jce-ui .wf-colorpicker .tooltip-inner {
     max-width: inherit;
     text-align: inherit;
 }

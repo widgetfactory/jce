@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset addfieldpath="/administrator/components/com_jce/models/fields" />
+
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			label="COM_PLUGINS_FILTER_SEARCH_LABEL"
+			description="COM_PLUGINS_SEARCH_IN_TITLE"
+			hint="JSEARCH_FILTER"
+		/>
+
+		<field
+			name="published"
+			type="status"
+			label="JOPTION_SELECT_PUBLISHED"
+			description="JOPTION_SELECT_PUBLISHED_DESC"
+			onchange="this.form.submit();"
+			filter="0,1"
+			>
+			<option value="">JOPTION_SELECT_PUBLISHED</option>
+		</field>
+
+		<field
+			name="area"
+			type="list"
+			label="WF_PROFILES_AREA"
+			description="WF_PROFILES_AREA_DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">WF_PROFILES_AREA_FILTER_SELECT</option>
+			<option value="1">WF_PROFILES_AREA_FRONTEND</option>
+            <option value="2">WF_PROFILES_AREA_BACKEND</option>
+		</field>
+
+		<field
+			name="device"
+			type="list"
+			label="WF_PROFILES_DEVICE"
+			description="WF_PROFILES_DEVICE_DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">WF_PROFILES_DEVICE_FILTER_SELECT</option>
+			<option value="phone">WF_PROFILES_DEVICE_PHONE</option>
+            <option value="tablet">WF_PROFILES_DEVICE_TABLET</option>
+            <option value="desktop">WF_PROFILES_DEVICE_DESKTOP</option>
+		</field>
+
+		<field
+			name="components"
+			type="components"
+			label="WF_PROFILES_COMPONENTS"
+			description="WF_PROFILES_COMPONENTS_DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">WF_PROFILES_COMPONENTS_FILTER_SELECT</option>
+		</field>
+
+		<field
+			name="usergroups"
+			type="usergrouplist"
+			label="WF_PROFILES_GROUPS"
+			description="WF_PROFILES_GROUPS_DESC"
+			onchange="this.form.submit();"
+			>
+			<option value="">WF_PROFILES_GROUPS_FILTER_SELECT</option>
+		</field>
+
+	</fields>
+
+	<fields name="list">
+		<field
+			name="fullordering"
+			type="list"
+			label="JGLOBAL_SORT_BY"
+			description="JGLOBAL_SORT_BY"
+			onchange="this.form.submit();"
+			default="folder ASC"
+		>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
+			<option value="ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+			<option value="published ASC">JSTATUS_ASC</option>
+			<option value="published DESC">JSTATUS_DESC</option>
+			<option value="name ASC">JGLOBAL_TITLE_ASC</option>
+			<option value="name DESC">JGLOBAL_TITLE_DESC</option>
+			<option value="id ASC">JGRID_HEADING_ID_ASC</option>
+			<option value="id DESC">JGRID_HEADING_ID_DESC</option>
+		</field>
+
+		<field
+			name="limit"
+			type="limitbox"
+			class="input-mini"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+	</fields>
+</form>

@@ -8,12 +8,12 @@
  * other free or open source software ddcenses.
  */
 
-.ui-jce {
+.jce-ui {
   .filetype {
     display: inline-block;
+    min-width: 300px;
 
     .filetype-list {
-      display: none;
       list-style: none;
       padding: 0;
       margin: 5px 0 10px 0;
@@ -32,8 +32,6 @@
         .file {
           width: 20px;
           height: 20px;
-          display: inline-block;
-          vertical-align: middle;
           margin: 0 5px;
 
           &.filetype-custom {
@@ -49,7 +47,6 @@
           align-items: center;
           width: 100%;
           line-height: 28px;
-          max-width: inherit;
         }
 
         input[type="text"] {
@@ -62,7 +59,7 @@
         }
 
         .filetype-remove {
-          display: inline-block;
+          display: none;
         }
 
         &.filetype-custom {

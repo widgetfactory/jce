@@ -1,4 +1,6 @@
-.ui-jce {
+// out: false
+
+.jce-ui {
     .tooltip {
       position: absolute;
       z-index: 1030;
@@ -6,7 +8,6 @@
       font-size: 11px;
       line-height: 1.4;
       opacity: 0;
-      filter: alpha(opacity=0);
       visibility: visible;
       text-align: left;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -14,7 +15,6 @@
   
       &.in {
         opacity: 0.8;
-        filter: alpha(opacity=80);
       }
   
       &.top, &.right, &.bottom, &.left {
@@ -113,7 +113,7 @@
       }
   
       .tooltip-inner h4 {
-        margin: 5px 0px;
+        margin: 5px 0;
         font-size: 12px;
       }
     }

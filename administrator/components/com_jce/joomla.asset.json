@@ -1,0 +1,109 @@
+{
+  "$schema": "https://developer.joomla.org/schemas/json-schema/web_assets.json",
+  "name": "com_jce",
+  "version": "3.0.0",
+  "description": "This file contains details of the assets used by JCE.",
+  "license": "GPL-2.0-or-later",
+  "assets": [
+    {
+      "name": "com_jce.core.style",
+      "description": "The file containing the core css for the extension.",
+      "type": "style",
+      "uri": "media/com_jce/admin/css/core.min.css",
+      "weight": 500
+    },
+    {
+      "name": "com_jce.cpanel.style",
+      "description": "The file containing the control panel css for the extension.",
+      "type": "style",
+      "uri": "media/com_jce/admin/css/cpanel.min.css",
+      "dependencies": [
+        "com_jce.core.style"
+      ]
+    },
+    {
+      "name": "com_jce.profiles.style",
+      "description": "The file containing the profiles css for the extension.",
+      "type": "style",
+      "uri": "media/com_jce/admin/css/profiles.min.css",
+      "dependencies": [
+        "com_jce.core.style"
+      ]
+    },
+    {
+      "name": "com_jce.profile.style",
+      "description": "The file containing the profile css for the extension.",
+      "type": "style",
+      "uri": "media/com_jce/admin/css/profile.min.css",
+      "dependencies": [
+        "com_jce.core.style"
+      ]
+    },
+    {
+      "name": "com_jce.filebrowser.style",
+      "description": "The file containing the File Browser css for the extension.",
+      "type": "style",
+      "uri": "media/com_jce/admin/css/browser.min.css",
+      "dependencies": [
+        "com_jce.core.style"
+      ]
+    },
+    {
+      "name": "com_jce.core.script",
+      "description": "The file containing the core javascript for the extension.",
+      "type": "script",
+      "uri": "media/com_jce/admin/js/core.min.js",
+      "attributes": {
+        "defer": true
+      }
+    },
+    {
+      "name": "com_jce.cpanel.script",
+      "description": "The file containing the control panel javascript for the extension.",
+      "type": "script",
+      "uri": "media/com_jce/admin/js/cpanel.min.js",
+      "attributes": {
+        "defer": true
+      },
+      "dependencies": [
+        "com_jce.core.script"
+      ]
+    },
+    {
+      "name": "com_jce.profiles.script",
+      "description": "The file containing the profiles javascript for the extension.",
+      "type": "script",
+      "uri": "media/com_jce/admin/js/profiles.min.js",
+      "attributes": {
+        "defer": true
+      },
+      "dependencies": [
+        "com_jce.core.script"
+      ]
+    },
+    {
+      "name": "com_jce.profile.script",
+      "description": "The file containing the profile javascript for the extension.",
+      "type": "script",
+      "uri": "media/com_jce/admin/js/profile.min.js",
+      "attributes": {
+        "defer": true
+      },
+      "dependencies": [
+        "com_jce.core.script"
+      ]
+    },
+    {
+      "name": "com_jce.filebrowser.script",
+      "description": "The file containing the file browser javascript for the extension.",
+      "type": "script",
+      "uri": "media/com_jce/admin/js/browser.min.js",
+      "attributes": {
+        "defer": true
+      },
+      "dependencies": [
+        "com_jce.core.script"
+      ]
+    }
+  ]
+}
