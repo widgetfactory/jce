@@ -515,7 +515,6 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $admin . '/helpers',
             $admin . '/models',
             $admin . '/views',
-            $admin . '/includes',
             $admin . '/tables',
             $admin . '/media',
 
