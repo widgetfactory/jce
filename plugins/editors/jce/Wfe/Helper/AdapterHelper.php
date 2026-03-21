@@ -430,12 +430,8 @@ class AdapterHelper
         return $name;
     }
 
-    public static function getParam($application = null, $key, $default = '')
+    public static function getParam($application, $key, $default = '')
     {
-        if (is_null($application)) {
-            $application = \Wfe\Editor\Plugin\AbstractPlugin::getInstance();
-        }
-
         $keys = explode('.', $key);
 
         // adapter type, eg: media
