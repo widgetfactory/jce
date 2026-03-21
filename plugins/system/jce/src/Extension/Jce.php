@@ -147,9 +147,6 @@ final class Jce extends CMSPlugin
 
         $document = $app->getDocument();
 
-        // load scripts and styles for core JCE Media field
-        HTMLHelper::_('jquery.framework');
-
         $option = $app->input->getCmd('option');
         $component = ComponentHelper::getComponent($option);
 
