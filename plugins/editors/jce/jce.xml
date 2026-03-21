@@ -28,9 +28,4 @@
     <media folder="media/editors/jce" destination="jce">
         <folder>icons</folder>
     </media>
-
-    <languages folder="administrator/language/en-GB">
-        <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
-        <language tag="en-GB">en-GB.plg_editors_jce.sys.ini</language>
-    </languages>
 </extension>
