@@ -195,7 +195,12 @@ class Application
         $plugin = $plugins[$name];
 
         if (isset($plugin->checksum) && strlen($plugin->checksum) == 64) {
-            $path = $plugin->path . '/' . $plugin->name . '.php';
+            // default for core and pro plugins
+            $path = $plugin->path . '/Plugin.php';
+
+            if (!is_file($path)) {
+                $path = $plugin->path . '/' . $plugin->name . '.php';
+            }
 
             if (!is_file($path)) {
                 return false;
