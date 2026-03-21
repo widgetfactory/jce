@@ -15,21 +15,18 @@
     <namespace path="src">Joomla\Component\Jce</namespace>
 
     <files folder="components/com_jce">
-        <folder>editor</folder>
-        <folder>views</folder>
-        <file>jce.php</file>
+        <folder>src</folder>
+        <folder>tmpl</folder>
     </files>
 
     <!-- Component Media -->
     <media folder="media/com_jce" destination="com_jce">
         <folder>admin</folder>
-        <folder>editor</folder>
         <folder>site</folder>
     </media>
 
     <languages folder="language/en-GB">
         <language tag="en-GB">en-GB.com_jce.ini</language>
-        @@language-pro@@
     </languages>
 
     <!-- SQL query files to execute on installation -->
@@ -56,20 +53,17 @@
         </submenu>
 
         <files folder="administrator/components/com_jce">
-            <folder>controller</folder>
-            <folder>helpers</folder>
+            <folder>forms</folder>
             <folder>includes</folder>
             <folder>layouts</folder>
-            <folder>models</folder>
+            <folder>services</folder>
             <folder>sql</folder>
-            <folder>tables</folder>
+            <folder>src</folder>
+            <folder>tmpl</folder>
             <folder>vendor</folder>
-            <folder>views</folder>
             <file>access.xml</file>
             <file>config.xml</file>
-            <file>controller.php</file>
             <file>index.html</file>
-            <file>jce.php</file>
             <file>joomla.asset.json</file>
             <file>LICENCE.txt</file>
         </files>
