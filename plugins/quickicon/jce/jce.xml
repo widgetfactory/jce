@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.9" type="plugin" group="quickicon" method="upgrade">
-	<name>plg_quickicon_jce</name>
-	<version>2.9.90-beta6</version>
-    <creationDate>30-07-2025</creationDate>
+<extension type="plugin" group="quickicon" method="upgrade">
+    <name>plg_quickicon_jce</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
     <author>Ryan Demmer</author>
-    <authorEmail>info@joomlacontenteditor.net</authorEmail>
+    <authorEmail>@@email@@</authorEmail>
     <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
-    <copyright>Copyright (C) 2006 - 2025 Ryan Demmer. All rights reserved</copyright>
-    <license>GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html</license>
-	<description>PLG_QUICKICON_JCE_XML_DESCRIPTION</description>
-	<files folder="plugins/quickicon/jce">
-		<filename plugin="jce">jce.php</filename>
-	</files>
-	<languages folder="administrator/language/en-GB">
-      <language tag="en-GB">en-GB.plg_quickicon_jce.ini</language>
-      <language tag="en-GB">en-GB.plg_quickicon_jce.sys.ini</language>
-  </languages>
+    <copyright>@@copyright@@</copyright>
+    <license>@@licence@@</license>
+    <description>PLG_QUICKICON_JCE_XML_DESCRIPTION</description>
+
+    <namespace path="src">Joomla\Plugin\Quickicon\Jce</namespace>
+
+    <files folder="plugins/quickicon/jce">
+        <folder plugin="jce">language</folder>
+        <folder>services</folder>
+        <folder>src</folder>
+    </files>
+
 </extension>

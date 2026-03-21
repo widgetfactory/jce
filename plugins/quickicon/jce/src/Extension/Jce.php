@@ -1,32 +1,29 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009 - 2023 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Installer.Jce
+ *
+ * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved
+ * @copyright   Copyright (C) 2023 - 2024 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
+namespace Joomla\Plugin\Quickicon\Jce\Extension;
+
+\defined('_JEXEC') or die;
+
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Language\Text;
 
-/**
- * JCE File Browser Quick Icon plugin.
- *
- * @since		2.1
- */
-class plgQuickiconJce extends CMSPlugin
+class Jce extends CMSPlugin
 {
     public function __construct(&$subject, $config)
     {
         parent::__construct($subject, $config);
 
-        $app = Factory::getApplication();
+        $app = $this->getApplication();
 
         // only in Admin and only if the component is enabled
         if ($app->getClientId() !== 1 || ComponentHelper::getComponent('com_jce', true)->enabled === false) {
@@ -42,13 +39,15 @@ class plgQuickiconJce extends CMSPlugin
             return;
         }
 
-        $user = Factory::getUser();
+        $app = $this->getApplication();
+
+        $user = $app->getIdentity();
 
         if (!$user->authorise('jce.browser', 'com_jce')) {
             return;
         }
 
-        $language = Factory::getLanguage();
+        $language = $app->getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
         return array(array(
