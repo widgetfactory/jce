@@ -13,7 +13,6 @@ import BlockFormats from './blockformats.js';
 import Fonts from './fonts.js';
 import Filetypes from './filetype.js';
 import StyleFormats from './styleformat.js';
-import FileSystem from './filesystem.js';
 
 function htmlspecialchars_decode(str) {
     var reverseEntities = {
@@ -147,7 +146,6 @@ function init() {
     Fonts.setup();
     Filetypes.setup();
     StyleFormats.setup();
-    FileSystem.setup();
 
     // Layout
     Layout.createLayout();
