@@ -184,8 +184,11 @@ class Parser
 
     protected static function getOverrides()
     {
+        $app = Factory::getApplication();
+    
         // get the language file
-        $language = Factory::getLanguage();
+        $language = $app->getLanguage();
+        
         // get language tag
         $tag = $language->getTag();
 
@@ -337,13 +340,13 @@ class Parser
             $files[] = JPATH_SITE . '/language/en-GB/en-GB.com_jce.ini';
 
             // add pro language file
-            $files[] = JPATH_SITE . '/language/en-GB/en-GB.com_jce_pro.ini';
+            $files[] = JPATH_PLUGINS . '/system/jcepro/language/en-GB/en-GB.plg_system_jcepro.ini';
 
             // non-english language
             if ($tag != 'en-GB') {
                 if (is_dir($path)) {
-                    $core = $path . '/' . $tag . '.com_jce.ini';
-                    $pro = $path . '/' . $tag . '.com_jce_pro.ini';
+                    $core   = $path . '/' . $tag . '.com_jce.ini';
+                    $pro    = $path . '/' . $tag . '.com_jce_pro.ini';
 
                     if (is_file($core)) {
                         $files[] = $core;
@@ -362,7 +365,7 @@ class Parser
             $plugins = $this->get('plugins');
 
             if (!empty($plugins)) {
-                foreach ($plugins->external as $name => $plugin) {
+                foreach ($plugins['external'] as $name => $plugin) {
                     // rewrite name from plugin url
                     $name = basename(dirname($plugin));
                     $name = str_replace('plg_jce_', '', $name);
