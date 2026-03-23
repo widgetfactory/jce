@@ -3,27 +3,27 @@
  * @package     Wfx.JCE
  * @subpackage  JCE Admin
  *
- * @copyright   Copyright (C) 2009 - 2023 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (C) 2009 - 2024 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 namespace Joomla\Component\Jce\Administrator\Helper;
 
-defined('JPATH_SITE') or die();
+\defined('_JEXEC') or die;
 
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Database\Table;
-use Joomla\Filesystem\File;
-use Joomla\Filesystem\Folder;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Date\Date;
-use Joomla\CMS\Access\Access;
-
-use Wfe\Utility\StringHelper;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Component\Jce\Administrator\Table\ProfilesTable;
 
 abstract class ProfilesHelper
 {
+    /**
+     * Path to the default profiles XML manifest.
+     */
+    private const PROFILES_XML = JPATH_ADMINISTRATOR . '/components/com_jce/data/profiles.xml';
+
     /**
      * Create the Profiles table.
      *
@@ -31,19 +31,12 @@ abstract class ProfilesHelper
      */
     public static function createProfilesTable()
     {
-        jimport('joomla.installer.helper');
-
         $app = Factory::getApplication();
+        $db  = Factory::getContainer()->get(DatabaseInterface::class);
 
-        $db = Factory::getDBO();
-        $driver = strtolower($db->name);
+        $driver = strtolower($db->getName());
 
         switch ($driver) {
-            default:
-            case 'mysql':
-            case 'mysqli':
-                $driver = 'mysql';
-                break;
             case 'sqlsrv':
             case 'sqlazure':
             case 'sqlzure':
@@ -53,237 +46,274 @@ abstract class ProfilesHelper
             case 'pgsql':
                 $driver = 'postgresql';
                 break;
+            default:
+                $driver = 'mysql';
+                break;
         }
 
-        $file = JPATH_ADMINISTRATOR . '/components/com_jce/sql/' . $driver . '.sql';
+        $file  = JPATH_ADMINISTRATOR . '/components/com_jce/sql/' . $driver . '.sql';
         $error = null;
 
         if (is_file($file)) {
             $query = file_get_contents($file);
 
             if ($query) {
-                // replace prefix
                 $query = $db->replacePrefix((string) $query);
-
-                // set query
                 $db->setQuery(trim($query));
 
                 if (!$db->execute()) {
                     $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . $db->stdErr(), 'error');
-
                     return false;
-                } else {
-                    return true;
                 }
-            } else {
-                $error = 'NO SQL QUERY';
+
+                return true;
             }
+
+            $error = 'NO SQL QUERY';
         } else {
             $error = 'SQL FILE MISSING';
         }
 
-        $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . !is_null($error) ? ' - ' . $error : '', 'error');
+        $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . ($error ? ' - ' . $error : ''), 'error');
 
         return false;
     }
 
     /**
-     * Install Profiles.
+     * Install default Profiles.
      *
      * @return bool
-     *
-     * @param object $install[optional]
      */
     public static function installProfiles()
     {
         $app = Factory::getApplication();
-        $db = Factory::getDBO();
+        $db  = Factory::getContainer()->get(DatabaseInterface::class);
 
-        if (self::createProfilesTable()) {
-            self::buildCountQuery();
+        if (!self::createProfilesTable()) {
+            return false;
+        }
 
-            $profiles = array('Default' => false, 'Front End' => false);
+        self::buildCountQuery();
 
-            // No Profiles table data
-            if (!$db->loadResult()) {
-                $xml = JPATH_ADMINISTRATOR . '/components/com_jce/models/profiles.xml';
-
-                if (is_file($xml)) {
-                    if (!self::processImport($xml)) {
-                        $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_ERROR'), 'error');
-
-                        return false;
-                    }
-                } else {
-                    $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_NOFILE_ERROR'), 'error');
-
-                    return false;
-                }
+        if (!$db->loadResult()) {
+            if (!is_file(self::PROFILES_XML)) {
+                $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_NOFILE_ERROR'), 'error');
+                return false;
             }
 
-            return true;
+            if (!self::processImport(self::PROFILES_XML)) {
+                $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_ERROR'), 'error');
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
-    private static function buildCountQuery($name = '')
+    /**
+     * Process an XML profiles file and insert rows into the database.
+     *
+     * Used for both install-time seeding and the repair action.
+     *
+     * @param   string  $file  Absolute path to the XML file.
+     *
+     * @return  bool
+     */
+    public static function processImport($file)
     {
-        $db = Factory::getDBO();
+        $db  = Factory::getContainer()->get(DatabaseInterface::class);
+        $app = Factory::getApplication();
 
-        $query = $db->getQuery(true);
+        $data = file_get_contents($file);
 
-        // check for name
-        $query->select('COUNT(id)')->from('#__wf_profiles');
+        // Wrap bare JSON params values in CDATA so SimpleXML doesn't mangle them.
+        $data = preg_replace('#<params>\{(.+?)\}</params>#s', '<params><![CDATA[{$1}]]></params>', $data);
 
-        if ($name) {
-            $query->where('name = ' . $db->Quote($name));
+        $xml = simplexml_load_string($data);
+
+        if (!$xml) {
+            return false;
         }
 
-        $db->setQuery($query);
+        foreach ($xml->profiles->children() as $profile) {
+            $table = new ProfilesTable($db);
+
+            foreach ($profile->children() as $item) {
+                $key   = $item->getName();
+                $value = (string) $item;
+
+                switch ($key) {
+                    case 'description':
+                        $value = Text::_($value);
+                        break;
+                    case 'types':
+                        if ($value === '') {
+                            $area   = (int) ($profile->area[0] ?? 0);
+                            $groups = self::getUserGroups($area);
+                            $value  = implode(',', array_unique($groups));
+                        }
+                        break;
+                    case 'area':
+                        if ($value === '') {
+                            $value = '0';
+                        }
+                        break;
+                    case 'published':
+                    case 'ordering':
+                        $value = (int) $value;
+                        break;
+                }
+
+                $table->$key = $value;
+            }
+
+            // Force an INSERT, not an UPDATE.
+            $table->id = 0;
+
+            if (!isset($table->custom)) {
+                $table->custom = '';
+            }
+
+            if (!$table->store()) {
+                $app->enqueueMessage($table->getError(), 'error');
+                return false;
+            }
+        }
+
+        return true;
     }
 
+    /**
+     * Return a ProfilesTable pre-populated with the default profile from the manifest.
+     *
+     * @return  ProfilesTable|null
+     */
     public static function getDefaultProfile()
     {
-        $mainframe = Factory::getApplication();
-        $file = JPATH_ADMINISTRATOR . '/components/com_jce/models/profiles.xml';
+        $db  = Factory::getContainer()->get(DatabaseInterface::class);
+        $xml = simplexml_load_file(self::PROFILES_XML);
 
-        $xml = simplexml_load_file($file);
+        if (!$xml) {
+            return null;
+        }
 
-        Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
-
-        if ($xml) {
-            foreach ($xml->profiles->children() as $profile) {
-                if ($profile->attributes()->default) {
-                    $table = Table::getInstance('Profiles', 'JceTable');
-
-                    foreach ($profile->children() as $item) {
-                        switch ($item->getName()) {
-                            case 'rows':
-                                $table->rows = (string) $item;
-                                break;
-                            case 'plugins':
-                                $table->plugins = (string) $item;
-                                break;
-                            default:
-                                $key = $item->getName();
-                                $table->$key = (string) $item;
-
-                                break;
-                        }
-                    }
-
-                    // reset name and description
-                    $table->name = '';
-                    $table->description = '';
-
-                    return $table;
-                }
+        foreach ($xml->profiles->children() as $profile) {
+            if (!$profile->attributes()->default) {
+                continue;
             }
+
+            $table = new ProfilesTable($db);
+
+            foreach ($profile->children() as $item) {
+                $key         = $item->getName();
+                $table->$key = (string) $item;
+            }
+
+            $table->name        = '';
+            $table->description = '';
+
+            return $table;
         }
 
         return null;
     }
 
     /**
-     * Check whether a table exists.
+     * Check whether the profiles table exists.
      *
      * @return bool
-     *
-     * @param string $table Table name
      */
     public static function checkTable()
     {
-        $db = Factory::getDBO();
-
+        $db     = Factory::getContainer()->get(DatabaseInterface::class);
         $tables = $db->getTableList();
 
         if (!empty($tables)) {
-            // swap array values with keys, convert to lowercase and return array keys as values
             $tables = array_keys(array_change_key_case(array_flip($tables)));
-            $app = Factory::getApplication();
-            $match = str_replace('#__', strtolower($app->getCfg('dbprefix', '')), '#__wf_profiles');
+            $match  = str_replace('#__', strtolower($db->getPrefix()), '#__wf_profiles');
 
             return in_array($match, $tables);
         }
 
-        // try with query
+        // Fallback: try a direct query.
         self::buildCountQuery();
 
         return $db->execute();
     }
 
     /**
-     * Check table contents.
+     * Return the number of rows in the profiles table.
      *
      * @return int
-     *
-     * @param string $table Table name
      */
     public static function checkTableContents()
     {
-        $db = Factory::getDBO();
-
         self::buildCountQuery();
 
-        return $db->loadResult();
+        return Factory::getContainer()->get(DatabaseInterface::class)->loadResult();
     }
 
+    /**
+     * Build and set a COUNT query on the profiles table.
+     */
+    private static function buildCountQuery()
+    {
+        $db    = Factory::getContainer()->get(DatabaseInterface::class);
+        $query = $db->getQuery(true);
+        $query->select('COUNT(id)')->from('#__wf_profiles');
+        $db->setQuery($query);
+    }
+
+    /**
+     * Return user group IDs for the given area.
+     *
+     * @param   int  $area  0 = all, 1 = front-end, 2 = back-end
+     *
+     * @return  int[]
+     */
     public static function getUserGroups($area)
     {
-        $db = Factory::getDBO();
-
+        $db    = Factory::getContainer()->get(DatabaseInterface::class);
         $query = $db->getQuery(true);
-
         $query->select('id')->from('#__usergroups');
-
         $db->setQuery($query);
         $groups = $db->loadColumn();
 
-        $front = array();
-        $back = array();
+        $front = [];
+        $back  = [];
 
         foreach ($groups as $group) {
+            $super  = Access::checkGroup($group, 'core.admin');
             $create = Access::checkGroup($group, 'core.create');
-            $admin = Access::checkGroup($group, 'core.login.admin');
-            $super = Access::checkGroup($group, 'core.admin');
+            $admin  = Access::checkGroup($group, 'core.login.admin');
 
             if ($super) {
                 $back[] = $group;
-            } else {
-                // group can create
-                if ($create) {
-                    // group has admin access
-                    if ($admin) {
-                        $back[] = $group;
-                    } else {
-                        $front[] = $group;
-                    }
+            } elseif ($create) {
+                if ($admin) {
+                    $back[] = $group;
+                } else {
+                    $front[] = $group;
                 }
             }
         }
 
         switch ($area) {
-            case 0:
-                return array_merge($front, $back);
-                break;
             case 1:
                 return $front;
-                break;
             case 2:
                 return $back;
-                break;
+            default:
+                return array_merge($front, $back);
         }
-
-        return array();
     }
 
     /**
-     * CDATA encode a parameter if it contains & < > characters, eg: <![CDATA[index.php?option=com_content&view=article&id=1]]>.
+     * CDATA-encode a value if it contains & < > characters.
      *
-     * @param object $param
+     * @param   string  $data
      *
-     * @return CDATA encoded parameter or parameter
+     * @return  string
      */
     public static function encodeData($data)
     {
