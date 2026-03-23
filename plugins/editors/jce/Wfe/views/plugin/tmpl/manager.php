@@ -12,14 +12,14 @@
 
 use Joomla\CMS\Language\Text;
 ?>
-<div class="uk-position-cover uk-browser uk-browser-<?php echo $this->filebrowser->get('position'); ?>">
+<div class="uk-position-cover uk-browser uk-browser-<?php echo $this->get('filebrowser')->get('position'); ?>">
 <?php
 
 // render tabs and panels
 \Wfe\Document\Tabs::getInstance()->render();
 
-if ($this->filebrowser->get('position') !== 'external') {
-    $this->filebrowser->render();
+if ($this->get('filebrowser')->get('position') !== 'external') {
+    $this->get('filebrowser')->render();
 }
 ?>
 </div>

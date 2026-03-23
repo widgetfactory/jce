@@ -112,7 +112,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         $browser = $this->getFileBrowser();
 
         $browser->display();
-        $view->filebrowser = $browser;
+        $view->set('filebrowser', $browser);
 
         $options = $browser->getConfig();
 

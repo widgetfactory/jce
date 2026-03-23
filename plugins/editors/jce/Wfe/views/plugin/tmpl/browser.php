@@ -15,7 +15,7 @@ use Joomla\CMS\Language\Text;
 defined('WF_EDITOR') or die('RESTRICTED!!');
 ?>
 <div class="uk-position-cover uk-browser uk-browser-external">
-	<?php $this->filebrowser->render(); ?>
+	<?php $this->get('filebrowser')->render(); ?>
 
 	<input type="hidden" value="" class="filebrowser" data-filebrowser />
 </div>
