@@ -9,7 +9,6 @@
  */
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
@@ -18,8 +17,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Extension as ExtensionTable;
-use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
-use Joomla\Component\Jce\Administrator\Table\ProfilesTable;
 use Joomla\Database\DatabaseAwareInterface;
 use Joomla\Database\DatabaseAwareTrait;
 
@@ -62,7 +59,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
     private function installProfiles()
     {
-        return ProfilesHelper::installProfiles();
+        require_once JPATH_ADMINISTRATOR . '/components/com_jce/src/Helper/ProfilesHelper.php';
+        return \Joomla\Component\Jce\Administrator\Helper\ProfilesHelper::installProfiles();
     }
 
     public function install($installer)
@@ -92,12 +90,12 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             }
         }
 
-        // install profiles
-        $this->installProfiles();
-
         $language = Factory::getApplication()->getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
+
+        // install profiles
+        $this->installProfiles();
 
         // set layout base path
         LayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/com_jce/layouts';
@@ -402,7 +400,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
             // update toolbar_theme if one has been set
             if ($theme) {
-                $table = new ProfilesTable($db);
+                $table = new \Joomla\Component\Jce\Administrator\Table\ProfilesTable($db);
 
                 $query = $db->getQuery(true);
 

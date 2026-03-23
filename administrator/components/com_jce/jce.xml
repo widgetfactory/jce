@@ -53,6 +53,7 @@
         </submenu>
 
         <files folder="administrator/components/com_jce">
+            <folder>data</folder>
             <folder>forms</folder>
             <folder>includes</folder>
             <folder>layouts</folder>
