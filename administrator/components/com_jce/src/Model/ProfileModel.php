@@ -466,7 +466,7 @@ class ProfileModel extends AdminModel
                 $plugin->description = Text::_($plugin->description);
 
                 // plugin extensions
-                $plugin->extensions = array();
+                $plugin->adapterPlugins = array();
 
                 if (!is_file($plugin->manifest)) {
                     continue;
