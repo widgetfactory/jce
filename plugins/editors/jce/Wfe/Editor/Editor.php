@@ -15,7 +15,7 @@ namespace Wfe\Editor;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Language;
+use Joomla\CMS\Language\LanguageFactoryInterface;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Component\Jce\Administrator\Helper\PluginsHelper;
@@ -176,7 +176,7 @@ class Editor
      * Returns a reference to a editor object.
      *
      * This method must be invoked as:
-     *         <pre>  $editor =Wfe\Appication\Editor::getInstance();</pre>
+     *         <pre>  $editor = Wfe\Appication\Editor::getInstance();</pre>
      *
      * @return JCE The editor object
      */
@@ -324,7 +324,7 @@ class Editor
 
         if ($userParams) {
             // legacy format, eg: key:value;key:value
-            if (!\Wfe\Utility\Utility::isJson($userParams)) {
+            if (!\Wfe\Helper\StringHelper::isJson($userParams)) {
                 $userParams = explode(';', $userParams);
             } else {
                 $userParams = json_decode($userParams, true);
@@ -387,8 +387,7 @@ class Editor
         $params = ComponentHelper::getParams('com_languages');
         $locale = $user->getParam('language', $params->get('site', 'en-GB'));
 
-        //$language = Factory::getContainer()->get(LanguageFactoryInterface::class)->createLanguage($locale);
-        $language = Language::getInstance($locale, array(), true);
+        $language = Factory::getContainer()->get(LanguageFactoryInterface::class)->createLanguage($locale);
 
         return $language->isRTL() ? 'rtl' : 'ltr';
     }
