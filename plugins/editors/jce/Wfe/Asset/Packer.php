@@ -302,17 +302,7 @@ class Packer
 
     protected function compileLess($string, $path)
     {
-        $less = new lessc();
-        // add file directory
-        $less->addImportDir($path);
-        // add joomla media folder
-        $less->addImportDir(JPATH_SITE . '/media');
-
-        try {
-            return $less->compile($string);
-        } catch (Exception $e) {
-            return '/* LESS file could not be compiled due to error - ' . $e->getMessage() . ' */';
-        }
+        return $string;
     }
 
     protected function getText($file = null, $minify = true)
