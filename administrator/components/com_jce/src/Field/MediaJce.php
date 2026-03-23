@@ -8,6 +8,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace Joomla\Component\Jce\Administrator\Field;
+
 defined('JPATH_SITE') or die;
 
 use Joomla\CMS\Form\Field\MediaField;
@@ -37,9 +39,17 @@ class MediaJceField extends MediaField
     protected $layout = 'joomla.form.field.media';
 
     /**
+     * Default mediatype
+     *
+     * @var    string
+     * @since  2.9.39
+     */
+    protected $mediatype;
+
+    /**
      * Method to attach a JForm object to the field.
      *
-     * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the `<field>` tag for the form field object.
+     * @param   \SimpleXMLElement  $element  The SimpleXMLElement object representing the `<field>` tag for the form field object.
      * @param   mixed             $value    The form field value to validate.
      * @param   string            $group    The field name group control value. This acts as an array container for the field.
      *                                      For example if the field has name="foo" and the group value is set to "bar" then the
@@ -49,17 +59,16 @@ class MediaJceField extends MediaField
      *
      * @see     JFormField::setup()
      */
-    public function setup(SimpleXMLElement $element, $value, $group = null)
+    public function setup(\SimpleXMLElement $element, $value, $group = null)
     {
         $result = parent::setup($element, $value, $group);
 
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
 
-            // Joomla 4 custom layout
-            if (isset($this->types)) {
-                $this->layout = 'joomla.form.field.mediacustom';
-        	}
+            if (!isset($this->element['converted'])) {
+                $this->element['converted'] = 0;
+            }
         }
 
         return $result;
@@ -75,28 +84,28 @@ class MediaJceField extends MediaField
         $config = array(
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
-            'converted' => (int) $this->element['converted'] ? true : false
+            'converted' => (int) $this->element['converted'] ? true : false,
         );
 
         if (isset($this->element['plugin'])) {
             $config['plugin'] = (string) $this->element['plugin'];
         }
 
-        $options = BrowserHelper::getMediaFieldOptions($config);
-
-        $this->link = $options['url'];
-
         // Get the basic field data
         $data = parent::getLayoutData();
+
+        $this->link = BrowserHelper::getMediaFieldUrl($config);
 
         // not a valid file browser link
         if (!$this->link) {
             return $data;
         }
+        
+        $options = BrowserHelper::getMediaFieldOptions($config);
 
         $extraData = array(
-            'link'      => $this->link,
-            'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'
+            'link' => $this->link,
+            'class' => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active',
         );
 
         if ($options['upload'] == 1) {
