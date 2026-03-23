@@ -49,7 +49,7 @@ trait DisplayTrait
             require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
             // create editor
-            self::$instances[$signature] = new \Wfe\Editor\Editor($config, $db);
+            self::$instances[$signature] = new \Wfe\Editor\Editor($config);
         }
 
         return self::$instances[$signature];
