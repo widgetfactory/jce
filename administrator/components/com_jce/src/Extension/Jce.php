@@ -20,6 +20,7 @@ use Joomla\CMS\Fields\FieldsServiceInterface;
 use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
 use Joomla\CMS\Language\Text;
 use Psr\Container\ContainerInterface;
+use Joomla\Database\DatabaseAwareTrait;
 
 /**
  * Component class for com_jce
@@ -30,6 +31,7 @@ class Jce extends MVCComponent implements RouterServiceInterface, BootableExtens
 {
 	use HTMLRegistryAwareTrait;
 	use RouterServiceTrait;
+	use DatabaseAwareTrait;
 
 	/**
 	 * Booting the extension. This is the function to set up the environment of the extension like
@@ -46,7 +48,6 @@ class Jce extends MVCComponent implements RouterServiceInterface, BootableExtens
 	 */
 	public function boot(ContainerInterface $container)
 	{
-		
 		/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 
@@ -105,7 +106,7 @@ class Jce extends MVCComponent implements RouterServiceInterface, BootableExtens
 	 *
 	 * @since   4.0.0
 	 */
-	protected function getTableNameForSection(string $section = null)
+	protected function getTableNameForSection(?string $section = null)
 	{
 		return 'profiles';
 	}
@@ -119,7 +120,7 @@ class Jce extends MVCComponent implements RouterServiceInterface, BootableExtens
 	 *
 	 * @since   4.0.0
 	 */
-	protected function getStateColumnForSection(string $section = null)
+	protected function getStateColumnForSection(?string $section = null)
 	{
 		return 'state';
 	}
