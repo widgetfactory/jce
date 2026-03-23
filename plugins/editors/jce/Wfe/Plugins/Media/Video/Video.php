@@ -15,7 +15,7 @@ use Wfe\Document\Document;
 
 class Video extends \Wfe\Adapter\Plugin\Media\AbstractMedia
 {
-    public function __construct($config = array(), $container)
+    public function __construct($config = array(), $container = null)
     {
         $config['format'] = 'video';
     
