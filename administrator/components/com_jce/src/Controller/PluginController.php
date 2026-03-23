@@ -87,19 +87,17 @@ class PluginController extends BaseController
 
         if (class_exists($class)) {
             return new $class([
-                'base_path' => dirname($realPath),
+                'base_path' => dirname($info->path),
             ]);
         }
 
         // Fallback: legacy classname like WFEditorLinkPlugin
-        if ($plugin) {
-            $legacyClass = $this->createLegacyClassName($plugin);
+        $legacyClass = $this->createLegacyClassName($info->plugin);
 
-            if (class_exists($legacyClass)) {
-                return new $legacyClass([
-                    'base_path' => dirname($realPath),
-                ]);
-            }
+        if (class_exists($legacyClass)) {
+            return new $legacyClass([
+                'base_path' => dirname($info->path),
+            ]);
         }
 
         return null;
@@ -199,6 +197,7 @@ class PluginController extends BaseController
         $instance = $this->loadPluginClass((object) [
             'path' => $filepath,
             'namespace' => $namespace,
+            'plugin' => $plugin
         ]);
 
         if (!$instance) {
