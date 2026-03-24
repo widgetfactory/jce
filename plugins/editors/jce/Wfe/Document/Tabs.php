@@ -32,7 +32,7 @@ final class Tabs
     public function __construct($config = array())
     {
         if (!array_key_exists('base_path', $config)) {
-            $config['base_path'] = WF_EDITOR_LIBRARIES;
+            $config['base_path'] = WF_PLUGIN;
         }
 
         $this->setConfiguration($config);
