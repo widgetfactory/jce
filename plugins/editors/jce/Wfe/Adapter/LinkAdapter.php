@@ -116,9 +116,9 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             $list[] = $plugin->getList();
         }
 
-        $event = new Event('onWfLinkGetList', ['subject' => $this]);
+        $event = new Event('onWfLinkAdapterGetList', ['subject' => $this]);
 
-        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkGetList', $event);
+        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkAdapterGetList', $event);
 
         foreach ((array) $event->getArgument('list', []) as $pluginResult) {
             $list = array_merge($list, (array) $pluginResult);
@@ -143,9 +143,9 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             }
         }
 
-        $event = new Event('onWfLinkGetLinks', ['subject' => $this, 'args' => $args]);
+        $event = new Event('onWfLinkAdapterGetLinks', ['subject' => $this, 'args' => $args]);
 
-        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkGetLinks', $event);
+        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkAdapterGetLinks', $event);
 
         foreach ((array) $event->getArgument('results', []) as $pluginResult) {
             $items[] = $pluginResult;
@@ -187,9 +187,9 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             $results = array_merge($results, $areas);
         }
 
-        $event = new Event('onWfLinkSearchGetAreas', ['subject' => $this]);
+        $event = new Event('onWfLinkAdapterSearchGetAreas', ['subject' => $this]);
 
-        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkSearchGetAreas', $event);
+        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkAdapterSearchGetAreas', $event);
 
         foreach ((array) $event->getArgument('areas', []) as $pluginResult) {
             $results = array_merge($results, (array) $pluginResult);
@@ -373,7 +373,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             $searches[$name] = $plugin->doSearch($searchword, $searchphrase, $ordering, $area);
         }
 
-        $searchEvent = new Event('onWfLinkSearch', [
+        $searchEvent = new Event('onWfLinkAdapterSearch', [
             'subject'   => $this,
             'text'      => $searchword,
             'phrase'    => $searchphrase,
@@ -381,7 +381,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             'areas'     => $area,
         ]);
 
-        $app->getDispatcher()->dispatch('onWfLinkSearch', $searchEvent);
+        $app->getDispatcher()->dispatch('onWfLinkAdapterSearch', $searchEvent);
 
         foreach ((array) $searchEvent->getArgument('results', []) as $pluginResult) {
             $searches = array_merge($searches, (array) $pluginResult);
