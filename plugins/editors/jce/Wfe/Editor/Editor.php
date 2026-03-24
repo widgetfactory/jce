@@ -179,25 +179,6 @@ class Editor
         $this->context = $this->application->getContext();
     }
 
-    /**
-     * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $editor = Wfe\Appication\Editor::getInstance();</pre>
-     *
-     * @return JCE The editor object
-     */
-    public static function getInstance($config = array())
-    {
-        $signature = md5(serialize($config));
-
-        if (empty(self::$instances[$signature])) {
-            self::$instances[$signature] = new self($config);
-        }
-
-        return self::$instances[$signature];
-    }
-
     private function addAssetVersion($url)
     {
         $version = $this->getVersion();
@@ -645,7 +626,8 @@ class Editor
 
     private function getOutput()
     {
-        $document = Factory::getApplication()->getDocument();
+        $app = Factory::getApplication();
+        $document = $app->getDocument();
 
         $end = $document->_getLineEnd();
         $tab = $document->_getTab();
@@ -699,7 +681,7 @@ class Editor
     /**
      * Get the current version from the editor manifest.
      *
-     * @return Version
+     * @return string
      */
     private function getVersion()
     {
