@@ -9,10 +9,12 @@
 
 \defined('_JEXEC') or die;
 
+$plugin = $this->get('plugin');
+
 ?>
 <div class="ui-jce uk-flex">
     <nav class="uk-panel uk-panel-box uk-height-1-1">
-        <?php echo $this->plugin->renderTopics(); ?>
+        <?php echo $plugin->renderTopics(); ?>
     </nav>
     <main class="uk-panel uk-panel-box uk-height-1-1">
         <header>
