@@ -155,7 +155,6 @@ class Editor
     public function __construct($config = array())
     {
         $this->application = \Wfe\Factory::getApplication();
-        $wf = $this->application;
 
         if (!isset($config['plugin'])) {
             $config['plugin'] = '';
@@ -174,10 +173,10 @@ class Editor
         $config = $event->getArgument('config');
 
         // set profile from "default"
-        $this->profile = $wf->getActiveProfile($config);
+        $this->profile = $this->application->getActiveProfile($config);
 
         // set context
-        $this->context = $wf->getContext();
+        $this->context = $this->application->getContext();
     }
 
     /**
