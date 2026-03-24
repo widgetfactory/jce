@@ -61,10 +61,7 @@ abstract class BrowserHelper
     public static function getMediaFieldUrl($options = array())
     {
         $app = Factory::getApplication();
-        $token = Factory::getSession()->getFormToken();
-
-        // get component params to check for media field conversion
-        $componentParams = ComponentHelper::getParams('com_jce');
+        $token = $app->getSession()->getFormToken();
 
         if (!isset($options['element'])) {
             $options['element'] = null;
@@ -90,15 +87,12 @@ abstract class BrowserHelper
             return '';
         }
 
-        // get editor instance
-        $wf = \Wfe\Factory::getApplication();
-
         // set base url
         $url = 'index.php?option=com_jce&task=plugin.display';
 
         // add default context
         if (empty($options['context'])) {
-            $options['context'] = $wf->getContext();
+            $options['context'] = \Wfe\Factory::getApplication()->getContext();
         }
 
         // append "caller" plugin
@@ -171,7 +165,6 @@ abstract class BrowserHelper
         $options['select_button'] = (int) $wf->getParam('browser.mediafield_select_button', 1);
 
         $event = new Event('onWfMediaFieldGetOptions', array(
-            'subject' => new \stdClass,
             'options' => $options,
             'profile' => $profile,
         ));
