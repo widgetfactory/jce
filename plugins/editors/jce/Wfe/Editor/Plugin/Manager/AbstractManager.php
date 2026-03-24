@@ -365,7 +365,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         $isReadOnly = $filesystem->get('readonly', false);
 
         $allow = function ($param, $default = 1) use ($isReadOnly) {
-            return $isReadOnly ? false : $this->getParam($param, $default);
+            return $isReadOnly ? false : (bool) $this->getParam($param, $default);
         };
 
         $features = array(
