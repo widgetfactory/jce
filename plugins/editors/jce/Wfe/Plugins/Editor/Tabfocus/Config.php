@@ -12,7 +12,7 @@ namespace Wfe\Plugins\Tabfocus;
 
 class Config
 {
-    public static function getConfig(&$vars)
+    public static function getConfig(&$vars, $application = null)
     {
         $vars['tabfocus_elements'] = ':prev,:next';
     }

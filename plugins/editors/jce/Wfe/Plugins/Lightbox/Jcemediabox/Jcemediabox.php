@@ -14,14 +14,13 @@ namespace Wfe\Plugins\Lightbox;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Plugin\PluginHelper;
-use Wfe\Document\Document;
 
 class Jcemediabox extends \Wfe\Adapter\Plugin\Lightbox\AbstractLightbox
 {
     public function display()
     {    
         if ($this->isEnabled()) {
-            $document = Document::getInstance();
+            $document = $this->getDocument();
 
             $document->addScript('jcemediabox', 'adapters/lightbox/jcemediabox/js');
             $document->addStyleSheet('jcemediabox', 'adapters/lightbox/jcemediabox/css');

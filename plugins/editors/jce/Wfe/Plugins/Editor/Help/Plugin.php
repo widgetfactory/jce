@@ -15,8 +15,6 @@ use Joomla\CMS\Factory;
 use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 
-use Wfe\Document\Document;
-use Wfe\Document\Tabs;
 
 class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 {
@@ -79,14 +77,12 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
             'pattern' => $method === "sef" ? $pattern : '',
         );
 
-        $tabs = Tabs::getInstance(array(
-            'base_path' => WF_EDITOR_PLUGIN,
-        ));
+        $tabs = $this->getTabs();
 
         // Add tabs
         $tabs->addTab('help', 1, array('plugin' => $this));
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         if ($document->get('standalone') == 1) {
             $document->addScript(array('window.min'));

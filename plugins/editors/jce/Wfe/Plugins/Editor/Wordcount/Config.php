@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Wordcount;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['wordcount_limit'] = $wf->getParam('editor.wordcount_limit', 0, 0);
         $settings['wordcount_alert'] = $wf->getParam('editor.wordcount_alert', 0, 0);

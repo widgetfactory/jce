@@ -12,8 +12,6 @@ namespace Wfe\Plugins\Editor\Link;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Document\Document;
-use Wfe\Document\Tabs;
 
 // Link Plugin Controller
 class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
@@ -38,14 +36,12 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
     {
         parent::display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
         $settings = $this->getSettings();
 
         $document->addScriptDeclaration('LinkDialog.settings=' . json_encode($settings) . ';');
 
-        $tabs = Tabs::getInstance(array(
-            'base_path' => __DIR__,
-        ));
+        $tabs = $this->getTabs();
 
         // Add tabs
         $tabs->addTab('link', 1, array(

@@ -12,9 +12,9 @@ namespace Wfe\Plugins\Editor\Link;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $plugin = new Wfe\Plugins\Editor\Link\Plugin();
+        $plugin = new Plugin();
         $attributes = $plugin->getDefaults();
 
         $config = array(

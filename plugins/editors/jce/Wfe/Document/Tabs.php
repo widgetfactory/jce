@@ -20,6 +20,8 @@ final class Tabs
 {
     use ConfigurationTrait;
 
+    private static $sharedInstance;
+
     private $tabs = array();
     private $panels = array();
     private $paths = array();
@@ -43,22 +45,33 @@ final class Tabs
     }
 
     /**
-     * Returns a reference to a WFTabs object.
+     * Returns a reference to the shared Tabs instance.
      *
-     * This method must be invoked as:
-     *    <pre>  $tabs = WFTabs::getInstance();</pre>
+     * @deprecated  Use the container's getTabs() method instead.
      *
-     * @return object WFTabs
+     * @return Tabs
      */
     public static function getInstance($config = array())
     {
-        static $instance;
-
-        if (!is_object($instance)) {
-            $instance = new self($config);
+        if (!is_object(self::$sharedInstance)) {
+            self::$sharedInstance = new self($config);
         }
 
-        return $instance;
+        return self::$sharedInstance;
+    }
+
+    /**
+     * Register an externally-created instance as the shared singleton.
+     * Called by the container at bootstrap so that any remaining legacy
+     * call sites that still use getInstance() receive the same object.
+     *
+     * @param  Tabs  $tabs
+     *
+     * @return void
+     */
+    public static function register(Tabs $tabs)
+    {
+        self::$sharedInstance = $tabs;
     }
 
     /**

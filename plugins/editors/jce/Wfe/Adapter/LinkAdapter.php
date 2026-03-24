@@ -17,6 +17,8 @@ use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Event\Event;
 use Joomla\String\StringHelper;
 
 use Wfe\Http\Request;
@@ -46,6 +48,11 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             if (!is_null($instance)) {
                 $this->plugins[$plugin->name] = $instance;
             }
+
+            $type = $plugin->type ?: 'links';
+
+            // import installed Joomla plugins
+            PluginHelper::importPlugin('jce', $type . '_' . $plugin->name);
         }
 
         $request = Request::getInstance();
@@ -62,7 +69,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
     {
         parent::display();
 
-        $document = \Wfe\Document\Document::getInstance();
+        $document = $this->getDocument();
         $document->addStyleSheet(
             array('links'),
             'adapters.links.css'
@@ -102,7 +109,19 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         $list = array();
 
         foreach ($this->plugins as $plugin) {
+            if (!method_exists($plugin, 'getList')) {
+                continue;
+            }
+
             $list[] = $plugin->getList();
+        }
+
+        $event = new Event('onWfLinkGetList', ['subject' => $this]);
+
+        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkGetList', $event);
+
+        foreach ((array) $event->getArgument('list', []) as $pluginResult) {
+            $list = array_merge($list, (array) $pluginResult);
         }
 
         return $list;
@@ -112,16 +131,30 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
     {
         $args = $this->cleanInput($args, 'STRING');
 
+        $items = array();
+
         foreach ($this->plugins as $plugin) {
+            if (!method_exists($plugin, 'getLinks')) {
+                continue;
+            }
+        
             if (in_array($args->option, $plugin->getOption())) {
                 $items = $plugin->getLinks($args);
             }
         }
 
+        $event = new Event('onWfLinkGetLinks', ['subject' => $this, 'args' => $args]);
+
+        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkGetLinks', $event);
+
+        foreach ((array) $event->getArgument('results', []) as $pluginResult) {
+            $items[] = $pluginResult;
+        }
+
         $array = array();
         $result = array();
 
-        if (isset($items)) {
+        if (!empty($items)) {
             foreach ($items as $item) {
                 $array[] = [
                     'id'    => $this->xmlEncode($item['id'] ?? ''),
@@ -152,6 +185,14 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             $areas = $plugin->getSearchAreas();
         
             $results = array_merge($results, $areas);
+        }
+
+        $event = new Event('onWfLinkSearchGetAreas', ['subject' => $this]);
+
+        Factory::getApplication()->getDispatcher()->dispatch('onWfLinkSearchGetAreas', $event);
+
+        foreach ((array) $event->getArgument('areas', []) as $pluginResult) {
+            $results = array_merge($results, (array) $pluginResult);
         }
 
         return $results;
@@ -330,6 +371,20 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             }
 
             $searches[$name] = $plugin->doSearch($searchword, $searchphrase, $ordering, $area);
+        }
+
+        $searchEvent = new Event('onWfLinkSearch', [
+            'subject'   => $this,
+            'text'      => $searchword,
+            'phrase'    => $searchphrase,
+            'ordering'  => $ordering,
+            'areas'     => $area,
+        ]);
+
+        $app->getDispatcher()->dispatch('onWfLinkSearch', $searchEvent);
+
+        foreach ((array) $searchEvent->getArgument('results', []) as $pluginResult) {
+            $searches = array_merge($searches, (array) $pluginResult);
         }
 
         $rows = [];

@@ -11,13 +11,12 @@ namespace Wfe\Plugins\Editor\Format;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['inline_styles'] = $wf->getParam('editor.inline_styles', 1, 1);
 

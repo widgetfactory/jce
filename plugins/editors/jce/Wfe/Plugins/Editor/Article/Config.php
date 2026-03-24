@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Article;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         //$settings['article_hide_xtd_btns']     = $wf->getParam('article.hide_xtd_btns', 0, 0);
         $settings['article_show_readmore'] = $wf->getParam('article.show_readmore', 1, 1);

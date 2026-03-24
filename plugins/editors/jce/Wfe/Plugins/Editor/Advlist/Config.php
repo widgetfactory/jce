@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Advlist;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
         
         $bullet = self::getBulletList();
         $settings['advlist_bullist_styles'] = $bullet !== false ? implode(',', $bullet) : false;
@@ -33,7 +32,7 @@ class Config
 
     private static function getNumberList()
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
         $number = (array) $wf->getParam('lists.number_styles');
 
         if (empty($number) || (count($number) === 1 && array_shift($number) === 'default')) {
@@ -45,7 +44,7 @@ class Config
 
     private static function getBulletList()
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
         $bullet = (array) $wf->getParam('lists.bullet_styles');
 
         if (empty($bullet) || (count($bullet) === 1 && array_shift($bullet) === 'default')) {

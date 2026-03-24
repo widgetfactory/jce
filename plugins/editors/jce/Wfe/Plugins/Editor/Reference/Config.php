@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Reference;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['reference_datetime'] = $wf->getParam('reference.datetime_format', '');
     }

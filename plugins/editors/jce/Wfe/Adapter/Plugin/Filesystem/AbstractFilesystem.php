@@ -38,10 +38,6 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
             $config['list_limit_options'] = array(10, 25, 50, 0);
         }
 
-        if (is_null($container)) {
-            $container = \Wfe\Editor\Plugin\AbstractPlugin::getInstance();
-        }
-
         parent::__construct($config, $container);
     }
 

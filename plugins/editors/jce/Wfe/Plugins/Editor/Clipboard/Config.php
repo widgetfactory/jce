@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Clipboard;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $mode = $wf->getParam('clipboard.paste_cleanup_mode', 0);
 

@@ -13,7 +13,6 @@ namespace Wfe\Adapter;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Document\Document;
 use Wfe\Helper\AdapterHelper;
 
 class MediaAdapter extends \Wfe\Adapter\AbstractAdapter
@@ -32,7 +31,7 @@ class MediaAdapter extends \Wfe\Adapter\AbstractAdapter
 
     public function display()
     {
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         foreach ($this->plugins as $plugin) {        
             $plugin->display();

@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Visualchars;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         // legacy
         $state = $wf->getParam('editor.visualchars', 0);

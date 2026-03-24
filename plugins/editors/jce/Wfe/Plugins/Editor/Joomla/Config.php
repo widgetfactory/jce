@@ -16,7 +16,7 @@ use Joomla\CMS\Uri\Uri;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
         if (empty($settings['joomla_xtd_buttons'])) {
             $settings['joomla_xtd_buttons'] = array();

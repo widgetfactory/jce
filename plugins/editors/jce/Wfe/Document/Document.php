@@ -94,6 +94,8 @@ class Document
         'imgmanager_ext' => 'imagepro',
     );
 
+    private static $sharedInstance;
+
     /**
      * Constructor activating the default information of the class.
      */
@@ -112,22 +114,33 @@ class Document
     }
 
     /**
-     * Returns a reference to a WFDocument object.
+     * Returns a reference to the shared Document instance.
      *
-     * This method must be invoked as:
-     *    <pre>  $document = WFDocument::getInstance();</pre>
+     * @deprecated  Use the container's getDocument() method instead.
      *
-     * @return object WFDocument
+     * @return Document
      */
     public static function getInstance($config = array())
     {
-        static $instance;
-
-        if (!is_object($instance)) {
-            $instance = new self($config);
+        if (!is_object(self::$sharedInstance)) {
+            self::$sharedInstance = new self($config);
         }
 
-        return $instance;
+        return self::$sharedInstance;
+    }
+
+    /**
+     * Register an externally-created instance as the shared singleton.
+     * Called by the container at bootstrap so that any remaining legacy
+     * call sites that still use getInstance() receive the same object.
+     *
+     * @param  Document  $document
+     *
+     * @return void
+     */
+    public static function register(Document $document)
+    {
+        self::$sharedInstance = $document;
     }
 
     /**

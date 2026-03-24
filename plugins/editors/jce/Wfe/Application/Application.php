@@ -33,9 +33,6 @@ class Application
 {
     use ConfigurationTrait;
     
-    // Application instance
-    protected static $instance;
-
     // Editor Profile
     protected static $profiles = array();
 
@@ -65,23 +62,6 @@ class Application
         $config = $event->getArgument('config');
 
         $this->setConfiguration($config);
-    }
-
-    /**
-     * Returns a reference to the application object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $application = Wfe\Application\Application::getInstance();</pre>
-     *
-     * @return Application The application object
-     */
-    public static function getInstance($config = array())
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self($config);
-        }
-
-        return self::$instance;
     }
 
     /**

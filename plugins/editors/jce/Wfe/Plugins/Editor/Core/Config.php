@@ -10,7 +10,6 @@ namespace Wfe\Plugins\Editor\Core;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
@@ -26,9 +25,9 @@ class Config
         return $content;
     }
 
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $startup_content_url = $wf->getParam('editor.startup_content_url', '');
         $startup_content_html = $wf->getParam('editor.startup_content_html', '');

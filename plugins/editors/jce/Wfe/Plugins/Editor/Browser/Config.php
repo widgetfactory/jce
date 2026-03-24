@@ -12,7 +12,7 @@ namespace Wfe\Plugins\Editor\Browser;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
         $settings['file_browser_callback'] = '';
     }

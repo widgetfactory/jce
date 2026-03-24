@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Table;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $width = $wf->getParam('table.width');
         $height = $wf->getParam('table.height');

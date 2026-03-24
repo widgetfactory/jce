@@ -10,7 +10,6 @@ namespace Wfe\Plugins\Editor\Formatselect;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
@@ -43,9 +42,9 @@ class Config
         'dd' => 'advanced.dd',
     );
 
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         // html5 block elements
         $html5 = array('section', 'article', 'aside', 'figure');

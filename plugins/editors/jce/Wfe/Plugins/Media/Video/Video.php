@@ -11,8 +11,6 @@ namespace Wfe\Plugins\Media;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Document\Document;
-
 class Video extends \Wfe\Adapter\Plugin\Media\AbstractMedia
 {
     public function __construct($config = array(), $container = null)
@@ -24,7 +22,7 @@ class Video extends \Wfe\Adapter\Plugin\Media\AbstractMedia
 
     public function display()
     {
-        $document = Document::getInstance();
+        $document = $this->getDocument();
         $document->addScript('video', 'adapters/media/video/js');
     }
 

@@ -12,7 +12,7 @@ namespace Wfe\Plugins\Editor\Imgmanager;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
         $plugin = new \Wfe\Plugins\Editor\Imgmanager\Plugin();
 

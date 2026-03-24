@@ -21,8 +21,8 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\Event\Event;
 use Joomla\CMS\Form\FormFactoryInterface;
 
-use Wfe\Application\Application;
 use Wfe\Document\Document;
+use Wfe\Document\Tabs;
 use Wfe\Language\Language;
 use Wfe\Http\Request;
 use Wfe\Document\View;
@@ -39,8 +39,11 @@ class AbstractPlugin
     // Application instance
     protected $application;
 
-    // Editor Plugin instance
-    private static $instance;
+    // Document instance
+    protected $document;
+
+    // Tabs instance
+    protected $tabs;
 
     // array of alerts
     private $_alerts = array();
@@ -53,8 +56,12 @@ class AbstractPlugin
      */
     public function __construct($config = array())
     {
-        // create and store an application instance
-        $this->application = Application::getInstance();
+        // create and store an application instance, registering it as the shared instance
+        $this->application = \Wfe\Factory::getApplication();
+        \Wfe\Factory::setApplication($this->application);
+
+        // register this plugin instance for BC wrapper access
+        \Wfe\Factory::setEditorPlugin($this);
     
         // get plugin name from url, fallback to default name if set
         $name = Factory::getApplication()->input->getCmd('plugin', $this->name);
@@ -103,28 +110,19 @@ class AbstractPlugin
         $this->setConfiguration($config);
     }
 
-    /**
-     * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JCE::getInstance();</pre>
-     *
-     * @return JCE The editor object
-     *
-     * @since    1.5
-     */
-    public static function getInstance($config = array())
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self($config);
-        }
-
-        return self::$instance;
-    }
-
     public function getApplication()
     {
         return $this->application;
+    }
+
+    public function getDocument()
+    {
+        return $this->document;
+    }
+
+    public function getTabs()
+    {
+        return $this->tabs;
     }
 
     /**
@@ -219,8 +217,8 @@ class AbstractPlugin
             $theme = 'dark';
         }
 
-        // create the document
-        $document = Document::getInstance(array(
+        // create and register the document on the container
+        $this->document = new Document(array(
             'version' => $version,
             'title' => Text::_('WF_' . strtoupper($this->getName() . '_TITLE')),
             'name' => $name,
@@ -231,8 +229,15 @@ class AbstractPlugin
             'theme' => 'uk-jce-theme-' . $theme,
         ));
 
+        // register for any remaining legacy getInstance() call sites
+        Document::register($this->document);
+
         // set standalone mode
-        $document->set('standalone', $wf->input->getInt('standalone', 0));
+        $this->document->set('standalone', $wf->input->getInt('standalone', 0));
+
+        // create and register the tabs on the container
+        $this->tabs = new Tabs();
+        Tabs::register($this->tabs);
 
         $event = new Event('onWfPluginInit', array(
             'subject' => $this
@@ -254,7 +259,7 @@ class AbstractPlugin
 
         $this->display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         $query = array(
             'task' => 'plugin.loadlanguages',
@@ -305,7 +310,7 @@ class AbstractPlugin
 
         $this->initialize();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         if ($document->get('standalone') == 0) {
             $document->addScript(array('tinymce.popup'), 'tinymce');
@@ -609,9 +614,7 @@ class AbstractPlugin
      */
     public function urlToPath($url)
     {
-        $document = Document::getInstance();
-
-        return $document->urlToPath($url);
+        return $this->getDocument()->urlToPath($url);
     }
 
     /**
@@ -623,9 +626,7 @@ class AbstractPlugin
      */
     public function image($image, $root = 'libraries')
     {
-        $document = Document::getInstance();
-
-        return $document->image($image, $root);
+        return $this->getDocument()->image($image, $root);
     }
 
     /**
@@ -649,7 +650,7 @@ class AbstractPlugin
 
     public function getParams($options = array())
     {
-        $wf = Application::getInstance();
+        $wf = $this->application;
 
         return $wf->getParams($options);
     }
@@ -673,7 +674,7 @@ class AbstractPlugin
 
         // get all keys
         $keys = explode('.', $key);
-        $wf = Application::getInstance();
+        $wf = $this->application;
 
         // root key set
         if ($keys[0] == 'editor' || $keys[0] == $name || $keys[0] == $caller) {

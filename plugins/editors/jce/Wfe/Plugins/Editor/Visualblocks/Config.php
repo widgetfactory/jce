@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Visualblocks;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['visualblocks_default_state'] = $wf->getParam('visualblocks.state', 0, 0, 'boolean');
     }

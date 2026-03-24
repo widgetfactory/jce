@@ -12,8 +12,6 @@ namespace Wfe\Plugins\Editor\Imgmanager;
 
 use Joomla\CMS\Factory;
 
-use Wfe\Document\Document;
-use Wfe\Document\Tabs;
 use Wfe\Utility\Utility;
 
 class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
@@ -38,12 +36,9 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
     {
         parent::display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
-        // create new tabs instance
-        $tabs = Tabs::getInstance(array(
-            'base_path' => __DIR__,
-        ));
+        $tabs = $this->getTabs();
 
         // Add tabs
         $tabs->addTab('image', 1, array('plugin' => $this));

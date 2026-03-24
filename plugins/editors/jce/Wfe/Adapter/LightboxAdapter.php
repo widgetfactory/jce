@@ -16,8 +16,6 @@ namespace Wfe\Adapter;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
-use Wfe\Document\Document;
-use Wfe\Document\Tabs;
 use Wfe\Document\View;
 use Wfe\Helper\AdapterHelper;
 
@@ -33,7 +31,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         $plugins = AdapterHelper::getPlugins('lightbox');
 
         // set the default lightbox
-        $config['default'] = AdapterHelper::getParam($container, 'popups.default', '');
+        $config['default'] = $this->getParam('popups.default', '');
 
         foreach ($plugins as $plugin) {
             $this->plugins[] = AdapterHelper::createPlugin($plugin, $config, $container);
@@ -44,7 +42,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
     {
         parent::display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
         $config   = $this->getConfig();
 
         if ($config) {
@@ -69,7 +67,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         }
 
         if ($count) {
-            $tabs = Tabs::getInstance();
+            $tabs = $this->getTabs();
             $tabs->addTab('lightbox');
 
             $panel = $tabs->getPanel('lightbox');

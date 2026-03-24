@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Emotions;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['emotions_smilies'] = $wf->getParam('emotions.smilies');
         $settings['emotions_url'] = $wf->getParam('emotions.url');

@@ -10,8 +10,6 @@ namespace Wfe\Plugins\Editor\Style;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Document\Document;
-use Wfe\Document\Tabs;
 
 class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 {
@@ -27,7 +25,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
     {
         parent::display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         $document->addScript(array('style'), 'plugins');
         $document->addStyleSheet(array('style'), 'plugins');
@@ -36,9 +34,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 
         $document->addScriptDeclaration('StyleDialog.settings=' . json_encode($settings) . ';');
 
-        $tabs = Tabs::getInstance(array(
-            'base_path' => WF_EDITOR_PLUGIN,
-        ));
+        $tabs = $this->getTabs();
 
         // Add tabs
         $tabs->addTab('text');

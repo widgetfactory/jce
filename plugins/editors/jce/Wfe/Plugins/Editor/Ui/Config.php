@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Ui;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
         $settings['object_resizing'] = $wf->getParam('editor.object_resizing', 1);
 
         if ((int) $settings['object_resizing'] === 0) {

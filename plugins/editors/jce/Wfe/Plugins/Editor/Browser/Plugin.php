@@ -16,7 +16,6 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 
 use Wfe\Application\Application;
-use Wfe\Document\Document;
 use Wfe\Utility\Utility;
 use Wfe\Language\Language;
 
@@ -337,7 +336,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\AbstractManager
 
         $app = Factory::getApplication();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
         $slot = $app->input->getCmd('slot', 'plugin');
 
         // update some document variables

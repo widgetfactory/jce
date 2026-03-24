@@ -13,6 +13,7 @@ namespace Wfe\Adapter;
 
 \defined('_JEXEC') or die;
 
+use Wfe\Helper\AdapterHelper;
 use Wfe\Registry\ConfigurationTrait;
 
 class AbstractAdapter
@@ -45,10 +46,27 @@ class AbstractAdapter
         return $this->container;
     }
 
-    protected function getParam($key, $default = null)
+    protected function getDocument()
     {
-        $container = $this->getContainer();
-        return $container->getParam($key, $default);
+        return $this->container->getDocument();
+    }
+
+    protected function getTabs()
+    {
+        return $this->container->getTabs();
+    }
+
+    /**
+     * Return a parameter for the current plugin.adapter
+     *
+     * @param string $key   Parameter name
+     * @param mixed $default Default value
+     *
+     * @return mixed Parameter value
+     */
+    protected function getParam($key, $default = '')
+    {
+        return AdapterHelper::getParam($this->container, $key, $default);
     }
 
     protected function getTemplatePath()

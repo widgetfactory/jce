@@ -14,6 +14,7 @@ namespace Wfe\Adapter\Plugin;
 \defined('_JEXEC') or die;
 
 use Wfe\Registry\ConfigurationTrait;
+use Wfe\Helper\AdapterHelper;
 
 class AbstractPlugin
 {
@@ -30,7 +31,7 @@ class AbstractPlugin
         $this->setConfiguration($config);
 
         if (is_null($container)) {
-            $container = \Wfe\Editor\Plugin\AbstractPlugin::getInstance();
+            $container = \Wfe\Factory::getEditorPlugin();
         }
 
         // store container object
@@ -52,6 +53,11 @@ class AbstractPlugin
      */
     public function display() {}
 
+    protected function getDocument()
+    {
+        return $this->container->getDocument();
+    }
+
     /**
      * Return a parameter for the current plugin / group.
      *
@@ -60,10 +66,9 @@ class AbstractPlugin
      *
      * @return mixed Parameter value
      */
-    public function getParam($key, $default = '')
+    protected function getParam($key, $default = '')
     {
-        $container = $this->getContainer();        
-        return \Wfe\Helper\AdapterHelper::getParam($container, $key, $default);
+        return AdapterHelper::getParam($this->container, $key, $default);
     }
 
     public function isEnabled()

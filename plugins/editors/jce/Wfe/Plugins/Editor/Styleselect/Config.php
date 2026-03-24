@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Styleselect;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['styleselect_sort'] = $wf->getParam('styleselect.sort', 1, 1);
         $settings['styleselect_preview_styles'] = $wf->getParam('styleselect.preview_styles', 1, 1);

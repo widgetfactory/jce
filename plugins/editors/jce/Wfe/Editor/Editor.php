@@ -29,6 +29,13 @@ class Editor
     protected static $instances;
 
     /**
+     * Application instance.
+     *
+     * @var \Wfe\Application\Application
+     */
+    protected $application;
+
+    /**
      * Database connection.
      *
      * @var DatabaseInterface
@@ -147,7 +154,8 @@ class Editor
 
     public function __construct($config = array())
     {
-        $wf = \Wfe\Application\Application::getInstance();
+        $this->application = \Wfe\Factory::getApplication();
+        $wf = $this->application;
 
         if (!isset($config['plugin'])) {
             $config['plugin'] = '';
@@ -257,7 +265,7 @@ class Editor
 
     private function getCompressionOptions()
     {
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         $config = Factory::getApplication()->getConfig();
 
@@ -284,7 +292,7 @@ class Editor
     private function assignEditorSkin(&$settings)
     {
         // get an editor instance
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         // assign skin - new default is "modern"
         $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern');
@@ -317,7 +325,7 @@ class Editor
     private function getCustomConfig(&$settings)
     {
         // get an editor instance
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         // Other - user specified
         $userParams = $wf->getParam('editor.custom_config', '');
@@ -407,7 +415,7 @@ class Editor
         $app = Factory::getApplication();
 
         // get an editor instance
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         // create token
         $token = Session::getFormToken();
@@ -608,7 +616,7 @@ class Editor
     public function render($settings, $autoInit = true)
     {
         // get an editor instance
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         if ($autoInit) {
             // encode as json string
@@ -743,7 +751,7 @@ class Editor
      */
     private function getToolbar()
     {
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         $rows = array(
             'theme_buttons1' => array(), 
@@ -886,7 +894,7 @@ class Editor
     {
         static $plugins;
 
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         if (is_object($this->profile)) {
             if (!is_array($plugins)) {
@@ -1042,7 +1050,7 @@ class Editor
 
             // Check class and method are callable, and call
             if (class_exists($classname) && method_exists($classname, 'getConfig')) {
-                call_user_func_array(array($classname, 'getConfig'), array(&$settings));
+                call_user_func_array(array($classname, 'getConfig'), array(&$settings, $this->application));
             }
         }
     }
@@ -1163,7 +1171,7 @@ class Editor
     private function getTemplateStyleSheetsList($absolute = false)
     {
         $app = Factory::getApplication();
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
 
         // set default url as empty value
         $url = '';
@@ -1425,7 +1433,7 @@ class Editor
      */
     public function pack()
     {
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
         $type = $wf->input->getWord('type', 'javascript');
 
         // javascript
@@ -1627,7 +1635,7 @@ class Editor
      */
     public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true)
     {
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = $this->application;
         return $wf->getParam($key, $fallback, $default, $type, $allowempty);
     }
 }

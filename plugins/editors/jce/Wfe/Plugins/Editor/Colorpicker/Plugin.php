@@ -10,8 +10,6 @@ namespace Wfe\Plugins\Editor\Colorpicker;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Document\Document;
-
 class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 {
     public function __construct()
@@ -23,7 +21,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
     {
         parent::display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         $document->addScript(array('colorpicker'), 'plugins');
         $document->addStyleSheet(array('colorpicker'), 'plugins');

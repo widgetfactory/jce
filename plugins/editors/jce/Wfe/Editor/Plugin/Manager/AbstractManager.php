@@ -17,7 +17,6 @@ use Joomla\Registry\Registry;
 
 use Wfe\Http\Request;
 use Wfe\Utility\Utility;
-use Wfe\Document\Document;
 use Wfe\Application\Browser as FileBrowser;
 use Wfe\Adapter\FileSystemAdapter;
 use Wfe\Helper\ArrayHelper;
@@ -106,7 +105,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
     {
         parent::display();
 
-        $document = Document::getInstance();
+        $document = $this->getDocument();
 
         $view = $this->getView();
         $browser = $this->getFileBrowser();

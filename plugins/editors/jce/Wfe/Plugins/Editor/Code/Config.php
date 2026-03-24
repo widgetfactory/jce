@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Code;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         if (!in_array('code', $settings['plugins'])) {
             $settings['plugins'][] = 'code';

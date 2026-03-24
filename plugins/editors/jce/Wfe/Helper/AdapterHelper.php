@@ -417,7 +417,8 @@ class AdapterHelper
         return null;
     }
 
-    public static function isLegacyAdapterName($name) {
+    public static function isLegacyAdapterName($name)
+    {
         return array_key_exists($name, self::$legacyAdapterMap);
     }
 
@@ -430,23 +431,24 @@ class AdapterHelper
         return $name;
     }
 
-    public static function getParam($application, $key, $default = '')
+    // AdapterHelper
+    private static function resolveParam($application, $key, $default = '')
     {
         $keys = explode('.', $key);
-
-        // adapter type, eg: media
         $type = array_shift($keys);
-
-        // get the application / plugin name. This is required for the parameter to avoid collisions with adapter names, eg: "link"
         $name = $application->getName();
 
         if (self::isLegacyAdapterName($type)) {
-            // get param from legacy key, set as default value
             $default = $application->getParam($name . '.' . $type . '.' . implode('.', $keys), $default);
         }
 
         $type = self::mapLegacyAdapterName($type);
 
         return $application->getParam($name . '.' . $type . '.' . implode('.', $keys), $default);
+    }
+
+    public static function getParam($application, $key, $default = '')
+    {
+        return self::resolveParam($application, $key, $default);
     }
 }

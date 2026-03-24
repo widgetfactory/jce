@@ -10,13 +10,12 @@ namespace Wfe\Plugins\Editor\Fontcolor;
 
 \defined('_JEXEC') or die;
 
-use Wfe\Application\Application;
 
 class Config
 {
-    public static function getConfig(&$settings)
+    public static function getConfig(&$settings, $application = null)
     {
-        $wf = Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $settings['fontcolor_foreground_color'] = $wf->getParam('fontcolor.foreground_color', '');
         $settings['fontcolor_background_color'] = $wf->getParam('fontcolor.background_color', '');
