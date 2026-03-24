@@ -108,7 +108,7 @@ class PluginController extends BaseController
         // Check for session token
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
 
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         $app = Factory::getApplication();
 

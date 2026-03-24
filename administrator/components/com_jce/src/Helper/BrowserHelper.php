@@ -14,6 +14,7 @@ namespace Joomla\Component\Jce\Administrator\Helper;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Event\Event;
 
 abstract class BrowserHelper
 {
@@ -49,7 +50,7 @@ abstract class BrowserHelper
             return $enabled;
         }
 
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
         $profile = $wf->getActiveProfile(['plugin' => 'browser']);
 
         $enabled = $profile ? (bool) $wf->getParam('browser.mediafield_enable', 1) : false;
@@ -90,7 +91,7 @@ abstract class BrowserHelper
         }
 
         // get editor instance
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
 
         // set base url
         $url = 'index.php?option=com_jce&task=plugin.display';
@@ -147,7 +148,7 @@ abstract class BrowserHelper
         ), $options);
 
         // get editor instance
-        $wf = \Wfe\Application\Application::getInstance();
+        $wf = \Wfe\Factory::getApplication();
         $profile = $wf->getActiveProfile(['plugin' => 'browser']);
 
         // is conversion enabled?
@@ -169,7 +170,13 @@ abstract class BrowserHelper
         $options['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
         $options['select_button'] = (int) $wf->getParam('browser.mediafield_select_button', 1);
 
-        $app->triggerEvent('onWfMediaFieldGetOptions', array(&$options, $profile));
+        $event = new Event('onWfMediaFieldGetOptions', array(
+            'subject' => new \stdClass,
+            'options' => $options,
+            'profile' => $profile,
+        ));
+
+        $app->getDispatcher()->dispatch('onWfMediaFieldGetOptions', $event);
 
         return $options;
     }
