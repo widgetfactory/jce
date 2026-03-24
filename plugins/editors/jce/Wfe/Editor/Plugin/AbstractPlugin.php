@@ -194,7 +194,6 @@ class AbstractPlugin
 
     protected function initialize()
     {
-        $app = Factory::getApplication();
         $wf = $this->getApplication();
 
         $version = $this->getVersion();
@@ -241,14 +240,14 @@ class AbstractPlugin
         $this->tabs = new Tabs(array(
             'base_path' => $this->get('base_path')
         ));
-        
+
         Tabs::register($this->tabs);
 
         $event = new Event('onWfPluginInit', array(
             'subject' => $this
         ));
 
-        $app->getDispatcher()->dispatch('onWfPluginInit', $event);
+        Factory::getApplication()->getDispatcher()->dispatch('onWfPluginInit', $event);
     }
 
     public function execute($task)
