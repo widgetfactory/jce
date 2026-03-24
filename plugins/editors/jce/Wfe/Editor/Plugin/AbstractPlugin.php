@@ -58,6 +58,7 @@ class AbstractPlugin
     {
         // create and store an application instance, registering it as the shared instance
         $this->application = \Wfe\Factory::getApplication();
+
         \Wfe\Factory::setApplication($this->application);
 
         // register this plugin instance for BC wrapper access
@@ -85,6 +86,7 @@ class AbstractPlugin
 
         // re-set the "name" value
         $this->name = $name;
+
         $config['name'] = $name;
 
         if (!array_key_exists('base_path', $config)) {
@@ -236,7 +238,10 @@ class AbstractPlugin
         $this->document->set('standalone', $wf->input->getInt('standalone', 0));
 
         // create and register the tabs on the container
-        $this->tabs = new Tabs();
+        $this->tabs = new Tabs(array(
+            'base_path' => $this->get('base_path')
+        ));
+        
         Tabs::register($this->tabs);
 
         $event = new Event('onWfPluginInit', array(
