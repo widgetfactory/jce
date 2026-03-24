@@ -245,6 +245,10 @@ class Registry implements \JsonSerializable
     /**
      * Bind data to this Registry.
      *
+     * Recursively expands associative arrays and stdClass objects into the parent array.
+     * Class instances (non-stdClass objects) are stored by reference without conversion,
+     * preserving them for retrieval via get(). Numeric arrays and scalar values are stored as-is.
+     *
      * @param array $parent
      * @param mixed $data
      * @param bool  $recursive
@@ -266,19 +270,15 @@ class Registry implements \JsonSerializable
             }
 
             $isAssocArray = is_array($v) && ArrayHelper::isAssociative($v);
+            $isPlainObject = $v instanceof \stdClass;
 
-            if ($recursive && ($isAssocArray || is_object($v))) {
+            if ($recursive && ($isAssocArray || $isPlainObject)) {
                 if (!isset($parent[$k]) || !is_array($parent[$k])) {
                     $parent[$k] = array();
                 }
 
                 $this->bindData($parent[$k], $v, $recursive, $allowNull);
                 continue;
-            }
-
-            // Keep numeric arrays as-is, and scalars as-is.
-            if (is_object($v)) {
-                $v = get_object_vars($v);
             }
 
             $parent[$k] = $v;
