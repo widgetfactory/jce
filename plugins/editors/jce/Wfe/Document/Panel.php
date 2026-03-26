@@ -10,15 +10,14 @@ namespace Wfe\Document;
 
 \defined('_JEXEC') or die;
 
-use Joomla\Filesystem\Path;
 use Wfe\Container\ContainerTrait;
 
 final class Panel
 {
     use ContainerTrait;
+    use TemplateLoaderTrait;
 
-    private array $paths = [];
-    private array $data  = [];
+    private array $data = [];
 
     public function __construct(
         private readonly string $name,
@@ -31,11 +30,6 @@ final class Panel
     public function getState(): int
     {
         return $this->state;
-    }
-
-    public function addTemplatePath(string $path): void
-    {
-        $this->paths[] = $path;
     }
 
     public function set(string $key, mixed $value): void
@@ -72,16 +66,6 @@ final class Panel
         $file = isset($tpl) ? $this->name . '_' . $tpl : $this->name;
         $file = preg_replace('/[^A-Z0-9_\.-]/i', '', $file);
 
-        $template = Path::find($this->paths, $file . '.php');
-
-        if (!$template) {
-            throw new \InvalidArgumentException(
-                'Panel template "' . $file . '" not found in ' . implode(', ', $this->paths)
-            );
-        }
-
-        ob_start();
-        include $template;
-        return ob_get_clean();
+        return $this->renderTemplate($file);
     }
 }

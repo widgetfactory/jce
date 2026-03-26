@@ -360,52 +360,35 @@ class Document
 
     public function removeScript($file, $root = 'media')
     {
-        $file = $this->buildScriptPath($file, $root);
+        $file = $this->buildAssetPath($file, $root, 'js');
         unset($this->scripts[$file]);
     }
 
     public function removeCss($file, $root = 'media')
     {
-        $file = $this->buildStylePath($file, $root);
+        $file = $this->buildAssetPath($file, $root, 'css');
         unset($this->styles[$file]);
+    }
+
+    private function buildAssetPath($file, $root, $ext)
+    {
+        $file = preg_replace('#[^A-Z0-9-_\/\.]#i', '', $file);
+        $base = dirname($file);
+        $file = basename($file, '.' . $ext);
+        $file = trim(trim($base, '.'), '/') . '/' . $file . '.' . $ext;
+        $file = trim($file, '/');
+        $file = $this->getBaseURL($root, $ext) . '/' . $file;
+        return preg_replace('#[/\\\\]+#', '/', $file);
     }
 
     public function buildScriptPath($file, $root)
     {
-        $file = preg_replace('#[^A-Z0-9-_\/\.]#i', '', $file);
-        // get base dir
-        $base = dirname($file);
-        // remove extension if present
-        $file = basename($file, '.js');
-        // strip . and trailing /
-        $file = trim(trim($base, '.'), '/') . '/' . $file . '.js';
-        // remove leading and trailing slashes
-        $file = trim($file, '/');
-        // create path
-        $file = $this->getBaseURL($root, 'js') . '/' . $file;
-        // remove duplicate slashes
-        $file = preg_replace('#[/\\\\]+#', '/', $file);
-
-        return $file;
+        return $this->buildAssetPath($file, $root, 'js');
     }
 
     public function buildStylePath($file, $root)
     {
-        $file = preg_replace('#[^A-Z0-9-_\/\.]#i', '', $file);
-        // get base dir
-        $base = dirname($file);
-        // remove extension if present
-        $file = basename($file, '.css');
-        // strip . and trailing /
-        $file = trim(trim($base, '.'), '/') . '/' . $file . '.css';
-        // remove leading and trailing slashes
-        $file = trim($file, '/');
-        // create path
-        $file = $this->getBaseURL($root, 'css') . '/' . $file;
-        // remove duplicate slashes
-        $file = preg_replace('#[/\\\\]+#', '/', $file);
-
-        return $file;
+        return $this->buildAssetPath($file, $root, 'css');
     }
 
     /**
@@ -462,21 +445,6 @@ class Document
         } else {
             $this->script[strtolower($type)] .= chr(13) . $content;
         }
-    }
-
-    private function getScriptDeclarations()
-    {
-        return $this->script;
-    }
-
-    private function getScripts()
-    {
-        return $this->scripts;
-    }
-
-    private function getStyleSheets()
-    {
-        return $this->styles;
     }
 
     /**
@@ -615,11 +583,6 @@ class Document
         $this->body = $data;
     }
 
-    private function getBody()
-    {
-        return $this->body;
-    }
-
     private function loadData()
     {
         //get the file content
@@ -636,10 +599,6 @@ class Document
      */
     public function render()
     {
-        // assign language
-        $this->language = $this->getLanguage();
-        $this->direction = $this->getDirection();
-
         // load template data
         $output = $this->loadData();
         $output = $this->parseData($output);
@@ -650,7 +609,7 @@ class Document
     private function parseData($data)
     {
         $data = preg_replace_callback('#<!-- \[head\] -->#', array($this, 'getHead'), $data);
-        $data = preg_replace_callback('#<!-- \[body\] -->#', array($this, 'getBody'), $data);
+        $data = preg_replace_callback('#<!-- \[body\] -->#', function() { return $this->body; }, $data);
 
         return $data;
     }
@@ -678,7 +637,7 @@ class Document
                 case 'javascript':
                     $data = '';
 
-                    foreach ($this->getScripts() as $src => $type) {
+                    foreach ($this->scripts as $src => $type) {
                         if (strpos($src, '://') === false && strpos($src, 'index.php') === false) {
                             $src .= preg_match('/\.js$/', $src) ? '' : '.js';
 
@@ -705,7 +664,7 @@ class Document
 
                     break;
                 case 'css':
-                    foreach ($this->getStyleSheets() as $style => $type) {
+                    foreach ($this->styles as $style => $type) {
                         if (strpos($style, '://') === false && strpos($style, 'index.php') === false) {
                             $style .= preg_match('/\.css$/', $style) ? '' : '.css';
 
