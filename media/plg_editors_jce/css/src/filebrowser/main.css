@@ -899,4 +899,5 @@ nav.uk-navbar .uk-button.action {
 
 .uk-icon-refresh {
   width: 1.25em;
+  display: flex;
 }
