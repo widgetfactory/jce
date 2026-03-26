@@ -13,12 +13,16 @@ namespace Wfe\Document;
 
 use Joomla\Filesystem\Path;
 use Wfe\Registry\ConfigurationTrait;
+use Wfe\Container\ContainerTrait;
 
 final class View
 {
     use ConfigurationTrait;
-    
+    use ContainerTrait;
+
     private $paths = array();
+
+    private $properties = array();
 
     public function __construct($config = array())
     {
@@ -39,8 +43,18 @@ final class View
         if (array_key_exists('template_path', $config)) {
             $this->addTemplatePath($config['template_path']);
         } else {
-            $this->addTemplatePath($this->get('base_path') . '/views/' . $this->getName() . '/tmpl');
+            $this->addTemplatePath($this->getConfig('base_path') . '/views/' . $this->getName() . '/tmpl');
         }
+    }
+
+    public function set($key, $value)
+    {
+        $this->properties[$key] = $value;
+    }
+
+    public function get($key, $default = null)
+    {
+        return isset($this->properties[$key]) ? $this->properties[$key] : $default;
     }
 
     /**
@@ -65,17 +79,17 @@ final class View
 
     public function getName()
     {
-        return $this->get('name');
+        return $this->getConfig('name');
     }
 
     public function setLayout($layout)
     {
-        $this->set('layout', $layout);
+        $this->setConfig('layout', $layout);
     }
 
     public function getLayout()
     {
-        return $this->get('layout');
+        return $this->getConfig('layout');
     }
 
     public function addTemplatePath($path)
