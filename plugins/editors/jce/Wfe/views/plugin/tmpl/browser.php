@@ -12,10 +12,12 @@
 
 use Joomla\CMS\Language\Text;
 
-defined('WF_EDITOR') or die('RESTRICTED!!');
+$container = $this->getContainer();
+$filebrowser = $container->getFileBrowser();
+
 ?>
 <div class="uk-position-cover uk-browser uk-browser-external">
-	<?php $this->get('filebrowser')->render(); ?>
+	<?php $filebrowser->render(); ?>
 
 	<input type="hidden" value="" class="filebrowser" data-filebrowser />
 </div>
