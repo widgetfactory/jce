@@ -23,7 +23,7 @@ JLoader::registerNamespace('Defuse\\Crypto', WF_ADMINISTRATOR . '/vendor/Defuse/
 JLoader::registerNamespace('tubalmartin\CssMin', WF_EDITOR . '/vendor/cssmin/src', false, false, 'psr4');
 
 JLoader::registerAlias('WFApplication', 'Wfe\\Compat\\WFApplication');
-JLoader::registerAlias('WFFileSystem', 'Wfe\\Adapter\\Plugin\\FileSystem\\AbstractFilesystem');
+JLoader::registerAlias('WFFileSystem', 'Wfe\\Compat\\WFFileSystem');
 JLoader::registerAlias('WFEditorPlugin', 'Wfe\\Compat\\WFEditorPlugin');
 JLoader::registerAlias('WFText', 'Wfe\\Language\\Text');
 JLoader::registerAlias('WFRequest', 'Wfe\\Http\\Request');
