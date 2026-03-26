@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -11,17 +12,22 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
-?>
-<div class="uk-position-cover uk-browser uk-browser-<?php echo $this->get('filebrowser')->get('position'); ?>">
-<?php
 
-// render tabs and panels
-\Wfe\Document\Tabs::getInstance()->render();
+$container = $this->getContainer();
+$filebrowser = $container->getFileBrowser();
+$tabs = $container->getTabs();
 
-if ($this->get('filebrowser')->get('position') !== 'external') {
-    $this->get('filebrowser')->render();
-}
 ?>
+<div class="uk-position-cover uk-browser uk-browser-<?php echo $filebrowser->getConfig('position'); ?>">
+    <?php
+
+    // render tabs and panels
+    $tabs->render();
+
+    if ($filebrowser->getConfig('position') !== 'external') {
+        $filebrowser->render();
+    }
+    ?>
 </div>
 <div class="actionPanel uk-modal-footer">
     <button class="uk-button uk-button-cancel" id="cancel"><?php echo Text::_('WF_LABEL_CANCEL') ?></button>
