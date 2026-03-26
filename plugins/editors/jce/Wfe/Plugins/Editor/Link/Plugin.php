@@ -44,10 +44,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         $tabs = $this->getTabs();
 
         // Add tabs
-        $tabs->addTab('link', 1, array(
-            'plugin' => $this
-        ));
-
+        $tabs->addTab('link');
         $tabs->addTab('advanced', $this->getParam('tabs_advanced', 1));
 
         // get and display links
