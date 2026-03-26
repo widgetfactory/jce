@@ -22,7 +22,7 @@ $lightbox = $this->get('lightbox');
 	</div>
 </div>
 
-<?php if ($lightbox->get('text')): ?>
+<?php if ($lightbox->getConfig('text')): ?>
 
 <div class="uk-form-row uk-grid uk-grid-small uk-margin-small-bottom"">
 	<label for=" popup_text" class="hastip uk-form-label uk-width-1-5" title="<?php echo Text::_('WF_LIGHTBOX_TEXT_DESC'); ?>"><?php echo Text::_('WF_LIGHTBOX_TEXT'); ?></label>
@@ -33,7 +33,7 @@ $lightbox = $this->get('lightbox');
 
 <?php endif;?>
 
-<?php if ($lightbox->get('url')): ?>
+<?php if ($lightbox->getConfig('url')): ?>
 
 <div class="uk-form-row uk-margin-small-bottom uk-grid uk-grid-small">
 	<label for="popup_src" class="uk-form-label uk-width-1-5 hastip" title="<?php echo Text::_('WF_LABEL_URL_DESC'); ?>"><?php echo Text::_('WF_LABEL_URL'); ?></label>
