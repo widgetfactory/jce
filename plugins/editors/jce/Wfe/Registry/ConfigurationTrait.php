@@ -41,7 +41,7 @@ trait ConfigurationTrait
      *
      * @return array
      */
-    public function getConfig()
+    public function getProperties()
     {
         return $this->getRegistry()->getAll();
     }
@@ -54,7 +54,7 @@ trait ConfigurationTrait
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function getConfig($key, $default = null)
     {
         return $this->getRegistry()->get($key, $default);
     }
@@ -68,35 +68,13 @@ trait ConfigurationTrait
      *
      * @throws InvalidArgumentException
      */
-    public function setConfig($config)
+    public function setProperties($config)
     {
         if (!is_array($config) && !is_object($config)) {
             throw new InvalidArgumentException('Config must be an array or an object.');
         }
 
         $this->getRegistry()->merge($config);
-    }
-
-    /**
-     * Alias for setConfig().
-     *
-     * @param  array|object  $config
-     *
-     * @return void
-     */
-    public function setProperties($config)
-    {
-        $this->setConfig($config);
-    }
-
-    /**
-     * Alias for getConfig().
-     *
-     * @return array
-     */
-    public function getProperties()
-    {
-        return $this->getConfig();
     }
 
     /**
@@ -107,7 +85,7 @@ trait ConfigurationTrait
      *
      * @return mixed The previous value, or null if none.
      */
-    public function set($key, $value = null)
+    public function setConfig($key, $value = null)
     {
         $registry = $this->getRegistry();
 

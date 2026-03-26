@@ -43,7 +43,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         parent::display();
 
         $document = $this->getDocument();
-        $config   = $this->getConfig();
+        $config   = $this->getProperties();
 
         if ($config) {
             $document->addScriptDeclaration('WfLightboxAdapter.setConfig(' . json_encode($config) . ');');
@@ -99,7 +99,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
             $options[] = HTMLHelper::_('select.option', $plugin->getName(), Text::_($plugin->getTitle()));
         }
 
-        return HTMLHelper::_('select.genericlist', $options, 'lightbox_list', '', 'value', 'text', $this->get('default'));
+        return HTMLHelper::_('select.genericlist', $options, 'lightbox_list', '', 'value', 'text', $this->getConfig('default'));
     }
 
     /**
@@ -116,7 +116,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         }
 
         // If you have a default / active adapter, render only that one.
-        $active = strtolower((string) $this->get('default'));
+        $active = strtolower((string) $this->getConfig('default'));
 
         foreach ($this->plugins as $plugin) {
             $path = $plugin->getPath();
@@ -142,7 +142,7 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
                 'template_path' => $path . '/tmpl'
             ));
 
-            $adapterView->set('lightbox', $plugin);
+            $adapterView->setContainer('lightbox', $plugin);
 
             ob_start();
 

@@ -30,10 +30,12 @@ use Wfe\Helper\StringHelper;
 use Wfe\Document\View;
 use Wfe\Registry\ConfigurationTrait;
 use Wfe\Http\Request;
+use Wfe\Container\ContainerTrait;
 
 class Browser
 {
     use ConfigurationTrait;
+    use ContainerTrait;
 
     // The Editor Plugin Container
     protected $container = null;
@@ -56,7 +58,7 @@ class Browser
     public function __construct($container, $config = array())
     {
         // store the Editor Plugin Container object
-        $this->container = $container;
+        $this->setContainer($container);
 
         if (isset($config['filesystem'])) {
             $this->filesystem = $config['filesystem'];
@@ -66,7 +68,7 @@ class Browser
 
         // apply passed in properties (this must be done before initialising filesystem!)
         if (!empty($config)) {
-            $this->setConfig($config);
+            $this->setProperties($config);
         }
 
         $default = array(
@@ -76,8 +78,8 @@ class Browser
         $properties = array('base', 'delete', 'rename', 'folder_new', 'copy', 'move', 'list_limit');
 
         foreach ($properties as $property) {
-            if ($this->filesystem->get($property)) {
-                $default[$property] = $this->filesystem->get($property);
+            if ($this->filesystem->getConfig($property)) {
+                $default[$property] = $this->filesystem->getConfig($property);
             }
         }
 
@@ -88,7 +90,7 @@ class Browser
         }
 
         // apply default properties
-        $this->setConfig($default);
+        $this->setProperties($default);
 
         // add actions
         $this->addDefaultActions();
@@ -107,18 +109,13 @@ class Browser
         $this->setRequest(array($this, 'upload'));
     }
 
-    protected function getContainer()
-    {
-        return $this->container;
-    }
-
     /**
      * Display the browser.
      */
     public function display()
     {
         $filesystem = $this->getFileSystem();
-        $buttons    = $filesystem->get('buttons', []);
+        $buttons    = $filesystem->getConfig('buttons', []);
 
         if (!empty($buttons)) {
             foreach ($buttons as $type => $items) {
@@ -128,13 +125,13 @@ class Browser
             }
         }
 
-        $this->setConfig(array(
+        $this->setProperties(array(
             'actions' => $this->getActions(),
             'buttons' => $this->getButtons(),
         ));
 
         // Get the Document instance
-        $document = Document::getInstance();
+        $document = $this->getContainer()->getDocument();
 
         $document->addScript(array('filebrowser.min'), 'media');
         $document->addStyleSheet(array('filebrowser.min'), 'media');
@@ -145,15 +142,15 @@ class Browser
      */
     public function render()
     {
-        $session = Factory::getSession();
+        $session = Factory::getApplication()->getSession();
 
         $view = new View(array(
             'name'      => 'filebrowser',
             'layout'    => 'default',
             'session'   => $session,
             'action'    => $this->getFormAction(),
-            'list_limit_options' => $this->get('list_limit_options', array()),
-            'list_limit' => $this->get('list_limit', 25),
+            'list_limit_options' => $this->getConfig('list_limit_options', array()),
+            'list_limit' => $this->getConfig('list_limit', 25),
         ));
 
         // return view output
@@ -217,7 +214,7 @@ class Browser
     {
         // If $list is empty, use the default filetypes from the object's property
         if (empty($list)) {
-            $list = $this->get('filetypes');
+            $list = $this->getConfig('filetypes');
         }
 
         return Utility::formatFileTypesList($format, $list);
@@ -252,11 +249,11 @@ class Browser
         $upload['filetypes'] = $list;
 
         // update filetypes
-        $this->setConfig(array(
+        $this->setProperties(array(
             'upload' => $upload,
         ));
 
-        $this->set('filetypes', $list);
+        $this->setConfig('filetypes', $list);
     }
 
     /**
@@ -304,7 +301,7 @@ class Browser
      */
     public function getSourceDir($path)
     {
-        $path = $this->get('source', $path);
+        $path = $this->getConfig('source', $path);
 
         if (empty($path)) {
             return '';
@@ -679,7 +676,7 @@ class Browser
         $user = $app->getIdentity();
 
         if (!isset($variables)) {
-            $wf = $this->container->getApplication();
+            $wf = $this->getContainer()->getApplication();
 
             $profile = $wf->getActiveProfile();
 
@@ -796,13 +793,13 @@ class Browser
 
     public function processPath(&$path)
     {
-        $path = preg_replace($this->get('path_pattern', array()), $this->get('path_replacement', array()), $path);
+        $path = preg_replace($this->getConfig('path_pattern', array()), $this->getConfig('path_replacement', array()), $path);
 
         // split into path parts to preserve /
         $parts = explode('/', $path);
 
         // clean path parts
-        $parts = Utility::makeSafe($parts, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_allow_spaces', '_'), $this->get('websafe_textcase', ''));
+        $parts = Utility::makeSafe($parts, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_allow_spaces', '_'), $this->getConfig('websafe_textcase', ''));
 
         // join path parts
         $path = implode('/', $parts);
@@ -843,7 +840,7 @@ class Browser
     {
         $path = trim($path, '/');
 
-        $filters = $this->get('filter');
+        $filters = $this->getConfig('filter');
 
         // no filters set, allow all
         if (empty($filters)) {
@@ -1097,7 +1094,7 @@ class Browser
         }*/
 
         // get search depth
-        $depth = $this->get('search_depth', 3);
+        $depth = $this->getConfig('search_depth', 3);
 
         // trim the passed in path if any
         $path = trim($path, '/');
@@ -1875,7 +1872,7 @@ class Browser
             throw new \InvalidArgumentException('Upload Failed: Not an uploaded file');
         }
 
-        $upload = $this->get('upload');
+        $upload = $this->getConfig('upload');
 
         // check file for various issues
         if (Utility::isSafeFile($file) !== true) {
@@ -1967,7 +1964,7 @@ class Browser
         $ext = trim($ext);
 
         // make extension websafe
-        $ext = Utility::makeSafe($ext, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+        $ext = Utility::makeSafe($ext, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
         // check extension exists
         if (empty($ext) || $ext === $file['name']) {
@@ -1978,7 +1975,7 @@ class Browser
         $name = Utility::stripExtension($name);
 
         // make file name 'web safe'
-        $name = Utility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+        $name = Utility::makeSafe($name, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
         // check name
         if (Utility::validateFileName($name) === false) {
@@ -1992,7 +1989,7 @@ class Browser
         $dir = rawurldecode($dir);
 
         // get upload settings from the config
-        $upload = $this->get('upload');
+        $upload = $this->getConfig('upload');
 
         // add random string
         if ($upload['add_random']) {
@@ -2221,7 +2218,7 @@ class Browser
         }
 
         // apply filesystem options
-        $destination = Utility::makeSafe($destination, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+        $destination = Utility::makeSafe($destination, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
         $result = $filesystem->rename($source, $destination, $args);
 
         if ($result instanceof FilesystemResult) {
@@ -2511,7 +2508,7 @@ class Browser
 
         $filesystem = $this->getFileSystem();
 
-        $name = Utility::makeSafe($new, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+        $name = Utility::makeSafe($new, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
         // check for extension in destination name
         if (Utility::validateFileName($name) === false) {
@@ -2645,11 +2642,11 @@ class Browser
     private function getUploadDefaults()
     {
         $filesystem = $this->getFileSystem();
-        $features   = $filesystem->get('upload', []);
+        $features   = $filesystem->getConfig('upload', []);
 
         $upload_max = $this->getUploadValue();
 
-        $upload     = $this->get('upload', []);
+        $upload     = $this->getConfig('upload', []);
 
         // get max size as kilobytes
         if (empty($upload['max_size'])) {

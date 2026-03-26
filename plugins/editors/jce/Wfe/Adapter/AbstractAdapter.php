@@ -15,20 +15,19 @@ namespace Wfe\Adapter;
 
 use Wfe\Helper\AdapterHelper;
 use Wfe\Registry\ConfigurationTrait;
+use Wfe\Container\ContainerTrait;
 
 class AbstractAdapter
 {
     use ConfigurationTrait;
-
-    // The Editor Plugin Container
-    protected $container;
+    use ContainerTrait;
 
     // An array of adapter plugins
     protected $plugins = array();
 
     public function __construct($container, $config = array())
     {
-        $this->container = $container;
+        $this->setContainer($container);
         $this->setConfiguration($config);
     }
 
@@ -41,19 +40,14 @@ class AbstractAdapter
         return $this->plugins;
     }
 
-    protected function getContainer()
-    {
-        return $this->container;
-    }
-
     protected function getDocument()
     {
-        return $this->container->getDocument();
+        return $this->getContainer()->getDocument();
     }
 
     protected function getTabs()
     {
-        return $this->container->getTabs();
+        return $this->getContainer()->getTabs();
     }
 
     /**
@@ -66,13 +60,13 @@ class AbstractAdapter
      */
     protected function getParam($key, $default = '')
     {
-        return AdapterHelper::getParam($this->container, $key, $default);
+        return AdapterHelper::getParam($this->getContainer(), $key, $default);
     }
 
     protected function getTemplatePath()
     {
         $name = strtolower((new \ReflectionClass($this))->getShortName());
-    
+
         return WF_EDITOR . '/views/adapter/' . $name . '/tmpl';
     }
 }

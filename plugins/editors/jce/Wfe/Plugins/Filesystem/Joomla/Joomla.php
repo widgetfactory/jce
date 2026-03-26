@@ -63,9 +63,9 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Constructor activating the default information of the class.
      */
-    public function __construct($config = array())
+    public function __construct($config = array(), $container = null)
     {
-        parent::__construct($config);
+        parent::__construct($config, $container);
 
         $safe_mode = false;
 
@@ -97,7 +97,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $restricted = [];
         }
 
-        $this->setConfig(
+        $this->setProperties(
             array(
                 'local' => true,
                 'list_limit' => 0, // "all",
@@ -136,7 +136,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      */
     public function getRootDir()
     {
-        if ($this->get('allowroot')) {
+        if ($this->getConfig('allowroot')) {
             return ''; // return a blank value for allowroot
         }
 
@@ -539,7 +539,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
     private function checkRestrictedDirectory($path)
     {
-        if ($this->get('allowroot')) {
+        if ($this->getConfig('allowroot')) {
             foreach ($this->restricted as $name) {
                 $restricted = $this->toAbsolute($name);
 
@@ -903,10 +903,10 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     protected function resolveFilenameConflict($destination, $name, $createCopy = false)
     {
         // get overwrite state
-        $conflict = $this->get('upload_conflict', 'overwrite');
+        $conflict = $this->getConfig('upload_conflict', 'overwrite');
 
         // get suffix
-        $suffix = $this->get('upload_suffix', '_copy');
+        $suffix = $this->getConfig('upload_suffix', '_copy');
 
         $path = Utility::mb_dirname($destination);
 

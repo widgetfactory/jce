@@ -11,7 +11,7 @@
 
 use Joomla\CMS\Language\Text;
 
-$plugin = $this->get('plugin');
+$plugin = $this->getContainer();
 
 ?>
 <div class="uk-grid uk-grid-small">

@@ -14,7 +14,7 @@ use Joomla\CMS\Language\Text;
 
 $tabs = \Wfe\Document\Tabs::getInstance();
 
-$plugin = $this->get('plugin');
+$plugin = $this->getContainer();
 ?>
 <form onsubmit="return false;" class="uk-form uk-form-horizontal" data-layout="<?php echo $plugin->getLayout(); ?>">
 	<?php echo $tabs->render(); ?>

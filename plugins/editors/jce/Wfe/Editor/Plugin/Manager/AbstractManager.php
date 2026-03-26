@@ -61,7 +61,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
     public function getFileBrowser()
     {
         $name = $this->getName();
-        $caller = $this->get('caller');
+        $caller = $this->getConfig('caller');
 
         // add caller if set
         if ($caller) {
@@ -107,13 +107,12 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
 
         $document = $this->getDocument();
 
-        $view = $this->getView();
         $browser = $this->getFileBrowser();
 
         $browser->display();
-        $view->set('filebrowser', $browser);
-
-        $options = $browser->getConfig();
+        
+        // get all file browser config values
+        $options = $browser->getProperties();
 
         // set global options
         $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
@@ -275,15 +274,15 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         $dir = $this->getParam($this->getName() . '.dir');
 
         // check for directory set by caller, eg: Image Manager in Basic Dialog
-        if ($this->get('caller')) {
-            $dir = $this->getParam($this->get('caller') . '.dir', $dir);
+        if ($this->getConfig('caller')) {
+            $dir = $this->getParam($this->getConfig('caller') . '.dir', $dir);
         }
 
         // allow root: accept both spellings just in case
-        $allowRoot = (bool) ($filesystem->get('allowroot', $filesystem->get('allow_root', 0)));
+        $allowRoot = (bool) ($filesystem->getConfig('allowroot', $filesystem->getConfig('allow_root', 0)));
 
         // if the filesystem name matches the base filesystem name, use the base directory if no directory is set and allowRoot is false
-        if ($baseFs['name'] === $filesystem->get('name') && $allowRoot === false) {
+        if ($baseFs['name'] === $filesystem->getConfig('name') && $allowRoot === false) {
             // if no directory is set, or it is an empty array, use the base directory
             if (empty($dir)) {
                 $dir = $baseDir;
@@ -321,7 +320,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         // If no usable entries exist (all blank or effectively empty after normalization)
         if (count($nonBlank) === 0) {
             if ($allowRoot === false) {
-                $root = $filesystem->get('root', 'images'); // get the default root for the filesystem
+                $root = $filesystem->getConfig('root', 'images'); // get the default root for the filesystem
 
                 if (empty($root)) {
                     $root = 'images';
@@ -362,7 +361,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
 
     private function getFeatures($filesystem)
     {
-        $isReadOnly = $filesystem->get('readonly', false);
+        $isReadOnly = $filesystem->getConfig('readonly', false);
 
         $allow = function ($param, $default = 1) use ($isReadOnly) {
             return $isReadOnly ? false : (bool) $this->getParam($param, $default);
@@ -472,7 +471,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
             'use_state_cookies' => $this->getParam('editor.use_cookies', true),
             'search_depth' => $this->getParam('editor.filebrowser_search_depth', 3),
             'allow_download' => $this->getParam('allow_download', 0),
-            'list_limit_options' => $filesystem->get('list_limit_options', array(10, 25, 50, 100, 0))
+            'list_limit_options' => $filesystem->getConfig('list_limit_options', array(10, 25, 50, 100, 0))
         );
 
         return ArrayHelper::array_merge_recursive_distinct($base, $config);

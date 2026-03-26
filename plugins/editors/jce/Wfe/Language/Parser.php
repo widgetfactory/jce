@@ -362,7 +362,7 @@ class Parser
                 }
             }
 
-            $plugins = $this->get('plugins');
+            $plugins = $this->getConfig('plugins');
 
             if (!empty($plugins)) {
                 foreach ($plugins['external'] as $name => $plugin) {
@@ -403,7 +403,7 @@ class Parser
         // shorten the tag, eg: en-GB -> en
         $tag = substr($tag, 0, strpos($tag, '-'));
 
-        $sections = $this->get('sections');
+        $sections = $this->getConfig('sections');
         $filter = $this->getFilter();
 
         $data = self::processLanguageINI($files, $sections, $filter);

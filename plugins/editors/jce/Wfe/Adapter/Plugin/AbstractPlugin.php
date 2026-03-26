@@ -14,13 +14,13 @@ namespace Wfe\Adapter\Plugin;
 \defined('_JEXEC') or die;
 
 use Wfe\Registry\ConfigurationTrait;
+use Wfe\Container\ContainerTrait;
 use Wfe\Helper\AdapterHelper;
 
 class AbstractPlugin
 {
     use ConfigurationTrait;
-
-    protected $container;
+    use ContainerTrait;
 
     /**
      * Constructor activating the default information of the class.
@@ -38,16 +38,6 @@ class AbstractPlugin
         $this->setContainer($container);
     }
 
-    public function setContainer($container)
-    {
-        $this->container = $container;
-    }
-
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
     /**
      * Display the extension.
      */
@@ -55,7 +45,7 @@ class AbstractPlugin
 
     protected function getDocument()
     {
-        return $this->container->getDocument();
+        return $this->getContainer()->getDocument();
     }
 
     /**
@@ -68,7 +58,7 @@ class AbstractPlugin
      */
     protected function getParam($key, $default = '')
     {
-        return AdapterHelper::getParam($this->container, $key, $default);
+        return AdapterHelper::getParam($this->getContainer(), $key, $default);
     }
 
     public function isEnabled()
@@ -88,17 +78,17 @@ class AbstractPlugin
 
     public function getName()
     {
-        return $this->get('name');
+        return $this->getConfig('name');
     }
 
     public function getTitle()
     {
-        return $this->get('title');
+        return $this->getConfig('title');
     }
 
     public function getPath()
     {
-        return $this->get('path');
+        return $this->getConfig('path');
     }
 
     protected function getCustomDefaultAttributes($data)

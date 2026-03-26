@@ -49,7 +49,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\AbstractManager
         $keys = explode('.', $key);
 
         // get caller if any
-        $caller = $this->get('caller');
+        $caller = $this->getConfig('caller');
 
         // create new namespaced key
         if ($caller && ($keys[0] === $caller || count($keys) == 1)) {
@@ -343,7 +343,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\AbstractManager
         $document->setName('browser');
         $document->setTitle(Text::_('WF_BROWSER_TITLE'));
 
-        if ($document->get('standalone') == 1) {
+        if ($document->getConfig('standalone') == 1) {
             if ($slot === 'plugin') {
                 $document->addScript(array('window.min'));
 

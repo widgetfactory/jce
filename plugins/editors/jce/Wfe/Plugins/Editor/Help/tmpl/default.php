@@ -9,7 +9,7 @@
 
 \defined('_JEXEC') or die;
 
-$plugin = $this->get('plugin');
+$plugin = $this->getContainer();
 
 ?>
 <div class="ui-jce uk-flex">

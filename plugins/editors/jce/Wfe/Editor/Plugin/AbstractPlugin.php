@@ -14,7 +14,6 @@ namespace Wfe\Editor\Plugin;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
@@ -26,7 +25,6 @@ use Wfe\Document\Tabs;
 use Wfe\Language\Language;
 use Wfe\Http\Request;
 use Wfe\Document\View;
-use Wfe\Language\Parser;
 use Wfe\Registry\ConfigurationTrait;
 
 /**
@@ -58,8 +56,6 @@ class AbstractPlugin
     {
         // create and store an application instance, registering it as the shared instance
         $this->application = \Wfe\Factory::getApplication();
-
-        \Wfe\Factory::setApplication($this->application);
 
         // register this plugin instance for BC wrapper access
         \Wfe\Factory::setEditorPlugin($this);
@@ -140,12 +136,13 @@ class AbstractPlugin
 
             // create plugin view
             $view = new View(array(
-                'view_path' => $this->get('base_path'),
-                'template_path' => $this->get('template_path'),
+                'view_path' => $this->getConfig('base_path'),
+                'template_path' => $this->getConfig('template_path'),
                 'name' => $this->getName(),
-                'layout' => $this->get('layout'),
-                'plugin' => $this
+                'layout' => $this->getConfig('layout'),
             ));
+
+            $view->setContainer($this);
         }
 
         return $view;
@@ -170,7 +167,7 @@ class AbstractPlugin
 
     protected function getPluginVersion()
     {
-        $manifest = $this->get('base_path') . '/' . $this->getName() . '.xml';
+        $manifest = $this->getConfig('base_path') . '/' . $this->getName() . '.xml';
 
         $version = '';
 
@@ -234,12 +231,14 @@ class AbstractPlugin
         Document::register($this->document);
 
         // set standalone mode
-        $this->document->set('standalone', $wf->input->getInt('standalone', 0));
+        $this->document->setConfig('standalone', $wf->input->getInt('standalone', 0));
 
         // create and register the tabs on the container
         $this->tabs = new Tabs(array(
-            'base_path' => $this->get('base_path')
+            'base_path' => $this->getConfig('base_path')
         ));
+
+        $this->tabs->setContainer($this);
 
         Tabs::register($this->tabs);
 
@@ -316,7 +315,7 @@ class AbstractPlugin
 
         $document = $this->getDocument();
 
-        if ($document->get('standalone') == 0) {
+        if ($document->getConfig('standalone') == 0) {
             $document->addScript(array('tinymce.popup'), 'tinymce');
         }
 
@@ -355,7 +354,7 @@ class AbstractPlugin
      */
     public function getCaller()
     {
-        return $this->get('caller');
+        return $this->getConfig('caller');
     }
 
     /**
@@ -369,7 +368,7 @@ class AbstractPlugin
     public function getDefaults($fieldset = 'defaults', $options = array())
     {
         $name = $this->getName();
-        $caller = $this->get('caller');
+        $caller = $this->getConfig('caller');
 
         if ($caller) {
             $name = $caller;
@@ -387,7 +386,7 @@ class AbstractPlugin
         }
 
         // get manifest path
-        $manifest = $this->get('base_path') . '/' . $name . '.xml';
+        $manifest = $this->getConfig('base_path') . '/' . $name . '.xml';
 
         // use the plugin name as the form
         $form_id = $name;
@@ -596,7 +595,7 @@ class AbstractPlugin
             'text' => $text,
         );
 
-        $this->set('_alerts', $alerts);
+        $this->setConfig('_alerts', $alerts);
     }
 
     /**
@@ -606,7 +605,7 @@ class AbstractPlugin
      */
     private function getAlerts()
     {
-        return $this->get('_alerts');
+        return $this->getConfig('_alerts');
     }
 
     /**
@@ -674,7 +673,7 @@ class AbstractPlugin
         // get plugin name
         $name = $this->getName();
         // get caller if any
-        $caller = $this->get('caller');
+        $caller = $this->getConfig('caller');
 
         // get all keys
         $keys = explode('.', $key);

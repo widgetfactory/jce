@@ -51,14 +51,16 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
     public function getParam($key, $default = '')
     {
         // get the filesystem plugin name
-        $name = $this->get('name');
+        $name = $this->getConfig('name');
+
+        $container = $this->getContainer();
 
         // First, try from the editor context
-        $value = $this->container->getParam('editor.filesystem.' . $name . '.' . $key, $default);
+        $value = $container->getParam('editor.filesystem.' . $name . '.' . $key, $default);
 
-        $fsConfig = $this->container->getParam($this->container->getName() . '.filesystem.' . $name);
+        $fsConfig = $container->getParam($container->getName() . '.filesystem.' . $name);
 
-        if (is_object($fsConfig) || $this->container->getParam($this->container->getName() . '.filesystem.name') == $name) {
+        if (is_object($fsConfig) || $container->getParam($container->getName() . '.filesystem.name') == $name) {
             $fs = new Registry($fsConfig);
             $value = $fs->get($key, $default);
         }
@@ -93,9 +95,9 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
      */
     public function getRootDir()
     {
-        $name = $this->get('name');
+        $name = $this->getConfig('name');
 
-        $allow_root = $this->container->getParam('filesystem.' . $name . '.allow_root', 0);
+        $allow_root = $this->getContainer()->getParam('filesystem.' . $name . '.allow_root', 0);
 
         if ($allow_root) {
             return '';
@@ -265,7 +267,7 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
 
     public function isLocal()
     {
-        return $this->get('local') === true;
+        return $this->getConfig('local') === true;
     }
 
     public function is_file($path)

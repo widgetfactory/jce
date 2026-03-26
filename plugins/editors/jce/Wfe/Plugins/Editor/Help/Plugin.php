@@ -84,7 +84,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 
         $document = $this->getDocument();
 
-        if ($document->get('standalone') == 1) {
+        if ($document->getConfig('standalone') == 1) {
             $document->addScript(array('window.min'));
         }
 
@@ -192,17 +192,15 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
                 $file = WF_ADMINISTRATOR . '/models/' . $category . '.xml';
                 break;
             case 'editor':
-                $file = WF_EDITOR_PLUGINS . '/' . $category . '/' . $category . '.xml';
-
                 $file = Path::find([
-                    WF_EDITOR_PLUGINS . '/' . $category,
-                    JPATH_PLUGINS . '/system/jcepro/editor/plugins/' . $category,
+                    WF_EDITOR_PLUGINS . '/' . ucfirst($category),
+                    JPATH_PLUGINS . '/system/jcepro/Wfe/Editor/Plugins/' . ucfirst($category),
                     JPATH_PLUGINS . '/jce/editor-' . $category,
                     JPATH_PLUGINS . '/jce/editor_' . $category
                 ], $category . '.xml');
 
                 if (!is_file($file)) {
-                    $file = WF_EDITOR_LIBRARIES . '/xml/help/editor.xml';
+                    $file = WF_EDITOR . '/xml/help/editor.xml';
                 } else {
                     $path = dirname($file);
 

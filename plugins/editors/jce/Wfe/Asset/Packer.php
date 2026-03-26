@@ -282,7 +282,7 @@ class Packer
                     }
 
                     // get full path
-                    $path = realpath($this->get('_cssbase') . '/' . $match);
+                    $path = realpath($this->getConfig('_cssbase') . '/' . $match);
 
                     // already import, don't repeat!
                     if (in_array($path, self::$imports)) {
@@ -328,14 +328,14 @@ class Packer
 
                     if (strpos($text, '@import') !== false) {
                         // store the base path of the current file
-                        $this->set('_cssbase', dirname($file));
+                        $this->setConfig('_cssbase', dirname($file));
 
                         // process import rules
                         $text = $this->importCss($text, $file) . preg_replace(self::IMPORT_RX, '', $text);
                     }
 
                     // store the base path of the current file
-                    $this->set('_imgbase', dirname($file));
+                    $this->setConfig('_imgbase', dirname($file));
 
                     // process urls
                     $text = preg_replace_callback('#url\s?\([\'"]?([^\'"\))]+)[\'"]?\)#', array('WFPacker', 'processPaths'), $text);
@@ -375,7 +375,7 @@ class Packer
                     $query = "?" . $query;
                 }
 
-                $path = str_replace(JPATH_SITE, '', realpath($this->get('_imgbase') . '/' . $path));
+                $path = str_replace(JPATH_SITE, '', realpath($this->getConfig('_imgbase') . '/' . $path));
 
                 if ($path) {
                     return "url('" . Uri::root(true) . str_replace('\\', '/', $path) . $query . "')";

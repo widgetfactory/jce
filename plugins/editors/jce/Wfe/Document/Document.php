@@ -260,7 +260,7 @@ class Document
         // Check if value is already stored
         if (!isset($url[$signature])) {
             // get the plugin name using this document instance
-            $plugin = $this->get('name');
+            $plugin = $this->getConfig('name');
 
             $base = $this->getURL(true) . '/';
 
@@ -497,14 +497,14 @@ class Document
 
         // get plugin name and assign to query
         if (!isset($query['plugin'])) {
-            $query['plugin'] = $this->get('name');
+            $query['plugin'] = $this->getConfig('name');
         }
 
         // set slot
         $query['slot'] = $app->input->getCmd('slot');
 
         // set standalone mode (for File Browser etc)
-        $query['standalone'] = $this->get('standalone', 0);
+        $query['standalone'] = $this->getConfig('standalone', 0);
 
         // set context id
         $query['context'] = $app->input->getInt('context', 0);
@@ -558,7 +558,7 @@ class Document
         $output = '<title>' . $this->getTitle() . '</title>' . "\n";
 
         // render stylesheets
-        if ($this->get('compress_css', 0)) {
+        if ($this->getConfig('compress_css', 0)) {
             $file = Uri::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack', 'type' => 'css'));
             // add hash
             $file .= '&' . $this->getHash(array_keys($this->styles));
@@ -578,7 +578,7 @@ class Document
         }
 
         // Render scripts
-        if ($this->get('compress_javascript', 0)) {
+        if ($this->getConfig('compress_javascript', 0)) {
             $script = Uri::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack'));
             // add hash
             $script .= '&' . $this->getHash(array_keys($this->scripts));
