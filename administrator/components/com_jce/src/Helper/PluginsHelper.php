@@ -90,14 +90,11 @@ abstract class PluginsHelper
                     // update attributes
                     $attribs->type = 'plugin';
 
-                    $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
+                    // set plugin path, eg: Plugins/Editor/Foo
+                    $attribs->path = WF_EDITOR_PLUGINS . '/' . ucfirst($name);
 
-                    // use simple "config.xml" for manifest
-                    $attribs->manifest = WF_EDITOR_PLUGINS . '/' . ucfirst($name) . '/config.xml';
-
-                    if (!is_file($attribs->manifest)) {
-                        $attribs->manifest = WF_EDITOR_PLUGINS . '/' . ucfirst($name) . '/' . $name . '.xml';
-                    }
+                    // set manifest path, eg: Plugins/Editor/Foo/foo.xml
+                    $attribs->manifest = $attribs->path . '/' . $name . '.xml';
 
                     $attribs->image = '';
 
