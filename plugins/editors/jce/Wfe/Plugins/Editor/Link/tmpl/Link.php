@@ -12,8 +12,7 @@
 
 use Joomla\CMS\Language\Text;
 
-$plugin = $this->get('plugin');
-$link   = $plugin->getLinkAdapter();
+$linkAdapter = $this->getContainer()->getLinkAdapter();
 
 ?>
 <div class="uk-form-row uk-grid uk-grid-small">
@@ -30,8 +29,8 @@ $link   = $plugin->getLinkAdapter();
     </div>
 </div>
 <div id="link-options" class="uk-placeholder">
-    <?php echo $link->renderSearch(); ?>
-    <?php echo $link->renderList(); ?>
+    <?php echo $linkAdapter->renderSearch(); ?>
+    <?php echo $linkAdapter->renderList(); ?>
 </div>
 <div class="uk-form-row uk-hidden-mini uk-form-row uk-grid uk-grid-small" id="attributes-anchor">
     <label for="anchor" class="uk-form-label uk-width-1-1  uk-width-small-1-5 hastip" title="<?php echo Text::_('WF_LABEL_ANCHORS_DESC'); ?>"><?php echo Text::_('WF_LABEL_ANCHORS'); ?></label>
