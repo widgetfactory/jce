@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -7,18 +8,21 @@
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 namespace Wfe\Document;
 
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;
-use Wfe\Document\View;
+use Wfe\Document\Panel;
 use Wfe\Registry\ConfigurationTrait;
+use Wfe\Container\ContainerTrait;
 use Wfe\Helper\ArrayHelper;
 
 final class Tabs
 {
     use ConfigurationTrait;
+    use ContainerTrait;
 
     private static $sharedInstance;
 
@@ -40,7 +44,7 @@ final class Tabs
         if (array_key_exists('template_path', $config)) {
             $this->addTemplatePath($config['template_path']);
         } else {
-            $this->addTemplatePath($this->get('base_path') . '/tmpl');
+            $this->addTemplatePath($this->getConfig('base_path') . '/tmpl');
         }
     }
 
@@ -85,45 +89,23 @@ final class Tabs
     }
 
     /**
-     * Load a panel view.
+     * Return a panel by name, or false if it does not exist.
      *
-     * @param object $layout Layout (panel) name
+     * @param  string  $panel
      *
-     * @return panel WFView object
+     * @return Panel|false
      */
-    private function loadPanel($panel, $state)
-    {
-        $view = new View(array(
-            'name' => $panel,
-            'layout' => $panel,
-        ));
-
-        // add tab paths
-        foreach ($this->paths as $path) {
-            $view->addTemplatePath($path);
-        }
-
-        // assign panel state to view
-        $view->set('state', (int) $state);
-
-        return $view;
-    }
-
     public function getPanel($panel)
     {
-        if (array_key_exists($panel, $this->panels)) {
-            return $this->panels[$panel];
-        }
-
-        return false;
+        return $this->panels[$panel] ?? false;
     }
 
     /**
      * Add a tab to the document. A panel is automatically created and assigned.
      *
-     * @param object $tab    Tab name
+     * @param string $tab    Tab name
      * @param int    $state  Tab state (active or inactive)
-     * @param array  $values An array of values to assign to panel view
+     * @param array  $values An array of data values to assign to the panel
      */
     public function addTab($tab, $state = 1, $values = array())
     {
@@ -144,21 +126,32 @@ final class Tabs
     /**
      * Add a panel to the document.
      *
-     * @param object $panel Panel name
+     * @param  string  $tab    Panel name
+     * @param  int     $state  Panel state
+     *
+     * @return Panel|null
      */
     public function addPanel($tab, $state)
     {
         if (!array_key_exists($tab, $this->panels)) {
-            $this->panels[$tab] = $this->loadPanel($tab, $state);
+            $panel = new Panel($tab, (int) $state, $this->paths);
 
-            return $this->panels[$tab];
+            if ($container = $this->getContainer()) {
+                $panel->setContainer($container);
+            }
+
+            $this->panels[$tab] = $panel;
+
+            return $panel;
         }
+
+        return null;
     }
 
     /**
      * Remove a tab from the document.
      *
-     * @param object $tab Tab name
+     * @param string $tab Tab name
      */
     public function removeTab($tab)
     {
@@ -211,7 +204,7 @@ final class Tabs
             foreach ($this->panels as $key => $panel) {
                 $class = '';
 
-                if ($panel->get('state') === 0) {
+                if ($panel->getState() === 0) {
                     $class .= ' uk-hidden';
                 }
 
