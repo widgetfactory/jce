@@ -49,7 +49,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
                 $this->plugins[$plugin->name] = $instance;
             }
 
-            $type = $plugin->type ?: 'links';
+            $type = isset($plugin->type) ? $plugin->type : 'links';
 
             // import installed Joomla plugins
             PluginHelper::importPlugin('jce', $type . '_' . $plugin->name);
