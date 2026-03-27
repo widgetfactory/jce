@@ -157,7 +157,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
             $case_when1  = ' CASE WHEN ';
             $case_when1 .= $query->charLength('a.alias', '!=', '0');
             $case_when1 .= ' THEN ';
-            $a_id        = $query->castAsChar('a.id');
+            $a_id        = $query->castAs('CHAR', 'a.id');
             $case_when1 .= $query->concatenate([$a_id, 'a.alias'], ':');
             $case_when1 .= ' ELSE ';
             $case_when1 .= $a_id . ' END as slug';
@@ -165,7 +165,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
             $case_when2  = ' CASE WHEN ';
             $case_when2 .= $query->charLength('b.alias', '!=', '0');
             $case_when2 .= ' THEN ';
-            $c_id        = $query->castAsChar('b.id');
+            $c_id        = $query->castAs('CHAR', 'b.id');
             $case_when2 .= $query->concatenate([$c_id, 'b.alias'], ':');
             $case_when2 .= ' ELSE ';
             $case_when2 .= $c_id . ' END as catslug';
@@ -398,7 +398,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
             $case_when1  = ' CASE WHEN ';
             $case_when1 .= $query->charLength('a.alias', '!=', '0');
             $case_when1 .= ' THEN ';
-            $a_id        = $query->castAsChar('a.id');
+            $a_id        = $query->castAs('CHAR', 'a.id');
             $case_when1 .= $query->concatenate([$a_id, 'a.alias'], ':');
             $case_when1 .= ' ELSE ';
             $case_when1 .= $a_id . ' END as slug';
@@ -406,7 +406,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
             $case_when2  = ' CASE WHEN ';
             $case_when2 .= $query->charLength('b.alias', '!=', '0');
             $case_when2 .= ' THEN ';
-            $c_id        = $query->castAsChar('b.id');
+            $c_id        = $query->castAs('CHAR', 'b.id');
             $case_when2 .= $query->concatenate([$c_id, 'b.alias'], ':');
             $case_when2 .= ' ELSE ';
             $case_when2 .= $c_id . ' END as catslug';

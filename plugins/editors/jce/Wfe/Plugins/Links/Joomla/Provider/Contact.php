@@ -92,7 +92,7 @@ class Contact extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $case_when  = ' CASE WHEN ';
         $case_when .= $query->charLength('a.alias', '!=', '0');
         $case_when .= ' THEN ';
-        $a_id       = $query->castAsChar('a.id');
+        $a_id       = $query->castAs('CHAR', 'a.id');
         $case_when .= $query->concatenate([$a_id, 'a.alias'], ':');
         $case_when .= ' ELSE ';
         $case_when .= $a_id . ' END as slug';
@@ -100,7 +100,7 @@ class Contact extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $case_when1  = ' CASE WHEN ';
         $case_when1 .= $query->charLength('c.alias', '!=', '0');
         $case_when1 .= ' THEN ';
-        $c_id        = $query->castAsChar('c.id');
+        $c_id        = $query->castAs('CHAR', 'c.id');
         $case_when1 .= $query->concatenate([$c_id, 'c.alias'], ':');
         $case_when1 .= ' ELSE ';
         $case_when1 .= $c_id . ' END as catslug';

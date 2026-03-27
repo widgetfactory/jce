@@ -87,7 +87,7 @@ class Categories extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $case_when  = ' CASE WHEN ';
         $case_when .= $query->charLength('a.alias', '!=', '0');
         $case_when .= ' THEN ';
-        $a_id       = $query->castAsChar('a.id');
+        $a_id       = $query->castAs('CHAR', 'a.id');
         $case_when .= $query->concatenate([$a_id, 'a.alias'], ':');
         $case_when .= ' ELSE ';
         $case_when .= $a_id . ' END as slug';

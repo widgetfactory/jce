@@ -55,7 +55,7 @@ class AbstractLink extends \Wfe\Adapter\Plugin\AbstractPlugin
             $case = ', CASE WHEN ';
             $case .= $query->charLength('alias', '!=', '0');
             $case .= ' THEN ';
-            $a_id = $query->castAsChar('id');
+            $a_id = $query->castAs('CHAR', 'id');
             $case .= $query->concatenate(array($a_id, 'alias'), ':');
             $case .= ' ELSE ';
             $case .= $a_id . ' END as slug';
