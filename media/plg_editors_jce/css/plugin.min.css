@@ -1197,6 +1197,7 @@ html {
 .uk-form input[type="radio"],
 .uk-form input[type="checkbox"] {
     vertical-align: middle;
+    margin: 8px;
 }
 
 .uk-switcher {
