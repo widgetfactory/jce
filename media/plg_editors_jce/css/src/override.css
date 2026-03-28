@@ -312,10 +312,6 @@ html {
     padding: 2px;
 }
 
-.uk-form input[type="checkbox"] {
-    margin: 2px 4px 0 0;
-}
-
 .uk-form legend {
     font-size: 14px;
     line-height: 32px;
@@ -330,6 +326,7 @@ html {
 .uk-form input[type="radio"],
 .uk-form input[type="checkbox"] {
     vertical-align: middle;
+    margin: 8px;
 }
 
 .uk-switcher {
