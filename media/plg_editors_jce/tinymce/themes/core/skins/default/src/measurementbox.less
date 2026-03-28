@@ -1,0 +1,38 @@
+.mceMeasurementBox {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+}
+
+.mceMeasurementBoxInput {
+    flex: 1 1 auto;
+    min-width: 3em;
+    width: 4em;
+}
+
+.mceMeasurementBoxUnit {
+    flex: 0 0 auto;
+    width: 4.5em;
+    height: 2em;
+    padding: 0 2px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font: inherit;
+    font-size: 0.9em;
+    border-radius: 0;
+    box-sizing: border-box;
+
+    max-width: 50%;
+}
+
+.mceMeasurementBoxUnit:focus {
+    border-color: #66afe9;
+    outline: none;
+}
+
+.mceMeasurementBoxUnit:disabled {
+    background: #eee;
+    color: #999;
+    cursor: not-allowed;
+}

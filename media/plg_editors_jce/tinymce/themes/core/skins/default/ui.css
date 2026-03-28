@@ -447,6 +447,13 @@ textarea::placeholder {
     line-height: 2em;
     display: inline-block;
     min-width: 2em;
+}
+
+.mceStyleInsertSpan {
+    flex: 1;
+    display: flex;
+    line-height: 2;
+    align-items: center;
 }/* Menu */
 
 .mceMenu {
@@ -2588,7 +2595,45 @@ select.mceNativeListBox {
 .mceDefaultSkin .mce_h6 span.mceText {
     font-weight: bolder;
     font-size: .75em
-}.mceDefaultSkin .mceToolbarSource {
+}.mceMeasurementBox {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+}
+
+.mceMeasurementBoxInput {
+    flex: 1 1 auto;
+    min-width: 3em;
+    width: 4em;
+}
+
+.mceMeasurementBoxUnit {
+    flex: 0 0 auto;
+    width: 4.5em;
+    height: 2em;
+    padding: 0 2px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font: inherit;
+    font-size: 0.9em;
+    border-radius: 0;
+    box-sizing: border-box;
+
+    max-width: 50%;
+}
+
+.mceMeasurementBoxUnit:focus {
+    border-color: #66afe9;
+    outline: none;
+}
+
+.mceMeasurementBoxUnit:disabled {
+    background: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+.mceDefaultSkin .mceToolbarSource {
     margin: 0;
 }
 
@@ -2761,6 +2806,7 @@ select.mceNativeListBox {
     position: relative;
     /**/
     height: auto;
+    aspect-ratio: 16/9;
 }
 
 .mceModalBody .mceModalContentIframe {
@@ -2790,6 +2836,10 @@ select.mceNativeListBox {
     text-align: right;
     /*background-color: #f5f5f5;*/
     background-color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .mceModalBody .mceModalBody {
@@ -3401,6 +3451,10 @@ select.mceNativeListBox {
     gap: 4px;
 }
 
+.mceForm.mceGridLayout {
+    flex-direction: row;
+}
+
 .mceFormRow {
     display: flex;
     flex-direction: row;
@@ -3439,6 +3493,19 @@ select.mceNativeListBox {
     display: none !important;
 }
 
+.mceForm .mceFormRow label{
+    padding: 0.5em 0;
+    min-width: 4em;
+}
+
+.mceForm .mceFormRow label:first-child {
+    flex: 1 0 30%;
+}
+
+.mceForm .mceFormRow label:last-child {
+    flex: 1 0 70%;
+}
+
 .mceFormControl {
     width: 100%;
     min-height: 2em;
@@ -3446,22 +3513,14 @@ select.mceNativeListBox {
     display: flex;
     align-items: center;
     gap: 4px;
-    flex: 1 0 70%;
 }
 
-.mceFormControl .mceListBox {
-    width: 100%;
+.mceFormControl:first-child {
+    flex: 1 0 30%
 }
-
-.mceFormControl .mceListBox .mceText {
-    width: 100%;
-    align-self: flex-start;
-}
-
-.mceForm .mceFormRow label {
-    flex: 1 0 30%;
-    padding: 0.5em 0;
-    min-width: 6em;
+ 
+.mceFormControl:last-child {
+    flex: 1 0 70%
 }
 
 .mceFormControl .mceTextBox + .mceButton {
@@ -3477,6 +3536,19 @@ select.mceNativeListBox {
 
 .mceFormControl:has(.mceTextBoxDescription) {
     flex-direction: column;
+}
+
+.mceFormControl .mceListBox {
+    width: 100%;
+}
+
+.mceFormControl .mceListBox .mceText {
+    width: 100%;
+    align-self: flex-start;
+}
+
+.mceFormControl input[type="color"] ~ .mceTextBox {
+    max-width: 7em;
 }.mceTabs {
     display: block;
     list-style: none;
@@ -3511,6 +3583,12 @@ select.mceNativeListBox {
 
 .mceTabPanels {
     margin: 0.5em 0 0;
+}
+
+.mceTab {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
 }/* Base hook */
 .mceTooltip {
     position: relative;

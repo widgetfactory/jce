@@ -26,12 +26,8 @@
         }
     }
 
-    .mceMenu {
-        .mceToolbarRow {
-            .mceToolbarItem {
-                width: 100%;
-            }
-        }
+    .mceMenu .mceToolbarRow .mceToolbarItem {
+        width: 100%;
     }
 
     .mceToolbarFooter .mceToolbarItem {
@@ -63,7 +59,6 @@
     .mceListBox .mceOpen {
         border-color: transparent;
         color: rgba(0, 0, 0, 0.87);
-
         background-color: transparent;
     }
 
@@ -104,43 +99,73 @@
         border-color: rgba(0, 0, 0, .21);
     }
 
-    .mceSplitButton:hover .mceText,
-    .mceSplitButton:hover .mceOpen,
-    .mceSplitButton:focus .mceText,
-    .mceSplitButton:focus .mceOpen,
-    .mceSplitButtonActive .mceText,
-    .mceSplitButtonActive .mceOpen {
-        border-color: #ccc;
-        background-color: #e6e6e6;
-    }
-
-    .mceSplitButtonActive .mceOpen {
-        border-left: 1px solid #ccc;
-    }
-
-    .mceListBox .mceText {
-        border-top-color: #ddd;
-        border-bottom-color: #ddd;
-        border-left-color: #ddd;
-
-        &::placeholder {
-            color: #ddd;
-            font-size: inherit;
+    .mceSplitButton {
+        &:hover,
+        &:focus {
+            .mceText,
+            .mceOpen {
+                border-color: #ccc;
+                background-color: #e6e6e6;
+            }
         }
     }
 
-    .mceListBox .mceOpen {
-        background-color: transparent;
+    .mceSplitButtonActive {
+        .mceText,
+        .mceOpen {
+            border-color: #ccc;
+            background-color: #e6e6e6;
+        }
 
-        border-top-color: #ddd;
-        border-bottom-color: #ddd;
-        border-right-color: #ddd;
+        .mceOpen {
+            border-left: 1px solid #ccc;
+        }
+    }
 
-        &:after {
-            color: transparent;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
-            background-repeat: no-repeat;
-            background-position: center;
+    .mceListBox {
+        .mceText {
+            // top right bottom left — right is owned by .mceOpen
+            border-color: #ddd transparent #ddd #ddd;
+
+            &::placeholder {
+                color: #ddd;
+                font-size: inherit;
+            }
+        }
+
+        .mceOpen {
+            // top right bottom left — left is owned by .mceText
+            border-color: #ddd #ddd #ddd transparent;
+
+            &:after {
+                color: transparent;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+        }
+
+        &.mceListBoxDisabled {
+            color: #888;
+            background-color: #eee;
+            cursor: not-allowed;
+        }
+
+        &:not(.mceListBoxDisabled):hover,
+        &Selected,
+        &Selected:hover {
+            .mceText {
+                background: #fff;
+                border-color: #ccc;
+                border-radius: 2px 0 0 0;
+            }
+
+            .mceOpen {
+                background: #fff;
+                border-color: #ccc;
+                border-left-color: transparent;
+                border-radius: 0 2px 0 0;
+            }
         }
     }
 
@@ -171,39 +196,44 @@
         position: relative;
     }
 
-    .mcePanelButtonSelected,
-    .mcePanelButtonSelected:hover {
-        border-color: #ddd;
-        background: #fff;
-
-        .mceText {
-            background: #fff;
+    .mcePanelButtonSelected {
+        &,
+        &:hover {
             border-color: #ddd;
-            border-right-color: transparent;
-            border-radius: 2px 0 0 0;
-        }
-
-        .mceOpen {
             background: #fff;
-            border-color: #ddd;
-            border-left-color: transparent;
-            border-radius: 0 2px 0 0;
+
+            .mceText {
+                background: #fff;
+                border-color: #ddd;
+                border-right-color: transparent;
+                border-radius: 2px 0 0 0;
+            }
+
+            .mceOpen {
+                background: #fff;
+                border-color: #ddd;
+                border-left-color: transparent;
+                border-radius: 0 2px 0 0;
+            }
         }
     }
 
-    .mceSplitButtonSelected .mceText,
-    .mceSplitButtonSelected:hover .mceText {
-        background: #fff;
-        border-color: #ccc;
-        border-radius: 2px 0 0 0;
-    }
+    .mceSplitButtonSelected {
+        &,
+        &:hover {
+            .mceText {
+                background: #fff;
+                border-color: #ccc;
+                border-radius: 2px 0 0 0;
+            }
 
-    .mceSplitButtonSelected .mceOpen,
-    .mceSplitButtonSelected:hover .mceOpen {
-        background: #fff;
-        border-color: #ccc;
-        border-left-color: transparent;
-        border-radius: 0 2px 0 0;
+            .mceOpen {
+                background: #fff;
+                border-color: #ccc;
+                border-left-color: transparent;
+                border-radius: 0 2px 0 0;
+            }
+        }
     }
 
     .mceColorSplitMenu {
@@ -217,23 +247,6 @@
 
     .mceListBoxMenu {
         overflow: hidden;
-    }
-
-    .mceListBox:hover .mceText,
-    .mceListBoxSelected .mceText,
-    .mceListBoxSelected:hover .mceText {
-        background: #fff;
-        border-color: #ccc;
-        border-radius: 2px 0 0 0;
-    }
-
-    .mceListBox:hover .mceOpen,
-    .mceListBoxSelected .mceOpen,
-    .mceDefaultSkin .mceListBoxSelected:hover .mceOpen {
-        background: #fff;
-        border-color: #ccc;
-        border-left-color: transparent;
-        border-radius: 0 2px 0 0;
     }
 
     .mceStatusbar .mceResize span {
