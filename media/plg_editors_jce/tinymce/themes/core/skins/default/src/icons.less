@@ -1,613 +1,623 @@
-.mceDefaultSkin .mceIcon,
-.mceDefaultSkin .mceAction {
-    display: inline-block;
-    min-width: 20px;
-    height: 20px;
-    line-height: 20px;
-}
-
-.mceDefaultSkin .mceIcon {
-    background: url(../../img/icons.png?@@etag@@) no-repeat 20px 20px
-}
-
-.mceDefaultSkin .mceIcon img {
-    vertical-align: middle;
-    min-width: 16px;
-    height: auto;
-    cursor: inherit;
-    margin: auto;
-}
-
-.mceDefaultSkin .mceIcon svg {
-    width: 1em;
-    height: 1em;
-    fill: #444;
-}
-
-.mceDefaultSkin img[src$=".svg"].mceIcon,
-.mceDefaultSkin img[src$=".svg"].mceAction {
-    width: 18px;
-    height: 16px;
-}
-
-.mceDefaultSkin .mceIconImage {
-    display: flex;
-    background: none;
-}
-
-.mceDefaultSkin span.mce_bold {
-    background-position: 0 0
-}
-
-.mceDefaultSkin span.mce_italic {
-    background-position: -60px 0
-}
-
-.mceDefaultSkin span.mce_underline {
-    background-position: -140px 0
-}
-
-.mceDefaultSkin span.mce_strikethrough {
-    background-position: -120px 0
-}
-
-.mceDefaultSkin span.mce_undo,
-.mceDefaultSkin span.mce_source_undo {
-    background-position: -160px 0
-}
-
-.mceDefaultSkin span.mce_redo,
-.mceDefaultSkin span.mce_source_redo {
-    background-position: -100px 0
-}
-
-.mceDefaultSkin span.mce_cleanup {
-    background-position: -40px 0
-}
-
-.mceDefaultSkin span.mce_bullist {
-    background-position: -20px 0
-}
-
-.mceDefaultSkin span.mce_numlist,
-.mceDefaultSkin span.mce_source_linenumbers {
-    background-position: -80px 0
-}
-
-.mceDefaultSkin span.mce_justifyleft {
-    background-position: -460px 0
-}
-
-.mceDefaultSkin span.mce_justifyright {
-    background-position: -480px 0
-}
-
-.mceDefaultSkin span.mce_justifycenter {
-    background-position: -420px 0
-}
-
-.mceDefaultSkin span.mce_justifyfull {
-    background-position: -440px 0
-}
-
-.mceDefaultSkin span.mce_anchor {
-    background-position: -200px 0
-}
-
-.mceDefaultSkin span.mce_indent,
-.mceDefaultSkin span.mce_source_format {
-    background-position: -400px 0
-}
-
-.mceDefaultSkin span.mce_outdent {
-    background-position: -540px 0
-}
-
-.mceDefaultSkin span.mce_link,
-.mceDefaultSkin span.mce_lnk {
-    background-position: -500px 0
-}
-
-.mceDefaultSkin span.mce_unlink {
-    background-position: -640px 0
-}
-
-.mceDefaultSkin span.mce_sub {
-    background-position: -600px 0
-}
-
-.mceDefaultSkin span.mce_sup {
-    background-position: -620px 0
-}
-
-.mceDefaultSkin span.mce_removeformat {
-    background-position: -580px 0
-}
-
-.mceDefaultSkin span.mce_newdocument {
-    background-position: -520px 0
-}
-
-.mceDefaultSkin span.mce_image {
-    background-position: -380px 0
-}
-
-.mceDefaultSkin span.mce_help {
-    background-position: -340px 0
-}
-
-.mceDefaultSkin span.mce_code {
-    background-position: -260px 0
-}
-
-.mceDefaultSkin span.mce_source {
-    background-position: -260px 0
-}
-
-.mceDefaultSkin span.mce_hr {
-    background-position: -360px 0
-}
-
-.mceDefaultSkin span.mce_visualaid {
-    background-position: -660px 0
-}
-
-.mceDefaultSkin span.mce_charmap {
-    background-position: -240px 0
-}
-
-.mceDefaultSkin span.mce_paste {
-    background-position: -560px 0
-}
-
-.mceDefaultSkin span.mce_copy {
-    background-position: -700px 0
-}
-
-.mceDefaultSkin span.mce_cut {
-    background-position: -680px 0
-}
-
-.mceDefaultSkin span.mce_blockquote {
-    background-position: -220px 0
-}
-
-.mceDefaultSkin .mce_forecolor span.mceAction {
-    background-position: -720px 0
-}
-
-.mceDefaultSkin .mce_backcolor span.mceAction {
-    background-position: -760px 0
-}
-
-.mceDefaultSkin span.mce_forecolor {
-    background-position: -720px 0
-}
-
-.mceDefaultSkin span.mce_backcolor {
-    background-position: -760px 0
-}
-
-.mceDefaultSkin span.mce_forecolorpicker {
-    background-position: -720px 0
-}
-
-.mceDefaultSkin span.mce_backcolorpicker {
-    background-position: -760px 0
-}
-
-.mceDefaultSkin span.mce_readmore {
-    background-position: -920px 0
-}
-
-.mceDefaultSkin span.mce_pagebreak {
-    background-position: -940px 0
-}
-
-/* Plugins */
-
-.mceDefaultSkin span.mce_advhr {
-    background-position: -0px -20px
-}
-
-.mceDefaultSkin span.mce_ltr {
-    background-position: -20px -20px
-}
-
-.mceDefaultSkin span.mce_rtl {
-    background-position: -40px -20px
-}
-
-.mceDefaultSkin span.mce_emotions {
-    background-position: -60px -20px
-}
-
-.mceDefaultSkin span.mce_fullpage {
-    background-position: -80px -20px
-}
-
-.mceDefaultSkin span.mce_fullscreen,
-.mceDefaultSkin span.mce_source_fullscreen {
-    background-position: -100px -20px
-}
-
-.mceDefaultSkin span.mce_iespell {
-    background-position: -120px -20px
-}
-
-.mceDefaultSkin span.mce_insertdate {
-    background-position: -140px -20px
-}
-
-.mceDefaultSkin span.mce_inserttime {
-    background-position: -160px -20px
-}
-
-.mceDefaultSkin span.mce_layerabsolute {
-    background-position: -180px -20px
-}
-
-.mceDefaultSkin span.mce_insertlayer {
-    background-position: -240px -20px
-}
-
-.mceDefaultSkin span.mce_layerbackward {
-    background-position: -200px -20px
-}
-
-.mceDefaultSkin span.mce_layerforward {
-    background-position: -220px -20px
-}
-
-.mceDefaultSkin span.mce_media,
-.mceDefaultSkin span.mce_video {
-    background-position: -320px -20px
-}
-
-.mceDefaultSkin span.mce_nonbreaking {
-    background-position: -340px -20px
-}
-
-.mceDefaultSkin span.mce_pastetext {
-    background-position: -360px -20px
-}
-
-.mceDefaultSkin span.mce_pasteword {
-    background-position: -380px -20px
-}
-
-.mceDefaultSkin span.mce_selectall {
-    background-position: -400px -20px
-}
-
-.mceDefaultSkin span.mce_preview {
-    background-position: -420px -20px
-}
-
-.mceDefaultSkin span.mce_print {
-    background-position: -440px -20px
-}
-
-.mceDefaultSkin span.mce_cancel {
-    background-position: -460px -20px
-}
-
-.mceDefaultSkin span.mce_save {
-    background-position: -480px -20px
-}
-
-.mceDefaultSkin span.mce_replace,
-.mceDefaultSkin span.mce_source_replace {
-    background-position: -500px -20px
-}
-
-.mceDefaultSkin span.mce_search {
-    background-position: -520px -20px
-}
-
-.mceDefaultSkin span.mce_styleprops {
-    background-position: -560px -20px
-}
-
-.mceDefaultSkin span.mce_style {
-    background-position: -560px -20px
-}
-
-.mceDefaultSkin span.mce_table {
-    background-position: -580px -20px
-}
-
-.mceDefaultSkin span.mce_table_insert {
-    background-position: -580px -20px
-}
-
-.mceDefaultSkin span.mce_cell_props {
-    background-position: -600px -20px
-}
-
-.mceDefaultSkin span.mce_delete_table {
-    background-position: -620px -20px
-}
-
-.mceDefaultSkin span.mce_delete_col {
-    background-position: -640px -20px
-}
-
-.mceDefaultSkin span.mce_delete_row {
-    background-position: -660px -20px
-}
-
-.mceDefaultSkin span.mce_col_after {
-    background-position: -680px -20px
-}
-
-.mceDefaultSkin span.mce_col_before {
-    background-position: -700px -20px
-}
-
-.mceDefaultSkin span.mce_row_after {
-    background-position: -720px -20px
-}
-
-.mceDefaultSkin span.mce_row_before {
-    background-position: -740px -20px
-}
-
-.mceDefaultSkin span.mce_merge_cells {
-    background-position: -760px -20px
-}
-
-.mceDefaultSkin span.mce_table_props {
-    background-position: -980px -20px
-}
-
-.mceDefaultSkin span.mce_row_props {
-    background-position: -780px -20px
-}
-
-.mceDefaultSkin span.mce_split_cells {
-    background-position: -800px -20px
-}
-
-.mceDefaultSkin span.mce_template {
-    background-position: -820px -20px
-}
-
-.mceDefaultSkin span.mce_visualchars {
-    background-position: -840px -20px
-}
-
-.mceDefaultSkin span.mce_abbr {
-    background-position: -860px -20px
-}
-
-.mceDefaultSkin span.mce_acronym {
-    background-position: -880px -20px
-}
-
-.mceDefaultSkin span.mce_attribs {
-    background-position: -900px -20px
-}
-
-.mceDefaultSkin span.mce_cite {
-    background-position: -920px -20px
-}
-
-.mceDefaultSkin span.mce_del {
-    background-position: -940px -20px
-}
-
-.mceDefaultSkin span.mce_ins {
-    background-position: -960px -20px
-}
-
-.mceDefaultSkin span.mce_source_highlight {
-    background-position: -140px -40px;
-}
-
-.mceDefaultSkin span.mce_source_wrap {
-    background-position: -100px -40px;
-}
-
-.mceDefaultSkin span.mce_source_search_previous {
-    background-position: -440px -40px;
-}
-
-.mceDefaultSkin span.mce_source_search_next {
-    background-position: -460px -40px;
-}
-
-.mceDefaultSkin span.mce_source_replace_all {
-    background-position: -480px -40px;
-}
-
-.mceDefaultSkin span.mce_source_search_regex {
-    background-position: -500px -40px;
-}
-
-.mceDefaultSkin span.mce_columns {
-    background-position: -520px -40px;
-}
-
-.mceDefaultSkin span.mce_columns_add {
-    background-position: -560px -40px;
-}
-
-.mceDefaultSkin span.mce_columns_add_before {
-    background-position: -660px -40px;
-}
-
-.mceDefaultSkin span.mce_columns_delete {
-    background-position: -580px -40px;
-}
-
-.mceDefaultSkin span.mce_source_search_wholeword {
-    background-position: -680px -40px;
-}
-
-.mceDefaultSkin span.mce_source_search_matchcase {
-    background-position: -700px -40px;
-}
-
-.mceDefaultSkin span.mce_joomla {
-    background-position: -600px -40px;
-}
-
-.mceDefaultSkin span.mce_upload {
-    background-position: -620px -40px;
-}
-
-.mceDefaultSkin span.mce_langcode {
-    background-position: -640px -40px;
-}
-
-/*.mceDefaultSkin span.mce_pagebreak {background-position:0 -40px}*/
-
-.mceDefaultSkin span.mce_restoredraft {
-    background-position: -20px -40px
-}
-
-.mceDefaultSkin span.mce_spellchecker {
-    background-position: -540px -20px
-}
-
-.mceDefaultSkin span.mce_autosave {
-    background-position: -20px -40px
-}
-
-/*.mceDefaultSkin span.mce_wrap {background-position:-100px -40px}
-.mceDefaultSkin span.mce_numbers {background-position:-120px -40px}
-.mceDefaultSkin span.mce_highlight {background-position:-140px -40px}*/
-
-.mceDefaultSkin span.mce_imgmanager {
-    background-position: -380px 0
-}
-
-.mceDefaultSkin span.mce_article {
-    background-position: -920px 0;
-    width: 40px;
-}
-
-.mceDefaultSkin span.mce_textcase {
-    background-position: -40px -40px;
-}
-
-.mceDefaultSkin span.mce_visualblocks {
-    background-position: -160px -40px;
-}
-
-.mceDefaultSkin span.mce_kitchensink {
-    background-position: -180px -40px;
-}
-
-.mceDefaultSkin span.mce_mediamanager,
-.mceDefaultSkin span.mce_mediapro,
-.mceDefaultSkin span.mce_video {
-    background-position: -320px -40px;
-}
-
-.mceDefaultSkin span.mce_imgmanager_ext,
-.mceDefaultSkin span.mce_imagepro {
-    background-position: -420px -40px;
-}
-
-.mceDefaultSkin span.mce_templatemanager,
-.mceDefaultSkin span.mce_templates {
-    background-position: -380px -40px;
-}
-
-.mceDefaultSkin span.mce_iframe {
-    background-position: -400px -40px;
-}
-
-.mceDefaultSkin span.mce_filemanager,
-.mceDefaultSkin span.mce_files {
-    background-position: -360px -40px;
-}
-
-.mceDefaultSkin span.mce_caption_add {
-    background-position: -280px -40px;
-}
-
-.mceDefaultSkin span.mce_caption_delete {
-    background-position: -300px -40px;
-}
-
-.mceDefaultSkin span.mce_microdata {
-    background-position: -340px -40px;
-}
-
-.mceDefaultSkin span.mce_plus {
-    background-position: -200px -40px;
-}
-
-.mceDefaultSkin span.mce_cross,
-.mceDefaultSkin span.mce_trash,
-.mceDefaultSkin span.mce_delete {
-    background-position: -220px -40px;
-}
-
-.mceDefaultSkin span.mce_check {
-    background-position: -540px -40px;
-}
-
-.mceDefaultSkin .mce_list_default:before,
-.mceDefaultSkin .mce_list_disc:before {
-    content: "●";
-    line-height: 1;
-    display: inline-block;
-}
-.mceDefaultSkin .mce_list_circle:before {
-    content: "○";
-    line-height: 1;
-    display: inline-block;
-}
-.mceDefaultSkin .mce_list_square:before {
-    content: "□";
-    line-height: 1;
-    display: inline-block;
-}
-
-.mceDefaultSkin .mce_list_lower_alpha::before {
-    content: "a.";
-    font-size: 1em;
-    font-family: "times new roman,times";
-    line-height: 1.25;
-}
-
-.mceDefaultSkin .mce_list_lower_greek::before {
-    content: "\03b1.";
-    font-size: 1em;
-    font-family: "times new roman,times";
-    line-height: 1.25;
-}
-
-.mceDefaultSkin .mce_list_lower_roman::before {
-    content: "iv.";
-    font-size: 1em;
-    font-family: "times new roman,times";
-    line-height: 1.25;
-}
-
-.mceDefaultSkin .mce_list_upper_alpha::before {
-    content: "A.";
-    font-size: 1em;
-    font-family: "times new roman,times";
-    line-height: 1.25;
-}
-
-.mceDefaultSkin .mce_list_upper_roman::before {
-    content: "IV.";
-    font-size: 1em;
-    font-family: "times new roman,times";
-    line-height: 1.25;
-}
-
-.mceDefaultSkin .mce_spinner {
-    background: url(img/load.gif?@@etag@@) no-repeat 0 0;
-}
-/* Reset for Joomla Template fonts */
-.mceDefaultSkin .mce_none[class*="icon-"]:before {
-    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "IcoMoon";
-    font-weight: 900;
+// out: false
+.mceDefaultSkin {
+    .mceIcon,
+    .mceAction {
+        display: inline-block;
+        min-width: 20px;
+        height: 20px;
+        line-height: 20px
+    }
+
+    .mceIcon {
+        background: url(../../img/icons.png?@@etag@@) no-repeat 20px 20px
+    }
+
+    .mceIcon img {
+        vertical-align: middle;
+        min-width: 16px;
+        height: auto;
+        cursor: inherit;
+        margin: auto
+    }
+
+    .mceIcon svg {
+        width: 1em;
+        height: 1em;
+        fill: #444
+    }
+
+    img[src$=".svg"].mceIcon,
+    img[src$=".svg"].mceAction {
+        width: 18px;
+        height: 16px
+    }
+
+    .mceIconImage {
+        display: flex;
+        background: none
+    }
+
+    span.mce_bold {
+        background-position: 0 0;
+    }
+
+    span.mce_italic {
+        background-position: -60px 0;
+    }
+
+    span.mce_underline {
+        background-position: -140px 0;
+    }
+
+    span.mce_strikethrough {
+        background-position: -120px 0;
+    }
+
+    span.mce_undo,
+    span.mce_source_undo {
+        background-position: -160px 0;
+    }
+
+    span.mce_redo,
+    span.mce_source_redo {
+        background-position: -100px 0;
+    }
+
+    span.mce_cleanup {
+        background-position: -40px 0;
+    }
+
+    span.mce_bullist {
+        background-position: -20px 0;
+    }
+
+    span.mce_numlist,
+    span.mce_source_linenumbers {
+        background-position: -80px 0;
+    }
+
+    span.mce_justifyleft {
+        background-position: -460px 0;
+    }
+
+    span.mce_justifyright {
+        background-position: -480px 0;
+    }
+
+    span.mce_justifycenter {
+        background-position: -420px 0;
+    }
+
+    span.mce_justifyfull {
+        background-position: -440px 0;
+    }
+
+    span.mce_anchor {
+        background-position: -200px 0;
+    }
+
+    span.mce_indent,
+    span.mce_source_format {
+        background-position: -400px 0;
+    }
+
+    span.mce_outdent {
+        background-position: -540px 0;
+    }
+
+    span.mce_link,
+    span.mce_lnk {
+        background-position: -500px 0;
+    }
+
+    span.mce_unlink {
+        background-position: -640px 0;
+    }
+
+    span.mce_sub {
+        background-position: -600px 0;
+    }
+
+    span.mce_sup {
+        background-position: -620px 0;
+    }
+
+    span.mce_removeformat {
+        background-position: -580px 0;
+    }
+
+    span.mce_newdocument {
+        background-position: -520px 0;
+    }
+
+    span.mce_image,
+    span.mce_imgmanager {
+        background-position: -380px 0;
+    }
+
+    span.mce_help {
+        background-position: -340px 0;
+    }
+
+    span.mce_code,
+    span.mce_source {
+        background-position: -260px 0;
+    }
+
+    span.mce_hr {
+        background-position: -360px 0;
+    }
+
+    span.mce_visualaid {
+        background-position: -660px 0;
+    }
+
+    span.mce_charmap {
+        background-position: -240px 0;
+    }
+
+    span.mce_paste {
+        background-position: -560px 0;
+    }
+
+    span.mce_copy {
+        background-position: -700px 0;
+    }
+
+    span.mce_cut {
+        background-position: -680px 0;
+    }
+
+    span.mce_blockquote {
+        background-position: -220px 0;
+    }
+
+    .mce_forecolor {
+        span.mceAction {
+            background-position: -720px 0;
+        }
+    }
+
+    .mce_backcolor {
+        span.mceAction {
+            background-position: -760px 0;
+        }
+    }
+
+    span.mce_forecolor {
+        background-position: -720px 0;
+    }
+
+    span.mce_backcolor {
+        background-position: -760px 0;
+    }
+
+    span.mce_forecolorpicker {
+        background-position: -720px 0;
+    }
+
+    span.mce_backcolorpicker {
+        background-position: -760px 0;
+    }
+
+    span.mce_readmore {
+        background-position: -920px 0;
+    }
+
+    span.mce_pagebreak {
+        background-position: -940px 0;
+    }
+
+    /* Plugins */
+
+    span.mce_advhr {
+        background-position: -0px -20px;
+    }
+
+    span.mce_ltr {
+        background-position: -20px -20px;
+    }
+
+    span.mce_rtl {
+        background-position: -40px -20px;
+    }
+
+    span.mce_emotions {
+        background-position: -60px -20px;
+    }
+
+    span.mce_fullpage {
+        background-position: -80px -20px;
+    }
+
+    span.mce_fullscreen,
+    span.mce_source_fullscreen {
+        background-position: -100px -20px;
+    }
+
+    span.mce_iespell {
+        background-position: -120px -20px;
+    }
+
+    span.mce_insertdate {
+        background-position: -140px -20px;
+    }
+
+    span.mce_inserttime {
+        background-position: -160px -20px;
+    }
+
+    span.mce_layerabsolute {
+        background-position: -180px -20px;
+    }
+
+    span.mce_insertlayer {
+        background-position: -240px -20px;
+    }
+
+    span.mce_layerbackward {
+        background-position: -200px -20px;
+    }
+
+    span.mce_layerforward {
+        background-position: -220px -20px;
+    }
+
+    span.mce_media,
+    span.mce_video {
+        background-position: -320px -20px;
+    }
+
+    span.mce_nonbreaking {
+        background-position: -340px -20px;
+    }
+
+    span.mce_pastetext {
+        background-position: -360px -20px;
+    }
+
+    span.mce_pasteword {
+        background-position: -380px -20px;
+    }
+
+    span.mce_selectall {
+        background-position: -400px -20px;
+    }
+
+    span.mce_preview {
+        background-position: -420px -20px;
+    }
+
+    span.mce_print {
+        background-position: -440px -20px;
+    }
+
+    span.mce_cancel {
+        background-position: -460px -20px;
+    }
+
+    span.mce_save {
+        background-position: -480px -20px;
+    }
+
+    span.mce_replace,
+    span.mce_source_replace {
+        background-position: -500px -20px;
+    }
+
+    span.mce_search {
+        background-position: -520px -20px;
+    }
+
+    span.mce_styleprops,
+    span.mce_style {
+        background-position: -560px -20px;
+    }
+
+    span.mce_table,
+    span.mce_table_insert {
+        background-position: -580px -20px;
+    }
+
+    span.mce_cell_props {
+        background-position: -600px -20px;
+    }
+
+    span.mce_delete_table {
+        background-position: -620px -20px;
+    }
+
+    span.mce_delete_col {
+        background-position: -640px -20px;
+    }
+
+    span.mce_delete_row {
+        background-position: -660px -20px;
+    }
+
+    span.mce_col_after {
+        background-position: -680px -20px;
+    }
+
+    span.mce_col_before {
+        background-position: -700px -20px;
+    }
+
+    span.mce_row_after {
+        background-position: -720px -20px;
+    }
+
+    span.mce_row_before {
+        background-position: -740px -20px;
+    }
+
+    span.mce_merge_cells {
+        background-position: -760px -20px;
+    }
+
+    span.mce_table_props {
+        background-position: -980px -20px;
+    }
+
+    span.mce_row_props {
+        background-position: -780px -20px;
+    }
+
+    span.mce_split_cells {
+        background-position: -800px -20px;
+    }
+
+    span.mce_template {
+        background-position: -820px -20px;
+    }
+
+    span.mce_visualchars {
+        background-position: -840px -20px;
+    }
+
+    span.mce_abbr {
+        background-position: -860px -20px;
+    }
+
+    span.mce_acronym {
+        background-position: -880px -20px;
+    }
+
+    span.mce_attribs {
+        background-position: -900px -20px;
+    }
+
+    span.mce_cite {
+        background-position: -920px -20px;
+    }
+
+    span.mce_del {
+        background-position: -940px -20px;
+    }
+
+    span.mce_ins {
+        background-position: -960px -20px;
+    }
+
+    span.mce_source_highlight {
+        background-position: -140px -40px;
+    }
+
+    span.mce_source_wrap {
+        background-position: -100px -40px;
+    }
+
+    span.mce_source_search_previous {
+        background-position: -440px -40px;
+    }
+
+    span.mce_source_search_next {
+        background-position: -460px -40px;
+    }
+
+    span.mce_source_replace_all {
+        background-position: -480px -40px;
+    }
+
+    span.mce_source_search_regex {
+        background-position: -500px -40px;
+    }
+
+    span.mce_columns {
+        background-position: -520px -40px;
+    }
+
+    span.mce_columns_add {
+        background-position: -560px -40px;
+    }
+
+    span.mce_columns_add_before {
+        background-position: -660px -40px;
+    }
+
+    span.mce_columns_delete {
+        background-position: -580px -40px;
+    }
+
+    span.mce_source_search_wholeword {
+        background-position: -680px -40px;
+    }
+
+    span.mce_source_search_matchcase {
+        background-position: -700px -40px;
+    }
+
+    span.mce_joomla {
+        background-position: -600px -40px;
+    }
+
+    span.mce_upload {
+        background-position: -620px -40px;
+    }
+
+    span.mce_langcode {
+        background-position: -640px -40px;
+    }
+
+    /*.mceDefaultSkin span.mce_pagebreak {background-position:0 -40px}*/
+
+    span.mce_restoredraft,
+    span.mce_autosave {
+        background-position: -20px -40px;
+    }
+
+    span.mce_spellchecker {
+        background-position: -540px -20px;
+    }
+
+    /*.mceDefaultSkin span.mce_wrap {background-position:-100px -40px};
+    .mceDefaultSkin span.mce_numbers {background-position:-120px -40px};
+    .mceDefaultSkin span.mce_highlight {background-position:-140px -40px}*/
+
+    span.mce_article {
+        background-position: -920px 0;
+        width: 40px
+    }
+
+    span.mce_textcase {
+        background-position: -40px -40px;
+    }
+
+    span.mce_visualblocks {
+        background-position: -160px -40px;
+    }
+
+    span.mce_kitchensink {
+        background-position: -180px -40px;
+    }
+
+    span.mce_mediamanager,
+    span.mce_mediapro,
+    span.mce_video {
+        background-position: -320px -40px;
+    }
+
+    span.mce_imgmanager_ext,
+    span.mce_imagepro {
+        background-position: -420px -40px;
+    }
+
+    span.mce_templatemanager,
+    span.mce_templates {
+        background-position: -380px -40px;
+    }
+
+    span.mce_iframe {
+        background-position: -400px -40px;
+    }
+
+    span.mce_filemanager,
+    span.mce_files {
+        background-position: -360px -40px;
+    }
+
+    span.mce_caption_add {
+        background-position: -280px -40px;
+    }
+
+    span.mce_caption_delete {
+        background-position: -300px -40px;
+    }
+
+    span.mce_microdata {
+        background-position: -340px -40px;
+    }
+
+    span.mce_plus {
+        background-position: -200px -40px;
+    }
+
+    span.mce_cross,
+    span.mce_trash,
+    span.mce_delete {
+        background-position: -220px -40px;
+    }
+
+    span.mce_check {
+        background-position: -540px -40px;
+    }
+
+    .mce_list_default,
+    .mce_list_disc {
+        &:before {
+            content: "●";
+            line-height: 1;
+            display: inline-block
+        }
+    }
+    .mce_list_circle {
+        &:before {
+            content: "○";
+            line-height: 1;
+            display: inline-block
+        }
+    }
+    .mce_list_square {
+        &:before {
+            content: "□";
+            line-height: 1;
+            display: inline-block
+        }
+    }
+
+    .mce_list_lower_alpha {
+        &::before {
+            content: "a.";
+            font-size: 1em;
+            font-family: "times new roman,times";
+            line-height: 1.25
+        }
+    }
+
+    .mce_list_lower_greek {
+        &::before {
+            content: "\03b1.";
+            font-size: 1em;
+            font-family: "times new roman,times";
+            line-height: 1.25
+        }
+    }
+
+    .mce_list_lower_roman {
+        &::before {
+            content: "iv.";
+            font-size: 1em;
+            font-family: "times new roman,times";
+            line-height: 1.25
+        }
+    }
+
+    .mce_list_upper_alpha {
+        &::before {
+            content: "A.";
+            font-size: 1em;
+            font-family: "times new roman,times";
+            line-height: 1.25
+        }
+    }
+
+    .mce_list_upper_roman {
+        &::before {
+            content: "IV.";
+            font-size: 1em;
+            font-family: "times new roman,times";
+            line-height: 1.25
+        }
+    }
+
+    .mce_spinner {
+        background: url(img/load.gif?@@etag@@) no-repeat 0 0
+    }
+    /* Reset for Joomla Template fonts */
+    .mce_none[class*="icon-"] {
+        &:before {
+            font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "IcoMoon";
+            font-weight: 900
+        }
+    }
 }

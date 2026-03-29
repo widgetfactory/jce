@@ -1,109 +1,111 @@
+// out: false
 /* External */
 
-.mceToolbarFixed .mceToolbar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    border: 1px solid #ddd;
-    border-right: 0;
-    border-left: 0;
-    z-index: 9999;
+.mceToolbarFixed {
+    .mceToolbar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        border: 1px solid #ddd;
+        border-right: 0;
+        border-left: 0;
+        z-index: 9999;
+    }
 }
 
 /* Layout */
-.mceDefaultSkin .mceLayout {
-    border: 1px solid #ddd;
-}
+.mceDefaultSkin {
+    .mceLayout {
+        border: 1px solid #ddd;
+    }
 
-.mceDefaultSkin .mceToolbar {
-    background: #f5f5f5;
-    padding: 2px;
-}
+    .mceToolbar {
+        background: #f5f5f5;
+        padding: 2px;
+        width: auto !important;
+        border-bottom: 1px solid #ddd;
 
-.mceDefaultSkin .mceToolbarRow {
-    white-space: normal;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-}
+        &:last-child {
+            border-bottom: 0 none;
+            border-top: 1px solid #ddd;
+        }
 
-.mceDefaultSkin.mceRtl .mceToolbarRow {
-    justify-content: right;
-    flex-direction: row-reverse;
-}
+        &:nth-child(2):not(:last-child) {
+            border-bottom: 0;
+        }
 
-.mceDefaultSkin .mceLeft .mceToolbarRow {
-    justify-content: flex-start;
-}
+        &.mceDisabled::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: 1;
+        }
+    }
 
-.mceDefaultSkin .mceRight .mceToolbarRow {
-    justify-content: flex-end;
-}
+    .mceToolbarRow {
+        white-space: normal;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
 
-.mceDefaultSkin .mceCenter .mceToolbarRow {
-    justify-content: center
-}
+        >div,
+        >button {
+            margin: 1px 0 1px 2px;
+        }
+    }
 
-.mceDefaultSkin .mceToolbarRow>div,
-.mceDefaultSkin .mceToolbarRow>button {
-    margin: 1px 0 1px 2px;
-}
+    &.mceRtl .mceToolbarRow {
+        justify-content: right;
+        flex-direction: row-reverse;
+    }
 
-.mceDefaultSkin .mceIframeContainer {
-    position: relative;
-}
+    .mceLeft .mceToolbarRow {
+        justify-content: flex-start;
+    }
 
-.mceDefaultSkin .mceToolbar {
-    width: auto !important;
-    border-bottom: 1px solid #ddd;
-}
+    .mceRight .mceToolbarRow {
+        justify-content: flex-end;
+    }
 
-.mceDefaultSkin .mceToolbar:last-child {
-    border-bottom: 0 none;
-    border-top: 1px solid #ddd;
-}
+    .mceCenter .mceToolbarRow {
+        justify-content: center;
+    }
 
-.mceDefaultSkin .mceToolbar:nth-child(2):not(:last-child) {
-    border-bottom: 0;
-}
+    .mceIframeContainer {
+        position: relative;
 
-.mceDefaultSkin .mceIframeContainer:first-child {
-    border-bottom: 1px solid #ddd;
-}
+        &:first-child {
+            border-bottom: 1px solid #ddd;
+        }
 
-.mceDefaultSkin .mceIframeContainer:last-child {
-    border-top: 1px solid #ddd;
-}
+        &:last-child {
+            border-top: 1px solid #ddd;
+        }
 
-.mceDefaultSkin .mceIframeContainer:nth-child(2) {
-    border-top-width: 0;
-}
+        &:nth-child(2) {
+            border-top-width: 0;
+        }
+    }
 
-/* Separator */
-.mceDefaultSkin .mceSeparator {
-    width: 1px;
-    height: 26px;
-    margin: 0 3px 0 2px;
-    background: #ddd;
-    display: block;
-}
+    /* Separator */
+    .mceSeparator {
+        width: 1px;
+        height: 26px;
+        margin: 0 3px 0 2px;
+        background: #ddd;
+        display: block;
+    }
 
-.mceDefaultSkin .mceFlex {
-    display: flex;
-}
+    .mceFlex {
+        display: flex;
+    }
 
-.mceDefaultSkin .mceFlexAuto {
-    flex: auto;
-}
-
-.mceDefaultSkin .mceToolbar.mceDisabled::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.5);
-    z-index: 1;
+    .mceFlexAuto {
+        flex: auto;
+    }
 }

@@ -1,3 +1,4 @@
+// out: false
 /* Reset */
 
 .mceDefaultSkin *,
@@ -29,55 +30,59 @@
     min-height: auto;
 }
 
-.mceDefaultSkin select,
-.mceDefaultSkin textarea,
-.mceDefaultSkin input[type] {
-    margin: 0;
-    line-height: 1;
-}
+.mceDefaultSkin {
+    select,
+    textarea,
+    input[type] {
+        margin: 0;
+        line-height: 1;
+    }
 
-.mceDefaultSkin input {
-    cursor: text;
-}
+    input {
+        cursor: text;
+    }
 
-.mceDefaultSkin label,
-.mceDefaultSkin input,
-.mceDefaultSkin button,
-.mceDefaultSkin select {
-    font-size: 14px;
-}
+    label,
+    input,
+    button,
+    select {
+        font-size: 14px;
+    }
 
-.mceDefaultSkin button {
-    appearance: none;
-}
+    button {
+        appearance: none;
+    }
 
-.mceDefaultSkin input[type="radio"],
-.mceDefaultSkin input[type="checkbox"] {
-    cursor: inherit;
-}
+    input[type="radio"],
+    input[type="checkbox"] {
+        cursor: inherit;
+    }
 
-.mceDefaultSkin>div {
-    width: auto;
-    font-size: 100%;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    direction: ltr;
-    position: relative;
-    top: 0;
-    left: 0;
-}
+    >div {
+        width: auto;
+        font-size: 100%;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        direction: ltr;
+        position: relative;
+        top: 0;
+        left: 0;
+    }
 
-.mceDefaultSkin a:hover,
-.mceDefaultSkin a:link,
-.mceDefaultSkin a:visited,
-.mceDefaultSkin a:active {
-    text-decoration: none;
-    font-weight: normal;
-    cursor: default;
-    color: #000
-}
+    a {
+        &:hover,
+        &:link,
+        &:visited,
+        &:active {
+            text-decoration: none;
+            font-weight: normal;
+            cursor: default;
+            color: #000
+        }
+    }
 
-.mceDefaultSkin iframe {
-    display: block;
-    width: 100%;
+    iframe {
+        display: block;
+        width: 100%;
+    }
 }

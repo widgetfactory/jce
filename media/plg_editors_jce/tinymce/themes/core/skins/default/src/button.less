@@ -1,74 +1,71 @@
-/* Button */
+// out: false
+.mceDefaultSkin {
+    .mceButton {
+        border: 1px solid #ddd;
+        padding: 4px;
+        min-width: 32px;
+        min-height: 32px;
+        appearance: none;
+        cursor: pointer;
+        outline: none;
+        overflow: visible;
+        text-transform: none;
+        box-sizing: border-box;
+        text-decoration: none;
+        text-align: center;
+        border-radius: 2px;
+        line-height: 1;
 
-.mceDefaultSkin .mceButton {
-    border: 1px solid #ddd;
-    padding: 4px;
-    min-width: 32px;
-    min-height: 32px;
-    appearance: none;
-    cursor: pointer;
-    outline: none;
-    overflow: visible;
-    text-transform: none;
-    box-sizing: border-box;
-    text-decoration: none;
-    text-align: center;
-    border-radius: 2px;
-    line-height: 1;
-}
+        .mceIcon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+            max-width: 20px;
+        }
 
-.mceDefaultSkin .mceButton .mceIcon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-    max-width: 20px;
-}
+        &:hover {
+            border-color: #ccc;
+            background-color: #fafafa;
+        }
 
-.mceDefaultSkin .mceButton:hover {
-    border: 1px solid #ccc;
-    background-color: #fafafa;
-}
+        &:focus {
+            border-color: #ccc;
+            background-color: #fff;
+        }
+    }
 
-.mceDefaultSkin .mceButton:focus {
-    border: 1px solid #ccc;
-    background-color: #fff;
-    outline: none;
-}
+    .mceButtonActive,
+    .mceButtonSelected {
+        border-color: #ccc;
+        background-color: #ddd;
+    }
 
-.mceDefaultSkin .mceButtonActive,
-.mceDefaultSkin .mceButtonSelected {
-    border: 1px solid #ccc;
-    background-color: #ddd;
-}
+    .mceButtonDisabled .mceIcon,
+    button:disabled .mceIcon {
+        opacity: 0.38;
+    }
 
-.mceDefaultSkin .mceButtonDisabled .mceIcon {
-    opacity: 0.38;
-}
+    .mceButtonLabeled {
+        width: auto;
 
-.mceDefaultSkin .mceButtonLabeled {
-    width: auto
-}
+        .mceIcon {
+            float: left;
+        }
+    }
 
-.mceDefaultSkin .mceButtonLabeled .mceIcon {
-    float: left
-}
+    .mceButtonLabel {
+        display: block;
+        font-size: 14px;
+        padding: 4px 8px 0 24px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
 
-.mceDefaultSkin .mceButtonLabel {
-    display: block;
-    font-size: 14px;
-    padding: 4px 8px 0 24px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+    .mceButtonDisabled .mceButtonLabel {
+        color: #888;
+    }
 
-.mceDefaultSkin .mceButtonDisabled .mceButtonLabel {
-    color: #888
-}
-
-.mceDefaultSkin button:disabled {
-    cursor: not-allowed;
-}
-
-.mceDefaultSkin button:disabled .mceIcon {
-    opacity: 0.38;
+    button:disabled {
+        cursor: not-allowed;
+    }
 }

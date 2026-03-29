@@ -1,104 +1,256 @@
+// out: false
 /* SplitButton */
-.mceDefaultSkin .mceSplitButton {
-    position: relative;
-}
-.mceDefaultSkin .mceSplitButton button {
-    height: 32px;
-    display: inline-block;
-    text-align: center;
-    line-height: 1;
-    width: 32px;
-}
+.mceDefaultSkin {
+    .mceSplitButton {
+        position: relative;
 
-.mceDefaultSkin .mceSplitButton .mceText {
-    float: left;
-}
+        button {
+            height: 32px;
+            display: inline-block;
+            text-align: center;
+            line-height: 1;
+            width: 32px;
+        }
 
-.mceDefaultSkin .mceSplitButton .mceText,
-.mceDefaultSkin .mceSplitButton .mceOpen {
-    display: inline-block;
-    border: 1px solid #ddd;
-}
+        .mceText {
+            float: left;
+        }
 
-.mceDefaultSkin .mceSplitButton .mceText {
-    border-right: 0;
-    border-radius: 2px 0 0 2px;
-    cursor: pointer;
+        .mceText,
+        .mceOpen {
+            display: inline-block;
+            border: 1px solid #ddd;
+        }
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+        .mceText {
+            border-right: 0;
+            border-radius: 2px 0 0 2px;
+            cursor: pointer;
 
-    text-overflow: ellipsis;
-}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-.mceDefaultSkin .mceSplitButton .mceAction {
-    width: 20px;
-    background-image: url(../../img/icons.png?@@etag@@);
-}
+            text-overflow: ellipsis;
+        }
 
-.mceDefaultSkin .mceSplitButton img.mceAction {
-    background: none;
-}
+        .mceAction {
+            width: 20px;
+            background-image: url(../../img/icons.png?@@etag@@);
+        }
 
-.mceDefaultSkin .mceSplitButton .mceOpen {
-    width: 16px;
-    text-align: center;
-    height: 32px;
-    border-radius: 0 2px 2px 0;
-    cursor: pointer;
-}
+        img.mceAction {
+            background: none;
+        }
 
-.mceDefaultSkin .mceSplitButton .mceOpen:after {
-    content: "\25BC";
-    display: block;
-    font-size: 9px;
-    line-height: 32px;
-    color: #444;
-    text-align: center;
-}
+        .mceOpen {
+            width: 16px;
+            text-align: center;
+            height: 32px;
+            border-radius: 0 2px 2px 0;
+            cursor: pointer;
 
-.mceDefaultSkin .mceSplitButtonDisabled .mceOpen:after {
-    color: #888;
-}
+            &:after {
+                content: "\25BC";
+                display: block;
+                font-size: 9px;
+                line-height: 32px;
+                color: #444;
+                text-align: center;
+            }
+        }
 
-.mceDefaultSkin .mceSplitButton:hover .mceText,
-.mceDefaultSkin .mceSplitButton:hover .mceOpen,
-.mceDefaultSkin .mceSplitButton:focus .mceText,
-.mceDefaultSkin .mceSplitButton:focus .mceOpen {
-    border-color: #ccc;
-    background-color: #fafafa;
-}
+        &:hover,
+        &:focus {
+            .mceText,
+            .mceOpen {
+                border-color: #ccc;
+                background-color: #fafafa;
+            }
+        }
+    }
 
-.mceDefaultSkin .mceSplitButtonDisabled .mceAction {
-    opacity: 0.3;
-}
+    .mceSplitButtonDisabled {
+        .mceOpen:after {
+            color: #888;
+        }
 
-.mceDefaultSkin .mceSplitButtonActive .mceText {
-    border-color: #ccc;
-    background-color: #ddd;
-}
+        .mceAction {
+            opacity: 0.3;
+        }
+    }
 
-.mceDefaultSkin .mceSplitButtonActive .mceOpen {
-    border-left: 0;
-    border-color: #ccc;
-    background-color: #ddd;
-}
+    .mceSplitButtonActive {
+        .mceText {
+            border-color: #ccc;
+            background-color: #ddd;
+        }
 
-.mceDefaultSkin .mceSplitButtonSelected::after {
-    content: "";
-    padding: 2px 0;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    background: #fff;
-    box-sizing: border-box;
-    z-index: 700011;
-    border: 1px solid #ccc;
-    border-top: 0 none;
-    border-bottom: 0 none;
+        .mceOpen {
+            border-left: 0;
+            border-color: #ccc;
+            background-color: #ddd;
+        }
+    }
+
+    .mceSplitButtonSelected {
+        &::after {
+            content: "";
+            padding: 2px 0;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            background: #fff;
+            box-sizing: border-box;
+            z-index: 700011;
+            border: 1px solid #ccc;
+            border-top: 0 none;
+            border-bottom: 0 none;
+        }
+
+        .mceText,
+        &:hover .mceText {
+            background: #fff;
+            border-color: #ccc;
+            border-radius: 2px 0 0 0;
+        }
+
+        .mceOpen,
+        &:hover .mceOpen {
+            background: #fff;
+            border-color: #ccc;
+            border-left: 0 none;
+            padding-left: 1px;
+            border-radius: 0 2px 0 0;
+        }
+    }
+
+    .mceMenuItemSub {
+        box-shadow: inherit;
+        border: 0;
+        margin: 0;
+    }
+
+    .mceSplitButtonMenu .mceMenuItem {
+        margin: 2px;
+    }
+
+    /* ColorSplitButton */
+    .mceColorSplitMenu {
+        background: #fff;
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 203px;
+        gap: 1px;
+        padding: 2px;
+
+        button {
+            display: block;
+            width: 24px;
+            height: 24px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            text-align: center;
+            cursor: pointer;
+            outline: none;
+
+            &:hover,
+            &:focus {
+                border-color: #444;
+                outline: none;
+            }
+        }
+
+        .mceRemoveColor {
+            color: #444;
+            font-weight: bold;
+        }
+
+        .mceMoreColors {
+            width: 100%;
+            height: auto;
+            text-align: center;
+            line-height: 32px;
+            background: #fff;
+            cursor: pointer;
+
+            &:hover {
+                border: 1px solid #ccc;
+                background-color: #fafafa;
+            }
+        }
+    }
+
+    .mceColorPreview {
+        width: 20px;
+        height: 4px;
+        overflow: hidden;
+        background: #fafafa;
+    }
+
+    .mce_forecolor .mceAction,
+    .mce_backcolor .mceAction {
+        overflow: hidden;
+        height: 15px;
+    }
+
+    /* Table Grid SplitButton */
+    .mceTableSplitMenu {
+        table {
+            padding: 2px;
+        }
+
+        td {
+            background-color: #fff;
+            text-align: center;
+
+            a {
+                width: 24px;
+                height: 24px;
+                display: block;
+                border: 1px solid #ddd;
+                padding: 0;
+                margin: 1px;
+            }
+        }
+
+        .selected a {
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+
+        .mceTableGridCount {
+            background-color: #fff;
+            text-align: center;
+            line-height: 32px;
+        }
+    }
+
+    /*.mceSplitButtonSelected::after {
+        content: "";
+        padding: 4px 0;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        bottom: -7px;
+        background: #fff;
+        box-sizing: border-box;
+        z-index: 700011;
+        border: 1px solid #ccc;
+        border-top: 0 none;
+        border-bottom: 0 none;
+    }*/
+
+    .mceColumns .mceTableSplitMenu {
+        width: 120px;
+
+        td a {
+            width: 24px;
+            height: 32px;
+        }
+    }
 }
 
 .mceSplitButtonMenu {
@@ -125,77 +277,8 @@
     top: -1px;
 }*/
 
-.mceDefaultSkin .mceMenuItemSub {
-    box-shadow: inherit;
-    border: 0;
-    margin: 0;
-}
-
-.mceDefaultSkin .mceSplitButtonMenu .mceMenuItem {
-    margin: 2px;
-}
-
 .mceSplitButtonMenu .mceMenuItems .mceSelected {
     background-color: #ddd;
-}
-
-/* ColorSplitButton */
-.mceDefaultSkin .mceColorSplitMenu {
-    background: #fff;
-    background: #fff;
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 203px;
-    gap: 1px;
-}
-
-.mceDefaultSkin .mceColorSplitMenu button {
-    display: block;
-    width: 24px;
-    height: 24px;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    text-align: center;
-    cursor: pointer;
-    outline: none;
-}
-
-.mceDefaultSkin .mceColorSplitMenu button:hover,
-.mceDefaultSkin .mceColorSplitMenu button:focus {
-    border-color: #444;
-    outline: none;
-}
-
-.mceDefaultSkin .mceColorSplitMenu .mceRemoveColor {
-    color: #444;
-    font-weight: bold;
-}
-
-.mceDefaultSkin .mceColorSplitMenu .mceMoreColors {
-    width: 100%;
-    height: auto;
-    text-align: center;
-    line-height: 32px;
-    background: #fff;
-    cursor: pointer;
-}
-
-.mceDefaultSkin .mceColorSplitMenu .mceMoreColors:hover {
-    border: 1px solid #ccc;
-    background-color: #fafafa;
-}
-
-.mceDefaultSkin .mceColorPreview {
-    width: 20px;
-    height: 4px;
-    overflow: hidden;
-    background: #fafafa;
-}
-
-.mceDefaultSkin .mce_forecolor .mceAction,
-.mceDefaultSkin .mce_backcolor .mceAction {
-    overflow: hidden;
-    height: 15px
 }
 
 /* Table Grid SplitButton */
@@ -208,78 +291,4 @@
     border-collapse: separate;
     box-sizing: border-box;
     border-spacing: inherit;
-}
-
-.mceDefaultSkin .mceTableSplitMenu table {
-    padding: 2px;
-}
-
-.mceDefaultSkin .mceTableSplitMenu td {
-    background-color: #fff;
-    text-align: center;
-}
-
-.mceDefaultSkin .mceTableSplitMenu td a {
-    width: 24px;
-    height: 24px;
-    display: block;
-    border: 1px solid #ddd;
-    padding: 0;
-    margin: 1px;
-}
-
-.mceDefaultSkin .mceTableSplitMenu .selected a {
-    background-color: #337ab7;
-    border-color: #2e6da4;
-}
-
-.mceDefaultSkin .mceTableSplitMenu .mceTableGridCount {
-    background-color: #fff;
-    text-align: center;
-    line-height: 32px;
-}
-
-/*.mceDefaultSkin .mceSplitButtonSelected::after {
-    content: "";
-    padding: 4px 0;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    bottom: -7px;
-    background: #fff;
-    box-sizing: border-box;
-    z-index: 700011;
-    border: 1px solid #ccc;
-    border-top: 0 none;
-    border-bottom: 0 none;
-}*/
-
-.mceDefaultSkin .mceSplitButtonSelected .mceText,
-.mceDefaultSkin .mceSplitButtonSelected:hover .mceText {
-    background: #fff;
-    border-color: #ccc;
-    border-radius: 2px 0 0 0;
-}
-
-.mceDefaultSkin .mceSplitButtonSelected .mceOpen,
-.mceDefaultSkin .mceSplitButtonSelected:hover .mceOpen {
-    background: #fff;
-    border-color: #ccc;
-    border-left: 0 none;
-    padding-left: 1px;
-    border-radius: 0 2px 0 0;
-}
-
-.mceDefaultSkin .mceColorSplitMenu {
-    padding: 2px;
-    background: #fff;
-}
-
-.mceDefaultSkin .mceColumns .mceTableSplitMenu {
-    width: 120px;
-}
-
-.mceDefaultSkin .mceColumns .mceTableSplitMenu td a {
-    width: 24px;
-    height: 32px;
 }

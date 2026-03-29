@@ -1,3 +1,4 @@
+// out: false
 /* Menu */
 
 .mceMenu {
@@ -15,6 +16,333 @@
     margin-left: 1px;
 
     min-width: 10em;
+
+    .mceMenuItems span,
+    .mceMenuItems {
+        display: block
+    }
+
+    .mceMenuItems {
+        height: 100%;
+        overflow: visible; /* allow for tooltip */
+        display: flex;
+        flex-direction: column;
+        margin: 2px;
+
+        .mceMenuItem {
+            position: relative;
+            padding: 0;
+            cursor: pointer;
+            margin: 1px 0;
+            /* override values in some template stylesheets */
+            min-height: inherit;
+            float: inherit;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            &:has(.mceDescription) {
+                flex-direction: column;
+            }
+
+            &>div {
+                width: 100%;
+            }
+
+            &.mceDisabled {
+                opacity: 0.5;
+            }
+        }
+
+        .mceText {
+            position: relative;
+            display: block;
+            cursor: pointer;
+            margin: 0;
+            padding: 0 8px;
+            overflow: hidden;
+            width: 100%;
+            flex: 1 0 100%;
+            text-overflow: ellipsis;
+        }
+
+        .mceIcon+.mceText {
+            padding: 0 32px 0 40px;
+        }
+
+        .mceText,
+        .mcePreview {
+            font-size: 14px;
+            line-height: 32px;
+        }
+
+        .mceMeta {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #666;
+            max-width: 20em;
+            white-space: normal;
+            overflow: hidden;
+            padding: 0 8px;
+            width: 100%;
+            flex: 1 0 100%;
+        }
+
+        .mceDescription {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #666;
+            max-width: 20em;
+            white-space: normal;
+            overflow: hidden;
+            padding: 0 8px;
+            width: 100%;
+            flex: 1 0 100%;
+        }
+
+        pre.mceText {
+            font-family: Monospace;
+        }
+
+        .mceIcon {
+            position: absolute;
+            top: 6px;
+            left: 4px;
+            width: 20px;
+        }
+
+        .mceImage {
+            height: 4rem;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            margin-top: 0.5rem;
+        }
+
+        .mceImage+.mceText {
+            text-align: center;
+        }
+
+        .mceMenuItemHidden {
+            display: none;
+        }
+
+        .mceMenuItemEnabled {
+            &:hover,
+            &:focus {
+                background-color: #eee;
+            }
+
+            &:focus {
+                outline: 1px dashed #ddd;
+            }
+
+            .mceTableSplitMenu a:hover {
+                background-color: transparent;
+            }
+        }
+
+        .mceMenuItemActive {
+            background-color: #eee;
+        }
+
+        .mceMenuHtml {
+            &:hover {
+                background-color: #fff;
+            }
+
+            position: relative;
+            flex-direction: column;
+
+            .mceToolbarRow {
+                position: relative;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+
+            .mceToolbarColumn {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+
+            label {
+                display: block;
+                line-height: 2;
+                vertical-align: middle;
+                width: 96px;
+            }
+
+            input[type="text"],
+            textarea,
+            select {
+                height: 32px;
+                width: 100%;
+                padding: 2px;
+                border: 1px solid #ddd;
+                background: #fff;
+                color: #444;
+                border-radius: 2px;
+                box-shadow: inherit;
+                box-sizing: border-box;
+                cursor: initial;
+            }
+
+            textarea {
+                height: auto;
+            }
+
+            select:not([multiple]):not([size]) {
+                appearance: none;
+                padding-right: 20px;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+                background-repeat: no-repeat;
+                background-position: 100% 50%;
+            }
+
+            input[type="text"]:focus {
+                border-color: #66afe9;
+                outline: 0;
+                background: #f5fbfe;
+                color: #444;
+                box-shadow: inherit;
+            }
+
+            .mceButton {
+                position: relative;
+
+                .mceIcon {
+                    position: static;
+                }
+            }
+        }
+
+        .mceMenuItemTitle {
+            border-bottom: 1px solid #ddd;
+            background-color: #f5f5f5;
+
+            &:hover {
+                background-color: #f5f5f5;
+            }
+
+            .mceText {
+                font-weight: bold;
+                cursor: default;
+            }
+        }
+
+        .mceMenuItemFooter {
+            border-top: 1px solid #ddd;
+        }
+
+        .mceMenuItemSeparator {
+            background: #ddd;
+            height: 1px;
+            cursor: default;
+        }
+
+        .mceMenuItemSub .mceText {
+            margin-left: 1em;
+        }
+    }
+
+    .mceMenuFilter+.mceMenuItems {
+        height: calc(100% - 40px);
+        max-height: 346px;
+    }
+
+    .mceMenuItemsItemDisabled .mceText {
+        color: #888;
+    }
+
+    /*.mceMenuItemsItemSelected .mceIcon {
+        background: url(img/menu_check.gif)
+    }*/
+
+    .mceNoIcons .mceMenuItemSelected .mceMenuItem {
+        background: url(img/menu_arrow.gif) no-repeat left center
+    }
+
+    .mceMenuItemsItemSub .mceMenuItem {
+        background: url(img/menu_arrow.gif) no-repeat center right;
+    }
+
+    .mceLinkMenu {
+        min-width: 220px;
+
+        .mceMenuHtml input {
+            margin-right: 5px;
+        }
+    }
+
+    .mceButtonMenu {
+        margin: 0;
+        border: 1px solid #ddd;
+        margin-top: 2px;
+        margin-left: 1px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        .mceMenuItem {
+            margin: 3px;
+        }
+
+        &::before {
+            content: "";
+            display: block;
+            padding: 3px;
+            position: absolute;
+            width: 40px;
+            top: -6px;
+            background: #fff;
+            left: -1px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+    }
+
+    .mceModalContent .mceListBox .mceText {
+        width: calc(100% - 32px);
+    }
+
+    .mceToolbarRow .mceToolbarItem {
+        width: 100%;
+        display: flex;
+        gap: 4px;
+
+        .mceTextBox {
+            max-width: inherit;
+        }
+
+        textarea {
+            height: auto;
+            white-space: pre-wrap;
+            font-size: 13px;
+            line-height: 2;
+        }
+    }
+
+    .mceToolbarFooter .mceToolbarItem {
+        text-align: right;
+
+        .mceButton {
+            min-width: 5em;
+            height: 32px;
+            line-height: 1;
+            background: #fff;
+            border-radius: 2px;
+            color: #444;
+            border: 1px solid #ddd;
+            margin: 0 0 0 4px;
+            padding: 0 8px;
+
+            &.mceButtonPrimary {
+                background-color: #337ab7;
+                border: 1px solid rgba(0, 0, 0, 0.06);
+                color: #fff;
+            }
+        }
+    }
 }
 
 .mceSplitButtonMenu,
@@ -22,329 +350,11 @@
     border-radius: 0 2px 2px 2px;
 }
 
-.mceMenu .mceMenuItems span,
-.mceMenu .mceMenuItems {
-    display: block
-}
-
-.mceMenu .mceMenuItems .mceMenuItem {
-    position: relative;
-    padding: 0;
-    cursor: pointer;
-    margin: 1px 0;
-    /* override values in some template stylesheets */
-    min-height: inherit;
-    float: inherit;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.mceMenu .mceMenuItems .mceMenuItem:has(.mceDescription) {
-    flex-direction: column;
-}
-
-.mceMenu .mceMenuItems .mceMenuItem>div {
-    width: 100%;
-}
-
-.mceMenu .mceMenuItems .mceText {
-    position: relative;
-    display: block;
-    cursor: pointer;
-    margin: 0;
-    padding: 0 8px;
-    overflow: hidden;
-    width: 100%;
-    flex: 1 0 100%;
-    text-overflow: ellipsis;
-}
-
-.mceMenu .mceMenuItems .mceIcon+.mceText {
-    padding: 0 32px 0 40px;
-}
-
-.mceMenu .mceMenuItems .mceText,
-.mceMenu .mceMenuItems .mcePreview {
-    font-size: 14px;
-    line-height: 32px;
-}
-
-.mceMenu .mceMenuItems .mceMeta {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #666;
-    max-width: 20em;
-    white-space: normal;
-    overflow: hidden;
-    padding: 0 8px;
-    width: 100%;
-    flex: 1 0 100%;
-}
-
-.mceMenu .mceMenuItems .mceDescription {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #666;
-    max-width: 20em;
-    white-space: normal;
-    overflow: hidden;
-    padding: 0 8px;
-    width: 100%;
-    flex: 1 0 100%;
-}
-
-.mceMenu .mceMenuItems pre.mceText {
-    font-family: Monospace;
-}
-
-.mceMenu .mceMenuItems .mceIcon {
-    position: absolute;
-    top: 6px;
-    left: 4px;
-    width: 20px;
-}
-
-.mceMenu .mceMenuItems .mceImage {
-    height: 4rem;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    margin-top: 0.5rem;
-}
-
-.mceMenu .mceMenuItems .mceImage+.mceText {
-    text-align: center;
-}
-
-.mceMenu .mceMenuItems {
-    height: 100%;
-    overflow: visible; /* allow for tooltip */
-    display: flex;
-    flex-direction: column;
-    margin: 2px;
-}
-
-.mceMenu .mceMenuFilter+.mceMenuItems {
-    height: calc(100% - 40px);
-    max-height: 346px;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemHidden {
-    display: none;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemEnabled:hover,
-.mceMenu .mceMenuItems .mceMenuItemEnabled:focus,
-.mceMenu .mceMenuItems .mceMenuItemActive {
-    background-color: #eee;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml:hover {
-    background-color: #fff;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemEnabled:focus {
-    outline: 1px dashed #ddd;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemEnabled .mceTableSplitMenu a:hover {
-    background-color: transparent;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemTitle {
-    border-bottom: 1px solid #ddd;
-    background-color: #f5f5f5;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemTitle:hover {
-    background-color: #f5f5f5;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemFooter {
-    border-top: 1px solid #ddd;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemTitle .mceText {
-    font-weight: bold;
-    cursor: default;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemSeparator {
-    background: #ddd;
-    height: 1px;
-    cursor: default;
-}
-
-.mceMenu .mceMenuItems .mceMenuItem.mceDisabled {
-    opacity: 0.5;
-}
-
-.mceMenu .mceMenuItemsItemDisabled .mceText {
-    color: #888
-}
-
-/*.mceMenu .mceMenuItemsItemSelected .mceIcon {
-    background: url(img/menu_check.gif)
-}*/
-
-.mceMenu .mceNoIcons .mceMenuItemSelected .mceMenuItem {
-    background: url(img/menu_arrow.gif) no-repeat left center
-}
-
-.mceMenu .mceMenuItemsItemSub .mceMenuItem {
-    background: url(img/menu_arrow.gif) no-repeat center right;
-}
-
-.mceMenu .mceMenuItems .mceMenuItemSub .mceText {
-    margin-left: 1em;
-}
-
 /* Rtl */
-.mceRtl .mceMenuItem .mceText {
-    text-align: right
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml {
-    position: relative;
-    flex-direction: column;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
-    position: relative;
-    display: flex;
-    flex-wrap: nowrap;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml .mceToolbarColumn {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml label {
-    display: block;
-    line-height: 2;
-    vertical-align: middle;
-    width: 96px;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml input[type="text"],
-.mceMenu .mceMenuItems .mceMenuHtml textarea,
-.mceMenu .mceMenuItems .mceMenuHtml select {
-    height: 32px;
-    width: 100%;
-    padding: 2px;
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #444;
-    border-radius: 2px;
-    box-shadow: inherit;
-    box-sizing: border-box;
-    cursor: initial;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml textarea {
-    height: auto;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml select:not([multiple]):not([size]) {
-    appearance: none;
-    padding-right: 20px;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
-    background-repeat: no-repeat;
-    background-position: 100% 50%;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml input[type="text"]:focus {
-    border-color: #66afe9;
-    outline: 0;
-    background: #f5fbfe;
-    color: #444;
-    box-shadow: inherit;
-}
-
-.mceMenu .mceLinkMenu {
-    min-width: 220px;
-}
-
-.mceMenu .mceLinkMenu .mceMenuHtml input {
-    margin-right: 5px;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml .mceButton {
-    position: relative;
-}
-
-.mceMenu .mceMenuItems .mceMenuHtml .mceButton .mceIcon {
-    position: static;
-}
-
-.mceMenu .mceButtonMenu {
-    margin: 0;
-    border: 1px solid #ddd;
-    margin-top: 2px;
-    margin-left: 1px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.mceMenu .mceButtonMenu .mceMenuItem {
-    margin: 3px;
-}
-
-.mceMenu .mceButtonMenu::before {
-    content: "";
-    display: block;
-    padding: 3px;
-    position: absolute;
-    width: 40px;
-    top: -6px;
-    background: #fff;
-    left: -1px;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-}
-
-.mceMenu .mceModalContent .mceListBox .mceText {
-    width: calc(100% - 32px);
-}
-
-.mceMenu .mceToolbarRow .mceToolbarItem {
-    width: 100%;
-    display: flex;
-    gap: 4px;
-}
-
-.mceMenu .mceToolbarFooter .mceToolbarItem {
-    text-align: right;
-}
-
-.mceMenu .mceToolbarRow .mceToolbarItem .mceTextBox {
-    max-width: inherit;
-}
-
-.mceMenu .mceToolbarRow .mceToolbarItem textarea {
-    height: auto;
-    white-space: pre-wrap;
-    font-size: 13px;
-    line-height: 2;
-}
-
-.mceMenu .mceToolbarFooter .mceToolbarItem .mceButton {
-    min-width: 5em;
-    height: 32px;
-    line-height: 1;
-    background: #fff;
-    border-radius: 2px;
-    color: #444;
-    border: 1px solid #ddd;
-    margin: 0 0 0 4px;
-    padding: 0 8px;
-}
-
-.mceMenu .mceToolbarFooter .mceToolbarItem .mceButton.mceButtonPrimary {
-    background-color: #337ab7;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    color: #fff;
+.mceRtl {
+    .mceMenuItem {
+        .mceText {
+            text-align: right;
+        }
+    }
 }

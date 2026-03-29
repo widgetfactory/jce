@@ -1,3 +1,4 @@
+// out: false
 .mceTabs {
     display: block;
     list-style: none;
@@ -6,28 +7,28 @@
 
     border-bottom: 1px solid #ddd;
     background: #fff;
-}
 
-.mceTabs li {
-    display: inline-block;
-    border: 0 none;
-    background: #fff;
-    padding: 0.5em 1em;
-    vertical-align: middle;
-    line-height: 2em;
-    font-size: 14px;
-    height: 2.75em;
-    min-width: 1.75em;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 2px 2px 0 0;
-}
+    li {
+        display: inline-block;
+        border: 0 none;
+        background: #fff;
+        padding: 0.5em 1em;
+        vertical-align: middle;
+        line-height: 2em;
+        font-size: 14px;
+        height: 2.75em;
+        min-width: 1.75em;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 2px 2px 0 0;
 
-.mceTabs li[aria-selected="true"] {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-    margin-bottom: -2px;
+        &[aria-selected="true"] {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+            margin-bottom: -2px;
+        }
+    }
 }
 
 .mceTabPanels {

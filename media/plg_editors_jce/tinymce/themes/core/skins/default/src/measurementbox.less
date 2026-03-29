@@ -1,3 +1,4 @@
+// out: false
 .mceMeasurementBox {
     display: inline-flex;
     align-items: center;
@@ -24,15 +25,15 @@
     box-sizing: border-box;
 
     max-width: 50%;
-}
 
-.mceMeasurementBoxUnit:focus {
-    border-color: #66afe9;
-    outline: none;
-}
+    &:focus {
+        border-color: #66afe9;
+        outline: none;
+    }
 
-.mceMeasurementBoxUnit:disabled {
-    background: #eee;
-    color: #999;
-    cursor: not-allowed;
+    &:disabled {
+        background: #eee;
+        color: #999;
+        cursor: not-allowed;
+    }
 }

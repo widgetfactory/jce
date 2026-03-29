@@ -1,45 +1,48 @@
-.mceDefaultSkin .mceTextBox {
-    height: 32px;
-    line-height: 2;
-    max-width: 100%;
-    padding: 2px;
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #444;
-    border-radius: 2px;
-    box-shadow: inherit;
-    box-sizing: border-box;
-    cursor: text;
-    width: auto;
-}
+// out: false
+.mceDefaultSkin {
+    .mceTextBox {
+        height: 32px;
+        line-height: 2;
+        max-width: 100%;
+        padding: 2px;
+        border: 1px solid #ddd;
+        background: #fff;
+        color: #444;
+        border-radius: 2px;
+        box-shadow: inherit;
+        box-sizing: border-box;
+        cursor: text;
+        width: auto;
 
-.mceDefaultSkin input[type="color"] {
-    cursor: pointer;
-}
+        &:focus {
+            box-shadow: inherit;
+            border-color: #66afe9;
+            outline: 0;
+            background: #f5fbfe;
+            color: #444;
+        }
+    }
 
-.mceDefaultSkin .mceTextBox:focus {
-    box-shadow: inherit;
-    border-color: #66afe9;
-    outline: 0;
-    background: #f5fbfe;
-    color: #444;
-}
+    input[type="color"] {
+        cursor: pointer;
+    }
 
-.mceDefaultSkin .mceTextBoxDisabled {
-    color: #888;
-    background-color: #eee;
-    cursor: not-allowed;
-}
+    .mceTextBoxDisabled {
+        color: #888;
+        background-color: #eee;
+        cursor: not-allowed;
+    }
 
-.mceDefaultSkin .mceTextBox + .mceTextBoxDescription {
-    font-size: 0.75em;
-    color: #666;
-    line-height: 2;
-    display: inline-block;
-    width: 100%;
-}
+    .mceTextBox + .mceTextBoxDescription {
+        font-size: 0.75em;
+        color: #666;
+        line-height: 2;
+        display: inline-block;
+        width: 100%;
+    }
 
-.mceDefaultSkin .mceToolbarRow .mceTextBox {
-    margin: 1px 0 1px 2px;
-    max-width: 10em;
+    .mceToolbarRow .mceTextBox {
+        margin: 1px 0 1px 2px;
+        max-width: 10em;
+    }
 }

@@ -1,38 +1,38 @@
-.mceDefaultSkin .mce_emotions_icon {
-    display: inline-block;
-    font-size: 16px;
-    line-height: 2em;
-    width: auto;
-    height: auto;
-    min-width: 2em;
-    min-height: 2em;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    appearance: none;
-    background: #fff;
+// out: false
+.mceDefaultSkin {
+    .mce_emotions_icon {
+        display: inline-block;
+        font-size: 16px;
+        line-height: 2em;
+        width: auto;
+        height: auto;
+        min-width: 2em;
+        min-height: 2em;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        appearance: none;
+        background: #fff;
+
+        img {
+            padding: 5px;
+            cursor: pointer;
+        }
+    }
+
+    .mceEmoticonsMenu {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 16.75em;
+        white-space: normal;
+        justify-content: center;
+    }
 }
 
-.mceDefaultSkin .mceEmoticonsMenu {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 16.75em;
-}
-
-.mceDefaultSkin .mceEmoticonsMenu {
-    white-space: normal;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.mceDefaultSkin .mce_emotions_icon img {
-    padding: 5px;
-    cursor: pointer;
-}
-
-.mce_emotions_icon:hover,
-.mce_emotions_icon:focus {
-    background: #eee;
-    border-radius: 3px;
+.mce_emotions_icon {
+    &:hover,
+    &:focus {
+        background: #eee;
+        border-radius: 3px;
+    }
 }

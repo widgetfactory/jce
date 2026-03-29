@@ -1,3 +1,4 @@
+// out: false
 @font-face {
     font-family: 'wfeditor';
     src: url('../../../../../fonts/wfeditor.woff') format('woff');
@@ -5,22 +6,43 @@
     font-style: normal;
 }
 
-.mceDefaultSkin .mceIcon,
-.mceDefaultSkin .mceAction,
-.mceModal .mceIcon {
-    font-family: 'wfeditor';
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1.25em;
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
-    text-align: center;
-    vertical-align: middle;
-    background: none;
-    position: relative;
-    color: #444;
+.mceDefaultSkin {
+    .mceIcon,
+    .mceAction {
+        font-family: 'wfeditor';
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1.25em;
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        background: none;
+        position: relative;
+        color: #444;
+    }
+}
+
+.mceModal {
+    .mceIcon {
+        font-family: 'wfeditor';
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1.25em;
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        background: none;
+        position: relative;
+        color: #444;
+    }
 }

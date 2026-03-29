@@ -1,52 +1,57 @@
-.mceDefaultSkin .mceStatusbar {
-    font-size: 9pt;
-    line-height: 32px;
-    overflow: visible;
-    color: #000;
-    height: 32px;
-    padding: 5px;
-    background: #f5f5f5;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border: 0 solid #ddd;
-    justify-content: end;
+// out: false
+.mceDefaultSkin {
+    .mceStatusbar {
+        font-size: 9pt;
+        line-height: 32px;
+        overflow: visible;
+        color: #000;
+        height: 32px;
+        padding: 5px;
+        background: #f5f5f5;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border: 0 solid #ddd;
+        justify-content: end;
+
+        &:first-child {
+            border-bottom-width: 1px;
+        }
+
+        &:last-child {
+            border-top-width: 1px;
+        }
+
+        .mceResize {
+            cursor: se-resize;
+            margin: 0;
+            order: 3;
+            display: flex;
+
+            span {
+                background: url(../../img/icons.png?@@etag@@) -800px 0;
+                display: block;
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
-.mceDefaultSkin .mceStatusbar:first-child {
-    border-bottom-width: 1px;
-}
+.defaultSkin {
+    .mceStatusbar:empty {
+        line-height: inherit;
+        height: inherit;
+        padding: 0;
+        border: 0 none;
+    }
 
-.mceDefaultSkin .mceStatusbar:last-child {
-    border-top-width: 1px;
-}
-
-.defaultSkin .mceStatusbar:empty {
-    line-height: inherit;
-    height: inherit;
-    padding: 0;
-    border: 0 none;
-}
-
-.defaultSkin .mceStatusbar div {
-    margin: 2px
-}
-
-.mceDefaultSkin .mceStatusbar .mceResize {
-    cursor: se-resize;
-    margin: 0;
-    order: 3;
-    display: flex;
-}
-
-.mceDefaultSkin .mceStatusbar .mceResize span {
-    background: url(../../img/icons.png?@@etag@@) -800px 0;
-    display: block;
-    width: 20px;
-    height: 20px;
-}
-
-.mceDefaultSkin .mceStatusbar a:hover {
-    text-decoration: underline
+    .mceStatusbar div {
+        margin: 2px;
+    }
 }

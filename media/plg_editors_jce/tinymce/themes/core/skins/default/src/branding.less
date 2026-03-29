@@ -1,26 +1,31 @@
-.mceDefaultSkin .mceLayout .mceBranding {
-    width: 100%;
-    text-align: center;
-    line-height: 20px;
-    background: #eee;
-    padding: 5px 0;
-    display: block;
-    box-sizing: border-box;
-    border-bottom: 1px solid #ddd;
-    white-space: normal;
-}
+// out: false
+.mceDefaultSkin {
+    .mceLayout {
+        .mceBranding {
+            width: 100%;
+            text-align: center;
+            line-height: 20px;
+            background: #eee;
+            padding: 5px 0;
+            display: block;
+            box-sizing: border-box;
+            border-bottom: 1px solid #ddd;
+            white-space: normal;
 
-.mceDefaultSkin .mceLayout .mceBranding a {
-    font-weight: bold;
-    cursor: pointer;
-}
+            a {
+                font-weight: bold;
+                cursor: pointer;
 
-.mceDefaultSkin .mceLayout .mceBranding a:hover {
-    text-decoration: underline
-}
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
 
-.mceDefaultSkin .mceLayout .mceBranding span {
-    font-size: inherit;
-    line-height: inherit;
-    font-family: inherit;
+            span {
+                font-size: inherit;
+                line-height: inherit;
+                font-family: inherit;
+            }
+        }
+    }
 }

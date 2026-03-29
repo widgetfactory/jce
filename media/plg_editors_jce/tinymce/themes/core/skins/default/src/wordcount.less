@@ -1,18 +1,23 @@
-.mceDefaultSkin .mceStatusbar .mceWordCount {
-    font-size: 14px;
-}
+// out: false
+.mceDefaultSkin {
+    .mceStatusbar {
+        .mceWordCount {
+            font-size: 14px;
 
-.mceDefaultSkin .mceStatusbar .mceWordCount .mceText {
-    font-size: 14px;
-}
+            .mceText {
+                font-size: 14px;
 
-.mceDefaultSkin .mceStatusbar .mceWordCount .mceText:before {
-    content: attr(title);
-    display: inline-block;
-    margin: 0 5px;
-}
+                &:before {
+                    content: attr(title);
+                    display: inline-block;
+                    margin: 0 5px;
+                }
+            }
+        }
+    }
 
-.mceDefaultSkin .mceWordCountLimit {
-    font-weight: bold;
-    color: #cc0000;
+    .mceWordCountLimit {
+        font-weight: bold;
+        color: #cc0000;
+    }
 }
