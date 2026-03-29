@@ -58,9 +58,6 @@ export function showStyleDialog(ed) {
             name: prefix + '_same',
             onchange: function () {
                 var same = this.value();
-
-                console.log(rightCtrl);
-
                 rightCtrl.setDisabled(same);
                 bottomCtrl.setDisabled(same);
                 leftCtrl.setDisabled(same);
@@ -121,7 +118,7 @@ export function showStyleDialog(ed) {
     }));
     
     var textDecorationForm = cm.createForm('style_text_decoration_form', {
-        class: 'mceGridLayout'
+        class: 'mceFlexWidth25'
     });
 
     each([textDecUnderline, textDecOverline, textDecLinethrough, textDecBlink, textDecNone], function (c) {
@@ -306,11 +303,8 @@ export function showStyleDialog(ed) {
     var posForm = cm.createForm('style_pos_form');
 
     posForm.add(listBox('style_position', 'position', 'Position', ['static', 'relative', 'absolute', 'fixed']));
-
     posForm.add(listBox('style_visibility', 'visibility', 'Visibility', ['visible', 'hidden', 'inherit']));
-
     posForm.add(measureBox('style_pos_width', 'width', 'Width'));
-
     posForm.add(measureBox('style_pos_height', 'height', 'Height'));
 
     posForm.add(cm.createTextBox('style_z_index', {
@@ -321,17 +315,32 @@ export function showStyleDialog(ed) {
 
     posForm.add(listBox('style_overflow', 'overflow', 'Overflow', ['visible', 'hidden', 'scroll', 'auto']));
 
+    var placementForm = cm.createForm('style_placement_form', {
+        label: ed.getLang('style.placement', 'Placement')
+    });
+
     var placement = fourSides('placement', function (id, name, label) {
         return measureBox(id, name, label);
     });
 
-    addFourToForm(posForm, placement);
+    addFourToForm(placementForm, placement);
+
+    var clipForm = cm.createForm('style_clip_form', {
+        label: ed.getLang('style.clip', 'Clip')
+    });
 
     var clip = fourSides('clip', function (id, name, label) {
         return measureBox(id, name, label);
     });
 
-    addFourToForm(posForm, clip);
+    addFourToForm(clipForm, clip);
+
+    var posLayout = cm.createLayout('style_position_layout', {
+        class: 'mceGridLayout'
+    });
+
+    posLayout.add(placementForm);
+    posLayout.add(clipForm);
 
     // ── Tabs ─────────────────────────────────────────────────────────────────
     var tabs = cm.createTabs('style_tabs');
@@ -350,17 +359,20 @@ export function showStyleDialog(ed) {
     ] });
 
     tabs.add({ id: 'style_tab_list', title: ed.getLang('style.tab_list', 'List'), items: [listForm] });
-    tabs.add({ id: 'style_tab_pos', title: ed.getLang('style.tab_positioning', 'Positioning'), items: [posForm] });
+    tabs.add({ id: 'style_tab_pos', title: ed.getLang('style.tab_positioning', 'Positioning'), items: [
+        posForm,
+        posLayout
+    ] });
 
     // ── Apply / collect helpers ───────────────────────────────────────────────
-    var applyActionIsInsert = ed.getParam('edit_css_style_insert_span', false);
+    var applyActionIsInsert = ed.getParam('style_insert_span', false);
     var existingStyles = {};
 
     function collectStyles() {
         return dataToStyles(tabs.submit());
     }
 
-    function applyStyles(newStyles) {
+    function applyStyles(newStyles) {        
         if (applyActionIsInsert) {
             ed.formatter.register('plugin_style', { inline: 'span', styles: existingStyles });
             ed.formatter.remove('plugin_style');
@@ -369,8 +381,12 @@ export function showStyleDialog(ed) {
         } else {
             var applyToBlocks = ed.selection.getSelectedBlocks().length > 1;
             var nodes = applyToBlocks ? ed.selection.getSelectedBlocks() : ed.selection.getNode();
+
+            console.log(nodes, ed.dom.serializeStyle(newStyles));
+
             ed.dom.setAttrib(nodes, 'style', ed.dom.serializeStyle(newStyles));
         }
+
         ed.undoManager.add();
         ed.nodeChanged();
     }
@@ -404,6 +420,7 @@ export function showStyleDialog(ed) {
             }
 
             var data = stylesToData(existingStyles, ed);
+
             tabs.update(data);
 
             // Re-sync disabled states for "same" groups after populate

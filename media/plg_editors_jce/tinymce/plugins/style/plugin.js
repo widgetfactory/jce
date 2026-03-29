@@ -10,6 +10,33 @@
      * @license     GNU General Public License version 2 or later; see LICENSE.txt
      */
 
+    const BORDER_STYLE_RE = /^(none|hidden|dotted|dashed|solid|double|groove|ridge|inset|outset)$/i;
+    const BORDER_WIDTH_RE = /^(thin|medium|thick|\d+(\.\d+)?(px|em|rem|%|pt|cm|mm|ex|ch|vw|vh|vmin|vmax))$/i;
+    const URL_RE = /url\(["']?([^"')]+)["']?\)/i;
+    const SIDES = ['top', 'right', 'bottom', 'left'];
+
+    // Parse "border" shorthand (e.g. "2px solid #b61616") into { width, style, color }
+    function parseBorderShorthand(val) {
+        const result = { width: '', style: '', color: '' };
+        if (!val) {
+            return result;
+        }
+        for (const part of val.trim().split(/\s+/)) {
+            if (BORDER_STYLE_RE.test(part)) {
+                result.style = part;
+            } else if (BORDER_WIDTH_RE.test(part)) {
+                result.width = part;
+            } else {
+                result.color = part;
+            }
+        }
+        return result;
+    }
+
+    function allEqual(a, b, c, d) {
+        return a !== '' && a === b && b === c && c === d;
+    }
+
     /**
      * Parse an element's computed style object into a flat form-data object
      * suitable for populating the dialog controls via tabs.update(data).
@@ -19,129 +46,152 @@
      * @returns {Object}
      */
     function stylesToData(styles, ed) {
-        var data = {};
-
-        // ── Text ────────────────────────────────────────────────────────────────
-        data.font_family = styles['font-family'] || '';
-        data.font_size = styles['font-size'] || '';
-        data.font_style = styles['font-style'] || '';
-        data.font_weight = styles['font-weight'] || '';
-        data.font_variant = styles['font-variant'] || '';
-        data.text_transform = styles['text-transform'] || '';
-        data.line_height = styles['line-height'] || '';
-        data.color = styles['color'] ? ed.dom.toHex(styles['color']) : '';
-
-        var dec = styles['text-decoration'] || '';
-        data.text_dec_underline = /underline/i.test(dec);
-        data.text_dec_overline = /overline/i.test(dec);
-        data.text_dec_linethrough = /line-through/i.test(dec);
-        data.text_dec_blink = /blink/i.test(dec);
-        data.text_dec_none = /\bnone\b/i.test(dec);
+        const get = (prop) => styles[prop] || '';
+        const toHex = (val) => val ? ed.dom.toHex(val) : '';
 
         // ── Background ──────────────────────────────────────────────────────────
-        data.background_color = styles['background-color'] ? ed.dom.toHex(styles['background-color']) : '';
-        var bgImg = styles['background-image'] || '';
-        data.background_image = bgImg.replace(/url\(["']?([^"')]+)["']?\)/i, '$1');
-        data.background_repeat = styles['background-repeat'] || '';
-        data.background_attachment = styles['background-attachment'] || '';
-        var bgPosParts = (styles['background-position'] || '').split(/\s+/);
-        data.background_position_h = bgPosParts[0] || '';
-        data.background_position_v = bgPosParts[1] || '';
+        const [bgPosH = '', bgPosV = ''] = get('background-position').split(/\s+/);
 
-        // ── Block ────────────────────────────────────────────────────────────────
-        data.word_spacing = styles['word-spacing'] || '';
-        data.letter_spacing = styles['letter-spacing'] || '';
-        data.vertical_align = styles['vertical-align'] || '';
-        data.text_align = styles['text-align'] || '';
-        data.text_indent = styles['text-indent'] || '';
-        data.white_space = styles['white-space'] || '';
-        data.display = styles['display'] || '';
+        // ── Padding / Margin ─────────────────────────────────────────────────────
+        const fourSide = (prop) => {
+            const sh = get(prop);
+            const [t, r, b, l] = SIDES.map(s => get(`${prop}-${s}`) || sh);
+            return { same: allEqual(t, r, b, l), top: t, right: r, bottom: b, left: l };
+        };
 
-        // ── Box ──────────────────────────────────────────────────────────────────
-        data.width = styles['width'] || '';
-        data.height = styles['height'] || '';
-        data.float = styles['float'] || styles['css-float'] || '';
-        data.clear = styles['clear'] || '';
-
-        // padding / margin: shorthand → four sides
-        function fourSideData(prefix, prop) {
-            var shorthand = styles[prop] || '';
-            var t = styles[prop + '-top'] || shorthand;
-            var r = styles[prop + '-right'] || shorthand;
-            var b = styles[prop + '-bottom'] || shorthand;
-            var l = styles[prop + '-left'] || shorthand;
-            data[prefix + '_same'] = t !== '' && t === r && r === b && b === l;
-            data[prefix + '_top'] = t;
-            data[prefix + '_right'] = r;
-            data[prefix + '_bottom'] = b;
-            data[prefix + '_left'] = l;
-        }
-
-        fourSideData('padding', 'padding');
-        fourSideData('margin', 'margin');
+        const pad = fourSide('padding');
+        const mar = fourSide('margin');
 
         // ── Border ───────────────────────────────────────────────────────────────
-        function borderSideData(prefix, prop) {
-            var shorthand = styles['border-' + prop] || '';
-            var t = styles['border-top-' + prop] || shorthand;
-            var r = styles['border-right-' + prop] || shorthand;
-            var b = styles['border-bottom-' + prop] || shorthand;
-            var l = styles['border-left-' + prop] || shorthand;
+        const borderParsed = parseBorderShorthand(get('border'));
+
+        const borderSide = (prop) => {
+            const sh = get(`border-${prop}`) || borderParsed[prop];
+            let [t, r, b, l] = SIDES.map(s => get(`border-${s}-${prop}`) || sh);
             if (prop === 'color') {
-                t = t ? ed.dom.toHex(t) : '';
-                r = r ? ed.dom.toHex(r) : '';
-                b = b ? ed.dom.toHex(b) : '';
-                l = l ? ed.dom.toHex(l) : '';
+                [t, r, b, l] = [t, r, b, l].map(toHex);
             }
-            data[prefix + '_same'] = t !== '' && t === r && r === b && b === l;
-            data[prefix + '_top'] = t;
-            data[prefix + '_right'] = r;
-            data[prefix + '_bottom'] = b;
-            data[prefix + '_left'] = l;
-        }
+            return { same: allEqual(t, r, b, l), top: t, right: r, bottom: b, left: l };
+        };
 
-        borderSideData('border_style', 'style');
-        borderSideData('border_width', 'width');
-        borderSideData('border_color', 'color');
-
-        // ── List ─────────────────────────────────────────────────────────────────
-        data.list_style_type = styles['list-style-type'] || '';
-        data.list_style_position = styles['list-style-position'] || '';
-        var lstImg = styles['list-style-image'] || '';
-        data.list_style_image = lstImg.replace(/url\(["']?([^"')]+)["']?\)/i, '$1');
+        const bStyle = borderSide('style');
+        const bWidth = borderSide('width');
+        const bColor = borderSide('color');
 
         // ── Positioning ──────────────────────────────────────────────────────────
-        data.position = styles['position'] || '';
-        data.visibility = styles['visibility'] || '';
-        data.z_index = styles['z-index'] || '';
-        data.overflow = styles['overflow'] || '';
+        const [pt, pr, pb, pl] = SIDES.map(s => get(s));
 
-        var pt = styles['top'] || '', pr = styles['right'] || '',
-            pb = styles['bottom'] || '', pl = styles['left'] || '';
-        data.placement_same = pt !== '' && pt === pr && pr === pb && pb === pl;
-        data.placement_top = pt; data.placement_right = pr;
-        data.placement_bottom = pb; data.placement_left = pl;
-
-        // clip: rect(top right bottom left)
-        var clip = styles['clip'] || '';
-        var cm = clip.match(/rect\(([^)]+)\)/);
-        var cv = ['', '', '', ''];
-        if (cm) {
-            cv = cm[1].replace(/,/g, ' ').trim().split(/\s+/);
-
+        // ── Clip ─────────────────────────────────────────────────────────────────
+        const clipMatch = get('clip').match(/rect\(([^)]+)\)/);
+        let cv = ['', '', '', ''];
+        if (clipMatch) {
+            cv = clipMatch[1].replace(/,/g, ' ').trim().split(/\s+/).map(v => v === 'auto' ? '' : v);
             while (cv.length < 4) {
                 cv.push('');
             }
-
-            cv = cv.map(function (v) {
-                return v === 'auto' ? '' : v;
-            });
         }
-        data.clip_same = cv[0] !== '' && cv[0] === cv[1] && cv[1] === cv[2] && cv[2] === cv[3];
-        data.clip_top = cv[0]; data.clip_right = cv[1];
-        data.clip_bottom = cv[2]; data.clip_left = cv[3];
 
-        return data;
+        // ── Text decoration ──────────────────────────────────────────────────────
+        const dec = get('text-decoration');
+
+        return {
+            // Text
+            font_family: get('font-family'),
+            font_size: get('font-size'),
+            font_style: get('font-style'),
+            font_weight: get('font-weight'),
+            font_variant: get('font-variant'),
+            text_transform: get('text-transform'),
+            line_height: get('line-height'),
+            color: toHex(get('color')),
+            text_dec_underline: /underline/i.test(dec),
+            text_dec_overline: /overline/i.test(dec),
+            text_dec_linethrough: /line-through/i.test(dec),
+            text_dec_blink: /blink/i.test(dec),
+            text_dec_none: /\bnone\b/i.test(dec),
+
+            // Background
+            background_color: toHex(get('background-color')),
+            background_image: get('background-image').replace(URL_RE, '$1'),
+            background_repeat: get('background-repeat'),
+            background_attachment: get('background-attachment'),
+            background_position_h: bgPosH,
+            background_position_v: bgPosV,
+
+            // Block
+            word_spacing: get('word-spacing'),
+            letter_spacing: get('letter-spacing'),
+            vertical_align: get('vertical-align'),
+            text_align: get('text-align'),
+            text_indent: get('text-indent'),
+            white_space: get('white-space'),
+            display: get('display'),
+
+            // Box
+            width: get('width'),
+            height: get('height'),
+            float: get('float') || get('css-float'),
+            clear: get('clear'),
+
+            // Padding
+            padding_same: pad.same,
+            padding_top: pad.top,
+            padding_right: pad.right,
+            padding_bottom: pad.bottom,
+            padding_left: pad.left,
+
+            // Margin
+            margin_same: mar.same,
+            margin_top: mar.top,
+            margin_right: mar.right,
+            margin_bottom: mar.bottom,
+            margin_left: mar.left,
+
+            // Border style
+            border_style_same: bStyle.same,
+            border_style_top: bStyle.top,
+            border_style_right: bStyle.right,
+            border_style_bottom: bStyle.bottom,
+            border_style_left: bStyle.left,
+
+            // Border width
+            border_width_same: bWidth.same,
+            border_width_top: bWidth.top,
+            border_width_right: bWidth.right,
+            border_width_bottom: bWidth.bottom,
+            border_width_left: bWidth.left,
+
+            // Border color
+            border_color_same: bColor.same,
+            border_color_top: bColor.top,
+            border_color_right: bColor.right,
+            border_color_bottom: bColor.bottom,
+            border_color_left: bColor.left,
+
+            // List
+            list_style_type: get('list-style-type'),
+            list_style_position: get('list-style-position'),
+            list_style_image: get('list-style-image').replace(URL_RE, '$1'),
+
+            // Positioning
+            position: get('position'),
+            visibility: get('visibility'),
+            z_index: get('z-index'),
+            overflow: get('overflow'),
+
+            placement_same: allEqual(pt, pr, pb, pl),
+            placement_top: pt,
+            placement_right: pr,
+            placement_bottom: pb,
+            placement_left: pl,
+
+            // Clip
+            clip_same: allEqual(cv[0], cv[1], cv[2], cv[3]),
+            clip_top: cv[0],
+            clip_right: cv[1],
+            clip_bottom: cv[2],
+            clip_left: cv[3]
+        };
     }
 
     /**
@@ -152,19 +202,18 @@
      * @returns {Object}     CSS key→value pairs
      */
     function dataToStyles(data) {
-        var styles = {};
+        const styles = {};
 
-        function set(prop, val) {
+        const set = (prop, val) => {
             if (val) {
                 styles[prop] = val;
             }
-        }
-
-        function setColor(prop, val) {
+        };
+        const setColor = (prop, val) => {
             if (val && val !== '#') {
                 styles[prop] = val;
             }
-        }
+        };
 
         // ── Text ────────────────────────────────────────────────────────────────
         set('font-family', data.font_family);
@@ -179,24 +228,12 @@
         if (data.text_dec_none) {
             styles['text-decoration'] = 'none';
         } else {
-            var dec = [];
-
-            if (data.text_dec_underline) {
-                dec.push('underline');
-            }
-
-            if (data.text_dec_overline) {
-                dec.push('overline');
-            }
-
-            if (data.text_dec_linethrough) {
-                dec.push('line-through');
-            }
-
-            if (data.text_dec_blink) {
-                dec.push('blink');
-            }
-
+            const dec = [
+                data.text_dec_underline && 'underline',
+                data.text_dec_overline && 'overline',
+                data.text_dec_linethrough && 'line-through',
+                data.text_dec_blink && 'blink'
+            ].filter(Boolean);
             if (dec.length) {
                 styles['text-decoration'] = dec.join(' ');
             }
@@ -204,16 +241,13 @@
 
         // ── Background ──────────────────────────────────────────────────────────
         setColor('background-color', data.background_color);
-
         if (data.background_image) {
-            styles['background-image'] = 'url(' + data.background_image + ')';
+            styles['background-image'] = `url(${data.background_image})`;
         }
-
         set('background-repeat', data.background_repeat);
         set('background-attachment', data.background_attachment);
-
         if (data.background_position_h || data.background_position_v) {
-            styles['background-position'] = (data.background_position_h || '0%') + ' ' + (data.background_position_v || '0%');
+            styles['background-position'] = `${data.background_position_h || '0%'} ${data.background_position_v || '0%'}`;
         }
 
         // ── Block ────────────────────────────────────────────────────────────────
@@ -231,50 +265,45 @@
         set('float', data.float);
         set('clear', data.clear);
 
-        function fourSide(prop, sameKey, tKey, rKey, bKey, lKey, isColor) {
-            var fn = set;
-            var t = data[tKey], r = data[rKey], b = data[bKey], l = data[lKey];
-            if (t || r || b || l) {
-                if (data[sameKey]) {
-                    fn(prop, t);
-                } else {
-                    fn(prop + '-top', t);
-                    fn(prop + '-right', r);
-                    fn(prop + '-bottom', b);
-                    fn(prop + '-left', l);
-                }
+        // ── Padding / Margin ─────────────────────────────────────────────────────
+        const fourSide = (prop, prefix) => {
+            const [t, r, b, l] = SIDES.map(s => data[`${prefix}_${s}`]);
+            if (!(t || r || b || l)) {
+                return;
             }
-        }
+            if (data[`${prefix}_same`]) {
+                set(prop, t);
+            } else {
+                SIDES.forEach((s, i) => set(`${prop}-${s}`, [t, r, b, l][i]));
+            }
+        };
 
-        fourSide('padding', 'padding_same', 'padding_top', 'padding_right', 'padding_bottom', 'padding_left');
-        fourSide('margin', 'margin_same', 'margin_top', 'margin_right', 'margin_bottom', 'margin_left');
+        fourSide('padding', 'padding');
+        fourSide('margin', 'margin');
 
         // ── Border ───────────────────────────────────────────────────────────────
-        function borderFour(prop, sameKey, tKey, rKey, bKey, lKey, isColor) {
-            var fn = isColor ? setColor : set;
-            var t = data[tKey], r = data[rKey], b = data[bKey], l = data[lKey];
-            if (t || r || b || l) {
-                if (data[sameKey]) {
-                    fn('border-' + prop, t);
-                } else {
-                    fn('border-top-' + prop, t);
-                    fn('border-right-' + prop, r);
-                    fn('border-bottom-' + prop, b);
-                    fn('border-left-' + prop, l);
-                }
+        const borderFour = (prop, isColor) => {
+            const fn = isColor ? setColor : set;
+            const [t, r, b, l] = SIDES.map(s => data[`border_${prop}_${s}`]);
+            if (!(t || r || b || l)) {
+                return;
             }
-        }
+            if (data[`border_${prop}_same`]) {
+                fn(`border-${prop}`, t);
+            } else {
+                SIDES.forEach((s, i) => fn(`border-${s}-${prop}`, [t, r, b, l][i]));
+            }
+        };
 
-        borderFour('style', 'border_style_same', 'border_style_top', 'border_style_right', 'border_style_bottom', 'border_style_left');
-        borderFour('width', 'border_width_same', 'border_width_top', 'border_width_right', 'border_width_bottom', 'border_width_left');
-        borderFour('color', 'border_color_same', 'border_color_top', 'border_color_right', 'border_color_bottom', 'border_color_left', true);
+        borderFour('style');
+        borderFour('width');
+        borderFour('color', true);
 
         // ── List ─────────────────────────────────────────────────────────────────
         set('list-style-type', data.list_style_type);
         set('list-style-position', data.list_style_position);
-
         if (data.list_style_image) {
-            styles['list-style-image'] = 'url(' + data.list_style_image + ')';
+            styles['list-style-image'] = `url(${data.list_style_image})`;
         }
 
         // ── Positioning ──────────────────────────────────────────────────────────
@@ -283,28 +312,35 @@
         set('z-index', data.z_index);
         set('overflow', data.overflow);
 
-        var pt = data.placement_top, pr = data.placement_right,
-            pb = data.placement_bottom, pl = data.placement_left;
+        const { placement_same, placement_top: pTop, placement_right: pRight,
+            placement_bottom: pBot, placement_left: pLeft } = data;
 
-        if (pt || pr || pb || pl) {
-            if (data.placement_same) {
-                set('top', pt); set('right', pt); set('bottom', pt); set('left', pt);
+        if (pTop || pRight || pBot || pLeft) {
+            if (placement_same) {
+                SIDES.forEach(s => set(s, pTop));
             } else {
-                set('top', pt); set('right', pr); set('bottom', pb); set('left', pl);
+                set('top', pTop);
+                set('right', pRight);
+                set('bottom', pBot);
+                set('left', pLeft);
             }
         }
 
-        var ct = data.clip_top, cr = data.clip_right,
-            cb = data.clip_bottom, cl = data.clip_left;
+        // ── Clip ─────────────────────────────────────────────────────────────────
+        let { clip_top: ct, clip_right: cr, clip_bottom: cb, clip_left: cl } = data;
 
         if (ct || cr || cb || cl) {
             if (data.clip_same) {
-                cr = ct; cb = ct; cl = ct;
+                cr = ct;
+                cb = ct;
+                cl = ct;
             }
-            ct = ct || 'auto'; cr = cr || 'auto'; cb = cb || 'auto'; cl = cl || 'auto';
-
+            ct = ct || 'auto';
+            cr = cr || 'auto';
+            cb = cb || 'auto';
+            cl = cl || 'auto';
             if (ct !== 'auto' || cr !== 'auto' || cb !== 'auto' || cl !== 'auto') {
-                styles['clip'] = 'rect(' + ct + ' ' + cr + ' ' + cb + ' ' + cl + ')';
+                styles['clip'] = `rect(${ct} ${cr} ${cb} ${cl})`;
             }
         }
 
@@ -525,9 +561,6 @@
                 name: prefix + '_same',
                 onchange: function () {
                     var same = this.value();
-
-                    console.log(rightCtrl);
-
                     rightCtrl.setDisabled(same);
                     bottomCtrl.setDisabled(same);
                     leftCtrl.setDisabled(same);
@@ -588,7 +621,7 @@
         }));
         
         var textDecorationForm = cm.createForm('style_text_decoration_form', {
-            class: 'mceGridLayout'
+            class: 'mceFlexWidth25'
         });
 
         each([textDecUnderline, textDecOverline, textDecLinethrough, textDecBlink, textDecNone], function (c) {
@@ -773,11 +806,8 @@
         var posForm = cm.createForm('style_pos_form');
 
         posForm.add(listBox('style_position', 'position', 'Position', ['static', 'relative', 'absolute', 'fixed']));
-
         posForm.add(listBox('style_visibility', 'visibility', 'Visibility', ['visible', 'hidden', 'inherit']));
-
         posForm.add(measureBox('style_pos_width', 'width', 'Width'));
-
         posForm.add(measureBox('style_pos_height', 'height', 'Height'));
 
         posForm.add(cm.createTextBox('style_z_index', {
@@ -788,17 +818,32 @@
 
         posForm.add(listBox('style_overflow', 'overflow', 'Overflow', ['visible', 'hidden', 'scroll', 'auto']));
 
+        var placementForm = cm.createForm('style_placement_form', {
+            label: ed.getLang('style.placement', 'Placement')
+        });
+
         var placement = fourSides('placement', function (id, name, label) {
             return measureBox(id, name, label);
         });
 
-        addFourToForm(posForm, placement);
+        addFourToForm(placementForm, placement);
+
+        var clipForm = cm.createForm('style_clip_form', {
+            label: ed.getLang('style.clip', 'Clip')
+        });
 
         var clip = fourSides('clip', function (id, name, label) {
             return measureBox(id, name, label);
         });
 
-        addFourToForm(posForm, clip);
+        addFourToForm(clipForm, clip);
+
+        var posLayout = cm.createLayout('style_position_layout', {
+            class: 'mceGridLayout'
+        });
+
+        posLayout.add(placementForm);
+        posLayout.add(clipForm);
 
         // ── Tabs ─────────────────────────────────────────────────────────────────
         var tabs = cm.createTabs('style_tabs');
@@ -817,17 +862,20 @@
         ] });
 
         tabs.add({ id: 'style_tab_list', title: ed.getLang('style.tab_list', 'List'), items: [listForm] });
-        tabs.add({ id: 'style_tab_pos', title: ed.getLang('style.tab_positioning', 'Positioning'), items: [posForm] });
+        tabs.add({ id: 'style_tab_pos', title: ed.getLang('style.tab_positioning', 'Positioning'), items: [
+            posForm,
+            posLayout
+        ] });
 
         // ── Apply / collect helpers ───────────────────────────────────────────────
-        var applyActionIsInsert = ed.getParam('edit_css_style_insert_span', false);
+        var applyActionIsInsert = ed.getParam('style_insert_span', false);
         var existingStyles = {};
 
         function collectStyles() {
             return dataToStyles(tabs.submit());
         }
 
-        function applyStyles(newStyles) {
+        function applyStyles(newStyles) {        
             if (applyActionIsInsert) {
                 ed.formatter.register('plugin_style', { inline: 'span', styles: existingStyles });
                 ed.formatter.remove('plugin_style');
@@ -836,8 +884,12 @@
             } else {
                 var applyToBlocks = ed.selection.getSelectedBlocks().length > 1;
                 var nodes = applyToBlocks ? ed.selection.getSelectedBlocks() : ed.selection.getNode();
+
+                console.log(nodes, ed.dom.serializeStyle(newStyles));
+
                 ed.dom.setAttrib(nodes, 'style', ed.dom.serializeStyle(newStyles));
             }
+
             ed.undoManager.add();
             ed.nodeChanged();
         }
@@ -871,6 +923,7 @@
                 }
 
                 var data = stylesToData(existingStyles, ed);
+
                 tabs.update(data);
 
                 // Re-sync disabled states for "same" groups after populate
