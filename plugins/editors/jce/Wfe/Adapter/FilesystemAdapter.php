@@ -16,7 +16,7 @@ namespace Wfe\Adapter;
 use Wfe\Helper\AdapterHelper;
 use Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem;
 
-class FileSystemAdapter extends \Wfe\Adapter\AbstractAdapter
+class FilesystemAdapter extends \Wfe\Adapter\AbstractAdapter
 {
     public static function getInstance($container, $config = array())
     {

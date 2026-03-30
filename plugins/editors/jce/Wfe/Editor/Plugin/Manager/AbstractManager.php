@@ -18,7 +18,7 @@ use Joomla\Registry\Registry;
 use Wfe\Http\Request;
 use Wfe\Utility\Utility;
 use Wfe\Application\Browser as FileBrowser;
-use Wfe\Adapter\FileSystemAdapter;
+use Wfe\Adapter\FilesystemAdapter;
 use Wfe\Helper\ArrayHelper;
 
 class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
@@ -238,7 +238,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         $signature = md5($fs->name . serialize($config));
 
         if (!isset($instances[$signature])) {
-            $instances[$signature] = FileSystemAdapter::getInstance($this, $config);
+            $instances[$signature] = FilesystemAdapter::getInstance($this, $config);
         }
 
         return $instances[$signature];
