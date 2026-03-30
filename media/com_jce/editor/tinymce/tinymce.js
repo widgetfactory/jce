@@ -29402,6 +29402,8 @@
         this.active = 0;
         this.editor = editor;
 
+        this.type = 'control'; // default control type
+
         this.name = this.settings.name || id;
       },
 
@@ -29641,6 +29643,8 @@
   		this.lookup[ctrl.id] = ctrl;
   		this.controls.push(ctrl);
 
+  		ctrl.parent(this);
+
   		return ctrl;
   	},
 
@@ -29755,8 +29759,9 @@
 
         for (var i = 0; i < this.items.length; i++) {
           var tab = this.items[i], items = tab.items || [];
+          var cls = tab['class'] ? tab['class'] : '';
 
-          html += '<div id="' + self.id + '_panel_' + i + '" class="mceTab" role="tabpanel"' + (i === 0 ? '' : ' style="display:none"') + '>';
+          html += '<div id="' + self.id + '_panel_' + i + '" class="mceTab' + (cls ? ' ' + cls : '') + '" role="tabpanel"' + (i === 0 ? '' : ' style="display:none"') + '>';
 
           for (var x = 0; x < items.length; x++) {
             html += items[x].renderHTML();
@@ -29803,31 +29808,49 @@
       submit: function () {
         var data = {};
 
-        for (var i = 0; i < this.items.length; i++) {
-          var tab = this.items[i], items = tab.items || [];
+        function collect(items) {
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
 
-          for (var x = 0; x < items.length; x++) {
-            var values = items[x].submit();
+            if (typeof item.submit === 'function') {
+              var values = item.submit();
 
-            for (var key in values) {
-              // eslint-disable-next-line no-prototype-builtins
-              if (values.hasOwnProperty(key)) {
-                data[key] = values[key];
+              for (var key in values) {
+                // eslint-disable-next-line no-prototype-builtins
+                if (values.hasOwnProperty(key)) {
+                  data[key] = values[key];
+                }
               }
+            } else if (item.controls && item.controls.length) {
+              collect(item.controls);
+            } else if (typeof item.value === 'function') {
+              data[item.name] = item.value();
             }
           }
+        }
+
+        for (var i = 0; i < this.items.length; i++) {
+          collect(this.items[i].items || []);
         }
 
         return data;
       },
 
       update: function (data) {
-        for (var i = 0; i < this.items.length; i++) {
-          var tab = this.items[i], items = tab.items || [];
+        function applyUpdate(items) {
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
 
-          for (var x = 0; x < items.length; x++) {
-            items[x].update(data);
+            if (typeof item.update === 'function') {
+              item.update(data);
+            } else if (item.controls && item.controls.length) {
+              applyUpdate(item.controls);
+            }
           }
+        }
+
+        for (var i = 0; i < this.items.length; i++) {
+          applyUpdate(this.items[i].items || []);
         }
       },
 
@@ -29854,6 +29877,16 @@
             });
           })(i);
         }
+      },
+
+      destroy: function () {
+        this._super();
+
+        for (var i = 0; i < this.controls.length; i++) {
+          this.controls[i].destroy();
+        }
+
+        delete this.lookup[this.id];
       }
     });
   })(tinymce);
@@ -29890,6 +29923,10 @@
           settings = this.settings,
           i;
 
+        if (settings.label) {
+          html += '<legend>' + dom.encode(settings.label) + '</legend>';
+        }
+
         for (i = 0; i < this.controls.length; i++) {
           var ctrl = this.controls[i], s = ctrl.settings;
 
@@ -29900,17 +29937,22 @@
 
           html += '<div class="mceFormRow">';
 
-          if (s.label) {
-            html += '<label for="' + ctrl.id + '">' + s.label + '</label>';
+          if (s.label && ctrl.type !== 'checkbox') {
+            html += '<label for="' + ctrl.id + '" id="' + ctrl.id + '_label">' + dom.encode(s.label) + '</label>';
           }
 
           html += '	<div class="mceFormControl">';
           html += ctrl.renderHTML();
           html += '	</div>';
+
+          if (s.label && ctrl.type === 'checkbox') {
+            html += '<label for="' + ctrl.id + '" id="' + ctrl.id + '_label">' + dom.encode(s.label) + '</label>';
+          }
+
           html += '</div>';
         }
 
-        return dom.createHTML('div', {
+        return dom.createHTML('fieldset', {
           id: this.id,
           'class': 'mceForm' + (settings['class'] ? ' ' + settings['class'] : ''),
           role: 'group'
@@ -29987,6 +30029,8 @@
 
         for (i = 0; i < this.controls.length; i++) {
           this.controls[i].postRender();
+
+          this.controls[i].elm = dom.get(this.controls[i].id);
         }
       }
     });
@@ -31416,6 +31460,9 @@
       ListBox: function (id, s, ed) {
         this._super(id, s, ed);
 
+        // set a control type
+        this.type = 'listbox';
+
         /**
          * Array of ListBox items.
          *
@@ -32374,13 +32421,14 @@
        * @param {Editor} ed Optional the editor instance this button is for.
        */
       TextBox: function (id, s, ed) {
-
         s = tinymce.extend({
           class: '',
           title: ''
         }, s);
 
         this._super(id, s, ed);
+
+        this.type = 'textbox';
 
         /**
          * Fires when the selection has been changed.
@@ -32448,7 +32496,7 @@
         if (s.multiline) {
           html += DOM.createHTML('textarea', attribs, '');
         } else {
-          if (s.subtype == 'color') {
+          if (type == 'color') {
             attribs.type = 'text';
 
             html += DOM.createHTML('input', {
@@ -32517,7 +32565,7 @@
             DOM.setValue(self.id, DOM.get(self.id + '_color').value);
           });
         }
-        
+
         this.onPostRender.dispatch(this, DOM.get(this.id));
       },
 
@@ -32535,6 +32583,15 @@
 
         if (elm) {
           elm.disabled = state;
+
+          if (this.settings.subtype && this.settings.subtype == 'color') {
+            var color = DOM.get(this.id + '_color');
+
+            if (color) {
+              color.disabled = state;
+            }
+
+          }
         }
       },
 
@@ -32741,8 +32798,9 @@
   		 * @param {Editor} ed Optional the editor instance this button is for.
   		 */
       CheckBox: function (id, s, ed) {
-
         this._super(id, s, ed);
+
+        this.type = 'checkbox';
 
         if (typeof s.value === 'undefined') {
           s.value = '';
@@ -33723,19 +33781,19 @@
     // Shorten class names
     var dom = tinymce.DOM;
     /**
-  	 * This class is used to create layouts. A layout is a container for other controls like buttons etc.
-  	 *
-  	 * @class tinymce.ui.Layout
-  	 * @extends tinymce.ui.Container
-  	 */
+     * This class is used to create layouts. A layout is a container for other controls like buttons etc.
+     *
+     * @class tinymce.ui.Layout
+     * @extends tinymce.ui.Container
+     */
     tinymce.create('tinymce.ui.Layout:tinymce.ui.Container', {
       /**
-  		 * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
-  		 * creating a whole toolbar with buttons it does make a lot of difference.
-  		 *
-  		 * @method renderHTML
-  		 * @return {String} HTML for the toolbar control.
-  		 */
+       * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
+       * creating a whole toolbar with buttons it does make a lot of difference.
+       *
+       * @method renderHTML
+       * @return {String} HTML for the toolbar control.
+       */
       renderHTML: function () {
         var html = '',
           settings = this.settings,
@@ -33758,12 +33816,22 @@
 
       postRender: function () {
         var i;
-    
+
         this._super();
-    
+
         for (i = 0; i < this.controls.length; i++) {
           this.controls[i].postRender();
         }
+      },
+
+      destroy: function () {
+        this._super();
+
+        for (var i = 0; i < this.controls.length; i++) {
+          this.controls[i].destroy();
+        }
+
+        delete this.lookup[this.id];
       }
     });
   })(tinymce);
@@ -41973,7 +42041,7 @@
           c, cls;
 
         if (self.get(id)) {
-          return null;
+          return self.get(id);
         }
         s.title = ed.translate(s.title);
         s.label = ed.translate(s.label);
@@ -42037,7 +42105,7 @@
           c, cls;
 
         if (self.get(id)) {
-          return null;
+          return self.get(id);
         }
 
         s.title = ed.translate(s.title);
@@ -42098,7 +42166,7 @@
           c, cls, bm;
 
         if (self.get(id)) {
-          return null;
+          return self.get(id);
         }
 
         s.title = ed.translate(s.title);
@@ -42276,12 +42344,10 @@
         s["class"] += ' ' + (ed.settings.skin_class || 'mceDefaultSkin');
 
         //id = self.prefix + id;
+        delete self.controls[id];
+
         cls = cc || self._cls.panel || tinymce.ui.Panel;
         c = new cls(id, s, self.editor);
-
-        if (self.get(id)) {
-          return null;
-        }
 
         return self.add(c);
       },
@@ -42304,12 +42370,10 @@
         var c, self = this,
           cls;
 
+        delete self.controls[id];
+
         cls = cc || self._cls.tabPanel || tinymce.ui.TabPanel;
         c = new cls(id, s, self.editor);
-
-        if (self.get(id)) {
-          return null;
-        }
 
         return self.add(c);
       },
@@ -42328,12 +42392,10 @@
           cls;
 
         id = self.prefix + id;
+        delete self.controls[id];
+
         cls = cc || self._cls.toolbar || tinymce.ui.Toolbar;
         c = new cls(id, s, self.editor);
-
-        if (self.get(id)) {
-          return null;
-        }
 
         return self.add(c);
       },
@@ -42342,12 +42404,10 @@
         var c, self = this,
           cls;
         id = self.prefix + id;
+        delete self.controls[id];
+
         cls = cc || this._cls.toolbarGroup || tinymce.ui.ToolbarGroup;
         c = new cls(id, s, self.editor);
-
-        if (self.get(id)) {
-          return null;
-        }
 
         return self.add(c);
       },
@@ -42366,12 +42426,10 @@
           cls;
 
         id = self.prefix + id;
+        delete self.controls[id];
+
         cls = cc || self._cls.layout || tinymce.ui.Layout;
         c = new cls(id, s, self.editor);
-
-        if (self.get(id)) {
-          return null;
-        }
 
         return self.add(c);
       },
@@ -42389,6 +42447,9 @@
           cls;
 
         id = self.prefix + id;
+
+        delete self.controls[id];
+
         cls = tinymce.ui.Form;
         c = new cls(id, s, self.editor);
 
