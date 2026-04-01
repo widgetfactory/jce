@@ -20,6 +20,8 @@ div[data-url]>div.modal-dialog>div.modal-content {
 }
 
 .wf-media-wrapper {
+    max-width: 100%;
+
     >.modal {
         .modal-header h3 {
             font-size: 0;
@@ -32,11 +34,11 @@ div[data-url]>div.modal-dialog>div.modal-content {
 
             iframe {
                 height: calc(100% - 27px) !important;
-            }
 
-            iframe[name="field-media-modal"] {
-                height: calc(90vh - 54px) !important;
-                max-height: 100vh;
+                &[name="field-media-modal"] {
+                    height: calc(90vh - 54px) !important;
+                    max-height: 100vh;
+                }
             }
         }
 
@@ -44,8 +46,6 @@ div[data-url]>div.modal-dialog>div.modal-content {
             display: none;
         }
     }
-
-    max-width: 100%;
 
     >.field-media-preview {
         display: flex;
@@ -58,6 +58,11 @@ div[data-url]>div.modal-dialog>div.modal-content {
         border: 1px solid rgba(0, 0, 0, 0.15);
         border-width: 1px 1px 0;
         border-radius: 0.25rem 0.25rem 0 0;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: var(--tertiary-bg);
+            border-color: var(--template-bg-dark-20);
+        }
 
         .field-media-preview-icon {
             width: 7rem;
@@ -84,16 +89,15 @@ div[data-url]>div.modal-dialog>div.modal-content {
         }
     }
 
-    .wf-media-input[disabled] {
-
-        ~.button-select,
-        ~.button-clear {
-            display: none !important;
-        }
-    }
-
-    /* remove the select button */
     .wf-media-input {
+        &[disabled] {
+            ~.button-select,
+            ~.button-clear {
+                display: none !important;
+            }
+        }
+
+        /* remove the select button */
         &.wf-media-input-no-select-button {
             ~.button-select {
                 display: none !important;
@@ -113,15 +117,18 @@ div[data-url]>div.modal-dialog>div.modal-content {
     }
 }
 
-.input-append a[role="button"].wf-media-upload-button,
-.input-group a[role="button"].wf-media-upload-button {
-    position: relative;
-    border-radius: 0;
-    overflow: hidden;
+.input-append,
+.input-group {
+    label[role="button"].wf-media-upload-button {
+        position: relative;
+        border-radius: 0;
+        overflow: hidden;
+    }
 }
 
 .wf-media-upload-button {
     cursor: pointer;
+    position: relative;
 
     >input[type="file"] {
         position: absolute;
@@ -136,25 +143,15 @@ div[data-url]>div.modal-dialog>div.modal-content {
     }
 }
 
-input.wf-media-upload-hover {
-    background-color: #eee;
-}
-
-input.wf-media-upload-busy {
-    background-color: #eee;
+input {
+    &.wf-media-upload-hover,
+    &.wf-media-upload-busy {
+        background-color: #eee;
+    }
 }
 
 @media (max-width: 1400px) {
     .input-append input.wf-media-input-upload {
         width: 100px;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    .wf-media-wrapper {
-        .field-media-preview {
-            background-color: var(--tertiary-bg);
-            border-color: var(--template-bg-dark-20);
-        }
     }
 }
