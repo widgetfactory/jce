@@ -185,7 +185,6 @@
   font-size: 11px;
   line-height: 1.4;
   opacity: 0;
-  filter: alpha(opacity=0);
   visibility: visible;
   text-align: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -193,7 +192,6 @@
 }
 .jce-ui .tooltip.in {
   opacity: 0.8;
-  filter: alpha(opacity=80);
 }
 .jce-ui .tooltip.top,
 .jce-ui .tooltip.right,
@@ -284,7 +282,7 @@
   margin: 0;
 }
 .jce-ui .tooltip .tooltip-inner h4 {
-  margin: 5px 0px;
+  margin: 5px 0;
   font-size: 12px;
 }
 .jce-ui .popover[role="tooltip"] {
@@ -382,11 +380,6 @@
 }
 .form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-add {
   visibility: visible;
-  display: inline-block;
-}
-.form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-remove {
-  visibility: visible;
-  display: inline-block;
 }
 .form-horizontal .form-field-repeatable-item textarea {
   width: 100%;

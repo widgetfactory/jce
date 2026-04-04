@@ -185,7 +185,6 @@
   font-size: 11px;
   line-height: 1.4;
   opacity: 0;
-  filter: alpha(opacity=0);
   visibility: visible;
   text-align: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -193,7 +192,6 @@
 }
 .jce-ui .tooltip.in {
   opacity: 0.8;
-  filter: alpha(opacity=80);
 }
 .jce-ui .tooltip.top,
 .jce-ui .tooltip.right,
@@ -284,7 +282,7 @@
   margin: 0;
 }
 .jce-ui .tooltip .tooltip-inner h4 {
-  margin: 5px 0px;
+  margin: 5px 0;
   font-size: 12px;
 }
 .jce-ui .popover[role="tooltip"] {
@@ -382,11 +380,6 @@
 }
 .form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-add {
   visibility: visible;
-  display: inline-block;
-}
-.form-field-repeatable .form-field-repeatable-item:first-child .form-field-repeatable-remove {
-  visibility: visible;
-  display: inline-block;
 }
 .form-horizontal .form-field-repeatable-item textarea {
   width: 100%;
@@ -662,28 +655,15 @@ div#previewblock {
         max-width : 420px;
     }
 }*/
-/**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
- */
 .file {
   background: url('../../editor/img/ext.png') no-repeat 0 0;
-  /* Adobe Flash Player */
-  /* Adobe Flash Video */
+  /* Adobe Flash */
   /* Microsoft Word */
   /* Microsoft Excel */
   /* Microsoft Powerpoint */
   /* Adobe® Acrobat */
   /** Application specific file types. These currently use a generic set of icons but can be edited to use custom / specific icons where the user has licence from the trademark holders to use such icons **/
-  /* Apple Quicktime */
-  /* RealPlayer */
-  /* Adobe Shockwave */
-  /* Windows Media Player */
+  /* Apple Quicktime, RealPlayer, Adobe Shockwave, Windows Media Player */
 }
 .file.txt {
   background-position: 0 -20px;
@@ -745,19 +725,15 @@ div#previewblock {
   background-position: 0 -300px;
 }
 .file.notwritable,
-.file.notwritable,
 .file.duplicate {
   background: url(../img/icons.png) no-repeat 0 -620px;
 }
-.file.notsafe,
 .file.notsafe {
   background: url(../img/icons.png) no-repeat 0 -640px;
 }
 .file.swf,
 .file.as,
-.file.fla {
-  background-position: 0 -340px;
-}
+.file.fla,
 .file.flv,
 .file.f4v,
 .file.f4p,
@@ -786,17 +762,11 @@ div#previewblock {
   background-position: 0 -360px;
 }
 .file.mov,
-.file.qt {
-  background-position: 0 -200px;
-}
+.file.qt,
 .file.ra,
 .file.rm,
-.file.ram {
-  background-position: 0 -200px;
-}
-.file.dcr {
-  background-position: 0 -200px;
-}
+.file.ram,
+.file.dcr,
 .file.wmv,
 .file.wma,
 .file.wm,
@@ -990,15 +960,12 @@ div#previewblock {
   padding: 5px 10px 5px 5px;
   position: relative;
 }
-.jce-ui .styleformat-list .styleformat .styleformat-item-title {
-  /*background-color: #eee;*/
-}
-.jce-ui .styleformat-list .styleformat div input,
-.jce-ui .styleformat-list .styleformat div select {
+.jce-ui .styleformat-list .styleformat div input {
   max-width: 100%;
   width: 365px;
 }
 .jce-ui .styleformat-list .styleformat div select {
+  max-width: 100%;
   width: 100%;
 }
 .jce-ui .styleformat-list .styleformat .styleformat-item-title {
@@ -1204,15 +1171,6 @@ div#previewblock {
   font-size: 1.2rem;
   color: #ccc;
 }
-/**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2025 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
- */
 html {
   overflow-y: visible !important;
 }
@@ -1359,16 +1317,6 @@ html[dir="rtl"] .jce-ui .form-horizontal .control-label {
 .mce-container .mce-btn .mce-caret {
   margin: -7px;
 }
-.mce-container .mce-toolbar {
-  font-size: 0;
-  line-height: 1;
-  height: auto;
-  min-height: 28px;
-  position: relative;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  padding: 1px;
-}
 .mce-container .mce-toolbar > div {
   font-size: 0;
   line-height: 1;
@@ -1422,20 +1370,6 @@ html[dir="rtl"] .jce-ui .form-horizontal .control-label {
   cursor: default;
   display: block;
 }
-/*.defaultSkin .mceLayout .mceToolbarRow:after {
-      content: "::";
-      display: block;
-      width: 20px;
-      line-height: 20px;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      margin-top: -10px;
-      font-size: 1.2rem;
-      color: #aaa;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-weight: bold;
-  }*/
 .jce-ui .users-select {
   position: relative;
   margin: 10px 0;
@@ -1473,22 +1407,21 @@ html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav {
   float: right;
   padding: 0 0.2em 0 0.1em;
 }
+html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav li {
+  margin: 0 1px 0.2em 0;
+  border-left: 0 none;
+}
 html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
   padding-left: 0.1em;
   border-right-width: 1px;
   margin-right: -1px;
-}
-html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-nav li {
-  margin: 0 1px 0.2em 0;
-  border-left: 0 none;
 }
 html[dir="rtl"] .jce-ui .ui-tabs-vertical .ui-tabs-panel {
   margin: 0 13em 0 0;
 }
 .ui-bootstrap #jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
   max-width: 100px;
-  padding-bottom: 20px;
-  padding-top: 20px;
+  padding: 20px 0;
   white-space: pre-wrap;
   cursor: pointer;
 }
@@ -1509,28 +1442,15 @@ a.browser {
   display: inline-block;
   margin: 8px 0;
 }
-/*.com_jce .tabs-left .nav-tabs li a {font-size: 18px;line-height: 20px;font-weight: bold;padding: 16px 8px;}*/
 .com_jce .tabs-left .tab-content {
   overflow: visible;
 }
-/*.com_jce .form-horizontal .control-label {}
-
-.com_jce .form-horizontal .controls {
-    position: relative;
-    margin: 0;
-}
-
-.com_jce .form-horizontal .control-label + .controls {
-    margin-left: 180px;
-}*/
 #tabs-editor .nav-tabs > li > a,
 #tabs-plugins .nav-tabs > li > a {
   padding: 24px 12px;
   min-height: 72px;
 }
-[data-toggle="tab"] .mce-toolbar .mce-ico {
-  line-height: inherit;
-}
+[data-toggle="tab"] .mce-toolbar .mce-ico,
 .checkboxes .mce-toolbar .mce-ico {
   line-height: inherit;
 }
@@ -1540,6 +1460,7 @@ a.browser {
 .nav-tabs .mce-toolbar {
   max-width: 180px;
   white-space: normal;
+  margin: 0 0 15px 0;
 }
 .nav-tabs .mce-toolbar .mce-btn {
   margin: 2px 2px 0 0;
@@ -1550,14 +1471,10 @@ a.browser {
   max-width: 95px;
   max-height: 32px;
 }
-.nav-tabs .mce-toolbar {
-  margin: 0 0 15px 0;
-}
 .wf-repeatable-collapse .icon-bar {
   display: block;
   width: 18px;
   height: 2px;
-  /*background-color: #f5f5f5;*/
   border-radius: 1px;
 }
 .mceDefaultSkin.checkboxes .mceButton {
@@ -1612,14 +1529,8 @@ a.browser {
     transform: rotate(360deg);
   }
 }
-.jce-ui .donut {
-  display: inline-block;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #888;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: donut-spin 1.2s linear infinite;
+.jce-ui {
+  /* Joomla 4 */
 }
 .jce-ui .donut {
   display: none;
@@ -1627,6 +1538,15 @@ a.browser {
   top: 0;
   left: 0;
   z-index: 1001;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #888;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: donut-spin 1.2s linear infinite;
+}
+.jce-ui.loading {
+  position: static;
 }
 .jce-ui.loading .donut {
   display: block;
@@ -1635,9 +1555,6 @@ a.browser {
   left: 50%;
   z-index: 1001;
   margin: -15px 0 0 -15px;
-}
-.jce-ui.loading {
-  position: static;
 }
 .jce-ui.loading:after {
   content: "";
@@ -1652,7 +1569,9 @@ a.browser {
 .jce-ui legend {
   font-size: 1.25em;
 }
-/* Joomla 4 */
+.jce-ui .adapter-plugins legend {
+  font-size: 1.5em;
+}
 .jce-ui .options-grid-form > legend {
   font-size: 1.75em;
   font-weight: 700;
