@@ -281,6 +281,7 @@ class Editor
             $settings['skin'] = 'modern';
         }
 
+
         if (strpos($settings['skin'], '.') !== false) {
             list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
         }
@@ -288,6 +289,10 @@ class Editor
         // classic has been removed
         if ($settings['skin'] == 'classic') {
             $settings['skin'] = 'default';
+        }
+
+        if ($settings['skin'] == 'o2k7') {
+            $settings['skin'] = 'office';
         }
 
         if ($settings['skin'] == 'mobile') {
@@ -516,7 +521,7 @@ class Editor
 
             // load variant
             if (isset($settings['skin_variant'])) {
-                $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/core/skins/' . $settings['skin'] . '/ui_' . $settings['skin_variant'] . '.css', 'editor.skin.' . $settings['skin'] . '.' . $settings['skin_variant']);
+                $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/core/skins/' . $settings['skin'] . '/ui.' . $settings['skin_variant'] . '.css', 'editor.skin.' . $settings['skin'] . '.' . $settings['skin_variant']);
             }
         }
 
@@ -735,8 +740,8 @@ class Editor
         $wf = $this->application;
 
         $rows = array(
-            'theme_buttons1' => array(), 
-            'theme_buttons2' => array(), 
+            'theme_buttons1' => array(),
+            'theme_buttons2' => array(),
             'theme_buttons3' => array()
         );
 
@@ -1569,7 +1574,7 @@ class Editor
                     }
 
                     if (isset($variant)) {
-                        $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $skin . '/ui_' . $variant . '.css';
+                        $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $skin . '/ui.' . $variant . '.css';
                     }
                 }
 
