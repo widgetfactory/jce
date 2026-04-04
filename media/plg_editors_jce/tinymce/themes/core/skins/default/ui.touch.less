@@ -1,0 +1,115 @@
+// out: false
+
+/* https://www.google.com/design/spec/style/color.html#color-color-palette */
+
+.mceDefaultSkinTouch {
+    .mceToolbar {
+        background-color: #f5f5f5;
+
+        .mceButton {
+            padding: 9px;
+            border-color: #dcdcdc;
+            background-color: #fafafa;
+        }
+
+        .mceListBox {
+            .mceText {
+                line-height: 40px;
+                height: 40px;
+                border-color: #dcdcdc;
+            }
+
+            .mceOpen {
+                height: 40px;
+                border-color: #dcdcdc;
+                width: 18px;
+                background-color: #fafafa;
+
+                &::after {
+                    line-height: 40px;
+                }
+            }
+        }
+
+        .mceSplitButton {
+            .mceText {
+                border-color: #dcdcdc;
+                width: 40px;
+                height: 40px;
+                background-color: #fafafa;
+            }
+
+            .mceOpen {
+                height: 40px;
+                border-color: #dcdcdc;
+                width: 18px;
+                background-color: #fafafa;
+
+                &::after {
+                    line-height: 40px;
+                }
+            }
+        }
+
+        .mceButtonEnabled:hover,
+        .mceButtonActive,
+        .mceButtonSelected {
+            background-color: #E1F5FE;
+            border-color: #81D4FA;
+        }
+
+        .mceColorSplitMenu .mceMoreColors:hover {
+            border-color: #81D4FA;
+            background-color: #E1F5FE;
+        }
+
+        .mceMenu {
+            .mceMenuItemEnabled button:hover,
+            .mceMenuItemActive {
+                background-color: #E1F5FE;
+            }
+        }
+
+        .mceTableSplitMenu {
+            width: 135px;
+
+            table {
+                padding: 2px;
+            }
+
+            td {
+                border-color: #dcdcdc;
+            }
+
+            .selected {
+                background-color: #E1F5FE;
+                border-color: #81D4FA;
+            }
+        }
+
+        .mceSeparator {
+            height: 40px;
+            background: #dcdcdc;
+        }
+
+        .mceTextBox {
+            height: 40px;
+        }
+    }
+
+    .mceLayout {
+        div:first-child,
+        div:last-child {
+            background-color: #f5f5f5;
+            border-color: #dcdcdc;
+        }
+    }
+
+    .mceIframeContainer {
+        border-color: #dcdcdc;
+    }
+
+    .mceSplitButtonDisabled .mceOpen:after {
+        color: #dcdcdc;
+    }
+}

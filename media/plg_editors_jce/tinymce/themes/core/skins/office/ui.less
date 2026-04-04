@@ -1,0 +1,290 @@
+// out: ui.css, sourcemap: false, compress: true
+.mceOfficeSkin {
+    --wfe-bg: #E5EFFD;
+    --wfe-bg-mid: #C1D4EE;
+    --wfe-bg-active: #FEF6CA;
+    --wfe-bg-active-mid: #FFD34E;
+    --wfe-bg-active-end: #FFFBE9;
+    --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+    --wfe-border-color: #ABC6DD;
+    --wfe-border-color-dark: #9FBBE2;
+    --wfe-color: #dee2e6;
+    --wfe-color-light: #fff;
+    --wfe-border-color-active: #FFD24E;
+
+
+    .mceLayout {
+        border-left: 1px solid var(--wfe-border-color);
+        border-right: 1px solid var(--wfe-border-color);
+    }
+
+    .mceIframeContainer {
+        border-top: 1px solid var(--wfe-border-color);
+        border-bottom: 1px solid var(--wfe-border-color);
+    }
+
+    .mceToolbar {
+        background: var(--wfe-bg);
+    }
+
+    .mceStatusbar {
+        background: var(--wfe-bg);
+    }
+
+    &.mceListBoxMenu .mceMenu {
+        border-color: var(--wfe-border-color);
+    }
+
+    .mceToolbarItem {
+        margin: 1px -1px;
+    }
+
+    .mceSeparator {
+        width: 2px;
+    }
+
+    .mceSeparator,
+    .mceToolbarStart,
+    .mceToolbarEnd {
+        border-width: 0px 1px;
+        border-style: solid;
+        border-color: var(--wfe-border-color-dark);
+        margin: 0 0 0 -2px;
+        height: 32px;
+        background: transparent none;
+    }
+
+    .mceToolbarEnd {
+        border-left-width: 1px;
+        width: 2px;
+        border-right-width: 0;
+        box-sizing: border-box;
+    }
+
+    .mceToolbarStart {
+        border-width: 0 0 0 1px;
+        box-sizing: border-box;
+    }
+
+    .mcePanel {
+        background-color: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+        left: 0;
+
+        &::before {
+            background-color: var(--wfe-bg);
+            border-color: var(--wfe-border-color);
+            height: 5px;
+            left: -1px;
+            top: -5px;
+        }
+    }
+
+    .mceLinkMenu .mceMenuHtml input {
+        border-color: var(--wfe-border-color-dark);
+        border-radius: 2px 0 0 2px;
+    }
+
+    .mceToolbarRow {
+        .mceToolbarItem {
+            margin: 1px 0;
+            border: 0;
+            height: auto;
+
+            &:first-child {
+                margin-left: 2px;
+                border-radius: 2px 0 0 2px;
+            }
+
+            &:last-child {
+                border-radius: 0 2px 2px 0;
+            }
+
+            &:last-child .mceButton:last-child,
+            &:last-child .mceButton:last-child:hover {
+                border-right-width: 1px;
+                border-radius: 0 2px 2px 0;
+                border-right-color: var(--wfe-border-color-dark);
+            }
+
+            &End {
+                margin-right: 1px;
+
+                .mceButton,
+                .mceSplitButton .mceOpen {
+                    border-right-color: var(--wfe-border-color);
+                }
+
+                .mceSplitButton .mceOpen {
+                    border-right-width: 1px;
+                }
+            }
+
+            &Start {
+                margin-left: 1px;
+
+                .mceButton,
+                .mceSplitButton .mceText {
+                    border-left-color: var(--wfe-border-color);
+                    border-left-width: 1px;
+                }
+            }
+
+            &ListBox {
+                margin: 1px;
+
+                & + .mceToolbarItemListBox {
+                    margin-left: 1px;
+                }
+            }
+        }
+
+        > div,
+        > button {
+            margin: 1px 0;
+        }
+
+        > button:first-child,
+        > div:first-child {
+            border-left-width: 1px;
+            margin-left: 2px;
+            border-radius: 2px 0 0 2px;
+        }
+
+        > button:last-child,
+        > div:last-child {
+            border-right-width: 1px;
+            border-radius: 0 2px 2px 0;
+            border-right-color: var(--wfe-border-color-dark);
+        }
+
+        .mceButton {
+            margin: 0;
+            border-left-width: 0;
+            border-color: var(--wfe-border-color-dark);
+            background: var(--wfe-bg);
+            border-radius: 0;
+            border-right-color: var(--wfe-border-color-dark);
+        }
+
+        .mceButton,
+        .mceSplitButton,
+        .mceListBox {
+            background: linear-gradient(to bottom, var(--wfe-bg) 0%, var(--wfe-bg-mid) 50%, var(--wfe-bg) 100%);
+        }
+
+        .mceButton:hover,
+        .mceButton:active,
+        .mceButtonActive,
+        .mceButtonSelected {
+            border-color: var(--wfe-border-color-active);
+            background-color: var(--wfe-bg-active);
+            border-left-width: 0;
+        }
+
+        .mceButton.mceButtonActive,
+        .mceButtonEnabled:hover,
+        .mceButton:hover,
+        .mceButton.mceButtonSelected,
+        .mceButton:active,
+        .mceSplitButton:active {
+            background: linear-gradient(to bottom, var(--wfe-bg-active) 0%, var(--wfe-bg-active-mid) 50%, var(--wfe-bg-active-end) 100%);
+        }
+
+        .mceButton.mceButtonDisabled:hover {
+            background: linear-gradient(to bottom, var(--wfe-bg-disabled) 0%, var(--wfe-bg-disabled) 50%, var(--wfe-bg-disabled) 100%);
+        }
+
+        .mceSplitButtonActive .mceText,
+        .mceSplitButtonActive .mceOpen,
+        .mceSplitButtonSelected .mceText,
+        .mceSplitButtonSelected .mceOpen,
+        .mceSplitButton:hover .mceText,
+        .mceSplitButton:hover .mceOpen {
+            background: linear-gradient(to bottom, var(--wfe-bg-active) 0%, var(--wfe-bg-active-mid) 50%, var(--wfe-bg-active-end) 100%);
+            border-color: var(--wfe-border-color-active);
+        }
+
+        .mceSplitButton {
+            margin: 0;
+
+            .mceText,
+            .mceOpen,
+            .mceListBox .mceText,
+            .mceListBox .mceOpen {
+                border-color: var(--wfe-border-color-dark);
+                border-radius: 0;
+            }
+
+            .mceText {
+                border-left-width: 0;
+            }
+
+            button.mceAction {
+                border-width: 1px 0;
+            }
+
+            &Menu {
+                border-color: var(--wfe-border-color-dark);
+            }
+        }
+
+        .mceSplitButtonDisabled {
+            .mceSplitButton:hover .mceText,
+            .mceSplitButton:hover .mceOpen {
+                background: inherit;
+                border-color: var(--wfe-border-color-dark);
+            }
+
+            .mceAction {
+                opacity: 0.3;
+            }
+        }
+
+        .mceListBox {
+            &.mceListBoxSelected .mceText,
+            &.mceListBoxSelected .mceOpen,
+            &:hover .mceText,
+            &:hover .mceOpen {
+                border-color: var(--wfe-border-color-active);
+            }
+
+            &.mceListBoxSelected .mceOpen,
+            &:hover .mceOpen {
+                background: linear-gradient(to bottom, var(--wfe-bg-active) 0%, var(--wfe-bg-active-mid) 50%, var(--wfe-bg-active-end) 100%);
+            }
+
+            .mceText,
+            .mceOpen {
+                border-color: var(--wfe-border-color-dark);
+                border-radius: 0;
+            }
+
+            .mceOpen:hover {
+                border-color: var(--wfe-border-color-active);
+            }
+        }
+
+        .mceListBoxDisabled {
+            .mceListBox:hover .mceText,
+            .mceListBox:hover .mceOpen {
+                border-color: var(--wfe-border-color-dark);
+            }
+
+            .mceListBox:hover .mceOpen {
+                background: inherit;
+            }
+        }
+
+        .mceColorSplitMenu .mceMoreColors button:hover {
+            border-color: var(--wfe-border-color-dark);
+            background-color: var(--wfe-bg-active);
+        }
+    }
+
+    .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child,
+    .mceToolbarStart .mceToolbarItem:first-child .mceButton:first-child:hover {
+        border-left-width: 1px;
+        border-radius: 2px 0 0 2px;
+    }
+}

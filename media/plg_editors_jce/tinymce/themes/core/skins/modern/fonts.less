@@ -1,0 +1,1024 @@
+// out: false
+.mceIcon-xsmall {
+    font-size: 0.5rem;
+    line-height: 0.5rem;
+}
+
+.mceIcon-small {
+    font-size: 0.75rem;
+    line-height: 0.75rem;
+}
+
+.mceIcon-medium {
+    font-size: 1.25rem;
+    line-height: 1.25rem;
+}
+
+.mceIcon-large {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+}
+
+.mceModernSkin {
+    .mceMenuItem .mceIcon {
+        position: absolute;
+    }
+
+    .mceButton .mceIconImage {
+        line-height: 1;
+    }
+
+    .mceSplitButton {
+        .mce_forecolor .mceAction,
+        .mce_backcolor .mceAction {
+            line-height: 1em;
+            height: 1.125em;
+            margin-bottom: 2px;
+        }
+
+        .mce_backcolor .mceAction {
+            background: #bbb;
+        }
+    }
+
+    .mceButton span.mce_style,
+    .mceSplitButton span.mce_textcase {
+        position: relative;
+        width: 1.25em;
+        line-height: 0.75;
+    }
+
+    .mceButton span.mce_visualblocks {
+        display: block;
+        height: 20px;
+        left: 1px;
+    }
+
+    span {
+        &.mce_strikethrough:before {
+            content: "S";
+            font-family: "times new roman,times";
+            font-size: 1.25rem;
+            line-height: 1.25rem;
+            text-decoration: line-through;
+        }
+
+        &.mce_underline:before {
+            content: "U";
+            font-family: "times new roman,times";
+            text-decoration: underline;
+            font-size: 1.25rem;
+            line-height: 1.25rem;
+        }
+
+        &.mce_bold:before {
+            content: "B";
+            font-weight: 800;
+            font-family: "times new roman,times";
+            font-size: 1.25rem;
+            line-height: 1.25rem;
+        }
+
+        &.mce_italic:before {
+            content: "I";
+            font-family: "times new roman,times";
+            font-style: italic;
+            font-size: 1.25rem;
+            line-height: 1.25rem;
+        }
+
+        &.mce_arrow-right:before {
+            content: "\edcb";
+        }
+
+        &.mce_arrow-left:before {
+            content: "\edcf";
+        }
+
+        &.mce_forecolor:before,
+        &.mce_backcolor:before {
+            content: "A";
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        &.mce_selectall::before {
+            content: "";
+            padding: 0.5rem;
+            display: inline-block;
+            background-color: #eee;
+            border: 1px dashed #aaa;
+        }
+
+        &.mce_style:before {
+            content: "A";
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 0.75em;
+            position: absolute;
+            font-weight: bold;
+            top: 0;
+            left: 0;
+        }
+
+        &.mce_style:after {
+            content: "A";
+            font-family: georgia, palatino, serif;
+            font-weight: bold;
+            font-size: 1.25em;
+            color: rgba(0, 0, 0, 0.6);
+            font-style: italic;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+
+        &.mce_textcase:before {
+            content: "a";
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1em;
+            position: absolute;
+            font-weight: bold;
+            bottom: 0.25em;
+            left: 0;
+        }
+
+        &.mce_textcase:after {
+            content: "A";
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.25em;
+            font-weight: bold;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+
+        &.mce_visualblocks:before {
+            content: "P";
+            font-size: 8px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 1px dashed rgba(0, 0, 0, 0.4);
+            width: 10px;
+            height: 10px;
+            text-align: left;
+            padding: 4px;
+            font-weight: bold;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            box-sizing: content-box;
+        }
+
+        &.mce_source_search_regex:before {
+            content: ".*";
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        &.mce_source_search_matchcase:before {
+            content: "Aa";
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        &.mce_source_search_wholeword:before {
+            content: "ab";
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1;
+            text-decoration: underline;
+        }
+
+        &.mce_cite:before {
+            content: "\201C...\201D";
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        &.mce_q:before {
+            content: "\201C\201D";
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        &.mce_abbr:before {
+            content: "ABBR";
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 0.5em;
+            font-weight: bold;
+            line-height: 1;
+            vertical-align: middle;
+        }
+
+        &.mce_acronym:before {
+            content: "A.B.C";
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 0.5em;
+            font-weight: bold;
+            line-height: 1;
+            vertical-align: middle;
+        }
+
+        &.mce_del:before,
+        &.mce_ins:before {
+            content: "A";
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.25em;
+            font-weight: bold;
+            text-decoration: line-through rgba(0, 0, 0, 0.8);
+            line-height: inherit;
+        }
+
+        &.mce_ins:before {
+            text-decoration: underline rgba(0, 0, 0, 0.8);
+        }
+
+        &.mce_hashtag:before {
+            content: "#";
+            font-family: Tahoma, Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        &.mce_microdata:before {
+            content: "\ec1b";
+        }
+
+        &.mce_arrow-up:before {
+            content: "\edcc";
+        }
+
+        &.mce_arrow-down:before {
+            content: "\edd0";
+        }
+
+        &.mce_columns:before {
+            content: "\e900";
+        }
+
+        &.mce_checkbox:before {
+            content: "\e033";
+        }
+
+        &.mce_file:before,
+        &.mce_file-text:before,
+        &.mce_filemanager:before,
+        &.mce_files:before {
+            content: "\e9ad";
+        }
+
+        &.mce_file-audio:before,
+        &.mce_file-mp3:before,
+        &.mce_file-wav:before,
+        &.mce_file-aiff:before,
+        &.mce_file-wma:before,
+        &.mce_file-oga:before {
+            content: "\e9b1";
+        }
+
+        &.mce_file-mp4:before,
+        &.mce_file-m4v:before,
+        &.mce_file-mov:before,
+        &.mce_file-avi:before,
+        &.mce_file-ogg:before,
+        &.mce_file-ogv:before,
+        &.mce_file-webm:before,
+        &.mce_file-video:before,
+        &.mce_video:before {
+            content: "\e9b5";
+        }
+
+        &.mce_email:before {
+            content: "\ea32";
+        }
+
+        &.mce_backward:before {
+            content: "\ed88";
+        }
+
+        &.mce_forward:before {
+            content: "\ed89";
+        }
+
+        &.mce_first:before {
+            content: "\ed8a";
+        }
+
+        &.mce_last:before {
+            content: "\ed8b";
+        }
+
+        &.mce_sort-alpha-asc:before {
+            content: "\ee4c";
+        }
+
+        &.mce_sort-alpha-desc:before {
+            content: "\ee4d";
+        }
+
+        &.mce_sort-numeric-asc:before {
+            content: "\ee4e";
+        }
+
+        &.mce_sort-numeric-desc:before {
+            content: "\ee4f";
+        }
+
+        &.mce_thumbnail:before,
+        &.mce_thumbnail_create:before {
+            content: "\e93e";
+        }
+
+        &.mce_thumbnail_delete:before {
+            content: "\e93f";
+        }
+
+        &.mce_caption_add:before {
+            content: "\e942";
+        }
+
+        &.mce_caption_delete:before {
+            content: "\e940";
+        }
+
+        &.mce_upload:before {
+            content: "\ec7f";
+        }
+
+        &.mce_cloud_upload:before {
+            content: "\f0ee";
+        }
+
+        &.mce_star:before {
+            content: "\ece2";
+        }
+
+        &.mce_remove:before {
+            content: "\ed6d";
+        }
+
+        &.mce_remove-small:before {
+            content: "\ed6e";
+        }
+
+        &.mce_folder-open:before {
+            content: "\e930";
+        }
+
+        &.mce_home:before {
+            content: "\e901";
+        }
+
+        &.mce_edit:before {
+            content: "\e914";
+        }
+
+        &.mce_quill:before {
+            content: "\e91b";
+        }
+
+        &.mce_image:before,
+        &.mce_imgmanager:before {
+            content: "\e941";
+        }
+
+        &.mce_insertlayer:before {
+            content: "\e92e";
+        }
+
+        &.mce_layerbackward:before {
+            content: "\ea46";
+        }
+
+        &.mce_layerforward:before {
+            content: "\ea47";
+        }
+
+        &.mce_layerabsolute:before {
+            content: "\e908";
+        }
+
+        &.mce_imgmanager_ext:before,
+        &.mce_imagepro:before {
+            content: "\e93c";
+        }
+
+        &.mce_film:before,
+        &.mce_media:before,
+        &.mce_mediamanager:before,
+        &.mce_mediapro:before {
+            content: "\e95e";
+        }
+
+        &.mce_newdocument:before,
+        &.mce_file-empty:before {
+            content: "\e99d";
+        }
+
+        &.mce_file-plus:before {
+            content: "\e9a1";
+        }
+
+        &.mce_file-jpg:before,
+        &.mce_file-jpeg:before,
+        &.mce_file-png:before,
+        &.mce_file-gif:before,
+        &.mce_file-bmp:before,
+        &.mce_file-svg:before,
+        &.mce_file-tiff:before,
+        &.mce_file-image:before,
+        &.mce_file-picture:before,
+        &.mce_img:before {
+            content: "\e9af";
+        }
+
+        &.mce_file-tar:before,
+        &.mce_file-gz:before,
+        &.mce_file-rar:before,
+        &.mce_file-zip:before {
+            content: "\e9b9";
+        }
+
+        &.mce_file-xml:before {
+            content: "\e9bb";
+        }
+
+        &.mce_file-ppt:before,
+        &.mce_file-pptx:before,
+        &.mce_file-presentation:before {
+            content: "\e9bf";
+        }
+
+        &.mce_file-xls:before,
+        &.mce_file-xlsx:before,
+        &.mce_file-spreadsheet:before {
+            content: "\e9c5";
+        }
+
+        &.mce_copy:before {
+            content: "\e9c7";
+        }
+
+        &.mce_paste:before {
+            content: "\e9ca";
+        }
+
+        &.mce_pastetext:before {
+            content: "\e9cb";
+        }
+
+        &.mce_folder:before {
+            content: "\e9db";
+        }
+
+        &.mce_folder-plus:before {
+            content: "\e9df";
+        }
+
+        &.mce_print:before {
+            content: "\ea66";
+        }
+
+        &.mce_undo:before,
+        &.mce_source_undo:before {
+            content: "\eabc";
+        }
+
+        &.mce_redo:before,
+        &.mce_source_redo:before {
+            content: "\eabd";
+        }
+
+        &.mce_blockquote:before {
+            content: "\eb18";
+        }
+
+        &.mce_searchreplace:before {
+            content: "\eb2b";
+        }
+
+        &.mce_search:before {
+            content: "\eb33";
+        }
+
+        &.mce_fullscreen:before,
+        &.mce_source_fullscreen:before {
+            content: "\eb3b";
+        }
+
+        &.mce_cog:before,
+        &.mce_attribs:before {
+            content: "\eb63";
+        }
+
+        &.mce_cleanup:before {
+            content: "\ebf8";
+        }
+
+        &.mce_trash:before {
+            content: "\ebfa";
+        }
+
+        &.mce_numlist:before,
+        &.mce_source_linenumbers:before {
+            content: "\ec55";
+        }
+
+        &.mce_bullist:before {
+            content: "\ec57";
+        }
+
+        &.mce_grid:before {
+            content: "\ec5f";
+        }
+
+        &.mce_list:before {
+            content: "\ec6a";
+        }
+
+        &.mce_link:before,
+        &.mce_lnk:before {
+            content: "\ec98";
+        }
+
+        &.mce_unlink:before {
+            content: "\ec99";
+        }
+
+        &.mce_anchor:before {
+            content: "\eca0";
+        }
+
+        &.mce_preview:before {
+            content: "\ecb3";
+        }
+
+        &.mce_help:before {
+            content: "\ed56";
+        }
+
+        &.mce_plus-circle:before {
+            content: "\ed5c";
+        }
+
+        &.mce_minus-circle:before {
+            content: "\ed5d";
+        }
+
+        &.mce_cross:before {
+            content: "\ed69";
+        }
+
+        &.mce_check:before,
+        &.mce_checkmark:before {
+            content: "\ed6c";
+        }
+
+        &.mce_spellchecker:before {
+            content: "\ed71";
+        }
+
+        &.mce_refresh:before {
+            content: "\eda7";
+        }
+
+        &.mce_caret-up:before {
+            content: "\edc4";
+        }
+
+        &.mce_caret-right:before {
+            content: "\edc5";
+        }
+
+        &.mce_caret-down:before {
+            content: "\edc6";
+        }
+
+        &.mce_caret-left:before {
+            content: "\edc7";
+        }
+
+        &.mce_arrow_right:before,
+        &.mce_source_search_next:before {
+            content: "\edcb";
+        }
+
+        &.mce_arrow_left:before,
+        &.mce_source_search_previous:before {
+            content: "\edcf";
+        }
+
+        &.mce_cut:before {
+            content: "\ee83";
+        }
+
+        &.mce_charmap:before {
+            content: "\ee9e";
+        }
+
+        &.mce_nonbreaking:before {
+            content: "\eea0";
+        }
+
+        &.mce_readmore:before {
+            content: "\eea2";
+        }
+
+        &.mce_superscript:before,
+        &.mce_sup:before {
+            content: "\eea3";
+        }
+
+        &.mce_subscript:before,
+        &.mce_sub:before {
+            content: "\eea4";
+        }
+
+        &.mce_pagebreak:before {
+            content: "\eea9";
+        }
+
+        &.mce_removeformat:before {
+            content: "\eeaa";
+        }
+
+        &.mce_templatemanager:before,
+        &.mce_template:before,
+        &.mce_templates:before {
+            content: "\eead";
+        }
+
+        &.mce_visualchars:before {
+            content: "\eeae";
+        }
+
+        &.mce_visualaid:before {}
+
+        &.mce_visualaid:after {}
+
+        &.mce_ltr:before {
+            content: "\eeaf";
+        }
+
+        &.mce_rtl:before {
+            content: "\eeb0";
+        }
+
+        &.mce_alignleft:before,
+        &.mce_justifyleft:before {
+            content: "\eeb8";
+        }
+
+        &.mce_aligncenter:before,
+        &.mce_justifycenter:before {
+            content: "\eeb9";
+        }
+
+        &.mce_alignright:before,
+        &.mce_justifyright:before {
+            content: "\eeba";
+        }
+
+        &.mce_justifyfull:before,
+        &.mce_alignjustify:before {
+            content: "\eebb";
+        }
+
+        &.mce_indent:before,
+        &.mce_source_format:before {
+            content: "\eebc";
+        }
+
+        &.mce_outdent:before {
+            content: "\eebd";
+        }
+
+        &.mce_code:before {
+            content: "\eeca";
+        }
+
+        &.mce_file-pdf:before {
+            content: "\ef36";
+        }
+
+        &.mce_file-openoffice:before {
+            content: "\ef37";
+        }
+
+        &.mce_file-word:before {
+            content: "\ef38";
+        }
+
+        &.mce_file-excel:before {
+            content: "\ef39";
+        }
+
+        &.mce_hr:before {
+            content: "\e01c";
+        }
+
+        &.mce_emotions:before {
+            content: "\e021";
+        }
+
+        &.mce_restoredraft:before,
+        &.mce_autosave:before {
+            content: "\e028";
+        }
+
+        &.mce_resize:before {
+            content: "\e032";
+        }
+
+        &.mce_table:before,
+        &.mce_table_insert:before,
+        &.mce_table_props:before {
+            content: "\e01b";
+        }
+
+        &.mce_row_props:before {
+            content: "\e604";
+        }
+
+        &.mce_cell_props:before {
+            content: "\e605";
+        }
+
+        &.mce_merge_cells:before {
+            content: "\e607";
+        }
+
+        &.mce_col_before:before {
+            content: "\e608";
+        }
+
+        &.mce_col_after:before {
+            content: "\e609";
+        }
+
+        &.mce_row_before:before {
+            content: "\e60a";
+        }
+
+        &.mce_row_after:before {
+            content: "\e60b";
+        }
+
+        &.mce_split_cells:before {
+            content: "\e60d";
+        }
+
+        &.mce_delete_table:before {
+            content: "\e60e";
+        }
+
+        &.mce_delete_row:before {
+            content: "\e800";
+        }
+
+        &.mce_delete_col:before {
+            content: "\e801";
+        }
+
+        &.mce_drag:before {
+            content: "\e908";
+        }
+
+        &.mce_minus:before {
+            content: "\e939";
+        }
+
+        &.mce_plus:before {
+            content: "\e93a";
+        }
+
+        &.mce_rotateleft:before {
+            content: "\eaa8";
+        }
+
+        &.mce_rotateright:before {
+            content: "\eaa9";
+        }
+
+        &.mce_flipv:before {
+            content: "\eaaa";
+        }
+
+        &.mce_fliph:before {
+            content: "\eaac";
+        }
+
+        &.mce_crop:before {
+            content: "\ee78";
+        }
+
+        &.mce_save:before {
+            content: "\e000";
+        }
+
+        &.mce_tag:before {
+            content: "\e013";
+        }
+
+        &.mce_cloud-upload:before {
+            content: "\f0ee";
+        }
+
+        &.mce_lightbox:before {
+            content: "\eecb";
+        }
+
+        &.mce_lightbulb:before {
+            content: "\ebfb";
+            border: 1px solid #bbb;
+            padding: 1px;
+            margin: -1px 0 0 -2px;
+        }
+
+        &.mce_loop:before,
+        &.mce_source_replace_all:before {
+            content: "\eda8";
+        }
+
+        &.mce_exchange:before,
+        &.mce_source_replace:before {
+            content: "\ee46";
+        }
+
+        &.mce_source_wrap:before {
+            content: "\e902";
+        }
+
+        &.mce_source_highlight:before {
+            content: "\eeab";
+        }
+
+        &.mce_kitchensink:before {
+            content: "\ec6e";
+        }
+
+        &.mce_iframe:before {
+            content: "\e903";
+        }
+
+        &.mce_visualaid:before {
+            content: "\e904";
+        }
+
+        &.mce_highlight:before,
+        &.mce_source_highlight:before {
+            content: "\e924";
+        }
+
+        &.mce_columns:before {
+            content: "\e905";
+        }
+
+        &.mce_columns_stack:before {
+            content: "\e909";
+        }
+
+        &.mce_columns_delete:before {
+            content: "\e906";
+        }
+
+        &.mce_columns_add:before {
+            content: "\e907";
+        }
+
+        &.mce_columns_add_before:before {
+            content: "\e91c";
+        }
+
+        &.mce_columns_layout_1_2:before {
+            content: "\e909";
+        }
+
+        &.mce_columns_layout_2_1:before {
+            content: "\e90a";
+        }
+
+        &.mce_columns_layout_1_1_1_2:before {
+            content: "\e90b";
+        }
+
+        &.mce_columns_layout_1_1_2:before {
+            content: "\e90c";
+        }
+
+        &.mce_columns_layout_1_1_3:before {
+            content: "\e90d";
+        }
+
+        &.mce_columns_layout_1_2_1:before {
+            content: "\e90e";
+        }
+
+        &.mce_columns_layout_1_3_1:before {
+            content: "\e90f";
+        }
+
+        &.mce_columns_layout_1_3:before {
+            content: "\e911";
+        }
+
+        &.mce_columns_layout_1_4:before {
+            content: "\e912";
+        }
+
+        &.mce_columns_layout_2_1_1_1:before {
+            content: "\e913";
+        }
+
+        &.mce_columns_layout_2_1_1:before {
+            content: "\e915";
+        }
+
+        &.mce_columns_layout_2_3:before {
+            content: "\e916";
+        }
+
+        &.mce_columns_layout_3_1_1:before {
+            content: "\e917";
+        }
+
+        &.mce_columns_layout_3_1:before {
+            content: "\e918";
+        }
+
+        &.mce_columns_layout_3_2:before {
+            content: "\e919";
+        }
+
+        &.mce_columns_layout_4_1:before {
+            content: "\e91a";
+        }
+
+        &.mce_columns_layout_2_2_1:before {
+            content: "\e91d";
+        }
+
+        &.mce_columns_layout_2_1_2:before {
+            content: "\e91e";
+        }
+
+        &.mce_columns_layout_1_2_2:before {
+            content: "\e91f";
+        }
+
+        &[class*="mce_columns_layout_"]:before {
+            padding: 2px;
+            line-height: 1.25;
+        }
+
+        &.mce_joomla:before {
+            content: "\eab5";
+        }
+
+        &.mce_file_link:before,
+        &.mce_lnk:before {
+            content: "\e910";
+        }
+
+        &.mce_langcode:before {
+            content: "\e9c9";
+        }
+
+        &.mce_date:before {
+            content: "\e94e";
+        }
+
+        &.mce_spinner:before {
+            content: "";
+            border: 0.125rem solid #444;
+            border-radius: 0.75em;
+            width: 1em;
+            height: 1em;
+            opacity: 0;
+            display: inline-block;
+            animation: pulsate 1s ease-out;
+            animation-iteration-count: infinite;
+            vertical-align: top;
+        }
+    }
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(.1);
+        opacity: 0.0;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}

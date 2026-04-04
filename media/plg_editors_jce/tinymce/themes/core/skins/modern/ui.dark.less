@@ -1,0 +1,407 @@
+// out: ui.dark.css, sourcemap: false, compress: true
+
+@media (prefers-color-scheme: dark) {
+    body.admin .mceModernSkinDark {
+        --wfe-bg: var(--template-bg-dark-90, #2B3035);
+        --wfe-color: var(--body-color, #dee2e6);
+        --wfe-modal-bg: var(--body-bg, #212529);
+    }
+}
+
+.mceModernSkinDark {
+    --wfe-bg: #2B3035;
+    --wfe-bg-active: rgba(255, 255, 255, 0.2);
+    --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+    --wfe-border-color: #444;
+    --wfe-color: #dee2e6;
+    --wfe-color-light: #fff;
+    --wfe-modal-bg: #212529;
+    --wfe-modal-border-color: rgba(255, 255, 255, 0.15);
+    --wfe-modal-input-focus: #86b7fe;
+
+    .mce_spinner:before {
+        border-color: var(--wfe-color);
+    }
+
+    .mceLayout {
+        border-color: var(--wfe-border-color);
+    }
+
+    .mceToolbar {
+        // background already handled by variable cascade
+        border-color: var(--wfe-border-color);
+
+        &.mceDisabled {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    .mceStatusbar {
+        background: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+        color: var(--wfe-color);
+
+        .mcePathLabel,
+        .mcePathPath a:after,
+        .mcePathPath .mceText,
+        .mceWordCount .mceText {
+            color: var(--wfe-color);
+        }
+    }
+
+    .mceButton {
+
+        &:focus,
+        &:hover {
+            border-color: transparent;
+        }
+
+        span.mce_style:after {
+            color: rgba(255, 255, 255, 0.3);
+        }
+    }
+
+    .mceSplitButton {
+        .mceAction {
+            &.mce_backcolor {
+                color: var(--wfe-color-light);
+                /* improve visibility */
+                background-color: var(--wfe-bg-active);
+            }
+        }
+
+        .mceOpen {
+            background-color: var(--wfe-bg);
+
+            &:after {
+                color: var(--wfe-color);
+            }
+        }
+    }
+
+    .mceListBox {
+        .mceComboBox .mceButton {
+            background-color: var(--wfe-bg-hover);
+            color: var(--wfe-color);
+
+            label,
+            &:after {
+                color: var(--wfe-color);
+            }
+        }
+
+        .mceText,
+        .mceButton {
+            border-color: var(--wfe-border-color);
+            background-color: var(--wfe-bg);
+        }
+
+        .mceOpen {
+            border-color: var(--wfe-border-color);
+            background-color: var(--wfe-bg);
+
+            &:after {
+                color: var(--wfe-color);
+                background-image: none;
+            }
+        }
+
+        &:focus,
+        &:hover {
+
+            .mceOpen,
+            .mceText {
+                border-color: transparent;
+                background-color: var(--wfe-bg-hover);
+            }
+        }
+    }
+
+    .mceTextBox {
+        border-color: var(--wfe-border-color);
+        color: var(--wfe-color);
+        background-color: var(--wfe-bg);
+
+        &:focus {
+            background-color: var(--wfe-bg);
+            color: var(--wfe-color);
+            border-color: var(--wfe-modal-input-focus);
+        }
+    }
+
+    .mceListBoxSelected::after {
+        background-color: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+    }
+
+    .mceSplitButtonSelected {
+
+        &:hover .mceText,
+        .mceText {
+            background-color: var(--wfe-bg);
+            border-color: var(--wfe-border-color);
+        }
+
+        .mceOpen {
+            background-color: var(--wfe-bg);
+            border-color: var(--wfe-border-color);
+        }
+
+        &:after {
+            background-color: var(--wfe-bg);
+            border-color: var(--wfe-border-color);
+        }
+    }
+
+    span.mce_visualblocks:before {
+        border-color: var(--wfe-border-color);
+    }
+
+    .mceTableSplitMenu {
+        background-color: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+        color: var(--wfe-color);
+
+        td {
+            background-color: var(--wfe-bg);
+
+            a {
+                border-color: var(--wfe-border-color);
+            }
+
+            &.selected a {
+                border-color: var(--wfe-border-color);
+                background-color: var(--wfe-bg-active);
+            }
+        }
+
+        .mceTableGridCount {
+            background-color: var(--wfe-bg);
+            color: var(--wfe-color);
+        }
+    }
+
+    .mceColorSplitMenu {
+        background-color: var(--wfe-bg);
+
+        button {
+            background-color: var(--wfe-bg);
+            border-color: var(--wfe-border-color);
+            color: var(--wfe-color);
+
+            &.mceMoreColors {
+                background-color: var(--wfe-bg);
+
+                &:hover {
+                    background-color: var(--wfe-bg-hover);
+                    border-color: var(--wfe-border-color);
+                }
+            }
+        }
+    }
+
+    &.mceListBoxMenu {
+        background-color: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+        color: var(--wfe-color);
+
+        .mceMenuFilter {
+            border-color: var(--wfe-border-color);
+
+            input {
+                background-color: var(--wfe-bg);
+                color: var(--wfe-color);
+            }
+
+            .mceButton {
+                background-color: var(--wfe-bg-hover);
+                color: var(--wfe-color);
+
+                label,
+                &:after {
+                    color: var(--wfe-color);
+                }
+            }
+        }
+
+        .mceMenuItems {
+            .mceMenuItem {
+
+                .mceIcon,
+                .mceText,
+                &:before {
+                    color: var(--wfe-color);
+                }
+
+                &:hover {
+                    background-color: var(--wfe-bg-hover);
+                }
+
+                &.mceMenuItemActive {
+                    background-color: var(--wfe-bg-active);
+                }
+
+                svg {
+                    fill: var(--wfe-color);
+                    color: var(--wfe-color);
+                }
+            }
+        }
+
+        &.mceFormatListMenu,
+        &.mceStylesListMenu,
+        &.mceStylesBoxMenu {
+
+            /* keep these as original colors */
+            .mceMenuItems {
+                background-color: #fff;
+
+                .mceMenuItem:hover {
+                    background-color: #eee;
+                }
+            }
+        }
+    }
+
+    &.mceSplitButtonMenu {
+        background-color: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+        color: var(--wfe-color);
+
+        .mceMenuItems .mceSelected {
+            background-color: var(--wfe-bg-active);
+        }
+    }
+
+    &.mceMenu {
+        .mceMenuItems {
+            .mceMenuHtml {
+
+                input[type=text],
+                select,
+                textarea {
+                    border-color: var(--wfe-border-color);
+                    background-color: var(--wfe-bg);
+                    color: var(--wfe-color);
+                }
+
+                &:hover {
+                    background-color: transparent;
+                }
+            }
+
+            .mceMenuItem {
+
+                .mceIcon,
+                .mceText {
+                    color: var(--wfe-color);
+                }
+
+                .mceIcon {
+                    svg {
+                        fill: var(--wfe-color);
+                        color: var(--wfe-color);
+                    }
+                }
+            }
+
+            .mceMenuItemEnabled:hover {
+                background-color: var(--wfe-bg-hover);
+            }
+        }
+    }
+
+    &.mceModal {
+        .mceLoading .mceModalContent:before {
+            background-color: var(--wfe-modal-bg);
+        }
+
+        .mceModalBody {
+
+            .mceModalHeader,
+            .mceModalContent,
+            .mceModalFooter {
+                background-color: var(--wfe-modal-bg);
+                color: var(--wfe-color);
+
+                * {
+                    color: var(--wfe-color);
+                }
+            }
+
+            .mceModalContent {
+
+                input[type],
+                select,
+                textarea {
+                    border-color: var(--wfe-border-color);
+                    background-color: var(--wfe-modal-bg);
+                    color: var(--wfe-color);
+                }
+            }
+
+            .mceModalClose {
+                background-color: var(--wfe-modal-bg);
+
+                &:after {
+                    color: var(--wfe-color);
+                }
+            }
+
+            .mceModalFooter .mceButton:not(.mceButtonPrimary) {
+
+                &:focus,
+                &:hover {
+                    border-color: transparent;
+                    background-color: var(--wfe-bg-hover);
+                    color: var(--wfe-color);
+                }
+            }
+
+            .mceButton {
+
+                &:disabled,
+                &:focus:disabled,
+                &:hover:disabled {
+                    border-color: transparent;
+                    background-color: var(--wfe-bg-hover);
+                    color: var(--wfe-color);
+                }
+            }
+        }
+
+        .mceModalContent .mceCharacterMap button {
+            background-color: var(--wfe-bg);
+            border-color: var(--wfe-border-color);
+            color: var(--wfe-color);
+        }
+
+        .mceListBox {
+            .mceText {
+                border-color: var(--wfe-border-color);
+                background-color: var(--wfe-modal-bg);
+                color: var(--wfe-color);
+            }
+
+            .mceOpen {
+                border-color: var(--wfe-border-color);
+                background-color: var(--wfe-modal-bg);
+                color: var(--wfe-color);
+            }
+
+            &:focus,
+            &:hover {
+
+                .mceOpen,
+                .mceText {
+                    border-color: var(--wfe-border-color);
+                    background-color: var(--wfe-bg-hover);
+                }
+            }
+
+            .mceComboBox {
+                border-color: var(--wfe-border-color);
+            }
+        }
+    }
+}

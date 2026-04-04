@@ -1,0 +1,312 @@
+// out: ui.admin.css, sourcemap: false, compress: true
+
+.jce-ui {
+    @import url('ui.less');
+
+    .mceDefaultSkin {
+        .mceToolbar {
+            border: 0 none;
+            padding: 0;
+
+            .mceToolbarRow {
+                font-size: 0;
+                line-height: 1;
+                height: auto;
+                min-height: 38px;
+                position: relative;
+                background-color: #f5f5f5;
+                border: 1px solid #ddd;
+                padding: 1px;
+                margin-bottom: 2px;
+                cursor: move;
+                display: block;
+            }
+
+            /*.mceToolbarRow:last-child {
+                margin: 0;
+                border-bottom: 0;
+            }*/
+        }
+
+        .mceLayout {
+            border: 0 none !important;
+            background: #fff;
+
+            .mceToolbar {
+                border: 0 none !important;
+                background: #fff;
+            }
+
+            .mceStatusbar {
+                border: 1px solid #ddd;
+                border-top-width: 0;
+            }
+
+            .mceIframeContainer {
+                background: #fff;
+                width: 100%;
+                position: relative;
+                padding: 5px;
+                box-sizing: border-box;
+                white-space: pre-line;
+                border: 1px solid #ddd;
+                margin: 0;
+            }
+        }
+
+        .mceToolbarItem {
+            div {
+                display: inline-block;
+            }
+
+            .mceIcon img {
+                width: 16px;
+            }
+        }
+
+        .mceStatusbar {
+            line-height: 1;
+        }
+    }
+
+    .mceToolbarRow {
+        .mceToolbarItem {
+            font-size: 0;
+            vertical-align: top;
+            line-height: 1;
+
+            .mceButton {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                vertical-align: middle;
+                cursor: move;
+
+                .mceIcon {
+                    cursor: move;
+                }
+
+                & + .mceButton {
+                    margin-left: 1px;
+                }
+            }
+        }
+    }
+
+    .mceEditor {
+        .mceToolbarItem {
+            .mceListBox,
+            .mceSplitButton {
+                width: 100%;
+                padding: 0;
+                position: relative;
+                display: inline-block;
+            }
+
+            .mceListBox {
+                font-size: 0;
+                max-width: 114px;
+                margin: 0;
+                border: 1px solid #ccc;
+
+                .mceIcon {
+                    display: none;
+                }
+
+                &:before {
+                    content: attr(title);
+                    display: inline-block;
+                    width: 96px;
+                    background: #fff;
+                    font-size: 14px;
+                    line-height: 30px;
+                    padding: 0 2px;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    text-align: left;
+                }
+            }
+
+            .mceSplitButton {
+                width: 48px;
+                height: 32px;
+                text-align: left;
+                font-size: 0;
+
+                .mceIcon {
+                    display: inline-block;
+                    margin: 4px 5px;
+                }
+
+                .mceButton + .mceButton {
+                    margin-left: inherit;
+                }
+            }
+
+            .mceListBox:after,
+            .mceSplitButton:after {
+                content: "\25bc";
+                display: inline-block;
+                font-size: 9px;
+                line-height: 30px;
+                color: #444;
+                width: 16px;
+                text-align: center;
+                border-left: 1px solid #ddd;
+                box-sizing: border-box;
+                background: #f5f5f5;
+                vertical-align: top;
+            }
+        }
+    }
+
+    .mceDefaultSkinTouch {
+        .mceLayout {
+            border: 0 none !important;
+            background: #fff;
+
+            .mceToolbar {
+                border: 0 none !important;
+                background: #fff;
+
+                .mceToolbarRow {
+                    min-height: 38px;
+                }
+            }
+
+            .mceFirst,
+            .mceLast {
+                background-color: #fff !important;
+            }
+
+            .mceStatusbar {
+                border-color: #dcdcdc;
+                background-color: #fafafa !important;
+            }
+
+            .mceIframeContainer {
+                border-color: #dcdcdc;
+            }
+
+            .mceToolbarRow {
+                background-color: #fafafa;
+                border-color: #dcdcdc;
+            }
+        }
+
+        .mceToolbar {
+            .sortableRowHandle {
+                height: 42px;
+
+                .uk-icon {
+                    margin: 12px 0 0;
+                }
+            }
+        }
+
+        .mceToolBarItem {
+            .mceListBox,
+            .mceSplitButton {
+                border-color: #dcdcdc;
+                height: 36px;
+            }
+
+            .mceButton {
+                padding: 7px;
+                border-color: #dcdcdc;
+                background-color: #fafafa;
+            }
+
+            .mceListBox {
+                width: 112px;
+                padding: 0;
+
+                .mceIcon {
+                    width: 92px;
+
+                    &:before {
+                        width: 92px;
+                        line-height: 34px;
+                    }
+                }
+
+                &::before {
+                    line-height: 32px;
+                    width: 90px;
+                }
+            }
+
+            .mceSplitButton {
+                width: 55px;
+                padding: 0;
+                height: 36px;
+            }
+
+            .mceListBox:after,
+            .mceSplitButton:after {
+                line-height: 34px;
+                width: 20px;
+                border-color: #dcdcdc;
+            }
+
+            .mceSeparator {
+                height: 34px;
+                background: #dcdcdc;
+            }
+        }
+
+        .mceToolbarItem {
+            .mceSplitButton {
+                width: 58px;
+                height: 40px;
+
+                .mceIcon {
+                    margin: 9px;
+                }
+            }
+
+            .mceListBox {
+                &::before {
+                    line-height: 38px;
+                }
+
+                &::after {
+                    width: 16px;
+                    line-height: 38px;
+                }
+            }
+
+            .mceSplitButton::after {
+                width: 16px;
+                line-height: 38px;
+            }
+        }
+
+        .sortableList {
+            .mceToolbarRow.sortableListItem.ui-sortable-highlight {
+                height: 38px;
+            }
+
+            .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+                height: 36px;
+            }
+        }
+    }
+
+    .checkboxes .mceButton .mceIcon {
+        display: inline-block;
+    }
+
+    .nav-link .mce-toolbar {
+        .mce-btn,
+        .mce-btn button {
+            cursor: pointer;
+        }
+    }
+
+    .mceLayout .mceStatusbar .mcePathRow {
+        background: inherit;
+        border: 0 none;
+    }
+}

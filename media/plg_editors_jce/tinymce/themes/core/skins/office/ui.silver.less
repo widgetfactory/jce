@@ -1,0 +1,58 @@
+// out: ui.silver.css, sourcemap: false, compress: true
+@import (reference) "ui.less";
+
+// Gradient for the default (resting) state
+@silver-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 51%, rgba(255, 255, 255, 1) 100%);
+
+.mceOfficeSkinSilver {
+    &:extend(.mceOfficeSkin all);
+
+    --wfe-bg: #eee;
+    --wfe-bg-hover: rgba(255, 255, 255, 0.2);
+    --wfe-border-color: #bbb;
+    --wfe-border-color-dark: #bbb;
+    --wfe-border-color-active: #FFD24E;
+
+    // Panel arrow uses white instead of the bg colour
+    .mcePanel::before {
+        background-color: #fff;
+    }
+
+    .mceToolbarRow {
+        // Default resting gradient
+        .mceButton,
+        .mceSplitButton {
+            background: @silver-gradient;
+        }
+
+        // Active/hover: inherit the base yellow gradient from ui.less via :extend
+
+        // Disabled hover: keep silver gradient; use higher-specificity selector to
+        // guarantee the non-active border colours override the gold from :extend
+        .mceButton.mceButtonDisabled:hover {
+            background: @silver-gradient;
+            border-color: var(--wfe-border-color);
+            border-right-color: var(--wfe-bg);
+        }
+
+        // Right border blends into bg until hovered
+        .mceButton {
+            border-right-color: var(--wfe-bg);
+        }
+
+        .mceButton:hover,
+        .mceButton:active,
+        .mceButtonActive,
+        .mceButtonSelected {
+            border-right-color: var(--wfe-border-color-active);
+        }
+    }
+}
+
+.mceOfficeSkin .mceListBox {
+    background: @silver-gradient;
+}
+
+.mceOfficeSkin .mceLinkMenu .mceMenuHtml input {
+    border-color: #bbb;
+}

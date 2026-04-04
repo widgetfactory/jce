@@ -1,0 +1,205 @@
+// out: ui.admin.css, sourcemap: false, compress: true
+
+.jce-ui {
+    @import url('ui.less');
+    @import url('ui.silver.less');
+    @import url('ui.black.less');
+
+    .mceOfficeSkin {
+        .mceToolbar {
+            border: 0 none;
+        }
+
+        .mceLayout {
+            border: 0 none !important;
+            background: #fff;
+
+            .mceToolbar {
+                border: 0 none !important;
+                background: #fff;
+            }
+
+            .mceStatusbar {
+                border: 1px solid #ABC6DD;
+                border-top-width: 0;
+            }
+
+            .mceLast {
+                border-color: #ABC6DD;
+            }
+
+            .mceIframeContainer {
+                background: #fff;
+                width: 100%;
+                position: relative;
+                padding: 5px;
+                box-sizing: border-box;
+                white-space: pre-line;
+                border: 1px solid #ABC6DD;
+                margin: 0;
+            }
+
+            .mceToolbarRow {
+                background-color: #E5EFFD;
+                border-color: #ABC6DD;
+            }
+        }
+
+        .mceToolbarItem {
+            div {
+                display: inline-block;
+            }
+
+            .mceListBox,
+            .mceSplitButton {
+                border: 1px solid #ABC6DD;
+                box-sizing: border-box;
+                border-radius: 0;
+                position: relative;
+                cursor: move;
+            }
+
+            .mceListBox {
+                width: 94px;
+                border-radius: 2px;
+
+                .mceIcon {
+                    width: 76px;
+                    height: auto;
+
+                    &:before {
+                        display: inline-block;
+                        background: #fff;
+                        font-size: 12px;
+                        width: 76px;
+                        line-height: 24px;
+                        padding: 0 3px;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+
+            .mceSplitButton {
+                width: 42px;
+                padding: 5px 2px;
+                border-left-width: 0;
+
+                .mceIcon {
+                    margin: 0;
+                }
+
+                & + .mceSplitButton {
+                    margin-left: 0;
+                    border-left-width: 0;
+                }
+
+                &:after {
+                    line-height: 30px;
+                }
+            }
+
+            .mceListBox:after,
+            .mceSplitButton:after {
+                display: block;
+                position: absolute;
+                right: 0;
+                top: 0;
+                border-left: 1px solid #ABC6DD;
+                background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
+            }
+        }
+
+        .mceToolbarItemStart .mceSplitButton {
+            border-left-width: 1px;
+        }
+
+        .mceToolbarItemEnd .mceSplitButton {
+            border-right-width: 1px;
+            border-right-color: #E5EFFD;
+        }
+
+        .mceToolbarRow .mceToolbarItem .mceButton + .mceButton {
+            border-left-width: 0;
+        }
+
+        /* Silver */
+        &.mceOfficeSkinSilver {
+            .mceToolbarItem {
+                .mceListBox,
+                .mceSplitButton {
+                    border-color: #bbb;
+                }
+
+                .mceListBox:after,
+                .mceSplitButton:after {
+                    border-color: #bbb;
+                    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 51%, rgba(255, 255, 255, 1) 100%);
+                }
+            }
+
+            .mceLayout {
+                .mceStatusbar {
+                    border-color: #bbb;
+                }
+
+                .mceLast {
+                    border-color: #bbb;
+                }
+
+                .mceIframeContainer {
+                    border-color: #bbb;
+                }
+            }
+        }
+
+        /* Black */
+        &.mceOfficeSkinBlack {
+            .mceToolbarItem {
+                .mceListBox,
+                .mceSplitButton {
+                    border-color: #B0B6BE;
+                }
+
+                .mceListBox:after,
+                .mceSplitButton:after {
+                    border-color: #535353;
+                    background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
+                }
+            }
+
+            .mceLayout {
+                .mceStatusbar {
+                    border-color: #535353;
+                }
+
+                .mceLast {
+                    border-color: #535353;
+                }
+
+                .mceIframeContainer {
+                    border-color: #535353;
+                }
+            }
+        }
+    }
+
+    .mceOfficeSkinSilver .mceLayout .mceToolbarRow {
+        background-color: #eee;
+        border-color: #bbb;
+    }
+
+    .mceOfficeSkinBlack {
+        .mceLayout .mceToolbarRow {
+            background-color: #535353;
+            border-color: #535353;
+        }
+
+        .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
+            border-color: #fff;
+        }
+    }
+
+    .mceEditor .mceToolbar .mceToolbarItem .mceListBox:before {
+        display: block;
+    }
+}

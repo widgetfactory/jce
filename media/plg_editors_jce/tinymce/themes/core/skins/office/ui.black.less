@@ -1,0 +1,160 @@
+// out: ui.black.css, sourcemap: false, compress: true
+@import (reference) "ui.less";
+
+// Internal colours for the 3D border effect unique to the black skin
+@black-border-mid:   #B0B6BE;
+@black-border-dark:  #989FA9;
+@black-border-light: #CBCFD4;
+
+// Gradient for the default (resting) state
+@black-gradient: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
+
+.mceOfficeSkinBlack {
+    &:extend(.mceOfficeSkin all);
+
+    --wfe-bg: #535353;
+    --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+    --wfe-border-color: #535353;
+    --wfe-border-color-dark: @black-border-mid;
+    --wfe-color: #dee2e6;
+    --wfe-color-light: #fff;
+    --wfe-border-color-active: #FFD24E;
+
+    // Extra layout borders not in ui.less
+    .mceLayout {
+        .mceFirst { border-top-color: var(--wfe-border-color); }
+        .mceLast  { border-bottom-color: var(--wfe-border-color); }
+    }
+
+    // Status bar text is white on dark bg
+    .mceStatusbar {
+        div,
+        .mcePathRow button,
+        .mcePathRow span {
+            color: var(--wfe-color-light);
+        }
+    }
+
+    .mceWordCount .mceText {
+        color: var(--wfe-color-light);
+    }
+
+    // Separators need a solid bg on the dark theme (ui.less uses transparent)
+    .mceSeparator,
+    .mceToolbarStart,
+    .mceToolbarEnd {
+        background: var(--wfe-bg);
+    }
+
+    // Panel arrow uses a mid-grey rather than the bg colour
+    .mcePanel::before {
+        background-color: @black-border-mid;
+    }
+
+    .mceToolbarRow {
+        // 3D border effect: visible top/bottom, transparent right, coloured left
+        .mceButton,
+        .mceButtonDisabled:hover {
+            border-bottom-color: @black-border-dark;
+            border-right-color: transparent;
+            border-top-color: @black-border-light;
+        }
+
+        // Default resting gradient
+        .mceButton,
+        .mceSplitButton,
+        .mceListBox .mceOpen {
+            background: @black-gradient;
+        }
+
+        // Active/hover: inherit the base yellow gradient from ui.less via :extend
+        // (no override here — the gradient highlight is intentional)
+
+        // Disabled hover: keep grey gradient; use higher-specificity selector to
+        // guarantee the 3D border colours override the active gold from :extend
+        .mceButton.mceButtonDisabled:hover {
+            background: @black-gradient;
+            border-top-color: @black-border-light;
+            border-right-color: transparent;
+            border-bottom-color: @black-border-dark;
+        }
+
+        .mceSplitButton {
+            .mceText,
+            .mceOpen {
+                border-bottom-color: @black-border-dark;
+                border-right-color: transparent;
+                border-top-color: @black-border-light;
+                border-left-color: transparent;
+            }
+
+            .mceOpen {
+                border-left-color: @black-border-mid;
+            }
+        }
+
+        .mceSplitButtonDisabled .mceSplitButton:hover .mceText,
+        .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen {
+            border-bottom-color: @black-border-dark;
+            border-left-color: @black-border-mid;
+            border-right-color: transparent;
+            border-top-color: @black-border-light;
+        }
+
+        .mceListBox {
+            .mceText,
+            .mceOpen {
+                border-color: @black-border-mid;
+            }
+        }
+
+        .mceListBoxDisabled .mceListBox:hover .mceText,
+        .mceListBoxDisabled .mceListBox:hover .mceOpen {
+            border-bottom-color: @black-border-dark;
+            border-left-color: @black-border-mid;
+            border-right-color: transparent;
+            border-top-color: @black-border-light;
+        }
+
+        .mceToolbarItem {
+            &:first-child .mceButton,
+            &:first-child .mceButton:hover {
+                border-left-width: 1px;
+                border-radius: 2px 0 0 2px;
+                border-left-color: @black-border-mid;
+            }
+
+            &:last-child .mceButton:last-child,
+            &:last-child .mceButton:last-child:hover {
+                border-right-color: transparent;
+            }
+
+            &End .mceButton,
+            &End .mceSplitButton .mceOpen {
+                border-right-color: @black-border-mid;
+            }
+
+            &Start .mceButton,
+            &Start .mceSplitButton .mceText {
+                border-left-color: @black-border-mid;
+            }
+        }
+
+        > button:last-child,
+        > button:last-child:hover,
+        .mceToolbarItem:last-child .mceButton,
+        .mceToolbarItem:last-child .mceButton:hover {
+            border-right-width: 1px;
+            border-radius: 0 2px 2px 0;
+            border-right-color: @black-border-mid;
+        }
+    }
+}
+
+.mceOfficeSkin .mceSplitButtonMenu {
+    border-color: #535353;
+}
+
+.mceOfficeSkin .mceLinkMenu .mceMenuHtml input {
+    border-color: @black-border-dark;
+}

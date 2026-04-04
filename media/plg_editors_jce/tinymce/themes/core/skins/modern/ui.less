@@ -1,9 +1,20 @@
 // out: ui.css, sourcemap: false, compress: false
-@import (css) url('fonts.css?@@etag@@');
+@import url('fonts.less');
 
 .mceModernSkin {
+    // Light mode color variables (overridden by .mceModernSkinDark in ui.dark.less)
+    --wfe-bg: #fafafa;
+    --wfe-bg-active: #e6e6e6;
+    --wfe-bg-hover: #e6e6e6;
+    --wfe-border-color: #ddd;
+    --wfe-color: rgba(0, 0, 0, 0.87);
+    --wfe-color-light: #fff;
+    --wfe-modal-bg: #fff;
+    --wfe-modal-border-color: rgba(0, 0, 0, 0.15);
+    --wfe-modal-input-focus: #337ab7;
+
     .mceToolbar {
-        background: #fafafa;
+        background: var(--wfe-bg);
 
         &.mceDisabled {
             background: rgba(255, 255, 255, 0.5);
@@ -37,10 +48,10 @@
             min-width: 5em;
             height: 32px;
             line-height: 1;
-            background: #fff;
+            background: var(--wfe-modal-bg);
             border-radius: 2px;
             color: #444;
-            border: 1px solid #ddd;
+            border: 1px solid var(--wfe-border-color);
             margin: 0 0 0 4px;
             padding: 0 8px;
         }
@@ -48,7 +59,7 @@
         .mceButtonPrimary {
             background-color: #337ab7;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            color: #fff;
+            color: var(--wfe-color-light);
         }
     }
 
@@ -58,14 +69,14 @@
     .mceListBox .mceText,
     .mceListBox .mceOpen {
         border-color: transparent;
-        color: rgba(0, 0, 0, 0.87);
+        color: var(--wfe-color);
         background-color: transparent;
     }
 
     .mceButton .mceIcon,
     .mceMenuItem .mceIcon,
     .mceSplitButton .mceAction {
-        color: rgba(0, 0, 0, 0.87);
+        color: var(--wfe-color);
         height: 1em;
         line-height: 1;
         text-align: center;
@@ -75,7 +86,7 @@
     }
 
     .mceButtonPrimary {
-        color: #fff;
+        color: var(--wfe-color-light);
     }
 
     button:disabled {
@@ -88,14 +99,14 @@
 
     .mceButton:hover,
     .mceButton:focus {
-        border: 1px solid #ddd;
-        background-color: #e6e6e6;
+        border: 1px solid var(--wfe-border-color);
+        background-color: var(--wfe-bg-hover);
     }
 
     .mceButtonPrimary:hover,
     .mceButtonPrimary:focus {
         background-color: #286090;
-        color: #fff;
+        color: var(--wfe-color-light);
         border-color: rgba(0, 0, 0, .21);
     }
 
@@ -104,8 +115,8 @@
         &:focus {
             .mceText,
             .mceOpen {
-                border-color: #ccc;
-                background-color: #e6e6e6;
+                border-color: var(--wfe-border-color);
+                background-color: var(--wfe-bg-hover);
             }
         }
     }
@@ -113,29 +124,29 @@
     .mceSplitButtonActive {
         .mceText,
         .mceOpen {
-            border-color: #ccc;
-            background-color: #e6e6e6;
+            border-color: var(--wfe-border-color);
+            background-color: var(--wfe-bg-active);
         }
 
         .mceOpen {
-            border-left: 1px solid #ccc;
+            border-left: 1px solid var(--wfe-border-color);
         }
     }
 
     .mceListBox {
         .mceText {
             // top right bottom left — right is owned by .mceOpen
-            border-color: #ddd transparent #ddd #ddd;
+            border-color: var(--wfe-border-color) transparent var(--wfe-border-color) var(--wfe-border-color);
 
             &::placeholder {
-                color: #ddd;
+                color: var(--wfe-border-color);
                 font-size: inherit;
             }
         }
 
         .mceOpen {
             // top right bottom left — left is owned by .mceText
-            border-color: #ddd #ddd #ddd transparent;
+            border-color: var(--wfe-border-color) var(--wfe-border-color) var(--wfe-border-color) transparent;
 
             &:after {
                 color: transparent;
@@ -155,14 +166,14 @@
         &Selected,
         &Selected:hover {
             .mceText {
-                background: #fff;
-                border-color: #ccc;
+                background: var(--wfe-modal-bg);
+                border-color: var(--wfe-border-color);
                 border-radius: 2px 0 0 0;
             }
 
             .mceOpen {
-                background: #fff;
-                border-color: #ccc;
+                background: var(--wfe-modal-bg);
+                border-color: var(--wfe-border-color);
                 border-left-color: transparent;
                 border-radius: 0 2px 0 0;
             }
@@ -172,8 +183,8 @@
     .mceButtonActive,
     .mceButtonSelected,
     .mcePanelButtonActive {
-        background-color: #e6e6e6;
-        border-color: #ddd;
+        background-color: var(--wfe-bg-active);
+        border-color: var(--wfe-border-color);
     }
 
     .mceButtonDialog::before {
@@ -181,7 +192,7 @@
     }
 
     .mceColorPreview {
-        outline: 1px solid #e6e6e6;
+        outline: 1px solid var(--wfe-bg-active);
     }
 
     .mceListBox .mceMenuItems .mceIcon {
@@ -199,19 +210,19 @@
     .mcePanelButtonSelected {
         &,
         &:hover {
-            border-color: #ddd;
-            background: #fff;
+            border-color: var(--wfe-border-color);
+            background: var(--wfe-modal-bg);
 
             .mceText {
-                background: #fff;
-                border-color: #ddd;
+                background: var(--wfe-modal-bg);
+                border-color: var(--wfe-border-color);
                 border-right-color: transparent;
                 border-radius: 2px 0 0 0;
             }
 
             .mceOpen {
-                background: #fff;
-                border-color: #ddd;
+                background: var(--wfe-modal-bg);
+                border-color: var(--wfe-border-color);
                 border-left-color: transparent;
                 border-radius: 0 2px 0 0;
             }
@@ -222,14 +233,14 @@
         &,
         &:hover {
             .mceText {
-                background: #fff;
-                border-color: #ccc;
+                background: var(--wfe-modal-bg);
+                border-color: var(--wfe-border-color);
                 border-radius: 2px 0 0 0;
             }
 
             .mceOpen {
-                background: #fff;
-                border-color: #ccc;
+                background: var(--wfe-modal-bg);
+                border-color: var(--wfe-border-color);
                 border-left-color: transparent;
                 border-radius: 0 2px 0 0;
             }
@@ -238,11 +249,11 @@
 
     .mceColorSplitMenu {
         padding: 2px;
-        background: #fff;
+        background: var(--wfe-modal-bg);
     }
 
     .mcePanel::before {
-        background-color: #fff;
+        background-color: var(--wfe-modal-bg);
     }
 
     .mceListBoxMenu {
@@ -250,7 +261,7 @@
     }
 
     .mceStatusbar .mceResize span {
-        color: rgba(0, 0, 0, 0.87);
+        color: var(--wfe-color);
         text-align: right;
         display: inline-block;
         background: none;
