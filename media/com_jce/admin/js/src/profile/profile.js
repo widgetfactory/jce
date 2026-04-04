@@ -197,7 +197,7 @@ function init() {
             elm.classList.add('isdirty');
         });
 
-        Layout.updateTheme(form.querySelector('select[name$="[editor][toolbar_theme]"]').value);
+        Layout.init(form);
     }
 
     // Additional Features
