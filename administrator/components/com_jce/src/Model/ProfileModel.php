@@ -58,15 +58,15 @@ class ProfileModel extends AdminModel
     /**
      * Returns a Table object, always creating it.
      *
-     * @param type   $type   The table type to instantiate
-     * @param string $prefix A prefix for the table class name. Optional
-     * @param array  $config Configuration array for model. Optional
+     * @param   string  $type    The table type to instantiate
+     * @param   string  $prefix  A prefix for the table class name. Optional
+     * @param   array   $config  Configuration array for model. Optional
      *
-     * @return JTable A database object
+     * @return  \Joomla\CMS\Table\Table
      *
      * @since   1.6
      */
-    public function getTable($type = 'Profiles', $prefix = '', $config = array())
+    public function getTable($type = 'Profiles', $prefix = '', $config = [])
     {
         return parent::getTable($type, $prefix, $config);
     }
@@ -134,7 +134,7 @@ class ProfileModel extends AdminModel
                         $list = [];
 
                         // Group adapter keys under 'list'
-                        foreach(['content', 'contacts', 'weblinks', 'menu', 'tags'] as $listKey) {
+                        foreach (['content', 'contacts', 'weblinks', 'menu', 'tags'] as $listKey) {
                             if (isset($legacy[$listKey]) && (int) $legacy[$listKey] === 1) {
                                 $list[] = $listKey;
                             }
@@ -152,7 +152,7 @@ class ProfileModel extends AdminModel
                             $searchList = [];
 
                             if (isset($searchLegacy['plugins'])) {
-                                foreach(['content', 'categories', 'contacts', 'weblinks', 'menu', 'tags'] as $listKey) {
+                                foreach (['content', 'categories', 'contacts', 'weblinks', 'menu', 'tags'] as $listKey) {
                                     if (in_array($listKey, $searchLegacy['plugins'])) {
                                         $searchList[] = $listKey;
                                     }
@@ -245,13 +245,13 @@ class ProfileModel extends AdminModel
         $form->bind($data);
     }
 
-    public function getForm($data = array(), $loadData = true)
+    public function getForm($data = [], $loadData = true)
     {
         Form::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jce/src/Field');
         FormHelper::addFieldPrefix('Joomla\Component\Jce\Administrator\Field');
 
         // Get the setup form.
-        return $this->loadForm('com_jce.profile', 'profile', array('control' => 'jform', 'load_data' => true));
+        return $this->loadForm('com_jce.profile', 'profile', ['control' => 'jform', 'load_data' => true]);
     }
 
     /**
@@ -292,7 +292,7 @@ class ProfileModel extends AdminModel
     {
         $data = $this->getItem();
 
-        $array = array();
+        $array = [];
         $rows = explode(';', $data->rows);
 
         $plugins = $this->getButtons();
@@ -300,14 +300,14 @@ class ProfileModel extends AdminModel
         $i = 1;
 
         foreach ($rows as $row) {
-            $groups = array();
+            $groups = [];
             // remove spacers
-            $row = str_replace(array('|', 'spacer'), '', $row);
+            $row = str_replace(['|', 'spacer'], '', $row);
 
             foreach (explode('spacer', $row) as $group) {
                 // get items in group
                 $items = explode(',', $group);
-                $buttons = array();
+                $buttons = [];
 
                 // remove duplicates
                 $items = array_unique($items);
@@ -388,7 +388,7 @@ class ProfileModel extends AdminModel
             $data = $this->getItem();
             $rows = preg_split('#[;,]#', $data->rows);
 
-            $commands = array();
+            $commands = [];
 
             foreach (PluginsHelper::getCommands() as $name => $command) {
                 // set as active
@@ -430,7 +430,7 @@ class ProfileModel extends AdminModel
         static $plugins;
 
         if (empty($plugins)) {
-            $plugins = array();
+            $plugins = [];
 
             $data = $this->loadFormData();
 
@@ -445,7 +445,7 @@ class ProfileModel extends AdminModel
 
             // only need plugins with xml files
             foreach ($editorPlugins as $name => $plugin) {
-                $plugin->icon = empty($plugin->icon) ? array() : explode(',', $plugin->icon);
+                $plugin->icon = empty($plugin->icon) ? [] : explode(',', $plugin->icon);
 
                 // set as active if it is in the profile
                 $plugin->active = in_array($name, $rows);
@@ -480,7 +480,7 @@ class ProfileModel extends AdminModel
 
                 $xmlString = $xml->asXml();
 
-                $plugin->form = $this->loadForm('com_jce.profile.' . $plugin->name, $xmlString, array('control' => 'jform[config]', 'load_data' => true), true, '//extension');
+                $plugin->form = $this->loadForm('com_jce.profile.' . $plugin->name, $xmlString, ['control' => 'jform[config]', 'load_data' => true], true, '//extension');
                 $plugin->formclass = 'options-grid-form options-grid-form-full';
 
                 if (!$plugin->form) {
@@ -515,7 +515,7 @@ class ProfileModel extends AdminModel
                 ]);
 
                 // adapters supported by this plugin
-                $supportedAdapters = array();
+                $supportedAdapters = [];
 
                 $adapterFieldsets = $plugin->form->getXml()->xpath('//fieldset[starts-with(@name, "plugin.")]');
 
@@ -538,7 +538,7 @@ class ProfileModel extends AdminModel
                         continue;
                     }
 
-                    $item = new \StdClass;
+                    $item = new \stdClass();
                     $item->name = '';
                     $item->title = '';
                     $item->manifest = WF_PLUGIN . '/Adapter/Plugin/' . ucfirst($type) . '/' . $type . '.xml';
@@ -559,10 +559,10 @@ class ProfileModel extends AdminModel
 
                         $xmlString = $xml->asXml();
 
-                        $path = array($plugin->name, $type, $p->name);
+                        $path = [$plugin->name, $type, $p->name];
 
                         // create new adapter plugin object
-                        $adapterPlugin = new \StdClass;
+                        $adapterPlugin = new \stdClass();
 
                         // set adapter plugin name as the plugin name
                         $adapterPlugin->name = $p->name;
@@ -571,7 +571,7 @@ class ProfileModel extends AdminModel
                         $adapterPlugin->title = $p->title;
 
                         // load form
-                        $adapterPlugin->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $xmlString, array('control' => 'jform[config][' . $plugin->name . '][' . $type . ']', 'load_data' => true), true, '//extension');
+                        $adapterPlugin->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $xmlString, ['control' => 'jform[config][' . $plugin->name . '][' . $type . ']', 'load_data' => true], true, '//extension');
                         $adapterPlugin->formclass = 'options-grid-form options-grid-form-full';
 
                         if (!$adapterPlugin->form) {
@@ -628,7 +628,7 @@ class ProfileModel extends AdminModel
     /**
      * Prepare and sanitise the table data prior to saving.
      *
-     * @param JTable $table A reference to a JTable object
+     * @param   \Joomla\CMS\Table\Table  $table  A reference to a Table object
      *
      * @since   1.6
      */
@@ -661,8 +661,6 @@ class ProfileModel extends AdminModel
                             $value = $value[0];
                         }
                     }
-
-                    $value = $value;
 
                     break;
                 case 'components':
@@ -718,7 +716,7 @@ class ProfileModel extends AdminModel
         $filter = InputFilter::getInstance();
 
         // get unfiltered config data
-        $config = isset($data['config']) ? $data['config'] : array();
+        $config = $data['config'] ?? [];
 
         // get layout rows and plugins data
         $rows = isset($data['rows']) ? $data['rows'] : '';
@@ -798,7 +796,7 @@ class ProfileModel extends AdminModel
             // Alter the title
             $name = $data['name'];
 
-            while ($table->load(array('name' => $name))) {
+            while ($table->load(['name' => $name])) {
                 if ($name == $table->name) {
                     $name = \Joomla\String\StringHelper::increment($name);
                 }
@@ -821,7 +819,7 @@ class ProfileModel extends AdminModel
                 $data['plugins'] = $table->plugins;
             }
 
-            $json = array();
+            $json = [];
 
             // get original params value
             $params = empty($table->params) ? '' : $table->params;
@@ -829,7 +827,7 @@ class ProfileModel extends AdminModel
             // convert params to json data array
             $params = (array) json_decode($params, true);
 
-            $plugins = isset($data['plugins']) ? $data['plugins'] : $table->plugins;
+            $plugins = $data['plugins'] ?? $table->plugins;
 
             // get plugins
             $items = explode(',', $plugins);
@@ -839,7 +837,7 @@ class ProfileModel extends AdminModel
 
             // make sure we have a params value
             if (empty($data['params'])) {
-                $data['params'] = array();
+                $data['params'] = [];
             }
 
             // recursively clean the params value
@@ -902,13 +900,11 @@ class ProfileModel extends AdminModel
 
     public function export($ids)
     {
-        $db = $this->getDatabase();
-
         $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
 
-        $validFields = array('name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params');
+        $validFields = ['name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params'];
 
         foreach ($ids as $id) {
             $table = $this->getTable();
@@ -924,7 +920,7 @@ class ProfileModel extends AdminModel
 
             foreach ($fields as $key => $value) {
                 // only allow a subset of fields
-                if (false == in_array($key, $validFields)) {
+                if (!in_array($key, $validFields)) {
                     continue;
                 }
 
@@ -966,7 +962,7 @@ class ProfileModel extends AdminModel
         // stream to client
         echo $app->toString();
 
-        jexit();
+        $app->close();
     }
 
     /**
@@ -979,7 +975,6 @@ class ProfileModel extends AdminModel
     public function import()
     {
         $app = Factory::getApplication();
-        $tmp = $app->getCfg('tmp_path');
 
         $file = $app->input->files->get('profile_file', null, 'raw');
 
@@ -1041,10 +1036,19 @@ class ProfileModel extends AdminModel
 
         // load data from file
         $data = file_get_contents($file);
+
+        // trim
+        $data = trim($data);
+
         // format params data as CDATA
         $data = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
+
         // load processed string
         $xml = simplexml_load_string($data);
+
+        if (!$xml) {
+            return false;
+        }
 
         $user = $app->getIdentity();
         $date = Factory::getDate();
@@ -1052,108 +1056,106 @@ class ProfileModel extends AdminModel
         $language = $app->getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
 
-        if ($xml) {
-            foreach ($xml->profiles->children() as $profile) {
-                $table = $this->getTable();
+        foreach ($xml->profiles->children() as $profile) {
+            $table = $this->getTable();
 
-                foreach ($profile->children() as $item) {
-                    $key = $item->getName();
-                    $value = (string) $item;
+            foreach ($profile->children() as $item) {
+                $key = $item->getName();
+                $value = (string) $item;
 
-                    switch ($key) {
-                        case 'name':
-                            // only if name set and table name not set
-                            if ($value) {
-                                // create name copy if exists
-                                while ($table->load(array('name' => $value))) {
-                                    if ($value === $table->name) {
-                                        $value = \Joomla\String\StringHelper::increment($value);
+                switch ($key) {
+                    case 'name':
+                        // only if name set and table name not set
+                        if ($value) {
+                            // create name copy if exists
+                            while ($table->load(['name' => $value])) {
+                                if ($value === $table->name) {
+                                    $value = \Joomla\String\StringHelper::increment($value);
+                                }
+                            }
+                        }
+                        break;
+
+                    case 'description':
+                        $value = Text::_($value);
+                        break;
+                    case 'types':
+
+                        if ($value === "") {
+                            $area = (string) $profile->area[0] || 0;
+                            $groups = ProfilesHelper::getUserGroups($area);
+                            $value = implode(',', array_unique($groups));
+                        }
+                        break;
+                    case 'users':
+                        break;
+                    case 'area':
+                        if ($value === "") {
+                            $value = '0';
+                        }
+
+                        break;
+                    case 'components':
+                        break;
+                    case 'custom':
+                        break;
+                    case 'params':
+                        if (!empty($value)) {
+                            $data = json_decode($value, true);
+
+                            if (is_array($data)) {
+                                array_walk($data, function (&$param, $key) {
+                                    if (is_string($param) && StringHelper::isJson($param)) {
+                                        $param = json_decode($param, true);
                                     }
-                                }
-                            }
-                            break;
-
-                        case 'description':
-                            $value = Text::_($value);
-                            break;
-                        case 'types':
-
-                            if ($value === "") {
-                                $area = (string) $profile->area[0] || 0;
-                                $groups = ProfilesHelper::getUserGroups($area);
-                                $value = implode(',', array_unique($groups));
-                            }
-                            break;
-                        case 'users':
-                            break;
-                        case 'area':
-                            if ($value === "") {
-                                $value = '0';
+                                });
                             }
 
-                            break;
-                        case 'components':
-                            break;
-                        case 'custom':
-                            break;
-                        case 'params':
-                            if (!empty($value)) {
-                                $data = json_decode($value, true);
+                            $value = json_encode($data);
+                        }
 
-                                if (is_array($data)) {
-                                    array_walk($data, function (&$param, $key) {
-                                        if (is_string($param) && StringHelper::isJson($param)) {
-                                            $param = json_decode($param, true);
-                                        }
-                                    });
-                                }
+                        if (empty($value)) {
+                            $value = "{}";
+                        }
 
-                                $value = json_encode($data);
-                            }
-
-                            if (empty($value)) {
-                                $value = "{}";
-                            }
-
-                            break;
-                        case 'rows':
-                            break;
-                        case 'plugins':
-                            break;
-                        case 'area':
-                        case 'published':
-                        case 'ordering':
-                            $value = (int) $value;
-                            break;
-                    }
-
-                    $table->$key = $value;
+                        break;
+                    case 'rows':
+                        break;
+                    case 'plugins':
+                        break;
+                    case 'area':
+                    case 'published':
+                    case 'ordering':
+                        $value = (int) $value;
+                        break;
                 }
 
-                // set new id
-                $table->id = 0;
-
-                // update with new custom field
-                if (!isset($table->custom)) {
-                    $table->custom = '';
-                }
-
-                // set checked_out
-                $table->checked_out = $user->id;
-
-                // set checked_out_time
-                $table->checked_out_time = $date->toSQL();
-
-                if (!$table->store()) {
-                    $app->enqueueMessage($table->getError(), 'error');
-                    return false;
-                }
-
-                // check-in
-                $table->checkin();
-
-                ++$n;
+                $table->$key = $value;
             }
+
+            // set new id
+            $table->id = 0;
+
+            // update with new custom field
+            if (!isset($table->custom)) {
+                $table->custom = '';
+            }
+
+            // set checked_out
+            $table->checked_out = $user->id;
+
+            // set checked_out_time
+            $table->checked_out_time = $date->toSQL();
+
+            if (!$table->store()) {
+                $app->enqueueMessage($table->getError(), 'error');
+                return false;
+            }
+
+            // check-in
+            $table->checkin();
+
+            ++$n;
         }
 
         return $n;

@@ -11,18 +11,13 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Application\CMSApplication;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\AdminController;
-use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
-use Joomla\Input\Input;
-use Joomla\Utilities\ArrayHelper;
 
 /**
- * Releases list controller class.
+ * Profiles list controller class.
  *
  * @since  1.6
  */
@@ -39,7 +34,7 @@ class ProfilesController extends AdminController
 	 *
 	 * @since   1.6
 	 */
-	public function getModel($name = 'Profile', $prefix = 'Administrator', $config = array('ignore_request' => true))
+	public function getModel($name = 'Profile', $prefix = 'Administrator', $config = ['ignore_request' => true])
 	{
 		return parent::getModel($name, $prefix, $config);
 	}
@@ -54,8 +49,6 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        $app = Factory::getApplication();
-
         $model = $this->getModel();
 
         $result = $model->import();
@@ -69,13 +62,14 @@ class ProfilesController extends AdminController
 
         // Push message queue to session because we will redirect page by Javascript, not $app->redirect().
         // The "application.queue" is only set in redirect() method, so we must manually store it.
-        $app->getSession()->set('application.queue', $app->getMessageQueue());
+        $this->app->getSession()->set('application.queue', $this->app->getMessageQueue());
 
-        header('Content-Type: application/json');
+        $this->app->setHeader('Content-Type', 'application/json');
+        $this->app->sendHeaders();
 
-        echo new JsonResponse(array('redirect' => $redirect_url), "", !$result);
+        echo new JsonResponse(['redirect' => $redirect_url], '', !$result);
 
-        exit();
+        $this->app->close();
     }
 
     public function repair()
@@ -104,8 +98,8 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        $user = Factory::getUser();
-        $cid = $this->input->get('cid', array(), 'array');
+        $user = $this->app->getIdentity();
+        $cid = $this->input->get('cid', [], 'array');
 
         // Access checks.
         if (!$user->authorise('core.create', 'com_jce')) {
@@ -140,8 +134,8 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        $user = Factory::getUser();
-        $ids = $this->input->get('cid', array(), 'array');
+        $user = $this->app->getIdentity();
+        $ids = $this->input->get('cid', [], 'array');
 
         // Access checks.
         if (!$user->authorise('core.create', 'com_jce')) {

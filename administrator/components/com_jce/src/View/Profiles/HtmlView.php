@@ -11,7 +11,6 @@ namespace Joomla\Component\Jce\Administrator\View\Profiles;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
@@ -19,12 +18,10 @@ use Joomla\CMS\MVC\View\GenericDataException;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\Toolbar\ToolbarFactoryInterface;
 
 /**
- * View class for a list of releases.
+ * View class for a list of profiles.
  *
  * @since  1.5
  */
@@ -66,14 +63,6 @@ class HtmlView extends BaseHtmlView
     public $activeFilters;
 
     /**
-     * Is this view an Empty State
-     *
-     * @var  boolean
-     * @since 4.0.0
-     */
-    private $isEmptyState = false;
-
-    /**
      * Display the view.
      *
      * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -82,11 +71,13 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null)
     {
-        $this->state = $this->get('State');
-        $this->items = $this->get('Items');
-        $this->pagination = $this->get('Pagination');
-        $this->filterForm = $this->get('FilterForm');
-        $this->activeFilters = $this->get('ActiveFilters');
+        $model = $this->getModel();
+
+        $this->items         = $model->getItems();
+        $this->pagination    = $model->getPagination();
+        $this->state         = $model->getState();
+        $this->filterForm    = $model->getFilterForm();
+        $this->activeFilters = $model->getActiveFilters();
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
@@ -94,8 +85,8 @@ class HtmlView extends BaseHtmlView
         }
 
         if (!\count($this->items)) {
-            $link = HTMLHelper::link(Route::_('index.php?option=com_jce&task=profiles.repair&' . Session::getFormToken() . '=1'), Text::_('WF_DB_CREATE_RESTORE'), array('class' => 'wf-profiles-repair'));
-            Factory::getApplication()->enqueueMessage(Text::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
+            $link = HTMLHelper::link(Route::_('index.php?option=com_jce&task=profiles.repair&' . Session::getFormToken() . '=1'), Text::_('WF_DB_CREATE_RESTORE'), ['class' => 'wf-profiles-repair']);
+            $this->app->enqueueMessage(Text::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
         }
 
         // We don't need toolbar in the modal layout.
@@ -115,17 +106,11 @@ class HtmlView extends BaseHtmlView
      */
     protected function addToolbar()
     {
-        $user = Factory::getApplication()->getIdentity();
+        $user = $this->getCurrentUser();
 
         ToolbarHelper::title('JCE - ' . Text::_('WF_PROFILES'), 'users');
 
-        $document = $this->getDocument();
-
-        if (method_exists($document, 'getToolbar')) {
-            $toolbar = $document->getToolbar();
-        } else {
-            $toolbar = Toolbar::getInstance('toolbar');
-        }
+        $toolbar = $this->getDocument()->getToolbar();
 
         if ($user->authorise('jce.profiles', 'com_jce')) {
             $toolbar->addNew('profile.add');
@@ -133,12 +118,12 @@ class HtmlView extends BaseHtmlView
 
             // Instantiate a new JLayoutFile instance and render the layout
             $layout = new FileLayout('toolbar.uploadprofile');
-            $toolbar->appendButton('Custom', $layout->render(array()), 'upload');
+            $toolbar->appendButton('Custom', $layout->render([]), 'upload');
 
             ToolbarHelper::custom('profiles.export', 'download', 'download', 'WF_PROFILES_EXPORT', true);
 
-            $toolbar->publish('plugins.publish', 'JTOOLBAR_ENABLE')->listCheck(true);
-            $toolbar->unpublish('plugins.unpublish', 'JTOOLBAR_DISABLE')->listCheck(true);
+            $toolbar->publish('profiles.publish', 'JTOOLBAR_ENABLE')->listCheck(true);
+            $toolbar->unpublish('profiles.unpublish', 'JTOOLBAR_DISABLE')->listCheck(true);
 
             $toolbar->delete('profiles.delete')
                 ->message('JGLOBAL_CONFIRM_DELETE')

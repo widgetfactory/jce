@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     Wfx.JCE
  * @subpackage  JCE Admin
@@ -9,9 +10,8 @@
 
 namespace Joomla\Component\Jce\Administrator\Model;
 
+use Exception;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
 
@@ -31,20 +31,25 @@ class ProfilesModel extends ListModel
      *
      * @param   array  $config  An optional associative array of configuration settings.
      *
-     * @see     JControllerLegacy
      * @since   1.6
      */
-    public function __construct($config = array())
+    public function __construct($config = [])
     {
         if (empty($config['filter_fields'])) {
-            $config['filter_fields'] = array(
-                'id', 'id',
-                'name', 'name',
-                'checked_out', 'checked_out',
-                'checked_out_time', 'checked_out_time',
-                'published', 'published',
-                'ordering', 'ordering',
-            );
+            $config['filter_fields'] = [
+                'id',
+                'id',
+                'name',
+                'name',
+                'checked_out',
+                'checked_out',
+                'checked_out_time',
+                'checked_out_time',
+                'published',
+                'published',
+                'ordering',
+                'ordering',
+            ];
         }
 
         parent::__construct($config);
@@ -67,7 +72,7 @@ class ProfilesModel extends ListModel
         // Load the parameters.
         $params = ComponentHelper::getParams('com_jce');
         $this->setState('params', $params);
-        
+
         parent::populateState($ordering, $direction);
     }
 
@@ -89,32 +94,32 @@ class ProfilesModel extends ListModel
         // Compile the store id.
         $id .= ':' . $this->getState('filter.search');
         $id .= ':' . $this->getState('filter.published');
-		$id .= ':' . $this->getState('filter.components');
+        $id .= ':' . $this->getState('filter.components');
 
         return parent::getStoreId($id);
     }
 
     /**
-	 * Method to get an array of data items.
-	 *
-	 * @return  mixed  An array of data items on success, false on failure.
-	 *
-	 * @since   1.6
-	 */
-	public function getItems()
-	{
+     * Method to get an array of data items.
+     *
+     * @return  mixed  An array of data items on success, false on failure.
+     *
+     * @since   1.6
+     */
+    public function getItems()
+    {
         $items = parent::getItems();
 
         // Filter by device
         $device = $this->getState('filter.device');
-        
+
         // Filter by component
         $components = $this->getState('filter.components');
-        
-        // Filter by user groups
-		$usergroups = $this->getState('filter.usergroups');
 
-        $items = array_filter($items, function($item) use ($device, $components, $usergroups) {
+        // Filter by user groups
+        $usergroups = $this->getState('filter.usergroups');
+
+        $items = array_filter($items, function ($item) use ($device, $components, $usergroups) {
             $state = true;
 
             if ($device) {
@@ -134,26 +139,25 @@ class ProfilesModel extends ListModel
 
         // Get a storage key.
         $store = $this->getStoreId();
-        
+
         // update cache store
         $this->cache[$store] = $items;
 
         return $items;
-	}
+    }
 
     /**
      * Build an SQL query to load the list data.
      *
-     * @return  JDatabaseQuery
+     * @return  \Joomla\Database\DatabaseQuery
      *
      * @since   1.6
      */
     protected function getListQuery()
     {
         // Create a new query object.
-        $db = $this->getDbo();
+        $db    = $this->getDatabase();
         $query = $db->getQuery(true);
-        $user = Factory::getUser();
 
         // Select the required fields from the table.
         $query->select(
@@ -172,23 +176,19 @@ class ProfilesModel extends ListModel
         )->join('LEFT', $db->quoteName('#__users', 'uc'), $db->quoteName('uc.id') . ' = ' . $db->quoteName('a.checked_out'));
 
         // Filter by published state
-		$published = $this->getState('filter.published');
+        $published = $this->getState('filter.published');
 
-		if (is_numeric($published))
-		{
-			$query->where($db->quoteName('a.published') . ' = ' . (int) $published);
-		}
-		elseif ($published === '')
-		{
-			$query->where('(' . $db->quoteName('a.published') . ' = 0 OR ' . $db->quoteName('a.published') . ' = 1)');
+        if (is_numeric($published)) {
+            $query->where($db->quoteName('a.published') . ' = ' . (int) $published);
+        } elseif ($published === '') {
+            $query->where('(' . $db->quoteName('a.published') . ' = 0 OR ' . $db->quoteName('a.published') . ' = 1)');
         }
 
         // Filter by area
-		$area = (int) $this->getState('filter.area');
+        $area = (int) $this->getState('filter.area');
 
-		if ($area)
-		{
-			$query->where($db->quoteName('a.area') . ' = ' . (int) $area);
+        if ($area) {
+            $query->where($db->quoteName('a.area') . ' = ' . (int) $area);
         }
 
         // Filter by search in title
@@ -217,12 +217,10 @@ class ProfilesModel extends ListModel
         $file = JPATH_ADMINISTRATOR . '/components/com_jce/data/profiles.xml';
 
         if (!is_file($file)) {
-            $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
 
         if (!ProfilesHelper::processImport($file)) {
-            $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
 
