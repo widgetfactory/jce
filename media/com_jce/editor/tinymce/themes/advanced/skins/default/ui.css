@@ -2786,8 +2786,7 @@ select.mceNativeListBox {
 .mceModalBody .mceModalContainer {
     overflow: hidden;
     max-width: 100%;
-    /*height: auto;*/
-    height: 100%;
+    height: auto;
     line-height: 0;
     /*border-radius: 2px;*/
     border-radius: 4px;
@@ -3027,6 +3026,12 @@ select.mceNativeListBox {
 
 .mceModal .mce-modal-portrait-768 {
     max-width: 768px;
+}
+
+.mceModal .mce-modal-landscape-full .mceModalContainer,
+.mceModal .mce-modal-portrait-768 .mceModalContainer,
+.mceModal .mce-modal-portrait-full .mceModalContainer {
+    height: 100%;
 }
 
 .mceModal .mce-modal-landscape-full .mceModalContentIframe,
