@@ -1,7 +1,8 @@
 import Content from './Content';
 
-const each = tinymce.each, SaxParser = tinymce.html.SaxParser;
-let htmlSchema, xmlSchema, blockElements = [];
+const each = tinymce.each;
+
+let htmlSchema, shortEndedElements = {}, booleanAttributes = {};
 
 function init(editor) {
     htmlSchema = new tinymce.html.Schema({
@@ -9,18 +10,202 @@ function init(editor) {
         invalid_elements: editor.settings.invalid_elements
     });
 
-    xmlSchema = new tinymce.html.Schema({
-        verify_html: false
+    each(editor.schema.getShortEndedElements(), function (_shortEnded, name) {
+        shortEndedElements[name.toLowerCase()] = true;
     });
 
-    // store block elements from schema map
-    each(editor.schema.getBlockElements(), function (block, blockName) {
-        blockElements.push(blockName);
+    each(editor.schema.getBoolAttrs(), function (_boolAttr, name) {
+        booleanAttributes[name.toLowerCase()] = true;
+    });
+}
+
+function canKeepCode(editor, type) {
+    if (editor.settings.validate === false) {
+        return true;
+    }
+
+    return !!editor.getParam('code_allow_' + type);
+}
+
+/**
+ * Check whether a tag is a defined invalid element
+ * @param {Object} editor
+ * @param {String} name
+ */
+function isInvalidElement(editor, name) {
+    var invalid_elements = editor.settings.invalid_elements.split(',');
+    return tinymce.inArray(invalid_elements, name) !== -1;
+}
+
+/**
+ * Check if a tag is an XML element - not part of the HTML Schema, but is also not a defined invalid element
+ * @param {Object} editor
+ * @param {String} name
+ */
+function isXmlElement(editor, name) {
+    return !htmlSchema.isValid(name) && !isInvalidElement(editor, name);
+}
+
+/**
+ * Check that the element or attribute is valid
+ * @param {Object} editor
+ * @param {String} tag
+ * @param {String} attr
+ */
+function isValid(editor, tag, attr) {
+    if (isXmlElement(editor, tag)) {
+        return true;
+    }
+
+    if (editor.settings.validate === false) {
+        return true;
+    }
+
+    return editor.schema.isValid(tag, attr);
+}
+
+/**
+ * Recursively sanitize a DOM node to a string, filtering invalid tags/attributes and event handlers.
+ * @param {Object} editor
+ * @param {Node} node
+ * @param {Boolean} raw
+ */
+function sanitizeNode(editor, node, raw) {
+    const html = [];
+
+    switch (node.nodeType) {
+        case 1: {
+            const tagName = node.nodeName.toLowerCase();
+
+            if (!isValid(editor, tagName)) {
+                return '';
+            }
+
+            html.push('<', tagName);
+
+            for (let { name, value } of Array.from(node.attributes)) {
+                if (!isValid(editor, tagName, name)) {
+                    continue;
+                }
+
+                if (!editor.settings.allow_event_attributes && name.startsWith('on')) {
+                    continue;
+                }
+
+                if (booleanAttributes[name]) {
+                    if (value === '' || value === 'true' || value === name) {
+                        html.push(' ', name);
+                        continue;
+                    }
+                }
+
+                html.push(' ', name, '="', editor.dom.encode(value, true), '"');
+            }
+
+            if (shortEndedElements[tagName]) {
+                if (editor.settings.schema === 'html5-strict') {
+                    html.push('>');
+                } else {
+                    html.push(' />');
+                }
+            } else {
+                html.push('>');
+
+                for (let child of Array.from(node.childNodes)) {
+                    html.push(sanitizeNode(editor, child, raw));
+                }
+
+                html.push('</', tagName, '>');
+            }
+
+            break;
+        }
+
+        case 3: {
+            var text = node.nodeValue;
+            text = raw ? text : editor.dom.encode(text, true);
+            html.push(text);
+            break;
+        }
+
+        case 5: {
+            html.push('<![CDATA[', editor.dom.encode(node.nodeValue, true), ']]>');
+            break;
+        }
+
+        case 8: {
+            html.push('<!--', editor.dom.encode(node.nodeValue, true), '-->');
+            break;
+        }
+    }
+
+    return html.join('');
+}
+
+/**
+ * Validate xml code using DOMParser. Removes event attributes if required, and validates nested html using the editor schema.
+ * @param {Object} editor
+ * @param {String} xml
+ */
+function validateXml(editor, xml) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(xml, 'text/xml');
+    return sanitizeNode(editor, doc.documentElement, true);
+}
+
+/**
+ * Detect and process xml tags
+ * @param {Object} editor
+ * @param {String} content
+ */
+function processXML(editor, content) {
+    return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+        tag = tag.toLowerCase();
+
+        if (tag === 'svg' && editor.settings.code_allow_svg_in_xml === false) {
+            return match;
+        }
+
+        if (tag === 'math' && editor.settings.code_allow_mathml_in_xml === false) {
+            return match;
+        }
+
+        if (!isXmlElement(editor, tag)) {
+            return match;
+        }
+
+        if (editor.settings.code_validate_xml !== false) {
+            match = validateXml(editor, match);
+        }
+
+        return Content.createHtml(editor, match, 'xml');
+    });
+}
+
+/**
+ * Detect and process sourcerer shortcode
+ * @param {Object} editor
+ * @param {String} html
+ */
+function processSourcerer(editor, html) {
+    if (html.indexOf('{/source}') === -1) {
+        return html;
+    }
+
+    return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
+        if (match.charAt(0) === '<' || match.charAt(0) === '"') {
+            return match;
+        }
+
+        match = editor.dom.decode(match);
+
+        return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + editor.dom.encode(match) + '</pre>';
     });
 }
 
 /**
  * Detect and process shortcode in an html string
+ * @param {Object} editor
  * @param {String} html
  * @param {String} tagName
  */
@@ -37,14 +222,22 @@ function processShortcode(editor, html, tagName) {
 
     // process as sourcerer
     if (html.indexOf('{/source}') != -1) {
-        html = processSourcerer(html);
+        html = processSourcerer(editor, html);
     }
 
     // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
     tagName = tagName || 'span';
 
+    // Temporarily protect shortcodes inside attribute values so they are not processed
+    var attrPlaceholders = [];
+
+    html = html.replace(/=("[^"]*\{[^"]*"|'[^']*\{[^']*')/g, function (match) {
+        attrPlaceholders.push(match);
+        return '="__SHORTCODE_ATTR_' + (attrPlaceholders.length - 1) + '__"';
+    });
+
     // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
-    return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
+    html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
         // already wrapped in a tag
         if (match.charAt(0) === '<') {
             return match;
@@ -52,72 +245,31 @@ function processShortcode(editor, html, tagName) {
 
         return Content.createShortcodeHtml(editor, match, tagName);
     });
-}
 
-function processOnInsert(editor, value, node) {
-    if (/\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
-        var tagName;
-
-        // an empty block container, so insert as <pre>
-        /*if (node && ed.dom.isEmpty(node)) {
-          tagName = 'pre';
-        }*/
-
-        value = processShortcode(value, tagName);
-    }
-
-    if (editor.settings.code_allow_custom_xml) {
-        value = processXML(editor, value);
-    }
-
-    // script / style
-    if (/<(\?|script|style)/.test(value)) {
-        // process script and style tags
-        value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
-            if (!editor.getParam('code_allow_' + type)) {
-                return '';
-            }
-
-            match = match.replace(/<br[^>]*?>/gi, '\n');
-
-            return Content.createHtml(match, type);
+    // Restore protected attribute values
+    if (attrPlaceholders.length) {
+        html = html.replace(/="__SHORTCODE_ATTR_(\d+)__"/g, function (_match, index) {
+            return attrPlaceholders[parseInt(index, 10)];
         });
-
-        value = processPhp(editor, value);
     }
 
-    return value;
+    return html;
 }
 
-function processSourcerer(editor, html) {
-    // quick check to see if we should proceed
-    if (html.indexOf('{/source}') === -1) {
-        return html;
-    }
-
-    // shortcode blocks eg: {source}html{/source}
-    return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
-        // already wrapped in a tag
-        if (match.charAt(0) === '<' || match.charAt(0) === '"') {
-            return match;
-        }
-
-        match = editor.dom.decode(match);
-
-        return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + editor.dom.encode(match) + '</pre>';
-    });
-}
-
+/**
+ * Detect and process PHP code in an html string
+ * @param {Object} editor
+ * @param {String} content
+ */
 function processPhp(editor, content) {
-    // Remove PHP if not enabled
-    if (!editor.settings.code_allow_php) {
+    if (!canKeepCode(editor, 'php')) {
         return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
     }
 
     // PHP code within an attribute
-    content = content.replace(/\="([^"]+?)"/g, function (a, b) {
-        b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-            return '[php:start]' + editor.dom.encode(z) + '[php:end]';
+    content = content.replace(/\="([^"]+?)"/g, function (_a, b) {
+        b = b.replace(/<\?(php)?(.+?)\?>/gi, function (_x, _y, z) {
+            return '__php_start__' + editor.dom.encode(z) + '__php_end__';
         });
 
         return '="' + b + '"';
@@ -125,16 +277,16 @@ function processPhp(editor, content) {
 
     // PHP code within a textarea
     if (/<textarea/.test(content)) {
-        content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-            c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-                return '[php:start]' + editor.dom.encode(z) + '[php:end]';
+        content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (_a, b, c) {
+            c = c.replace(/<\?(php)?(.+?)\?>/gi, function (_x, _y, z) {
+                return '__php_start__' + editor.dom.encode(z) + '__php_end__';
             });
             return '<textarea' + b + '>' + c + '</textarea>';
         });
     }
 
     // PHP code within an element
-    content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
+    content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (_a, b, _c, d, e) {
         if (b.charAt(b.length) !== ' ') {
             b += ' ';
         }
@@ -143,143 +295,64 @@ function processPhp(editor, content) {
 
     // PHP code other
     content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
-        // replace newlines with <br /> so they are preserved inside the span
         match = match.replace(/\n/g, '<br />');
-
-        // create code span
-        return Content.createHtml(editor, match, 'php', 'span');
+        return Content.createHtml(editor, match, 'php');
     });
 
     return content;
 }
 
 /**
- * Check whether a tag is a defined invalid element
- * @param {String} name
+ * Process content on insert (paste or programmatic insert)
+ * @param {Object} editor
+ * @param {String} value
+ * @param {Node} node
  */
-function isInvalidElement(editor, name) {
-    var invalid_elements = editor.settings.invalid_elements.split(',');
-    return tinymce.inArray(invalid_elements, name) !== -1;
-}
-
-/**
- * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
- * @param {String} name
- */
-function isXmlElement(name) {
-    return !htmlSchema.isValid(name) && !isInvalidElement(name);
-}
-
-/**
- * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
- * @param {String} xml
- */
-function validateXml(editor, xml) {
-    var html = [];
-
-    // check that the element or attribute is not invalid
-    function isValid(tag, attr) {
-        // is an xml tag and is not an invalid_element
-        if (isXmlElement(tag)) {
-            return true;
-        }
-
-        return editor.schema.isValid(tag, attr);
+function processOnInsert(editor, value, _node) {
+    if (/\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
+        var tagName;
+        value = processShortcode(editor, value, tagName);
     }
 
-    new SaxParser({
-        start: function (name, attrs, empty) {
-            if (!isValid(name)) {
-                return;
+    // process custom xml if enabled, otherwise it will be removed by the parser
+    if (canKeepCode(editor, 'custom_xml')) {
+        value = processXML(editor, value);
+    }
+
+    // script / style
+    if (/<(\?|script|style)/.test(value)) {
+        // process script and style tags, remove if not allowed
+        value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+            if (!canKeepCode(editor, type)) {
+                return '';
             }
 
-            html.push('<', name);
+            match = match.replace(/<br[^>]*?>/gi, '\n');
 
-            var attr;
+            return Content.createHtml(editor, match, type);
+        });
 
-            if (attrs) {
-                for (var i = 0, len = attrs.length; i < len; i++) {
-                    attr = attrs[i];
+        value = processPhp(editor, value);
+    }
 
-                    if (!isValid(name, attr.name)) {
-                        continue;
-                    }
-
-                    // skip event attributes
-                    if (editor.settings.allow_event_attributes !== true) {
-                        if (attr.name.indexOf('on') === 0) {
-                            continue;
-                        }
-                    }
-
-                    html.push(' ', attr.name, '="', editor.dom.encode('' + attr.value, true), '"');
-                }
+    // link[rel="stylesheet"]
+    if (/<link[^>]*?rel="stylesheet"[^>]*?>/gi.test(value)) {
+        value = value.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, function (match) {
+            if (!canKeepCode(editor, 'style')) {
+                return '';
             }
 
-            if (!empty) {
-                html[html.length] = '>';
-            } else {
-                html[html.length] = ' />';
-            }
-        },
+            return Content.createHtml(editor, match, 'link');
+        });
+    }
 
-        text: function (value) {
-            if (value.length > 0) {
-                html[html.length] = value;
-            }
-        },
-
-        end: function (name) {
-            if (!isValid(name)) {
-                return;
-            }
-
-            html.push('</', name, '>');
-        },
-
-        cdata: function (text) {
-            html.push('<![CDATA[', text, ']]>');
-        },
-
-        comment: function (text) {
-            html.push('<!--', text, '-->');
-        }
-    }, xmlSchema).parse(xml);
-
-    return html.join('');
-}
-
-/**
- * Detect and process xml tags
- * @param {String} content
- */
-function processXML(editor, content) {
-    return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
-        // check if svg is allowed
-        if (tag === 'svg' && editor.settings.code_allow_svg_in_xml === false) {
-            return match;
-        }
-
-        // check if mathml is allowed
-        if (tag === 'math' && editor.settings.code_allow_mathml_in_xml === false) {
-            return match;
-        }
-
-        // check if the tags is part of the generic HTML schema, return if true
-        if (!isXmlElement(tag)) {
-            return match;
-        }
-
-        // validate xml by default to remove event attributes and invalid nested html
-        if (editor.settings.code_validate_xml !== false) {
-            match = validateXml(editor, match);
-        }
-
-        return Content.createHtml(editor, match, 'xml');
-    });
+    return value;
 }
 
 export default {
     init,
-    processOnInsert
+    processOnInsert,
+    processShortcode,
+    processPhp,
+    processXML
 };
