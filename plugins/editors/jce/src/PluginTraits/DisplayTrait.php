@@ -177,6 +177,11 @@ trait DisplayTrait
             $width .= 'px';
         }
 
+        // default height value is no longer available in Joomla 6.1
+        if (empty($height)) {
+            $height = '500';
+        }
+
         if (is_numeric($height)) {
             $height .= 'px';
         }
