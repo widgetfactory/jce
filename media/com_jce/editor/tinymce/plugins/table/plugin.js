@@ -3093,7 +3093,7 @@
 
                 ed.addVisual();
 
-                return Event.cancel(e); // Prevent IE auto save warning
+                Event.cancel(e); // Prevent IE auto save warning
             }
 
             if (n === "table_insert") {
