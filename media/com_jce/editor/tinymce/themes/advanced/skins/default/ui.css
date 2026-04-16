@@ -440,6 +440,38 @@
 input::placeholder,
 textarea::placeholder {
     margin: 0 0.5em;
+}
+
+.mceDefaultSkin .mceNotationMenu {
+    white-space: normal;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 14em;
+    justify-content: space-between;
+    gap: 0.25em;
+}
+
+.mceDefaultSkin .mceNotationMenu button:hover,
+.mceDefaultSkin .mceNotationMenu button:focus {
+    background: #eee;
+    border-radius: 3px;
+}
+
+.mceDefaultSkin .mceNotationMenu .mce_notation_icon {
+    display: inline-block;
+    font-family: "Apple Symbols", "Segoe UI Symbol", "FreeSerif", serif;
+    font-size: 32px;
+    line-height: 1em;
+    width: auto;
+    height: auto;
+    width: 1em;
+    height: 1em;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    appearance: none;
+    background: #fff;
 }/* Menu */
 
 .mceMenu {
