@@ -162,9 +162,15 @@ class WFBrowserPlugin extends WFMediaManager
     {
         $app = Factory::getApplication();
 
-        $folder = $app->input->getPath('mediafolder', '');
+        $folder = $app->input->getString('mediafolder', '');
 
         if ($folder) {
+            // trim the path of leading : if any
+            $folder = trim($folder, ':');
+
+            // trim the path of leading and trailing /
+            $folder = trim($folder, '/');
+        
             // clean
             $folder = WFUtility::cleanPath($folder);
 
@@ -272,9 +278,47 @@ class WFBrowserPlugin extends WFMediaManager
 
             $prefix = '';
 
+            // check if this is a root folder by looking for a : character at the start of the path value
+            $isRootFolder = strpos($folder, ':') === 0;
+
+            // trim the path of leading : if any
+            $folder = trim($folder, ':');
+
+            // trim the path of leading and trailing /
+            $folder = trim($folder, '/');
+
             if (empty($config['dir'])) {
                 $root = array('path' => '');
             } else {
+                if ($isRootFolder) {
+                    if (!empty($folder)) {
+                        $tmpPath = $folder . '/';
+
+                        foreach ($config['dir'] as $key => $store) {
+                            $base = trim($store['path'], '/');
+
+                            // strip any variable segments (eg: $usergroup) to get the comparable literal prefix
+                            $literalBase = trim(preg_replace('/\/?\$.*$/', '', $base), '/');
+
+                            // check if the folder is within this directory store path
+                            if (!empty($literalBase) && ($folder === $literalBase || strpos($tmpPath, $literalBase . '/') === 0)) {
+                                $hash = md5($folder);
+
+                                $config['dir'] = array(
+                                    $hash => array(
+                                        'label' => '',
+                                        'path'  => $folder,
+                                    ),
+                                );
+
+                                break;
+                            }
+                        }
+                    }
+
+                    return $config;
+                }
+
                 // get the first directory store prefix
                 $prefix = key($config['dir']);
                 // get the first directory store
