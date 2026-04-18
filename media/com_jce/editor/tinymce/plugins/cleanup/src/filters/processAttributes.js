@@ -9,7 +9,8 @@ export function processAttributes(editor, content) {
         return content;
     }
 
-    var doc = document.createElement('div');
+    var inert = document.implementation.createHTMLDocument('');
+    var doc = inert.createElement('div');
     doc.innerHTML = content;
     var nodes = doc.querySelectorAll('*');
     var i = nodes.length;
