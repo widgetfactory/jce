@@ -3967,6 +3967,8 @@
     function inlineBoundary() {
       var marker;
 
+      var Zwsp = tinymce.text.Zwsp;
+
       function isBr(node) {
         return node && node.nodeType == 1 && node.nodeName == 'BR';
       }
@@ -3977,6 +3979,66 @@
         }
 
         return dom.isChildOf(container, node);
+      }
+
+      // Returns the relevant anchor/inline node if the cursor is at its start, null otherwise.
+      // When node is null, also detects the case where the cursor is positioned just before
+      // an <a> (Chrome places it outside the element at the start boundary).
+      function isCursorAtStart(rng, container, node) {
+        if (node) {
+          if (rng.startOffset > 1) {
+            return null;
+          }
+
+          if (container.nodeType == 3) {
+            var walker = new TreeWalker(node, node), current;
+            while ((current = walker.next())) {
+              if (current.nodeType == 3 && current.data.length > 0) {
+                return current === container ? node : null;
+              }
+            }
+          } else if (container.nodeType == 1 && container === node) {
+            return node;
+          }
+
+          return null;
+        }
+
+        // node is null: cursor is outside any inline — check if it sits just before an <a>.
+        if (container.nodeType == 3 && rng.startOffset >= container.data.length) {
+          var nextSib = container.nextSibling;
+          if (nextSib && nextSib.nodeName === 'A') {
+            return nextSib;
+          }
+        } else if (container.nodeType == 1) {
+          var nextChild = container.childNodes[rng.startOffset];
+          if (nextChild && nextChild.nodeName === 'A') {
+            return nextChild;
+          }
+        }
+
+        return null;
+      }
+
+      function isCursorAtEnd(rng, container, node) {
+        var atEnd = false;
+
+        if (container.nodeType == 3 && isChildOf(container, node)) {
+          var text = container.data, effectiveEnd = text.length;
+          // A trailing ZWSP may be present as a typing anchor — treat the position
+          // immediately before it as the logical end of the element.        
+          if (effectiveEnd > 0 && Zwsp.isZwsp(text[text.length - 1])) {
+            effectiveEnd = text.length - 1;
+          }
+
+          atEnd = effectiveEnd > 0 && rng.startOffset >= effectiveEnd;
+
+        } else if (container.nodeType == 1 && container == node && rng.startOffset >= container.childNodes.length) {
+          // Browser represented the end-of-element position using the element node itself as the container
+          atEnd = true;
+        }
+
+        return atEnd;
       }
 
       // Detects if the cursor is at the end of a matching inline element and repositions it
@@ -4000,17 +4062,7 @@
           return false;
         }
 
-        var atEnd = false;
-
-        if (container.nodeType == 3 && isChildOf(container, node)) {
-          var text = container.data;
-          atEnd = text && text.length && rng.startOffset == text.length;
-        } else if (container.nodeType == 1 && container == node && rng.startOffset >= container.childNodes.length) {
-          // Browser represented the end-of-element position using the element node itself as the container
-          atEnd = true;
-        }
-
-        if (!atEnd) {
+        if (!isCursorAtEnd(rng, container, node)) {
           return false;
         }
 
@@ -4060,23 +4112,7 @@
           return false;
         }
 
-        var atStart = false;
-
-        if (container.nodeType == 3 && rng.startOffset === 0) {
-          // Confirm this is the first non-empty text node within the inline element
-          var walker = new TreeWalker(node, node);
-          var current;
-          while ((current = walker.next())) {
-            if (current.nodeType == 3 && current.data.length > 0) {
-              atStart = current === container;
-              break;
-            }
-          }
-        } else if (container.nodeType == 1 && container == node && rng.startOffset === 0) {
-          atStart = true;
-        }
-
-        if (!atStart) {
+        if (!isCursorAtStart(rng, container, node)) {
           return false;
         }
 
@@ -4102,22 +4138,28 @@
       editor.onKeyDown.addToTop(function (editor, e) {
         dom.remove(marker);
 
-        if (e.keyCode == VK.RIGHT) {
-          if (relocateCursorOutOfInline('a,span[data-mce-item="font"]')) {
-            e.preventDefault();
-            editor.nodeChanged();
-          }
-        } else if (e.keyCode == VK.LEFT) {
-          if (relocateCursorBeforeInline('a,span[data-mce-item="font"]')) {
-            e.preventDefault();
-            editor.nodeChanged();
-          }
-        } else if (e.keyCode == VK.ENTER) {
-          // Reposition cursor outside the <a> before EnterKey splits the block,
-          // but do NOT prevent default — Enter should still create a new paragraph.
-          if (relocateCursorOutOfInline('a,span[data-mce-item="font"]')) {
-            editor.nodeChanged();
-          }
+        switch (e.keyCode) {
+          case VK.RIGHT:
+            if (relocateCursorOutOfInline('a,span[data-mce-item="font"]')) {
+              e.preventDefault();
+              editor.nodeChanged();
+            }
+            break;
+
+          case VK.LEFT:
+            if (relocateCursorBeforeInline('a,span[data-mce-item="font"]')) {
+              e.preventDefault();
+              editor.nodeChanged();
+            }
+            break;
+
+          case VK.ENTER:
+            // Reposition cursor outside the <a> before EnterKey splits the block,
+            // but do NOT prevent default — Enter should still create a new paragraph.
+            if (relocateCursorOutOfInline('a,span[data-mce-item="font"]')) {
+              editor.nodeChanged();
+            }
+            break;
         }
       });
 
@@ -4128,6 +4170,98 @@
           editor.nodeChanged();
         }
       });
+
+      // Chrome positions the cursor at {<a>, childNodes.length} or {lastTextNode, data.length}
+      // when the caret is at the visual end of a link. At those ambiguous boundary positions,
+      // Chrome inserts typed text outside the <a> even though the range appears to be inside.
+      // beforeinput fires just before the insertion and selection changes made here ARE
+      // respected — redirect the caret to the end of the last text node inside the link.
+      if (tinymce.isWebKit) {
+        editor.onBeforeInput.add(function (editor, e) {
+
+          if (e.inputType !== 'insertText') {
+            return;
+          }
+
+          var rng = selection.getRng();
+
+          if (!rng || !rng.collapsed) {
+            return;
+          }
+
+          var container = rng.startContainer;
+          var anchor = dom.getParent(container, 'a');
+
+          // isCursorAtStart handles both cases: cursor inside the anchor at its start,
+          // and cursor positioned just before the anchor (Chrome's start-boundary placement).
+          // Pass anchor (may be null) — when null it performs the outside-detection itself.
+          var startAnchor = isCursorAtStart(rng, container, anchor);
+
+          if (startAnchor) {
+            anchor = startAnchor;
+          } else if (!anchor) {
+            return;
+          }
+
+          // Find the first/last text node and redirect the insertion point there.
+          var textNode = null;
+          var walker = new TreeWalker(anchor, anchor), current;
+
+          var anchorOffset;
+
+          if (startAnchor) {
+            // Walk FORWARD to find the first text node inside the anchor.
+            while ((current = walker.next())) {
+              if (current.nodeType == 3) {
+                textNode = current;
+                break;
+              }
+            }
+
+            if (!textNode) {
+              return;
+            }
+
+            if (textNode.data.length === 0 || textNode.data[0] !== Zwsp.ZWSP) {
+              textNode.data = Zwsp.ZWSP + textNode.data;
+            }
+
+            // Position AFTER the leading ZWSP so Chrome inserts text inside the link
+            // (symmetric to the end case which positions BEFORE the trailing ZWSP).
+            anchorOffset = 1;
+          } else if (isCursorAtEnd(rng, container, anchor)) {
+            while ((current = walker.next())) {
+              if (current.nodeType == 3) {
+                textNode = current;
+              }
+            }
+
+            if (!textNode) {
+              return;
+            }
+
+            // Chrome treats {textNode, data.length} as an ambiguous boundary and may insert
+            // typed text outside the inline element even though the range says inside.
+            // Insert a ZWSP anchor at the end of the text so the cursor sits one position
+            // before it — no longer at the boundary — and Chrome inserts before the ZWSP
+            // (= inside the element).
+            if (textNode.data.length === 0 || textNode.data[textNode.data.length - 1] !== Zwsp.ZWSP) {
+              textNode.data += Zwsp.ZWSP;
+            }
+
+            anchorOffset = textNode.data.length - 1; // position before the ZWSP
+          }
+
+          if (!textNode) {
+            return;
+          }
+
+          var newRng = dom.createRng();
+          newRng.setStart(textNode, anchorOffset);
+          newRng.setEnd(textNode, anchorOffset);
+          selection.setRng(newRng);
+        });
+      }
 
       // Safety net: clear the boundary attribute on arrow keyUp in case nodeChange
       // didn't fire (e.g. browser-native exit from the element without a synthetic
@@ -4144,15 +4278,45 @@
         }
       });
 
+      function stripZwspFromAnchor(anchor) {
+        var walker = new TreeWalker(anchor, anchor), current;
+        var firstText = null, lastText = null;
+
+        while ((current = walker.next())) {
+          if (current.nodeType == 3) {
+            if (!firstText) {
+              firstText = current;
+            }
+            lastText = current;
+          }
+        }
+
+        if (firstText && firstText.data) {
+          firstText.data = Zwsp.trim(firstText.data);
+        }
+
+        if (lastText && lastText.data) {
+          lastText.data = Zwsp.trim(lastText.data);
+        }
+
+      }
+
       // Track cursor position: mark the inline boundary element the cursor is inside,
       // and clear the mark when the cursor leaves.
       editor.onNodeChange.add(function (editor, cm, node) {
-        // Clear any previously marked elements
+        var inlineNode = dom.getParent(node, 'a,span[data-mce-item="font"]');
+
+        if (tinymce.isWebKit) {
+          each(dom.select('a[data-mce-selected="inline-boundary"]', dom.getRoot()), function (el) {
+            if (el !== inlineNode) {
+              stripZwspFromAnchor(el);
+            }
+          });
+        }
+
         each(dom.select('[data-mce-selected="inline-boundary"]', dom.getRoot()), function (el) {
           dom.setAttrib(el, 'data-mce-selected', null);
         });
-
-        var inlineNode = dom.getParent(node, 'a,span[data-mce-item="font"]');
 
         if (inlineNode) {
           dom.setAttrib(inlineNode, 'data-mce-selected', 'inline-boundary');
@@ -27957,7 +28121,7 @@
      */
     tinymce.dom.Serializer = function (settings, dom, schema) {
       var self = this,
-        onPreProcess, onPostProcess, isIE = tinymce.isIE,
+        onPreProcess, onPostProcess,
         each = tinymce.each,
         htmlParser;
 
@@ -28321,35 +28485,28 @@
          * @param {Object} args Arguments option that gets passed to event handlers.
          */
         serialize: function (node, args) {
-          var impl, doc, oldDoc, htmlSerializer, content, rootNode;
+          var impl, doc, oldDoc, htmlSerializer, rootNode;
 
-          // Explorer won't clone contents of script and style and the
-          // selected index of select elements are cleared on a clone operation.
-          if (isIE && dom.select('script,style,select,map').length > 0) {
-            content = node.innerHTML;
-            node = node.cloneNode(false);
-            dom.setHTML(node, content);
-          } else {
-            node = node.cloneNode(true);
-          }
+          var clonedNode = node.cloneNode(true);
 
           // Nodes needs to be attached to something in WebKit/Opera
           // This fix will make DOM ranges and make Sizzle happy!
           impl = document.implementation;
+
           if (impl.createHTMLDocument) {
             // Create an empty HTML document
             doc = impl.createHTMLDocument("");
 
             // Add the element or it's children if it's a body element to the new document
-            each(node.nodeName == 'BODY' ? node.childNodes : [node], function (node) {
+            each(clonedNode.nodeName == 'BODY' ? clonedNode.childNodes : [clonedNode], function (node) {
               doc.body.appendChild(doc.importNode(node, true));
             });
 
             // Grab first child or body element for serialization
-            if (node.nodeName != 'BODY') {
-              node = doc.body.firstChild;
+            if (clonedNode.nodeName != 'BODY') {
+              clonedNode = doc.body.firstChild;
             } else {
-              node = doc.body;
+              clonedNode = doc.body;
             }
 
             // set the new document in DOMUtils so createElement etc works
@@ -28367,12 +28524,12 @@
 
           // Pre process
           if (!args.no_events) {
-            args.node = node;
+            args.node = clonedNode;
             onPreProcess.dispatch(self, args);
           }
 
           // Parse HTML
-          rootNode = htmlParser.parse(tinymce.trim(args.getInner ? node.innerHTML : dom.getOuterHTML(node)), args);
+          rootNode = htmlParser.parse(tinymce.trim(args.getInner ? clonedNode.innerHTML : dom.getOuterHTML(clonedNode)), args);
           trimTrailingBr(rootNode);
 
           // Serialize HTML
@@ -38483,6 +38640,7 @@
   		focus: 'onFocus',
   		focusin: 'onFocusIn',
   		focusout: 'onFocusOut',
+  		beforeinput: 'onBeforeInput',
   		input: 'onInput',
   		compositionstart: 'onCompositionStart'
   	};
@@ -39325,6 +39483,14 @@
   			'onFocusOut',
 
   			/**
+  			 * Fires before the editor input is changed.
+  			 *
+  			 * @event onBeforeInput
+  			 * @param {tinymce.Editor} sender Editor instance.
+  			 */
+  			'onBeforeInput',
+
+  			/**
   			 * Fires when the editor input is changed.
   			 *
   			 * @event onInput
@@ -39478,6 +39644,7 @@
   			selectionchange: 'onSelectionChange',
   			focusin: 'onFocusIn',
   			focusout: 'onFocusOut',
+  			beforeinput: 'onBeforeInput',
   			input: 'onInput'
   		};
 
@@ -49140,7 +49307,8 @@
           return content;
       }
 
-      var doc = document.createElement('div');
+      var inert = document.implementation.createHTMLDocument('');
+      var doc = inert.createElement('div');
       doc.innerHTML = content;
       var nodes = doc.querySelectorAll('*');
       var i = nodes.length;
