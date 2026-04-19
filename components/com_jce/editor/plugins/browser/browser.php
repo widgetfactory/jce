@@ -311,12 +311,12 @@ class WFBrowserPlugin extends WFMediaManager
                                     ),
                                 );
 
-                                break;
+                                return $config;
                             }
                         }
                     }
 
-                    return $config;
+                    // no match found - fall through and treat as relative to dir value
                 }
 
                 // get the first directory store prefix
