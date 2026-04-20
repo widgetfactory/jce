@@ -110,6 +110,10 @@ class Document
             $this->setName($config['name']);
         }
 
+        if (isset($config['language'])) {
+            $this->setLanguage($config['language']);
+        }
+
         $this->setConfiguration($config);
     }
 
@@ -277,7 +281,7 @@ class Document
                     $pre = $base . '/' . $type;
                     break;
                 case 'pro':
-                    $pre = Uri::root(true) . '/media/plg_system_jcepro/editor/';
+                    $pre = Uri::root(true) . '/media/plg_system_jcepro/editor';
                     break;
                 case 'jquery':
                     $pre = $base . 'vendor/jquery/' . $type;
@@ -314,6 +318,11 @@ class Document
         }
 
         return $url[$signature];
+    }
+
+    public function getScripts()
+    {
+        return $this->scripts;
     }
 
     /**
