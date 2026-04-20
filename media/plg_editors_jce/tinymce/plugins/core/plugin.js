@@ -132,13 +132,16 @@
       }
     };
 
-    // special quotes shortcute
+    // special quotes shortcut
     ed.onKeyUp.add(function (ed, e) {
       // eslint-disable-next-line dot-notation
       var map = quoteMap[ed.settings.language] || quoteMap['en'];
 
-      if ((e.key == '\u0022' || e.key == '\u0027') && e.shiftKey && e.ctrlKey) {
-        var value = map[e.key];
+      // Gate on the quote characters, then use e.shiftKey to disambiguate.
+      // e.key alone is unreliable: on macOS, Ctrl+' (no Shift) reports e.key as '"',
+      // so both shortcuts would produce double quotes. e.shiftKey is the stable signal.
+      if (e.ctrlKey && !e.altKey && (e.key == '\u0022' || e.key == '\u0027')) {
+        var value = map[e.shiftKey ? '\u0022' : '\u0027'];
 
         ed.undoManager.add();
         ed.execCommand('mceReplaceContent', false, value);
