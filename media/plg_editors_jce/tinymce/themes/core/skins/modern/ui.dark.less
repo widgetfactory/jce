@@ -338,6 +338,26 @@
                     background-color: var(--wfe-modal-bg);
                     color: var(--wfe-color);
                 }
+
+                input[type="checkbox"],
+                input[type="radio"] {
+
+                    &:checked,
+                    &:indeterminate {
+                        background-color: #337ab7;
+                        border-color: transparent;
+
+                        &:disabled {
+                            background-color: var(--wfe-bg-hover);
+                            border-color: var(--wfe-border-color);
+                        }
+                    }
+
+                    &:disabled {
+                        background-color: var(--wfe-bg-hover);
+                        border-color: var(--wfe-border-color);
+                    }
+                }
             }
 
             .mceModalClose {
@@ -401,6 +421,30 @@
 
             .mceComboBox {
                 border-color: var(--wfe-border-color);
+            }
+        }
+
+        .mceTabs {
+            background-color: var(--wfe-modal-bg);
+            border-color: var(--wfe-modal-border-color);
+
+            li {
+                background-color: var(--wfe-modal-bg);
+
+                &.mceActive {
+                    border-color: var(--wfe-modal-border-color);
+                    border-bottom-color: transparent;
+                }
+            }
+        }
+    }
+
+    .mceMenuItem {
+        .mceModalBody {
+
+            .mceModalContent,
+            .mceModalFooter {
+                background-color: var(--wfe-modal-bg);
             }
         }
     }

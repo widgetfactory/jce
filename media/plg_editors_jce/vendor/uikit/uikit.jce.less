@@ -1,93 +1,98 @@
 // out: uikit.min.css, sourcemap: false, compress: false
-@import "../../../../../../../uikit-wf/themes/almost-flat/uikit-customizer.less";
+@import "../../css/less/variables.less";
+@import "../../../../../uikit-wf/src/less/uikit.less";
+
+@import "../../../../../uikit-wf/src/less/components/placeholder.less";
+@import "../../../../../uikit-wf/src/less/components/tooltip.less";
 
 //
 // General
 //
 
-@global-border-radius: 2px;
+@global-border-radius: @border-radius-small;
 
 //
 // Typography
 //
-@global-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
-@global-link-color: #337ab7;
-@global-link-hover-color: #23527c;
-@global-font-size: 13px;
+
+@global-font-family: @font-family-ui;
+@global-link-color: @color-primary;
+@global-link-hover-color: @color-link-hover;
+@global-font-size: @font-size-base;
 
 //
 // Buttons, Navs & Badges
 //
 
-@global-primary-background: #337ab7;
-@global-success-background: #5cb85c;
-@global-warning-background: #f0ad4e;
-@global-danger-background: #d9534f;
+@global-primary-background: @color-primary;
+@global-success-background: @color-success;
+@global-warning-background: @color-warning;
+@global-danger-background: @color-danger;
 
 //
 // Controls
 //
 
-@global-height: 32px;
-@global-height-mini: 18px;
-@global-height-small: 20px;
-@global-height-large: 32px;
+@global-height: @row-height;
+@global-height-mini: @row-height-mini;
+@global-height-small: @row-height-small;
+@global-height-large: @row-height;
 
 //
 // Alert
 //
 
-@alert-background: #d9edf7;
-@alert-success-background: #dff0d8;
-@alert-success-color: #3c763d;
-@alert-color: #31708f;
-@alert-warning-background: #fcf8e7;
-@alert-warning-color: #8a6d3b;
-@alert-danger-color: #a94442;
-@alert-danger-background: #f2dede;
+@alert-background: @color-alert-bg;
+@alert-success-background: @color-alert-success-bg;
+@alert-success-color: @color-success-dark;
+@alert-color: @color-alert-text;
+@alert-warning-background: @color-alert-warning-bg;
+@alert-warning-color: @color-warning-dark;
+@alert-danger-color: @color-danger-dark;
+@alert-danger-background: @color-alert-danger-bg;
 
 //
 // Base
 //
 
-@base-selection-background: #337ab7;
-@base-code-color: #c7254e;
-@base-mark-background: #fcf8e1;
-@base-em-color: #444444;
+@base-selection-background: @color-primary;
+@base-code-color: @color-code;
+@base-mark-background: @color-mark-bg;
+@base-em-color: @color-text;
 
 //
 // Block
 //
 
-@block-primary-background: #337ab7;
+@block-primary-background: @color-primary;
 
 //
 // Button
 //
 
-@button-primary-hover-background: #286090;
-@button-success-hover-background: #449d44;
-@button-danger-hover-background: #c9302c;
+@button-primary-hover-background: @color-primary-dark;
+@button-success-hover-background: @color-success-hover;
+@button-danger-hover-background: @color-danger-hover;
 
 //
 // Comment
 //
 
-@comment-primary-background: #d9edf7;
+@comment-primary-background: @color-alert-bg;
 
 //
 // Form
 //
 
-@form-advanced-checked-color: #337ab7;
-@form-success-border: #3c763d;
-@form-danger-border: #a94442;
-@form-danger-color: #d9534f;
-@form-success-color: #5cb85c;
-@form-focus-border: #66afe9;
-@form-padding: 2px 3px;
-@form-small-padding: 2px;
-@form-large-padding: 4px 3px;
+@form-advanced-checked-color: @color-primary;
+@form-success-border: @color-success-dark;
+@form-danger-border: @color-danger-dark;
+@form-danger-color: @color-danger;
+@form-success-color: @color-success;
+@form-focus-border: @color-focus;
+@form-padding: @ui-form-padding;
+@form-small-padding: @ui-form-padding-small;
+@form-large-padding: @ui-form-padding-large;
 
 //
 // Icon
@@ -99,10 +104,10 @@
 // Text
 //
 
-@text-primary-color: #337ab7;
-@text-success-color: #5cb85c;
-@text-warning-color: #f0ad4e;
-@text-danger-color: #d9534f;
+@text-primary-color: @color-primary;
+@text-success-color: @color-success;
+@text-warning-color: @color-warning;
+@text-danger-color: @color-danger;
 
 .hook-tab-hover() {
     text-decoration: none;
@@ -114,26 +119,29 @@
         text-decoration: underline;
     }
 }
+
 //
 // Comment
 //
 
-@comment-title-font-size:                       1.14rem;
-@comment-title-line-height:                     1.36rem;
+@comment-title-font-size:       @ui-comment-title-font-size;
+@comment-title-line-height:     @ui-comment-title-line-height;
 
-@comment-meta-font-size:                        0.78rem;
-@comment-meta-line-height:                      1.49rem;
+@comment-meta-font-size:        @ui-font-size-small;
+@comment-meta-line-height:      @ui-line-height-small;
 
 //
 // Tooltip
 //
-@tooltip-font-size:                             0.85rem;
-@tooltip-line-height:                           1.46rem;
+
+@tooltip-font-size:             @ui-tooltip-font-size;
+@tooltip-line-height:           @ui-tooltip-line-height;
 
 //
 // Text
 //
-@text-small-font-size:                          0.78rem;
-@text-small-line-height:                        1.49rem;
-@text-large-font-size:                          1.28rem;
-@text-large-line-height:                        1.32rem;
+
+@text-small-font-size:          @ui-font-size-small;
+@text-small-line-height:        @ui-line-height-small;
+@text-large-font-size:          @ui-font-size-large;
+@text-large-line-height:        @ui-line-height-large;
