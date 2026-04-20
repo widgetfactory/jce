@@ -19,7 +19,7 @@ use Wfe\Application\Application;
 use Wfe\Utility\Utility;
 use Wfe\Language\Language;
 
-class Plugin extends \Wfe\Editor\Plugin\Manager\AbstractManager
+class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 {
     protected $name = 'browser';
 
