@@ -106,7 +106,6 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         parent::display();
 
         $document = $this->getDocument();
-
         $browser = $this->getFileBrowser();
 
         $browser->display();
