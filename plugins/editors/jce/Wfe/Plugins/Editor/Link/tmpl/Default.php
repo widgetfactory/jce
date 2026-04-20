@@ -12,7 +12,8 @@
  use Joomla\CMS\Language\Text;
  use Joomla\CMS\Session\Session;
 
-$tabs = \Wfe\Document\Tabs::getInstance();
+$container = $this->getContainer();
+$tabs = $container->getTabs();
 
 ?>
 <form action="#" class="uk-form uk-form-horizontal">
