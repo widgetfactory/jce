@@ -516,6 +516,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $admin . '/tables',
             $admin . '/media',
 
+            $admin . '/layouts/joomla',
+
             $site . '/editor',
 
             $media . '/editor',
