@@ -30,3 +30,4 @@ JLoader::registerAlias('WFRequest', 'Wfe\\Http\\Request');
 JLoader::registerAlias('WFFileBrowser', 'Wfe\\Plugins\\Editor\\Browser\\Plugin');
 JLoader::registerAlias('WFUtility', 'Wfe\\Utility\\Utility');
 JLoader::registerAlias('WFFileSystemResult', 'Wfe\\Adapter\\Plugin\\Filesystem\\FilesystemResult');
+JLoader::registerAlias('WFJoomlaFileSystem', 'Wfe\\Compat\\WFJoomlaFileSystem');
