@@ -3967,114 +3967,403 @@
     function inlineBoundary() {
       var marker;
 
+      var Zwsp = tinymce.text.Zwsp;
+      var CaretPosition = tinymce.caret.CaretPosition;
+      var CaretContainer = tinymce.caret.CaretContainer;
+      var CaretWalker = tinymce.caret.CaretWalker;
+
       function isBr(node) {
         return node && node.nodeType == 1 && node.nodeName == 'BR';
       }
 
-      function isRootNode(node) {
-        return node == editor.dom.getRoot();
+      // Normalizes a CaretPosition so that a cursor sitting immediately after a
+      // leading ZWSP (offset 1) is treated as offset 0 for start-boundary checks,
+      // and a cursor sitting immediately before a trailing ZWSP (offset length-1)
+      // is treated as offset length for end-boundary checks.
+      function normalizePos(pos, forEnd) {
+        var container = pos.container(), offset = pos.offset();
+        if (container.nodeType == 3) {
+          if (!forEnd && CaretContainer.startsWithCaretContainer(container) && offset === 1) {
+            return new CaretPosition(container, 0);
+          }
+          if (forEnd && CaretContainer.endsWithCaretContainer(container) && offset === container.data.length - 1) {
+            return new CaretPosition(container, container.data.length);
+          }
+        }
+        return pos;
       }
 
-      function isLastChild(node) {
-        var parent = node.parentNode;
-
-        if (isRootNode(parent)) {
-          return true;
+      // Returns the relevant anchor/inline node if the cursor is at its start, null otherwise.
+      // Uses CaretWalker so boundary detection is browser-agnostic — no offset-value assumptions.
+      // When node is null, also detects the cursor positioned just before an <a>.
+      function isCursorAtStart(rng, container, node) {
+        if (node) {
+          var pos = normalizePos(CaretPosition.fromRangeStart(rng), false);
+          return new CaretWalker(node).prev(pos) === null ? node : null;
         }
 
-        if (node == parent.lastChild) {
-          return true;
+        // node is null: cursor is outside any inline — check if it sits just before an <a>.
+        if (container.nodeType == 3 && rng.startOffset >= container.data.length) {
+          var nextSib = container.nextSibling;
+          if (nextSib && nextSib.nodeName === 'A') {
+            return nextSib;
+          }
+        } else if (container.nodeType == 1) {
+          var nextChild = container.childNodes[rng.startOffset];
+          if (nextChild && nextChild.nodeName === 'A') {
+            return nextChild;
+          }
         }
 
-        if (node.nextSibling && isBr(node.nextSibling) && node.nextSibling == parent.lastChild) {
-          return true;
-        }
-
-        return false;
+        return null;
       }
 
-      function isEmpty(node) {
-        // is linebreak or empty whitespace text node
-        return isBr(node) || (node && node.nodeType == 3 && /^[ \t\r\n]*$/.test(node.nodeValue));
+      function isCursorAtEnd(rng, container, node) {
+        var pos = normalizePos(CaretPosition.fromRangeStart(rng), true);
+        return new CaretWalker(node).next(pos) === null;
       }
 
-      function isChildOf(container, node) {
-        if (node.lastChild && node.lastChild.nodeType == 1) {
-          node = node.lastChild;
-        }
-
-        return dom.isChildOf(container, node);
-      }
-
-      function moveCursorToEnd(e) {
+      // Detects if the cursor is at the end of a matching inline element and repositions it
+      // just outside. Returns true if the cursor was moved, false otherwise.
+      function relocateCursorOutOfInline(selector) {
         var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
 
         if (!node || node == editor.dom.getRoot()) {
-          return;
+          return false;
         }
 
-        node = dom.getParent(node, 'a,span[data-mce-item="font"]');
+        node = dom.getParent(node, selector);
+
+        // When the browser positions the cursor in the element node itself (not a text child),
+        // container.parentNode won't be the element, so also try from container directly.
+        if (!node && container.nodeType == 1) {
+          node = dom.getParent(container, selector);
+        }
 
         if (!node) {
+          return false;
+        }
+
+        if (!isCursorAtEnd(rng, container, node)) {
+          return false;
+        }
+
+        marker = dom.create('span', { 'data-mce-type': "caret" }, '\uFEFF');
+
+        // Insert marker immediately after the inline element (or after a trailing <br>).
+        // Always use insertAdjacentElement so the marker lands right after the <a>,
+        // whether it's the last child of its block or has siblings following it.
+        var insertAfter = node;
+        if (isBr(node.nextSibling) && node.nextSibling == node.parentNode.lastChild) {
+          insertAfter = node.nextSibling;
+        }
+
+        insertAfter.insertAdjacentElement('afterend', marker);
+
+        var newRng = dom.createRng();
+        newRng.setStartAfter(marker);
+        newRng.setEndAfter(marker);
+        newRng.collapse();
+        selection.setRng(newRng);
+
+        dom.remove(marker);
+
+        // nodeChange may not fire reliably after a programmatic range move, so
+        // clear the boundary marker directly now that the cursor has left the element.
+        dom.setAttrib(node, 'data-mce-selected', null);
+
+        return true;
+      }
+
+      // Detects if the cursor is at the start of a matching inline element and repositions it
+      // just before it. Returns true if the cursor was moved, false otherwise.
+      function relocateCursorBeforeInline(selector) {
+        var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
+
+        if (!node || node == editor.dom.getRoot()) {
+          return false;
+        }
+
+        node = dom.getParent(node, selector);
+
+        if (!node && container.nodeType == 1) {
+          node = dom.getParent(container, selector);
+        }
+
+        if (!node) {
+          return false;
+        }
+
+        if (!isCursorAtStart(rng, container, node)) {
+          return false;
+        }
+
+        marker = dom.create('span', { 'data-mce-type': "caret" }, '\uFEFF');
+        node.insertAdjacentElement('beforebegin', marker);
+
+        var newRng = dom.createRng();
+        newRng.setStartBefore(marker);
+        newRng.setEndBefore(marker);
+        selection.setRng(newRng);
+
+        dom.remove(marker);
+
+        // nodeChange may not fire reliably after a programmatic range move, so
+        // clear the boundary marker directly now that the cursor has left the element.
+        dom.setAttrib(node, 'data-mce-selected', null);
+
+        return true;
+      }
+
+      function ensureZwspAtAnchorStart() {
+        var rng = selection.getRng();
+
+        if (!rng || !rng.collapsed) {
           return;
         }
 
-        if (!isLastChild(node) && !isEmpty(node.nextSibling)) {
+        var container = rng.startContainer;
+        var anchor = dom.getParent(container, 'a');
+
+        // Find the anchor to act on: either we're inside one, or just before one.
+        var targetAnchor = anchor || isCursorAtStart(rng, container, null);
+
+        if (!targetAnchor) {
           return;
         }
 
-        function moveToMarker() {
-          var rng = dom.createRng();
-          rng.setStartAfter(marker);
-          rng.setEndAfter(marker);
-          rng.collapse();
-          selection.setRng(rng);
-        }
-
-        if (container.nodeType == 3 && isChildOf(container, node)) {
-          var text = container.data;
-
-          if (text && text.length && rng.startOffset == text.length) {
-            marker = dom.create('span', { 'data-mce-type': "caret" }, '\uFEFF');
-
-            if (dom.isBlock(node.parentNode) && isLastChild(node)) {
-              node.parentNode.appendChild(marker);
-
-              moveToMarker();
-              dom.remove(marker);
-
-            } else {
-              // edge case for - some text <a href="link.html">link</a><br />
-              if (isBr(node.nextSibling) && node.nextSibling == node.parentNode.lastChild) {
-                node = node.nextSibling;
-              }
-
-              node.insertAdjacentElement('afterend', marker);
-
-              moveToMarker();
-              dom.remove(marker);
-            }
-
-            // cancel event
-            e.preventDefault();
-
-            editor.nodeChanged();
+        // If inside the anchor, confirm the cursor is at the logical start using
+        // CaretWalker — no offset-value assumptions, works across Chrome and Gecko.
+        if (anchor) {
+          var pos = normalizePos(CaretPosition.fromRangeStart(rng), false);
+          if (new CaretWalker(anchor).prev(pos) !== null) {
+            return; // not at start
           }
+        }
+
+        // Ensure a leading ZWSP exists in the first text node so the browser treats
+        // the position as unambiguously inside the element when typing.
+        var firstText = null;
+        var walker = new TreeWalker(targetAnchor, targetAnchor), current;
+        while ((current = walker.next())) {
+          if (current.nodeType == 3) {
+            firstText = current;
+            break;
+          }
+        }
+
+        if (!firstText) {
+          return;
+        }
+
+        if (!Zwsp.isZwsp(firstText.data[0])) {
+          firstText.data = Zwsp.ZWSP + firstText.data;
+        }
+
+        // Only reposition the cursor when we're inside the anchor — if we came from
+        // outside (adjacentAnchor case), the cursor stays in the adjacent text.
+        if (anchor) {
+          var newRng = dom.createRng();
+          newRng.setStart(firstText, 1);
+          newRng.setEnd(firstText, 1);
+          selection.setRng(newRng);
         }
       }
 
-      // Attempt to move caret after a container element like <a> or <code> (use addToTop to remove marker before EnterKey)
+      // Move caret past inline boundary elements on Left/Right Arrow and Enter.
+      // Uses addToTop so the marker is removed before any other keydown handler runs.
       editor.onKeyDown.addToTop(function (editor, e) {
         dom.remove(marker);
 
-        if (e.keyCode == VK.RIGHT) {
-          moveCursorToEnd(e);
+        switch (e.keyCode) {
+          case VK.RIGHT:
+            if (relocateCursorOutOfInline('a,span[data-mce-item="font"]')) {
+              e.preventDefault();
+              editor.nodeChanged();
+            }
+            break;
+
+          case VK.LEFT:
+            if (relocateCursorBeforeInline('a,span[data-mce-item="font"]')) {
+              e.preventDefault();
+              editor.nodeChanged();
+            }
+            break;
+
+          case VK.ENTER:
+            // Reposition cursor outside the <a> before EnterKey splits the block,
+            // but do NOT prevent default — Enter should still create a new paragraph.
+            if (relocateCursorOutOfInline('a,span[data-mce-item="font"]')) {
+              editor.nodeChanged();
+            }
+            break;
         }
       });
 
       editor.onMouseUp.add(function (editor, e) {
         dom.remove(marker);
-        moveCursorToEnd(e);
+
+        ensureZwspAtAnchorStart();
+
+        if (relocateCursorOutOfInline('span[data-mce-item="font"]')) {
+          editor.nodeChanged();
+        }
+      });
+
+      // Chrome positions the cursor at {<a>, childNodes.length} or {lastTextNode, data.length}
+      // when the caret is at the visual end of a link. At those ambiguous boundary positions,
+      // Chrome inserts typed text outside the <a> even though the range appears to be inside.
+      // beforeinput fires just before the insertion and selection changes made here ARE
+      // respected — redirect the caret to the end of the last text node inside the link.
+      if (tinymce.isWebKit) {
+        editor.onBeforeInput.add(function (editor, e) {
+
+          if (e.inputType !== 'insertText') {
+            return;
+          }
+
+          var rng = selection.getRng();
+
+          if (!rng || !rng.collapsed) {
+            return;
+          }
+
+          var container = rng.startContainer;
+          var anchor = dom.getParent(container, 'a');
+
+          // isCursorAtStart handles both cases: cursor inside the anchor at its start,
+          // and cursor positioned just before the anchor (Chrome's start-boundary placement).
+          // Pass anchor (may be null) — when null it performs the outside-detection itself.
+          var startAnchor = isCursorAtStart(rng, container, anchor);
+
+          if (startAnchor) {
+            anchor = startAnchor;
+          } else if (!anchor) {
+            return;
+          }
+
+          startAnchor = false;
+
+          // Find the first/last text node and redirect the insertion point there.
+          var textNode = null;
+          var walker = new TreeWalker(anchor, anchor), current;
+
+          var anchorOffset;
+
+          if (startAnchor) {
+            // Walk FORWARD to find the first text node inside the anchor.
+            while ((current = walker.next())) {
+              if (current.nodeType == 3) {
+                textNode = current;
+                break;
+              }
+            }
+
+            if (!textNode) {
+              return;
+            }
+
+            if (textNode.data.length === 0 || textNode.data[0] !== Zwsp.ZWSP) {
+              textNode.data = Zwsp.ZWSP + textNode.data;
+            }
+
+            // Position AFTER the leading ZWSP so Chrome inserts text inside the link
+            // (symmetric to the end case which positions BEFORE the trailing ZWSP).
+            anchorOffset = 1;
+          } else if (isCursorAtEnd(rng, container, anchor)) {
+            while ((current = walker.next())) {
+              if (current.nodeType == 3) {
+                textNode = current;
+              }
+            }
+
+            if (!textNode) {
+              return;
+            }
+
+            // Chrome treats {textNode, data.length} as an ambiguous boundary and may insert
+            // typed text outside the inline element even though the range says inside.
+            // Insert a ZWSP anchor at the end of the text so the cursor sits one position
+            // before it — no longer at the boundary — and Chrome inserts before the ZWSP
+            // (= inside the element).
+            if (textNode.data.length === 0 || textNode.data[textNode.data.length - 1] !== Zwsp.ZWSP) {
+              textNode.data += Zwsp.ZWSP;
+            }
+
+            anchorOffset = textNode.data.length - 1; // position before the ZWSP
+          }
+
+          if (!textNode) {
+            return;
+          }
+
+          var newRng = dom.createRng();
+          newRng.setStart(textNode, anchorOffset);
+          newRng.setEnd(textNode, anchorOffset);
+          selection.setRng(newRng);
+        });
+      }
+
+      // Safety net: clear the boundary attribute on arrow keyUp in case nodeChange
+      // didn't fire (e.g. browser-native exit from the element without a synthetic
+      // nodeChange being dispatched).
+      editor.onKeyUp.add(function (_editor, e) {
+        if (e.keyCode === VK.LEFT || e.keyCode === VK.RIGHT) {
+          ensureZwspAtAnchorStart();
+
+          var currentNode = selection.getStart(true);
+
+          if (!dom.getParent(currentNode, 'a,span[data-mce-item="font"]')) {
+            each(dom.select('[data-mce-selected="inline-boundary"]', dom.getRoot()), function (el) {
+              dom.setAttrib(el, 'data-mce-selected', null);
+            });
+          }
+        }
+      });
+
+      function stripZwspFromAnchor(anchor) {
+        var walker = new TreeWalker(anchor, anchor), current;
+        var firstText = null, lastText = null;
+
+        while ((current = walker.next())) {
+          if (current.nodeType == 3) {
+            if (!firstText) {
+              firstText = current;
+            }
+            lastText = current;
+          }
+        }
+
+        if (firstText && firstText.data) {
+          firstText.data = Zwsp.trim(firstText.data);
+        }
+
+        if (lastText && lastText.data) {
+          lastText.data = Zwsp.trim(lastText.data);
+        }
+
+      }
+
+      // Track cursor position: mark the inline boundary element the cursor is inside,
+      // and clear the mark when the cursor leaves.
+      editor.onNodeChange.add(function (editor, cm, node) {
+        var inlineNode = dom.getParent(node, 'a,span[data-mce-item="font"]');
+
+        if (tinymce.isWebKit) {
+          each(dom.select('a[data-mce-selected="inline-boundary"]', dom.getRoot()), function (el) {
+            if (el !== inlineNode) {
+              stripZwspFromAnchor(el);
+            }
+          });
+        }
+
+        each(dom.select('[data-mce-selected="inline-boundary"]', dom.getRoot()), function (el) {
+          dom.setAttrib(el, 'data-mce-selected', null);
+        });
+
+        if (inlineNode) {
+          dom.setAttrib(inlineNode, 'data-mce-selected', 'inline-boundary');
+        }
       });
     }
 
@@ -10360,6 +10649,7 @@
    * DOMPurify v3.x (c) Cure53 — licensed under MPL-2.0 (compatible with GPL-2+).
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
+
 
   /**
    * Copyright (c) 2025 Ryan Demmer
@@ -16915,9 +17205,6 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-        if (predicate && predicate(node)) {
-          break;
-        }
 
         parents.push(node);
       }
@@ -19929,6 +20216,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -19968,10 +20256,10 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    hasData: hasData,
+    clearData: clearData,
     getData: getData$1,
-    setData: setData,
-    clearData: clearData
+    hasData: hasData,
+    setData: setData
   });
 
   /**
@@ -19983,6 +20271,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var noop = function () { };
 
@@ -20203,7 +20492,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {}, css = '';
+    var div = DOM.create('div', {}, content), styles = {};
 
     styles = tinymce.extend(styles, parseCSS(content));
 
@@ -20223,16 +20512,10 @@
         return true;
       }
       
-      if (!embed_stylesheet) {
+      {
         DOM.setStyles(DOM.select(selector, div), value.styles);
-      } else {
-        css += value.text;
       }
     });
-
-    if (css) {
-      div.prepend(DOM.create('style', { type: 'text/css' }, css));
-    }
 
     content = div.innerHTML;
 
@@ -20416,6 +20699,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$5 = tinymce.each;
 
@@ -20788,6 +21072,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$4 = tinymce.each,
       Schema = tinymce.html.Schema,
@@ -21726,6 +22011,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var each$3 = tinymce.each;
   var isIE$1 = tinymce.isIE || tinymce.isIE12;
 
@@ -21861,12 +22147,9 @@
           // remove empty spans
       } else {
           each$3(dom.select('span', o.node), function (n) {
-              // remove span without children eg: <span></span>
-              if (!n.hasChildNodes()) {
-                  // remove span without attributes
-                  if (dom.getAttribs(n).length === 0) {
-                      dom.remove(n, 1);
-                  }
+              // remove span without attributes eg: <span>foo</span> or <span></span>
+              if (dom.getAttribs(n).length === 0) {
+                  dom.remove(n, n.hasChildNodes() ? 1 : 0);
               }
           });
       }
@@ -22151,6 +22434,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$2 = tinymce.each,
       VK = tinymce.VK,
@@ -22833,6 +23117,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var RangeUtils = tinymce.dom.RangeUtils, Delay = tinymce.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23213,6 +23498,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var Dispatcher = tinymce.util.Dispatcher;
 
@@ -25924,7 +26210,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, time || 0);
+        }, 0);
       };
 
       func.stop = function () {
@@ -27878,7 +28164,7 @@
      */
     tinymce.dom.Serializer = function (settings, dom, schema) {
       var self = this,
-        onPreProcess, onPostProcess, isIE = tinymce.isIE,
+        onPreProcess, onPostProcess,
         each = tinymce.each,
         htmlParser;
 
@@ -28242,35 +28528,28 @@
          * @param {Object} args Arguments option that gets passed to event handlers.
          */
         serialize: function (node, args) {
-          var impl, doc, oldDoc, htmlSerializer, content, rootNode;
+          var impl, doc, oldDoc, htmlSerializer, rootNode;
 
-          // Explorer won't clone contents of script and style and the
-          // selected index of select elements are cleared on a clone operation.
-          if (isIE && dom.select('script,style,select,map').length > 0) {
-            content = node.innerHTML;
-            node = node.cloneNode(false);
-            dom.setHTML(node, content);
-          } else {
-            node = node.cloneNode(true);
-          }
+          var clonedNode = node.cloneNode(true);
 
           // Nodes needs to be attached to something in WebKit/Opera
           // This fix will make DOM ranges and make Sizzle happy!
           impl = document.implementation;
+
           if (impl.createHTMLDocument) {
             // Create an empty HTML document
             doc = impl.createHTMLDocument("");
 
             // Add the element or it's children if it's a body element to the new document
-            each(node.nodeName == 'BODY' ? node.childNodes : [node], function (node) {
+            each(clonedNode.nodeName == 'BODY' ? clonedNode.childNodes : [clonedNode], function (node) {
               doc.body.appendChild(doc.importNode(node, true));
             });
 
             // Grab first child or body element for serialization
-            if (node.nodeName != 'BODY') {
-              node = doc.body.firstChild;
+            if (clonedNode.nodeName != 'BODY') {
+              clonedNode = doc.body.firstChild;
             } else {
-              node = doc.body;
+              clonedNode = doc.body;
             }
 
             // set the new document in DOMUtils so createElement etc works
@@ -28288,12 +28567,12 @@
 
           // Pre process
           if (!args.no_events) {
-            args.node = node;
+            args.node = clonedNode;
             onPreProcess.dispatch(self, args);
           }
 
           // Parse HTML
-          rootNode = htmlParser.parse(tinymce.trim(args.getInner ? node.innerHTML : dom.getOuterHTML(node)), args);
+          rootNode = htmlParser.parse(tinymce.trim(args.getInner ? clonedNode.innerHTML : dom.getOuterHTML(clonedNode)), args);
           trimTrailingBr(rootNode);
 
           // Serialize HTML
@@ -30694,8 +30973,12 @@
             }
 
             if (item.settings.onclick) {
-              item.settings.onclick(e);
-              self.close();
+              var state = item.settings.onclick(e);
+
+              if (state !== false) {
+                self.close();
+              }
+
             }
 
             self.clearFilterInput();
@@ -31005,10 +31288,12 @@
               }
             } else {
               if (self.settings.onselect) {
-                self.settings.onselect.call(self, e.target);
-              }
+                var state = self.settings.onselect.call(self, e.target);
 
-              self.hideMenu();
+                if (state !== false) {
+                  self.hideMenu();
+                }
+              }
             }
 
             item = item || self.items[id];
@@ -33259,6 +33544,7 @@
           activate = function (evt) {
             if (!self.isDisabled()) {
               s.onclick(evt, self.value);
+
               Event.cancel(evt);
 
               self.hideMenu();
@@ -38397,6 +38683,7 @@
   		focus: 'onFocus',
   		focusin: 'onFocusIn',
   		focusout: 'onFocusOut',
+  		beforeinput: 'onBeforeInput',
   		input: 'onInput',
   		compositionstart: 'onCompositionStart'
   	};
@@ -39239,6 +39526,14 @@
   			'onFocusOut',
 
   			/**
+  			 * Fires before the editor input is changed.
+  			 *
+  			 * @event onBeforeInput
+  			 * @param {tinymce.Editor} sender Editor instance.
+  			 */
+  			'onBeforeInput',
+
+  			/**
   			 * Fires when the editor input is changed.
   			 *
   			 * @event onInput
@@ -39392,6 +39687,7 @@
   			selectionchange: 'onSelectionChange',
   			focusin: 'onFocusIn',
   			focusout: 'onFocusOut',
+  			beforeinput: 'onBeforeInput',
   			input: 'onInput'
   		};
 
@@ -44415,7 +44711,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if (split && (!format.mixed || !isBlock(formatRoot))) {
+            if ((!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -44430,7 +44726,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container, true);
+          return wrapAndSplit(findFormatRoot(container), container, container);
         }
 
         function unwrap(start) {
@@ -48390,13 +48686,16 @@
         }
       };
 
-      // special quotes shortcute
+      // special quotes shortcut
       ed.onKeyUp.add(function (ed, e) {
         // eslint-disable-next-line dot-notation
         var map = quoteMap[ed.settings.language] || quoteMap['en'];
 
-        if ((e.key == '\u0022' || e.key == '\u0027') && e.shiftKey && e.ctrlKey) {
-          var value = map[e.key];
+        // Gate on the quote characters, then use e.shiftKey to disambiguate.
+        // e.key alone is unreliable: on macOS, Ctrl+' (no Shift) reports e.key as '"',
+        // so both shortcuts would produce double quotes. e.shiftKey is the stable signal.
+        if (e.ctrlKey && !e.altKey && (e.key == '\u0022' || e.key == '\u0027')) {
+          var value = map[e.shiftKey ? '\u0022' : '\u0027'];
 
           ed.undoManager.add();
           ed.execCommand('mceReplaceContent', false, value);
@@ -48850,7 +49149,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(delim || ',');
+      return (str || '').split(',');
   }
 
   // list of HTML tags
@@ -49051,7 +49350,8 @@
           return content;
       }
 
-      var doc = document.createElement('div');
+      var inert = document.implementation.createHTMLDocument('');
+      var doc = inert.createElement('div');
       doc.innerHTML = content;
       var nodes = doc.querySelectorAll('*');
       var i = nodes.length;
@@ -49338,1231 +49638,1198 @@
     this.paddEmptyTags = padding.paddEmptyTags;
   });
 
-  /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * JCE is free software. This version may have been modified pursuant
-   * to the GNU General Public License, and as distributed it includes or
-   * is derivative of works licensed under the GNU General Public License or
-   * other free or open source software licenses.
-   */
-
-  /*global tinymce:true */
-
   (function () {
-    var each = tinymce.each,
-      Node = tinymce.html.Node,
-      VK = tinymce.VK,
-      DomParser = tinymce.html.DomParser,
-      Serializer = tinymce.html.Serializer;
 
-    function createTextNode(value, raw) {
-      var text = new Node('#text', 3);
-      text.raw = raw !== false ? true : false;
-      text.value = value;
+      /* eslint-disable */
 
-      return text;
-    }
-
-    function isOnlyChild(node) {
-      var parent = node.parent,
-        child = parent.firstChild,
-        count = 0;
-
-      if (child) {
-        do {
-          if (child.type === 1) {
-            // Ignore bogus elements
-            if (child.attributes.map['data-mce-type'] || child.attributes.map['data-mce-bogus']) {
-              continue;
-            }
-
-            if (child === node) {
-              continue;
-            }
-
-            count++;
-          }
-
-          // Keep comments
-          if (child.type === 8) {
-            count++;
-          }
-
-          // Keep non whitespace text nodes
-          if ((child.type === 3 && !/^[ \t\r\n]*$/.test(child.value))) {
-            count++;
-          }
-        } while ((child = child.next));
-      }
-
-      return count === 0;
-    }
-
-    tinymce.PluginManager.add('code', function (ed, url) {
-
-      function canKeepCode(type) {
-        if (ed.settings.validate === false) {
-          return true;
-        }
-
-        if (ed.getParam('code_allow_' + type)) {
-          return true;
-        }
-
-        return false;
-      }
-
-      var blockElements = [], inlineElements = [],
-        htmlSchema = new tinymce.html.Schema({
-          schema: 'mixed',
-          invalid_elements: ed.settings.invalid_elements
-        });
-
-      // should code blocks be used?
-      var code_blocks = ed.settings.code_use_blocks !== false;
-
-      // allow script URLS, eg: href="javascript:;"
-      if (ed.settings.code_allow_script) {
-        ed.settings.allow_script_urls = true;
-      }
-
-      var shortEndedElements = {};
-      var booleanAttributes = {};
-
-      ed.addCommand('InsertShortCode', function (ui, html) {
-        if (ed.settings.code_protect_shortcode) {
-          html = processShortcode(html, 'pre');
-
-          if (tinymce.is(html)) {
-            ed.execCommand('mceReplaceContent', false, html);
-          }
-        }
-
-        return false;
-      });
-
-      function processOnInsert(value, node) {
-        if (/\{.+\}/gi.test(value) && ed.settings.code_protect_shortcode) {
-          var tagName;
-
-          // an empty block container, so insert as <pre>
-          /*if (node && ed.dom.isEmpty(node)) {
-            tagName = 'pre';
-          }*/
-
-          value = processShortcode(value, tagName);
-        }
-
-        // process custom xml if enabled, otherwise it will be removed by the parser
-        if (canKeepCode('custom_xml')) {
-          value = processXML(value);
-        }
-
-        // script / style
-        if (/<(\?|script|style)/.test(value)) {
-          // process script and style tags, remove if not allowed
-          value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
-            if (!canKeepCode(type)) {
-              return '';
-            }
-
-            match = match.replace(/<br[^>]*?>/gi, '\n');
-
-            return createCodePre(match, type);
-          });
-
-          value = processPhp(value);
-        }
-
-        // link[rel="stylesheet"]
-        if (/<link[^>]*?rel="stylesheet"[^>]*?>/gi.test(value)) {
-          value = value.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, function (match) {
-            if (!canKeepCode('style')) {
-              return '';
-            }
-
-            return createCodePre(match, 'link');
-          });
-        }
-
-        return value;
-      }
+      const Node$1 = tinymce.html.Node;
 
       /**
-       * Detect and process shortcode in an html string
-       * @param {String} html
-       * @param {String} tagName
+       * Create a TinyMCE text node
+       * @param {String} value
+       * @param {Boolean} raw
        */
-      function processShortcode(html, tagName) {
-        // quick check to see if we should proceed
-        if (html.indexOf('{') === -1) {
-          return html;
-        }
-
-        // skip stuff like {1} etc.
-        if (html.charAt(0) == '{' && html.length < 3) {
-          return html;
-        }
-
-        // process as sourcerer
-        if (html.indexOf('{/source}') != -1) {
-          html = processSourcerer(html);
-        }
-
-        // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
-        tagName = tagName || 'span';
-
-        // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
-        return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
-          // already wrapped in a tag
-          if (match.charAt(0) === '<') {
-            return match;
-          }
-
-          return createShortcodePre(match, tagName);
-        });
-      }
-
-      function processSourcerer(html) {
-        // quick check to see if we should proceed
-        if (html.indexOf('{/source}') === -1) {
-          return html;
-        }
-
-        // shortcode blocks eg: {source}html{/source}
-        return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
-          // already wrapped in a tag
-          if (match.charAt(0) === '<' || match.charAt(0) === '"') {
-            return match;
-          }
-
-          match = ed.dom.decode(match);
-
-          return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + ed.dom.encode(match) + '</pre>';
-        });
-      }
-
-      function processPhp(content) {
-        // Remove PHP if not enabled
-        if (!canKeepCode('php')) {
-          return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
-        }
-
-        // PHP code within an attribute
-        content = content.replace(/\="([^"]+?)"/g, function (a, b) {
-          b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-            return '__php_start__' + ed.dom.encode(z) + '__php_end__';
-          });
-
-          return '="' + b + '"';
-        });
-
-        // PHP code within a textarea
-        if (/<textarea/.test(content)) {
-          content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-            c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-              return '__php_start__' + ed.dom.encode(z) + '__php_end__';
-            });
-            return '<textarea' + b + '>' + c + '</textarea>';
-          });
-        }
-
-        // PHP code within an element
-        content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
-          if (b.charAt(b.length) !== ' ') {
-            b += ' ';
-          }
-          return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
-        });
-
-        // PHP code other
-        content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
-          // replace newlines with <br /> so they are preserved inside the span
-          match = match.replace(/\n/g, '<br />');
-
-          // create code span
-          return createCodePre(match, 'php');
-        });
-
-        return content;
+      function createTextNode(value, raw) {
+          var text = new Node$1('#text', 3);
+          text.raw = raw !== false ? true : false;
+          text.value = value;
+          return text;
       }
 
       /**
-       * Check whether a tag is a defined invalid element
-       * @param {String} name
-       */
-      function isInvalidElement(name) {
-        var invalid_elements = ed.settings.invalid_elements.split(',');
-        return tinymce.inArray(invalid_elements, name) !== -1;
-      }
-
-      /**
-       * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
-       * @param {String} name
-       */
-      function isXmlElement(name) {
-        return !htmlSchema.isValid(name) && !isInvalidElement(name);
-      }
-
-      // check that the element or attribute is not invalid
-      function isValid(tag, attr) {
-        // is an xml tag and is not an invalid_element
-        if (isXmlElement(tag)) {
-          return true;
-        }
-
-        // skip validation
-        if (ed.settings.validate === false) {
-          return true;
-        }
-
-        return ed.schema.isValid(tag, attr);
-      }
-
-      function sanitizeNode(node, raw) {
-        const html = [];
-
-        switch (node.nodeType) {
-          case 1: {
-            const tagName = node.nodeName.toLowerCase();
-
-            // skip invalid elements
-            if (!isValid(tagName)) {
-              return "";
-            }
-
-            // open tag + attributes
-            html.push("<", tagName);
-
-            for (let { name, value } of Array.from(node.attributes)) {
-              // skip invalid attrs
-              if (!isValid(tagName, name)) {
-                continue;
-              }
-
-              // skip events
-              if (!ed.settings.allow_event_attributes && name.startsWith("on")) {
-                continue;
-              }
-
-              if (booleanAttributes[name]) {
-                // boolean attribute, so no value
-                if (value === "" || value === "true" || value === name) {
-                  html.push(" ", name);
-                  continue;
-                }
-              }
-
-              html.push(
-                " ",
-                name,
-                '="',
-                ed.dom.encode(value, true),
-                '"'
-              );
-            }
-
-            if (shortEndedElements[tagName]) {
-              // self-closing tag
-              if (ed.settings.schema === 'html5-strict') {
-                html.push(">");
-              } else {
-                html.push(" />");
-              }
-            } else {
-              html.push(">");
-
-              // recurse into children
-              for (let child of Array.from(node.childNodes)) {
-                html.push(sanitizeNode(child, raw));
-              }
-
-              // closing tag
-              html.push("</", tagName, ">");
-            }
-
-            break;
-          }
-
-          case 3: {
-            var text = node.nodeValue;
-
-            text = raw ? text : ed.dom.encode(text, true);
-
-            html.push(text);
-            break;
-          }
-
-          case 5: {
-            html.push(
-              "<![CDATA[",
-              ed.dom.encode(node.nodeValue, true),
-              "]]>"
-            );
-            break;
-          }
-
-          case 8: {
-            html.push(
-              "<!--",
-              ed.dom.encode(node.nodeValue, true),
-              "-->"
-            );
-            break;
-          }
-
-          // other node types we just ignore
-        }
-
-        return html.join("");
-      }
-
-      /**
-       * Validate xml code using a custom Parser. This will remove event attributes ir required, and validate nested html using the editor schema.
-       * @param {String} xml
-       */
-      function validateXml(xml) {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(xml, 'text/xml');
-
-        var html = sanitizeNode(doc.documentElement, true);
-
-        return html;
-      }
-
-      /**
-       * Detect and process xml tags
-       * @param {String} content
-       */
-      function processXML(content) {
-        return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
-          // lowercase tag name
-          tag = tag.toLowerCase();
-
-          // check if svg is allowed
-          if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
-            return match;
-          }
-
-          // check if mathml is allowed
-          if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
-            return match;
-          }
-
-          // check if the tags is part of the generic HTML schema, return if true
-          if (!isXmlElement(tag)) {
-            return match;
-          }
-
-          // validate xml by default to remove event attributes and invalid nested html
-          if (ed.settings.code_validate_xml !== false) {
-            match = validateXml(match);
-          }
-
-          return createCodePre(match, 'xml');
-        });
-      }
-
-      /**
-       * Create a shortcode pre. This differs from the code pre as it is still contenteditable
+       * Create a shortcode pre/span. This differs from the code pre as it is still contenteditable.
        * @param {String} data
        * @param {String} tag
        */
-      function createShortcodePre(data, tag) {
-        // decode data before re-encoding
-        data = ed.dom.decode(data);
+      function createShortcodeHtml(editor, data, tag) {
+          // decode data before re-encoding
+          data = editor.dom.decode(data);
 
-        // replace newlines with linebreaks
-        data = data.replace(/[\n\r]/gi, '<br />');
+          // replace newlines with linebreaks
+          data = data.replace(/[\n\r]/gi, '<br />');
 
-        return ed.dom.createHTML(tag || 'pre', {
-          'data-mce-code': 'shortcode'
-        }, ed.dom.encode(data));
+          return editor.dom.createHTML(tag || 'pre', {
+              'data-mce-code': 'shortcode'
+          }, editor.dom.encode(data));
       }
 
       /**
-       * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
+       * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only.
        * @param {String} data
        * @param {String} type
        * @param {String} tag
        */
-      function createCodePre(data, type, tag) {
-        type = type || 'script';
-        tag = tag || 'pre';
+      function createHtml(editor, data, type, tag) {
+          type = type || 'script';
+          tag = tag || 'pre';
 
-        // "protect" code if we are not using code blocks
-        if (!code_blocks) {
-          // convert linebreaks to newlines
-          data = data.replace(/<br[^>]*?>/gi, '\n');
+          var code_blocks = editor.settings.code_use_blocks !== false;
 
-          // create placeholder span
-          return ed.dom.createHTML('img', {
-            src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-            'data-mce-resize': 'false',
-            'data-mce-code': type,
-            'data-mce-type': 'placeholder',
-            'data-mce-value': escape(data)
+          // "protect" code if we are not using code blocks
+          if (!code_blocks) {
+              // convert linebreaks to newlines
+              data = data.replace(/<br[^>]*?>/gi, '\n');
+
+              // create placeholder span
+              return editor.dom.createHTML('img', {
+                  src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                  'data-mce-resize': 'false',
+                  'data-mce-code': type,
+                  'data-mce-type': 'placeholder',
+                  'data-mce-value': escape(data)
+              });
+          }
+
+          return editor.dom.createHTML(tag, {
+              'data-mce-code': type
+          }, editor.dom.encode(data));
+      }
+
+      var Content = { createTextNode, createShortcodeHtml, createHtml };
+
+      const each$1 = tinymce.each;
+
+      let htmlSchema, shortEndedElements = {}, booleanAttributes = {};
+
+      function init(editor) {
+          htmlSchema = new tinymce.html.Schema({
+              schema: 'mixed',
+              invalid_elements: editor.settings.invalid_elements
           });
-        }
 
-        return ed.dom.createHTML(tag, {
-          'data-mce-code': type
-        }, ed.dom.encode(data));
+          each$1(editor.schema.getShortEndedElements(), function (_shortEnded, name) {
+              shortEndedElements[name.toLowerCase()] = true;
+          });
+
+          each$1(editor.schema.getBoolAttrs(), function (_boolAttr, name) {
+              booleanAttributes[name.toLowerCase()] = true;
+          });
       }
 
-      function handleEnterInPre(ed, node, before) {
-        var parents = ed.dom.getParents(node, blockElements.join(','));
-
-        // set defualt content and get the element to use
-        var newBlockName = ed.settings.forced_root_block || 'p';
-
-        // reset if force_block_newlines is false (linebreak on enter)
-        if (ed.settings.force_block_newlines === false) {
-          newBlockName = 'br';
-        }
-
-        // get the first block in the collection
-        var block = parents.shift();
-
-        // skip if it is the body
-        if (block === ed.getBody()) {
-          return;
-        }
-
-        // create element
-        var elm = ed.dom.create(newBlockName, {}, '\u00a0');
-
-        // insert after parent element
-        if (before) {
-          block.parentNode.insertBefore(elm, block);
-        } else {
-          ed.dom.insertAfter(elm, block);
-        }
-
-        var rng = ed.selection.getRng();
-
-        rng.setStart(elm, 0);
-        rng.setEnd(elm, 0);
-
-        ed.selection.setRng(rng);
-        ed.selection.scrollIntoView(elm);
-      }
-
-      ed.onKeyDown.add(function (ed, e) {
-        var node;
-
-        if (e.keyCode == VK.ENTER) {
-          node = ed.selection.getNode();
-
-          // override enter key behaviour in shortcode pre blocks
-          if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code') === 'shortcode') {
-            if (!e.shiftKey) {
-              ed.execCommand("InsertLineBreak", false, e);
-              e.preventDefault();
-            }
-
-            return;
-          }
-
-          if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
-            handleEnterInPre(ed, node);
-            e.preventDefault();
-          }
-        }
-
-        if (e.keyCode == VK.UP && e.altKey) {
-          node = ed.selection.getNode();
-
-          if (node.nodeName == 'PRE') {
-            handleEnterInPre(ed, node, true);
-            e.preventDefault();
-          }
-        }
-
-        // Check for tab but not ctrl/cmd+tab since it switches browser tabs
-        if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
-          node = ed.selection.getNode();
-
-          if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
-            ed.selection.setContent('\t', {
-              no_events: true
-            });
-            e.preventDefault();
-          }
-        }
-
-        if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-          node = ed.selection.getNode();
-
-          if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
-            ed.undoManager.add();
-
-            ed.dom.remove(node);
-            e.preventDefault();
-          }
-        }
-      });
-
-      ed.onPreInit.add(function () {
-        function isCodePlaceholder(node) {
-          return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
-        }
-
-        ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-          var node = e.target,
-            sel = ed.selection.getNode();
-
-          ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
-
-          // edge case where forced_root_block:false
-          if (node === ed.getBody() && isCodePlaceholder(sel)) {
-            if (sel.parentNode === node && !sel.nextSibling) {
-              ed.dom.insertAfter(ed.dom.create('br', {
-                'data-mce-bogus': 1
-              }), sel);
-            }
-
-            return;
-          }
-
-          if (isCodePlaceholder(node)) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            ed.selection.select(node);
-
-            // add a slight delay before adding selected class to avoid it being removed by the keyup event
-            window.setTimeout(function () {
-              ed.dom.addClass(node, 'mce-item-selected');
-            }, 10);
-
-            e.preventDefault();
-          }
-        });
-
-        var ctrl = ed.controlManager.get('formatselect');
-
-        if (ctrl) {
-          each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
-            // control element title
-            var title = ed.getLang('code.' + key, key);
-
-            if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
-              ctrl.add(title, key, {
-                class: 'mce-code-' + key
-              });
-
-              ed.formatter.register('shortcode', {
-                block: 'pre',
-                attributes: {
-                  'data-mce-code': 'shortcode'
-                }
-              });
-
+      function canKeepCode(editor, type) {
+          if (editor.settings.validate === false) {
               return true;
-            }
-
-            // map settings value to simplified key
-            if (key === 'xml') {
-              ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
-            }
-
-            if (canKeepCode(key) && code_blocks) {
-              ctrl.add(title, key, {
-                class: 'mce-code-' + key
-              });
-
-              ed.formatter.register(key, {
-                block: 'pre',
-                attributes: {
-                  'data-mce-code': key
-                },
-                onformat: function (elm, fmt, vars) {
-                  // replace linebreaks with newlines
-                  each(ed.dom.select('br', elm), function (br) {
-                    ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
-                  });
-                }
-              });
-            }
-          });
-        }
-
-        // store block elements from schema map
-        each(ed.schema.getBlockElements(), function (block, blockName) {
-          blockElements.push(blockName);
-        });
-
-        // store inline elements from schema map
-        each(ed.schema.getTextInlineElements(), function (inline, name) {
-          inlineElements.push(name);
-        });
-
-        // store short ended elements from schema map
-        each(ed.schema.getShortEndedElements(), function (shortEnded, name) {
-          name = name.toLowerCase();
-          shortEndedElements[name] = true;
-        });
-
-        // store boolean attributes from schema map
-        each(ed.schema.getBoolAttrs(), function (boolAttr, name) {
-          name = name.toLowerCase();
-          booleanAttributes[name] = true;
-        });
-
-        if (ed.settings.code_protect_shortcode) {
-          ed.textpattern.addPattern({
-            start: '{',
-            end: '}',
-            cmd: 'InsertShortCode',
-            remove: true
-          });
-
-          ed.textpattern.addPattern({
-            start: ' {',
-            end: '}',
-            format: 'inline-shortcode',
-            remove: false
-          });
-        }
-
-        ed.formatter.register('inline-shortcode', {
-          inline: 'span',
-          attributes: {
-            'data-mce-code': 'shortcode'
-          }
-        });
-
-        ed.selection.onBeforeSetContent.addToTop(function (sel, o) {
-          var target = sel.getNode();
-
-          // don't process into PRE tags
-          if (target && target.nodeName === 'PRE') {
-            return;
           }
 
-          o.content = processOnInsert(o.content);
-        });
+          return !!editor.getParam('code_allow_' + type);
+      }
 
-        var onSetContent = function () {
-          each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
-            var parent = ed.dom.getParent(elm, 'p');
+      /**
+       * Check whether a tag is a defined invalid element
+       * @param {Object} editor
+       * @param {String} name
+       */
+      function isInvalidElement(editor, name) {
+          var invalid_elements = editor.settings.invalid_elements.split(',');
+          return tinymce.inArray(invalid_elements, name) !== -1;
+      }
 
-            if (parent) {
-              // clone p and remove elm from clone to check if p has other meaningful content (ignores bookmarks, whitespace)
-              var clone = parent.cloneNode(true);
-              var clonedElm = clone.querySelector('[data-mce-code]');
+      /**
+       * Check if a tag is an XML element - not part of the HTML Schema, but is also not a defined invalid element
+       * @param {Object} editor
+       * @param {String} name
+       */
+      function isXmlElement(editor, name) {
+          return !htmlSchema.isValid(name) && !isInvalidElement(editor, name);
+      }
 
-              if (clonedElm) {
-                clone.removeChild(clonedElm);
+      /**
+       * Check that the element or attribute is valid
+       * @param {Object} editor
+       * @param {String} tag
+       * @param {String} attr
+       */
+      function isValid(editor, tag, attr) {
+          if (isXmlElement(editor, tag)) {
+              return true;
+          }
+
+          if (editor.settings.validate === false) {
+              return true;
+          }
+
+          return editor.schema.isValid(tag, attr);
+      }
+
+      /**
+       * Recursively sanitize a DOM node to a string, filtering invalid tags/attributes and event handlers.
+       * @param {Object} editor
+       * @param {Node} node
+       * @param {Boolean} raw
+       */
+      function sanitizeNode(editor, node, raw) {
+          const html = [];
+
+          switch (node.nodeType) {
+              case 1: {
+                  const tagName = node.nodeName.toLowerCase();
+
+                  if (!isValid(editor, tagName)) {
+                      return '';
+                  }
+
+                  html.push('<', tagName);
+
+                  for (let { name, value } of Array.from(node.attributes)) {
+                      if (!isValid(editor, tagName, name)) {
+                          continue;
+                      }
+
+                      if (!editor.settings.allow_event_attributes && name.startsWith('on')) {
+                          continue;
+                      }
+
+                      if (booleanAttributes[name]) {
+                          if (value === '' || value === 'true' || value === name) {
+                              html.push(' ', name);
+                              continue;
+                          }
+                      }
+
+                      html.push(' ', name, '="', editor.dom.encode(value, true), '"');
+                  }
+
+                  if (shortEndedElements[tagName]) {
+                      if (editor.settings.schema === 'html5-strict') {
+                          html.push('>');
+                      } else {
+                          html.push(' />');
+                      }
+                  } else {
+                      html.push('>');
+
+                      for (let child of Array.from(node.childNodes)) {
+                          html.push(sanitizeNode(editor, child));
+                      }
+
+                      html.push('</', tagName, '>');
+                  }
+
+                  break;
               }
 
-              if (ed.dom.isEmpty(clone)) {
-                ed.dom.remove(parent, 1);
+              case 3: {
+                  var text = node.nodeValue;
+                  text = text ;
+                  html.push(text);
+                  break;
               }
-            }
-          });
-        };
 
-        // remove paragraph parent of a pre block
-        ed.onSetContent.add(onSetContent);
-        ed.selection.onSetContent.add(onSetContent);
+              case 5: {
+                  html.push('<![CDATA[', editor.dom.encode(node.nodeValue, true), ']]>');
+                  break;
+              }
 
-        // Convert script elements to span placeholder
-        ed.parser.addNodeFilter('script,style,link', function (nodes) {
-          var i = nodes.length,
-            node;
+              case 8: {
+                  html.push('<!--', editor.dom.encode(node.nodeValue, true), '-->');
+                  break;
+              }
+          }
 
-          while (i--) {
-            var node = nodes[i], parent = node.parent;
+          return html.join('');
+      }
 
-            if (parent && parent.name === 'pre') {
-              // don't process script/style/link inside pre blocks
-              continue;
-            }
+      /**
+       * Validate xml code using DOMParser. Removes event attributes if required, and validates nested html using the editor schema.
+       * @param {Object} editor
+       * @param {String} xml
+       */
+      function validateXml(editor, xml) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(xml, 'text/xml');
+          return sanitizeNode(editor, doc.documentElement);
+      }
 
-            // only allow link[rel="stylesheet"]
-            if (node.name == 'link' && node.attr('rel') != 'stylesheet') {
-              node.remove();
-              continue;
-            }
+      /**
+       * Detect and process xml tags
+       * @param {Object} editor
+       * @param {String} content
+       */
+      function processXML(editor, content) {
+          return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+              tag = tag.toLowerCase();
 
-            // remove data-mce-fragment attribute added by insertContent
-            node.attr('data-mce-fragment', null);
-
-            // remove any code spans that are added to json-like syntax in code blocks
-            if (node.firstChild) {
-              node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
-                if (attr.indexOf('data-mce-code') === -1) {
+              if (tag === 'svg' && editor.settings.code_allow_svg_in_xml === false) {
                   return match;
-                }
-
-                return ed.dom.decode(content);
-              });
-            }
-
-            if (!code_blocks) {
-              var value = '';
-
-              if (node.firstChild) {
-                value = tinymce.trim(node.firstChild.value);
               }
 
-              var placeholder = Node.create('img', {
-                src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                'data-mce-code': node.name,
-                'data-mce-type': 'placeholder',
-                'data-mce-resize': 'false',
-                title: ed.dom.encode(value)
-              });
-
-              // eslint-disable-next-line no-loop-func
-              each(node.attributes, function (attr) {
-                placeholder.attr('data-mce-p-' + attr.name, attr.value);
-              });
-
-              if (value) {
-                placeholder.attr('data-mce-value', escape(value));
-
-                //var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
-                //placeholder.append(text);
+              if (tag === 'math' && editor.settings.code_allow_mathml_in_xml === false) {
+                  return match;
               }
 
-              node.replace(placeholder);
-
-              continue;
-            }
-
-            // serialize to string
-            value = new Serializer({
-              validate: false
-            }).serialize(node);
-
-            // trim
-            value = tinymce.trim(value);
-
-            var pre = new Node('pre', 1);
-
-            pre.attr({
-              'data-mce-code': node.name
-            });
-
-            var text = createTextNode(value, false);
-            pre.append(text);
-
-            node.replace(pre);
-          }
-        });
-
-        ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
-          var i = nodes.length,
-            node, parent;
-
-          function isBody(parent) {
-            return parent.name === 'body';
-          }
-
-          function isValidCode(type) {
-            return type === 'shortcode' || type === 'php';
-          }
-
-          function isBlockNode(node) {
-            return tinymce.inArray(blockElements, node.name) != -1;
-          }
-
-          function isInlineTextNode(node) {
-            return tinymce.inArray(inlineElements, node.name) != -1;
-          }
-
-          function isInlineNode(node) {
-            if (node.name != 'span') {
-              return false;
-            }
-
-            if (node.next && (node.next.type == '#text' || !isBlockNode(node.next))) {
-              return true;
-            }
-
-            if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
-              return true;
-            }
-
-            if (node.parent && !isBlockNode(node.parent)) {
-              return true;
-            }
-
-            return false;
-          }
-
-          while (i--) {
-            node = nodes[i], parent = node.parent;
-
-            // don't process placeholders
-            if (node.attr('data-mce-type') == 'placeholder') {
-              continue;
-            }
-
-            if (!isValidCode(node.attr(name))) {
-              continue;
-            }
-
-            var value = node.firstChild.value;
-
-            // replace linebreaks with newlines
-            if (value) {
-              node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
-            }
-
-            if (parent) {
-              // don't process shortcode in code blocks
-              if (parent.attr(name)) {
-                node.unwrap();
-                continue;
+              if (!isXmlElement(editor, tag)) {
+                  return match;
               }
 
-              // rename shortcode blocks to <pre>
-              if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
-                node.name = 'pre';
+              if (editor.settings.code_validate_xml !== false) {
+                  match = validateXml(editor, match);
+              }
 
-                // reset if node parent is inline and not a block node, eg: <strong>{var}</strong>
-                if (node.parent && isInlineTextNode(node.parent)) {
-                  node.name = 'span';
-                }
-                
-                if (node.name == 'pre' && parent && parent.name == 'p') {
-                  // if the pre is the only child of the parent, replace the parent
-                  if (isOnlyChild(node)) {
-                    if (parent.parent) {
-                      parent.replace(node);
-                    }
+              return Content.createHtml(editor, match, 'xml');
+          });
+      }
+
+      /**
+       * Detect and process sourcerer shortcode
+       * @param {Object} editor
+       * @param {String} html
+       */
+      function processSourcerer(editor, html) {
+          if (html.indexOf('{/source}') === -1) {
+              return html;
+          }
+
+          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
+              if (match.charAt(0) === '<' || match.charAt(0) === '"') {
+                  return match;
+              }
+
+              match = editor.dom.decode(match);
+
+              return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + editor.dom.encode(match) + '</pre>';
+          });
+      }
+
+      /**
+       * Detect and process shortcode in an html string
+       * @param {Object} editor
+       * @param {String} html
+       * @param {String} tagName
+       */
+      function processShortcode(editor, html, tagName) {
+          // quick check to see if we should proceed
+          if (html.indexOf('{') === -1) {
+              return html;
+          }
+
+          // skip stuff like {1} etc.
+          if (html.charAt(0) == '{' && html.length < 3) {
+              return html;
+          }
+
+          // process as sourcerer
+          if (html.indexOf('{/source}') != -1) {
+              html = processSourcerer(editor, html);
+          }
+
+          // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
+          tagName = tagName || 'span';
+
+          // Temporarily protect shortcodes inside attribute values so they are not processed
+          var attrPlaceholders = [];
+
+          html = html.replace(/=("[^"]*\{[^"]*"|'[^']*\{[^']*')/g, function (match) {
+              attrPlaceholders.push(match);
+              return '="__SHORTCODE_ATTR_' + (attrPlaceholders.length - 1) + '__"';
+          });
+
+          // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
+          html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
+              // already wrapped in a tag
+              if (match.charAt(0) === '<') {
+                  return match;
+              }
+
+              return Content.createShortcodeHtml(editor, match, tagName);
+          });
+
+          // Restore protected attribute values
+          if (attrPlaceholders.length) {
+              html = html.replace(/="__SHORTCODE_ATTR_(\d+)__"/g, function (_match, index) {
+                  return attrPlaceholders[parseInt(index, 10)];
+              });
+          }
+
+          return html;
+      }
+
+      /**
+       * Detect and process PHP code in an html string
+       * @param {Object} editor
+       * @param {String} content
+       */
+      function processPhp(editor, content) {
+          if (!canKeepCode(editor, 'php')) {
+              return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
+          }
+
+          // PHP code within an attribute
+          content = content.replace(/\="([^"]+?)"/g, function (_a, b) {
+              b = b.replace(/<\?(php)?(.+?)\?>/gi, function (_x, _y, z) {
+                  return '__php_start__' + editor.dom.encode(z) + '__php_end__';
+              });
+
+              return '="' + b + '"';
+          });
+
+          // PHP code within a textarea
+          if (/<textarea/.test(content)) {
+              content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (_a, b, c) {
+                  c = c.replace(/<\?(php)?(.+?)\?>/gi, function (_x, _y, z) {
+                      return '__php_start__' + editor.dom.encode(z) + '__php_end__';
+                  });
+                  return '<textarea' + b + '>' + c + '</textarea>';
+              });
+          }
+
+          // PHP code within an element
+          content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (_a, b, _c, d, e) {
+              if (b.charAt(b.length) !== ' ') {
+                  b += ' ';
+              }
+              return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
+          });
+
+          // PHP code other
+          content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
+              match = match.replace(/\n/g, '<br />');
+              return Content.createHtml(editor, match, 'php');
+          });
+
+          return content;
+      }
+
+      /**
+       * Process content on insert (paste or programmatic insert)
+       * @param {Object} editor
+       * @param {String} value
+       * @param {Node} node
+       */
+      function processOnInsert(editor, value, _node) {
+          if (/\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
+              var tagName;
+              value = processShortcode(editor, value, tagName);
+          }
+
+          // process custom xml if enabled, otherwise it will be removed by the parser
+          if (canKeepCode(editor, 'custom_xml')) {
+              value = processXML(editor, value);
+          }
+
+          // script / style
+          if (/<(\?|script|style)/.test(value)) {
+              // process script and style tags, remove if not allowed
+              value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+                  if (!canKeepCode(editor, type)) {
+                      return '';
                   }
-                }
-              }
 
-              // add whitespace after the span so a cursor can be set
-              if (node.name == 'span' && node === parent.lastChild) {
-                var nbsp = createTextNode('\u00a0');
-                parent.append(nbsp);
-              }
-            }
-          }
-        });
+                  match = match.replace(/<br[^>]*?>/gi, '\n');
 
-        ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-          var i = nodes.length,
-            node, child;
+                  return Content.createHtml(editor, match, type);
+              });
 
-          function isXmlNode(node) {
-            return !/(shortcode|php)/.test(node.attr('data-mce-code'));
+              value = processPhp(editor, value);
           }
 
-          while (i--) {
-            var root_block = false;
+          // link[rel="stylesheet"]
+          if (/<link[^>]*?rel="stylesheet"[^>]*?>/gi.test(value)) {
+              value = value.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, function (match) {
+                  if (!canKeepCode(editor, 'style')) {
+                      return '';
+                  }
 
-            node = nodes[i];
+                  return Content.createHtml(editor, match, 'link');
+              });
+          }
 
-            // get the code block type, eg: script, shortcode, style, php
-            var type = node.attr(name);
+          return value;
+      }
 
-            if (node.name === 'img') {
-              var elm = new Node(type, 1);
+      var Process = {
+          init,
+          processOnInsert,
+          processShortcode,
+          processPhp,
+          processXML
+      };
 
-              for (var key in node.attributes.map) {
-                var val = node.attributes.map[key];
+      const each = tinymce.each,
+          Node = tinymce.html.Node,
+          VK = tinymce.VK,
+          DomParser = tinymce.html.DomParser,
+          Serializer = tinymce.html.Serializer;
 
-                if (key.indexOf('data-mce-p-') !== -1) {
-                  key = key.substr(11);
-                } else {
-                  val = null;
-                }
+      function isOnlyChild(node) {
+          var parent = node.parent,
+              child = parent.firstChild,
+              count = 0;
 
-                elm.attr(key, val);
-              }
-
-              var value = node.attr('data-mce-value');
-
-              if (value) {
-                var text = createTextNode(unescape(value));
-
-                // only use text node if shortcode or php
-                if (type == 'php' || type == 'shortcode') {
-                  elm = text;
-                } else {
-                  elm.append(text);
-                }
-              }
-
-              node.replace(elm);
-
-              continue;
-            }
-
-            // pre node is empty, remove
-            if (node.isEmpty()) {
-              node.remove();
-            }
-
-            // skip xml
-            if (type === 'xml') {
-              continue;
-            }
-
-            // set the root block type for script and style tags so the parser does the work wrapping free text
-            if (type === 'script' || type === 'style') {
-              root_block = type;
-            }
-
-            var child = node.firstChild,
-              newNode = node.clone(true),
-              text = '';
-
-            if (child) {
+          if (child) {
               do {
-                if (isXmlNode(node)) {
-                  var value = child.name == 'br' ? '\n' : child.value;
+                  if (child.type === 1) {
+                      // Ignore bogus elements
+                      if (child.attributes.map['data-mce-type'] || child.attributes.map['data-mce-bogus']) {
+                          continue;
+                      }
 
-                  if (value) {
-                    text += value;
+                      if (child === node) {
+                          continue;
+                      }
+
+                      count++;
                   }
-                }
+
+                  // Keep comments
+                  if (child.type === 8) {
+                      count++;
+                  }
+
+                  // Keep non whitespace text nodes
+                  if ((child.type === 3 && !/^[ \t\r\n]*$/.test(child.value))) {
+                      count++;
+                  }
               } while ((child = child.next));
-            }
+          }
 
-            if (text) {
-              newNode.empty();
+          return count === 0;
+      }
 
-              var parser = new DomParser({
-                validate: false
-              });
+      tinymce.PluginManager.add('code', function (editor, url) {
 
-              // validate attributes of script and style tags
-              if (type === 'script' || type === 'style') {
-                parser.addNodeFilter(type, function (items, name) {
-                  var n = items.length;
+          function canKeepCode(type) {
+              if (editor.settings.validate === false) {
+                  return true;
+              }
 
-                  while (n--) {
-                    var item = items[n];
+              if (editor.getParam('code_allow_' + type)) {
+                  return true;
+              }
 
-                    // eslint-disable-next-line no-loop-func
-                    each(item.attributes, function (attr) {
-                      if (!attr) {
-                        return true;
-                      }
+              return false;
+          }
 
-                      // allow data-* attributes
-                      if (attr.name.indexOf('data-') === 0 && attr.name.indexOf('data-mce-') === -1) {
-                        return true;
-                      }
+          var blockElements = [], inlineElements = [];
 
-                      if (ed.schema.isValid(name, attr.name) === false) {
-                        item.attr(attr.name, null);
-                      }
-                    });
+          // should code blocks be used?
+          var code_blocks = editor.settings.code_use_blocks !== false;
+
+          // allow script URLs, eg: href="javascript:;"
+          if (editor.settings.code_allow_script) {
+              editor.settings.allow_script_urls = true;
+          }
+
+          editor.addCommand('InsertShortCode', function (ui, html) {
+              if (editor.settings.code_protect_shortcode) {
+                  html = Process.processShortcode(editor, html, 'pre');
+
+                  if (tinymce.is(html)) {
+                      editor.execCommand('mceReplaceContent', false, html);
                   }
-                });
               }
 
-              // parse text and process
-              var fragment = parser.parse(text, {
-                forced_root_block: root_block
+              return false;
+          });
+
+          function handleEnterInPre(ed, node, before) {
+              var parents = ed.dom.getParents(node, blockElements.join(','));
+
+              var newBlockName = ed.settings.forced_root_block || 'p';
+
+              if (ed.settings.force_block_newlines === false) {
+                  newBlockName = 'br';
+              }
+
+              var block = parents.shift();
+
+              if (block === ed.getBody()) {
+                  return;
+              }
+
+              var elm = ed.dom.create(newBlockName, {}, '\u00a0');
+
+              if (before) {
+                  block.parentNode.insertBefore(elm, block);
+              } else {
+                  ed.dom.insertAfter(elm, block);
+              }
+
+              var rng = ed.selection.getRng();
+
+              rng.setStart(elm, 0);
+              rng.setEnd(elm, 0);
+
+              ed.selection.setRng(rng);
+              ed.selection.scrollIntoView(elm);
+          }
+
+          editor.onKeyDown.add(function (ed, e) {
+              var node;
+
+              if (e.keyCode == VK.ENTER) {
+                  node = ed.selection.getNode();
+
+                  // override enter key behaviour in shortcode pre blocks
+                  if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code') === 'shortcode') {
+                      if (!e.shiftKey) {
+                          ed.execCommand('InsertLineBreak', false, e);
+                          e.preventDefault();
+                      }
+
+                      return;
+                  }
+
+                  if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
+                      handleEnterInPre(ed, node);
+                      e.preventDefault();
+                  }
+              }
+
+              if (e.keyCode == VK.UP && e.altKey) {
+                  node = ed.selection.getNode();
+
+                  if (node.nodeName == 'PRE') {
+                      handleEnterInPre(ed, node, true);
+                      e.preventDefault();
+                  }
+              }
+
+              // Check for tab but not ctrl/cmd+tab since it switches browser tabs
+              if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
+                  node = ed.selection.getNode();
+
+                  if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
+                      ed.selection.setContent('\t', {
+                          no_events: true
+                      });
+                      e.preventDefault();
+                  }
+              }
+
+              if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
+                  node = ed.selection.getNode();
+
+                  if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
+                      ed.undoManager.add();
+                      ed.dom.remove(node);
+                      e.preventDefault();
+                  }
+              }
+          });
+
+          editor.onPreInit.add(function () {
+              // Initialize process module schemas
+              Process.init(editor);
+
+              function isCodePlaceholder(node) {
+                  return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
+              }
+
+              editor.dom.bind(editor.getDoc(), 'keyup click', function (e) {
+                  var node = e.target,
+                      sel = editor.selection.getNode();
+
+                  editor.dom.removeClass(editor.dom.select('.mce-item-selected'), 'mce-item-selected');
+
+                  // edge case where forced_root_block:false
+                  if (node === editor.getBody() && isCodePlaceholder(sel)) {
+                      if (sel.parentNode === node && !sel.nextSibling) {
+                          editor.dom.insertAfter(editor.dom.create('br', {
+                              'data-mce-bogus': 1
+                          }), sel);
+                      }
+
+                      return;
+                  }
+
+                  if (isCodePlaceholder(node)) {
+                      e.preventDefault();
+                      e.stopImmediatePropagation();
+
+                      editor.selection.select(node);
+
+                      // add a slight delay before adding selected class to avoid it being removed by the keyup event
+                      window.setTimeout(function () {
+                          editor.dom.addClass(node, 'mce-item-selected');
+                      }, 10);
+
+                      e.preventDefault();
+                  }
               });
-              // append fragment to <pre> clone
-              newNode.append(fragment);
-            }
 
-            node.replace(newNode);
+              var ctrl = editor.controlManager.get('formatselect');
 
-            if (type === 'shortcode' && newNode.name === 'pre') {
-              // append newline to the end of shortcode blocks
-              var newline = createTextNode('\n');
-              newNode.append(newline);
+              if (ctrl) {
+                  each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
+                      var title = editor.getLang('code.' + key, key);
 
-              // unwrap to text as further processing is not needed
-              newNode.unwrap();
-            }
-          }
-        });
+                      if (key === 'shortcode' && editor.settings.code_protect_shortcode) {
+                          ctrl.add(title, key, {
+                              class: 'mce-code-' + key
+                          });
 
-        /*ed.onPaste.addToTop(function (ed, e) {
-          var clipboardData = e.clipboardData || window.clipboardData || null;
+                          editor.formatter.register('shortcode', {
+                              block: 'pre',
+                              attributes: {
+                                  'data-mce-code': 'shortcode'
+                              }
+                          });
 
-          if (!clipboardData) {
-            return;
-          }
+                          return true;
+                      }
 
-          var text = clipboardData.getData('text/plain') || clipboardData.getData('Text') || clipboardData.getData('text') || '';
-          var value = '';
+                      // map settings value to simplified key
+                      if (key === 'xml') {
+                          editor.settings.code_allow_xml = !!editor.settings.code_allow_custom_xml;
+                      }
 
-          // trim text
-          text = tinymce.trim(text);
+                      if (canKeepCode(key) && code_blocks) {
+                          ctrl.add(title, key, {
+                              class: 'mce-code-' + key
+                          });
 
-          if (text) {
-            var node = ed.selection.getNode();
-
-            // don't process into PRE tags
-            if (node && node.nodeName === 'PRE') {
-              return;
-            }
-
-            value = processOnInsert(text, node);
-
-            // update with processed text
-            if (value !== text) {
-              e.preventDefault();
-              ed.execCommand('mceInsertContent', false, value);
-            }
-          }
-        });*/
-
-        ed.onContextMenu.addToTop(function (ed, e) {
-          var node = ed.selection.getNode();
-
-          if (node && node.hasAttribute('data-mce-code')) {
-            return false;
-          }
-        });
-      });
-
-      ed.onInit.add(function () {
-        // Display "script" instead of "pre" in element path
-        if (ed.theme && ed.theme.onResolveName) {
-          ed.theme.onResolveName.add(function (theme, o) {
-            var node = o.node;
-
-            if (node.getAttribute('data-mce-code')) {
-              o.name = node.getAttribute('data-mce-code');
-            }
-          });
-        }
-      });
-
-      var hitAreaSize = 32;
-
-      ed.onMouseDown.add(function (ed, e) {
-        var pre = e.target.closest('pre[data-mce-code]');
-
-        if (!pre) {
-          return;
-        }
-
-        var { clientX, clientY } = e;
-        var { top, right } = pre.getBoundingClientRect();
-
-        if (clientX >= right - hitAreaSize && clientY <= top + hitAreaSize) {
-          ed.dom.toggleClass(pre, 'mce-code-toggle');
-        }
-      });
-
-      ed.onBeforeSetContent.addToTop(function (ed, o) {
-        if (ed.settings.code_protect_shortcode) {        
-          if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
-            o.content = processShortcode(o.content);
-          }
-        }
-
-        if (canKeepCode('custom_xml')) {
-          // only process content on "load"
-          if (o.content && o.load) {
-            o.content = processXML(o.content);
-          }
-        }
-
-        // test for PHP, Script or Style
-        if (/<(\?|script|style|link)/.test(o.content)) {
-          // Remove javascript if not enabled
-          if (!canKeepCode('script')) {
-            o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
-          }
-
-          if (!canKeepCode('style')) {
-            o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
-            o.content = o.content.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, '');
-          }
-
-          o.content = processPhp(o.content);
-        }
-      });
-
-      ed.onPostProcess.add(function (ed, o) {
-        if (o.get) {
-          // Process converted php
-          if (/(data-mce-php|__php_start__)/.test(o.content)) {
-            // attribute value
-            o.content = o.content.replace(/({source})?__php_start__(.*?)__php_end__/g, function (match, pre, code) {
-              return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
-            });
-
-            // textarea
-            o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-              if (/&lt;\?php/.test(c)) {
-                c = ed.dom.decode(c);
+                          editor.formatter.register(key, {
+                              block: 'pre',
+                              attributes: {
+                                  'data-mce-code': key
+                              },
+                              onformat: function (elm) {
+                                  // replace linebreaks with newlines
+                                  each(editor.dom.select('br', elm), function (br) {
+                                      editor.dom.replace(editor.dom.doc.createTextNode('\n'), br);
+                                  });
+                              }
+                          });
+                      }
+                  });
               }
-              return '<textarea' + b + '>' + c + '</textarea>';
-            });
 
-            // as attribute
-            o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
-              return '<?php' + ed.dom.decode(b) + '?>';
-            });
-          }
+              // store block elements from schema map
+              each(editor.schema.getBlockElements(), function (_block, blockName) {
+                  blockElements.push(blockName);
+              });
 
-          // shortcode content will be encoded as text, so decode
-          if (ed.settings.code_protect_shortcode) {
+              // store inline elements from schema map
+              each(editor.schema.getTextInlineElements(), function (_inline, name) {
+                  inlineElements.push(name);
+              });
 
-            o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
-              return '{' + ed.dom.decode(content) + '}';
-            });
+              if (editor.settings.code_protect_shortcode) {
+                  editor.textpattern.addPattern({
+                      start: '{',
+                      end: '}',
+                      cmd: 'InsertShortCode',
+                      remove: true
+                  });
 
-            // sourcerer with encoded content
-            o.content = o.content.replace(/\{source([^\}]*?)\}([\s\S]+?)\{\/source\}/gi, function (match, start, content) {
-              return '{source' + start + '}' + ed.dom.decode(content) + '{/source}';
-            });
+                  editor.textpattern.addPattern({
+                      start: ' {',
+                      end: '}',
+                      format: 'inline-shortcode',
+                      remove: false
+                  });
+              }
 
-            // other shotcode tags
-            o.content = o.content.replace(/\{([\w-]+)(.*?)\}([\s\S]+)\{\/\1\}/gi, function (match, start, attr, content) {
-              return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
-            });
-          }
+              editor.formatter.register('inline-shortcode', {
+                  inline: 'span',
+                  attributes: {
+                      'data-mce-code': 'shortcode'
+                  }
+              });
 
-          // decode code snippets
-          o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
-            // not the droids etc.
-            if (attr.indexOf('data-mce-code') === -1) {
-              return match;
-            }
+              editor.selection.onBeforeSetContent.addToTop(function (sel, o) {
+                  var target = sel.getNode();
 
-            // trim content
-            content = tinymce.trim(content);
+                  // don't process into PRE tags
+                  if (target && target.nodeName === 'PRE') {
+                      return;
+                  }
 
-            // get element from match
-            var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
+                  o.content = Process.processOnInsert(editor, o.content, target);
+              });
 
-            // replace linebreaks with newline in some blocks
-            if (type != 'script') {
-              content = content.replace(/<br[^>]*?>/gi, '\n');
-            }
+              var onSetContent = function () {
+                  each(editor.dom.select('pre[data-mce-code]', editor.getBody()), function (elm) {
+                      var parent = editor.dom.getParent(elm, 'p');
 
-            // decode content
-            content = ed.dom.decode(content);
+                      if (parent) {
+                          // clone p and remove elm from clone to check if p has other meaningful content (ignores bookmarks, whitespace)
+                          var clone = parent.cloneNode(true);
+                          var clonedElm = clone.querySelector('[data-mce-code]');
 
-            // remove and replace <?php?> tags
-            if (type == 'php') {
-              content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
-              content = '<?php\n' + tinymce.trim(content) + '\n?>';
-            }
+                          if (clonedElm) {
+                              clone.removeChild(clonedElm);
+                          }
 
-            return content;
+                          if (editor.dom.isEmpty(clone)) {
+                              editor.dom.remove(parent, 1);
+                          }
+                      }
+                  });
+              };
+
+              // remove paragraph parent of a pre block
+              editor.onSetContent.add(onSetContent);
+              editor.selection.onSetContent.add(onSetContent);
+
+              // Convert script elements to span placeholder
+              editor.parser.addNodeFilter('script,style,link', function (nodes) {
+                  var i = nodes.length,
+                      node;
+
+                  while (i--) {
+                      node = nodes[i];
+                      var parent = node.parent;
+
+                      if (parent && parent.name === 'pre') {
+                          // don't process script/style/link inside pre blocks
+                          continue;
+                      }
+
+                      // only allow link[rel="stylesheet"]
+                      if (node.name == 'link' && node.attr('rel') != 'stylesheet') {
+                          node.remove();
+                          continue;
+                      }
+
+                      // remove data-mce-fragment attribute added by insertContent
+                      node.attr('data-mce-fragment', null);
+
+                      // remove any code spans that are added to json-like syntax in code blocks
+                      if (node.firstChild) {
+                          node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
+                              if (attr.indexOf('data-mce-code') === -1) {
+                                  return match;
+                              }
+
+                              return editor.dom.decode(content);
+                          });
+                      }
+
+                      if (!code_blocks) {
+                          var value = '';
+
+                          if (node.firstChild) {
+                              value = tinymce.trim(node.firstChild.value);
+                          }
+
+                          var placeholder = Node.create('img', {
+                              src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                              'data-mce-code': node.name,
+                              'data-mce-type': 'placeholder',
+                              'data-mce-resize': 'false',
+                              title: editor.dom.encode(value)
+                          });
+
+                          // eslint-disable-next-line no-loop-func
+                          each(node.attributes, function (attr) {
+                              placeholder.attr('data-mce-p-' + attr.name, attr.value);
+                          });
+
+                          if (value) {
+                              placeholder.attr('data-mce-value', escape(value));
+                          }
+
+                          node.replace(placeholder);
+
+                          continue;
+                      }
+
+                      // serialize to string
+                      value = new Serializer({
+                          validate: false
+                      }).serialize(node);
+
+                      // trim
+                      value = tinymce.trim(value);
+
+                      var pre = new Node('pre', 1);
+
+                      pre.attr({
+                          'data-mce-code': node.name
+                      });
+
+                      var text = Content.createTextNode(value, false);
+                      pre.append(text);
+
+                      node.replace(pre);
+                  }
+              });
+
+              editor.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
+                  var i = nodes.length,
+                      node, parent;
+
+                  function isBody(parent) {
+                      return parent.name === 'body';
+                  }
+
+                  function isValidCode(type) {
+                      return type === 'shortcode' || type === 'php';
+                  }
+
+                  function isBlockNode(node) {
+                      return tinymce.inArray(blockElements, node.name) != -1;
+                  }
+
+                  function isInlineTextNode(node) {
+                      return tinymce.inArray(inlineElements, node.name) != -1;
+                  }
+
+                  function isInlineNode(node) {
+                      if (node.name != 'span') {
+                          return false;
+                      }
+
+                      if (node.next && (node.next.type == '#text' || !isBlockNode(node.next))) {
+                          return true;
+                      }
+
+                      if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
+                          return true;
+                      }
+
+                      if (node.parent && !isBlockNode(node.parent)) {
+                          return true;
+                      }
+
+                      return false;
+                  }
+
+                  while (i--) {
+                      node = nodes[i], parent = node.parent;
+
+                      // don't process placeholders
+                      if (node.attr('data-mce-type') == 'placeholder') {
+                          continue;
+                      }
+
+                      if (!isValidCode(node.attr(name))) {
+                          continue;
+                      }
+
+                      var value = node.firstChild.value;
+
+                      // replace linebreaks with newlines
+                      if (value) {
+                          node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
+                      }
+
+                      if (parent) {
+                          // don't process shortcode in code blocks
+                          if (parent.attr(name)) {
+                              node.unwrap();
+                              continue;
+                          }
+
+                          // rename shortcode blocks to <pre>
+                          if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
+                              node.name = 'pre';
+
+                              // reset if node parent is inline and not a block node, eg: <strong>{var}</strong>
+                              if (node.parent && isInlineTextNode(node.parent)) {
+                                  node.name = 'span';
+                              }
+
+                              if (node.name == 'pre' && parent && parent.name == 'p') {
+                                  // if the pre is the only child of the parent, replace the parent
+                                  if (isOnlyChild(node)) {
+                                      if (parent.parent) {
+                                          parent.replace(node);
+                                      }
+                                  }
+                              }
+                          }
+
+                          // add whitespace after the span so a cursor can be set
+                          if (node.name == 'span' && node === parent.lastChild) {
+                              var nbsp = Content.createTextNode('\u00a0');
+                              parent.append(nbsp);
+                          }
+                      }
+                  }
+              });
+
+              editor.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
+                  var i = nodes.length,
+                      node, child;
+
+                  function isXmlNode(node) {
+                      return !/(shortcode|php)/.test(node.attr('data-mce-code'));
+                  }
+
+                  while (i--) {
+                      var root_block = false;
+
+                      node = nodes[i];
+
+                      var type = node.attr(name);
+
+                      if (node.name === 'img') {
+                          var elm = new Node(type, 1);
+
+                          for (var key in node.attributes.map) {
+                              var val = node.attributes.map[key];
+
+                              if (key.indexOf('data-mce-p-') !== -1) {
+                                  key = key.substr(11);
+                              } else {
+                                  val = null;
+                              }
+
+                              elm.attr(key, val);
+                          }
+
+                          var imgValue = node.attr('data-mce-value');
+
+                          if (imgValue) {
+                              var imgText = Content.createTextNode(unescape(imgValue));
+
+                              if (type == 'php' || type == 'shortcode') {
+                                  elm = imgText;
+                              } else {
+                                  elm.append(imgText);
+                              }
+                          }
+
+                          node.replace(elm);
+
+                          continue;
+                      }
+
+                      // pre node is empty, remove
+                      if (node.isEmpty()) {
+                          node.remove();
+                      }
+
+                      // skip xml
+                      if (type === 'xml') {
+                          continue;
+                      }
+
+                      // set the root block type for script and style tags so the parser does the work wrapping free text
+                      if (type === 'script' || type === 'style') {
+                          root_block = type;
+                      }
+
+                      child = node.firstChild;
+                      var newNode = node.clone(true),
+                          text = '';
+
+                      if (child) {
+                          do {
+                              if (isXmlNode(node)) {
+                                  var childVal = child.name == 'br' ? '\n' : child.value;
+
+                                  if (childVal) {
+                                      text += childVal;
+                                  }
+                              }
+                          } while ((child = child.next));
+                      }
+
+                      if (text) {
+                          newNode.empty();
+
+                          var parser = new DomParser({
+                              validate: false
+                          });
+
+                          // validate attributes of script and style tags
+                          if (type === 'script' || type === 'style') {
+                              parser.addNodeFilter(type, function (items, filterName) {
+                                  var n = items.length;
+
+                                  while (n--) {
+                                      var item = items[n];
+
+                                      // eslint-disable-next-line no-loop-func
+                                      each(item.attributes, function (attr) {
+                                          if (!attr) {
+                                              return true;
+                                          }
+
+                                          // allow data-* attributes
+                                          if (attr.name.indexOf('data-') === 0 && attr.name.indexOf('data-mce-') === -1) {
+                                              return true;
+                                          }
+
+                                          if (editor.schema.isValid(filterName, attr.name) === false) {
+                                              item.attr(attr.name, null);
+                                          }
+                                      });
+                                  }
+                              });
+                          }
+
+                          var fragment = parser.parse(text, {
+                              forced_root_block: root_block
+                          });
+
+                          newNode.append(fragment);
+                      }
+
+                      node.replace(newNode);
+
+                      if (type === 'shortcode' && newNode.name === 'pre') {
+                          var newline = Content.createTextNode('\n');
+                          newNode.append(newline);
+                          newNode.unwrap();
+                      }
+                  }
+              });
+
+              editor.onContextMenu.addToTop(function (ed, e) {
+                  var node = ed.selection.getNode();
+
+                  if (node && node.hasAttribute('data-mce-code')) {
+                      return false;
+                  }
+              });
           });
 
-          // decode protected code
-          o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
-            return unescape(content);
+          editor.onInit.add(function () {
+              // Display "script" instead of "pre" in element path
+              if (editor.theme && editor.theme.onResolveName) {
+                  editor.theme.onResolveName.add(function (theme, o) {
+                      var node = o.node;
+
+                      if (node.getAttribute('data-mce-code')) {
+                          o.name = node.getAttribute('data-mce-code');
+                      }
+                  });
+              }
           });
-        }
+
+          var hitAreaSize = 32;
+
+          editor.onMouseDown.add(function (ed, e) {
+              var pre = e.target.closest('pre[data-mce-code]');
+
+              if (!pre) {
+                  return;
+              }
+
+              var { clientX, clientY } = e;
+              var { top, right } = pre.getBoundingClientRect();
+
+              if (clientX >= right - hitAreaSize && clientY <= top + hitAreaSize) {
+                  ed.dom.toggleClass(pre, 'mce-code-toggle');
+              }
+          });
+
+          editor.onBeforeSetContent.addToTop(function (ed, o) {
+              if (editor.settings.code_protect_shortcode) {
+                  if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
+                      o.content = Process.processShortcode(editor, o.content);
+                  }
+              }
+
+              if (canKeepCode('custom_xml')) {
+                  // only process content on "load"
+                  if (o.content && o.load) {
+                      o.content = Process.processXML(editor, o.content);
+                  }
+              }
+
+              // test for PHP, Script or Style
+              if (/<(\?|script|style|link)/.test(o.content)) {
+                  // Remove javascript if not enabled
+                  if (!canKeepCode('script')) {
+                      o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
+                  }
+
+                  if (!canKeepCode('style')) {
+                      o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
+                      o.content = o.content.replace(/<link[^>]*?rel="stylesheet"[^>]*?>/gi, '');
+                  }
+
+                  o.content = Process.processPhp(editor, o.content);
+              }
+          });
+
+          editor.onPostProcess.add(function (ed, o) {
+              if (o.get) {
+                  // Process converted php
+                  if (/(data-mce-php|__php_start__)/.test(o.content)) {
+                      // attribute value
+                      o.content = o.content.replace(/({source})?__php_start__(.*?)__php_end__/g, function (match, pre, code) {
+                          return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
+                      });
+
+                      // textarea
+                      o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+                          if (/&lt;\?php/.test(c)) {
+                              c = ed.dom.decode(c);
+                          }
+                          return '<textarea' + b + '>' + c + '</textarea>';
+                      });
+
+                      // as attribute
+                      o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
+                          return '<?php' + ed.dom.decode(b) + '?>';
+                      });
+                  }
+
+                  // shortcode content will be encoded as text, so decode
+                  if (editor.settings.code_protect_shortcode) {
+                      o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
+                          return '{' + ed.dom.decode(content) + '}';
+                      });
+
+                      // sourcerer with encoded content
+                      o.content = o.content.replace(/\{source([^\}]*?)\}([\s\S]+?)\{\/source\}/gi, function (match, start, content) {
+                          return '{source' + start + '}' + ed.dom.decode(content) + '{/source}';
+                      });
+
+                      // other shortcode tags
+                      o.content = o.content.replace(/\{([\w-]+)(.*?)\}([\s\S]+)\{\/\1\}/gi, function (match, start, attr, content) {
+                          return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
+                      });
+                  }
+
+                  // decode code snippets
+                  o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
+                      if (attr.indexOf('data-mce-code') === -1) {
+                          return match;
+                      }
+
+                      content = tinymce.trim(content);
+
+                      var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
+
+                      if (type != 'script') {
+                          content = content.replace(/<br[^>]*?>/gi, '\n');
+                      }
+
+                      content = ed.dom.decode(content);
+
+                      if (type == 'php') {
+                          content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
+                          content = '<?php\n' + tinymce.trim(content) + '\n?>';
+                      }
+
+                      return content;
+                  });
+
+                  // decode protected code
+                  o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
+                      return unescape(content);
+                  });
+              }
+          });
       });
-    });
+
   })();
 
   /**
@@ -52938,7 +53205,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return (prefix || 'blobid') + (count++);
+          return ('blobid') + (count++);
       };
 
       function isSupportedImage(value) {
