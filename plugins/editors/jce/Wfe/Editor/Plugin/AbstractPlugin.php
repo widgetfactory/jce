@@ -224,7 +224,7 @@ class AbstractPlugin
             'direction' => $this->isRtl() ? 'rtl' : 'ltr',
             'compress_javascript' => $wf->getParam('editor.compress_javascript', 0),
             'compress_css' => $wf->getParam('editor.compress_css', 0),
-            'theme' => 'uk-jce-theme-' . $theme,
+            'theme' => 'uk-theme-' . $theme,
         ));
 
         // register for any remaining legacy getInstance() call sites
