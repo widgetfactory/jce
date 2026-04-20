@@ -440,13 +440,6 @@
         ed.onNodeChange.add(function (ed, cm, n, co) {
             var link = ed.dom.getParent(n, 'a[href]'), anchor = link && ed.dom.hasClass(link, 'mce-item-anchor');
 
-            // remove existing selections
-            ed.dom.removeAttrib(ed.dom.select('a'), 'data-mce-selected');
-
-            if (link) {
-                ed.dom.setAttrib(link, 'data-mce-selected', 'inline-boundary');
-            }
-
             // set active if link
             cm.setActive('unlink', link);
             cm.setActive('link', link);
