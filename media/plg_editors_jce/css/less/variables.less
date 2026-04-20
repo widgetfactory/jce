@@ -1,0 +1,219 @@
+// out:false
+// ========================================================
+// Variables — JCE Editor Plugin UI
+// Centralized design tokens shared across all LESS files.
+// ========================================================
+@base-body-font-size:                           13px;
+// --------------------------------------------------------
+// Breakpoints
+// --------------------------------------------------------
+@breakpoint-small:      375px;
+@breakpoint-medium:     414px;
+@breakpoint-tablet:     800px;
+@breakpoint-desktop:    960px;
+
+// --------------------------------------------------------
+// Colors — Text
+// --------------------------------------------------------
+@color-text:            #444;
+@color-text-muted:      #666;
+@color-text-light:      #888;
+@color-text-disabled:   #999;
+
+// --------------------------------------------------------
+// Colors — Backgrounds
+// --------------------------------------------------------
+@color-white:           #fff;
+@color-bg:              #fff;
+@color-bg-light:        #f5f5f5;
+@color-bg-faint:        #fafafa;
+@color-bg-focus:        #f5fbfe;
+@color-bg-active:       #e6e6e6;
+@color-bg-disabled:     #eee;
+
+// --------------------------------------------------------
+// Colors — Borders
+// --------------------------------------------------------
+@color-border:          #ddd;
+@color-border-medium:   #ccc;
+@color-border-dark:     #bbb;
+
+// --------------------------------------------------------
+// Colors — Selection / Highlight
+// --------------------------------------------------------
+@color-selection-bg:    #d9edf7;
+
+// --------------------------------------------------------
+// Colors — Alert
+// --------------------------------------------------------
+@color-alert-bg:        #d9edf7;
+@color-alert-text:      #31708f;
+@color-alert-success-bg:  #dff0d8;
+@color-alert-warning-bg:  #fcf8e7;
+@color-alert-danger-bg:   #f2dede;
+
+// --------------------------------------------------------
+// Colors — Inline code / mark
+// --------------------------------------------------------
+@color-code:            #c7254e;
+@color-mark-bg:         #fcf8e1;
+
+// --------------------------------------------------------
+// Colors — Primary (UIkit origin)
+// --------------------------------------------------------
+@color-primary:         #337ab7;
+@color-primary-dark:    #286090;
+@color-link-hover:      #23527c;
+@color-focus:           #66afe9;
+@color-focus-checked:   #0e6dcd;
+
+// --------------------------------------------------------
+// Colors — Status (success / warning / danger)
+// --------------------------------------------------------
+@color-success:         #5cb85c;
+@color-success-dark:    #3c763d;
+@color-success-hover:   #449d44;
+@color-warning:         #f0ad4e;
+@color-warning-dark:    #8a6d3b;
+@color-danger:          #d9534f;
+@color-danger-dark:     #a94442;
+@color-danger-hover:    #c9302c;
+
+// --------------------------------------------------------
+// Colors — State
+// --------------------------------------------------------
+@color-error:           #d85030;
+
+// --------------------------------------------------------
+// Colors — Range slider (UIkit origin)
+// --------------------------------------------------------
+@color-slider-thumb:    #ecf0f1;
+@color-slider-border:   #bdc3c7;
+
+// --------------------------------------------------------
+// Typography
+// --------------------------------------------------------
+@font-family-ui:        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+@font-family-system:    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+@font-family-mono:      monospace;
+@font-size-base:        13px;
+@font-size-code:        12px;
+@font-size-icon:        16px;
+
+// --------------------------------------------------------
+// Layout
+// --------------------------------------------------------
+@border-radius-small:   2px;
+@border-radius-medium:  4px;
+@row-height:            32px;
+@row-height-small:      20px;
+@row-height-mini:       18px;
+
+// --------------------------------------------------------
+// Form padding (UIKit component values)
+// --------------------------------------------------------
+@ui-form-padding:       2px 3px;
+@ui-form-padding-small: 2px;
+@ui-form-padding-large: 4px 3px;
+
+// --------------------------------------------------------
+// UIKit typography overrides
+// --------------------------------------------------------
+@ui-font-size-small:            0.78rem;
+@ui-line-height-small:          1.49rem;
+@ui-font-size-large:            1.28rem;
+@ui-line-height-large:          1.32rem;
+@ui-comment-title-font-size:    1.14rem;
+@ui-comment-title-line-height:  1.36rem;
+@ui-tooltip-font-size:          0.85rem;
+@ui-tooltip-line-height:        1.46rem;
+
+// --------------------------------------------------------
+// Paths
+// --------------------------------------------------------
+@images:                "../img";
+
+
+@form-height:                                   32px;
+
+// --------------------------------------------------------
+// UIKit button component overrides
+// --------------------------------------------------------
+@button-height:                                 32px;
+@button-font-size:                              1rem;
+@button-background:                             @color-bg;
+@button-color:                                  @color-text;
+@button-hover-background:                       @color-bg-active;
+@button-hover-color:                            @color-text;
+@button-active-background:                      @color-border;
+@button-active-color:                           @color-text;
+@button-border:                                 @color-border;
+
+@button-primary-background:                     @color-primary;
+@button-primary-color:                          @color-white;
+@button-primary-hover-background:               @color-primary-dark;
+@button-primary-hover-color:                    @color-white;
+@button-primary-active-background:              @color-primary-dark;
+@button-primary-active-color:                   @color-white;
+@button-primary-border:                         @color-primary;
+
+@button-success-background:                     @color-success;
+@button-success-color:                          @color-white;
+@button-success-hover-background:               @color-success-hover;
+@button-success-hover-color:                    @color-white;
+@button-success-active-background:              @color-success-dark;
+@button-success-active-color:                   @color-white;
+@button-success-border:                         @color-success;
+
+@button-danger-background:                      @color-danger;
+@button-danger-color:                           @color-white;
+@button-danger-hover-background:                @color-danger-hover;
+@button-danger-hover-color:                     @color-white;
+@button-danger-active-background:               @color-danger-dark;
+@button-danger-active-color:                    @color-white;
+@button-danger-border:                          @color-danger;
+
+@button-disabled-background:                    @color-bg-light;
+@button-disabled-color:                         @color-text-disabled;
+
+@button-link-color:                             @color-primary;
+@button-link-hover-color:                       @color-link-hover;
+@button-link-hover-text-decoration:             underline;
+@button-link-disabled-color:                    @color-text-disabled;
+@button-link-border:                            transparent;
+
+@dropdown-background:                           #fff;
+@dropdown-navbar-background:                    #fff;
+
+@nav-side-color:                                @color-text;
+@nav-side-hover-background:                     @color-bg-light;
+@nav-side-hover-color:                          @color-text;
+@nav-side-active-background:                    @color-primary;
+@nav-side-active-color:                         @color-white;
+@nav-side-header-color:                         @color-text;
+@nav-side-divider-border:                       @color-border;
+@nav-side-divider-border-width:                 1px;
+@nav-side-nested-color:                         @color-primary;
+@nav-side-nested-hover-color:                   @color-primary-dark;
+
+@nav-dropdown-color:                            @color-text;
+@nav-dropdown-hover-background:                 @color-primary;
+@nav-dropdown-hover-color:                      @color-white;
+@nav-dropdown-header-color:                     @color-text-disabled;
+@nav-dropdown-divider-border:                   @color-border;
+@nav-dropdown-divider-border-width:             1px;
+@nav-dropdown-nested-color:                     @color-primary;
+@nav-dropdown-nested-hover-color:               @color-primary-dark;
+
+@nav-navbar-color:                              @color-text;
+@nav-navbar-hover-background:                   @color-primary;
+@nav-navbar-hover-color:                        @color-white;
+@nav-navbar-header-color:                       @color-text-disabled;
+@nav-navbar-divider-border:                     @color-border;
+@nav-navbar-divider-border-width:               1px;
+@nav-navbar-nested-color:                       @color-primary;
+@nav-navbar-nested-hover-color:                 @color-primary-dark;
+
+@navbar-background:                             @color-bg-light;
+
+@pagination-background:                         @color-bg-light;

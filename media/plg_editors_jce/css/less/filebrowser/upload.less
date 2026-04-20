@@ -1,0 +1,138 @@
+// out: false
+
+#upload-body {
+    height: 100%;
+    position: static !important;
+    z-index: 10;
+
+    fieldset {
+        border: 1px solid @color-border;
+        margin: 0;
+        padding: 0 5px;
+
+        legend {
+            width: auto;
+            padding: 0 5px;
+        }
+    }
+}
+
+#upload-queue-block {
+    clear: both;
+    height: 14rem;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 5px;
+    margin: 0;
+}
+
+#upload-options {
+    max-height: 14rem;
+    overflow: auto;
+
+    .uk-form-row {
+        margin-bottom: 0.5em;
+        margin-top: 0;
+    }
+}
+
+.queue-item-loading {
+    .queue-item-name {
+        input {
+            padding-right: 4rem !important;
+        }
+
+        .uk-icon:before {
+            content: "";
+            border: 0.25rem solid rgba(0, 0, 0, 0.1);
+            border-left-color: @color-text-light;
+            border-radius: 100%;
+            width: 1.125em;
+            height: 1.125em;
+            animation: donut-spin 1.2s linear infinite;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: middle;
+            top: -0.375em;
+            position: relative;
+        }
+    }
+
+    .uk-progress {
+        display: block;
+    }
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.uk-progress {
+    margin: 5px 0;
+    box-shadow: inherit;
+    background-color: transparent;
+    display: none;
+}
+
+.uk-alert {
+    white-space: normal;
+    margin: 5px 0;
+}
+
+.queue-item-size {
+    vertical-align: middle;
+    line-height: @row-height;
+}
+
+.queue-item {
+    .queue-item-name {
+        .queue-item-extension {
+            padding: 0;
+            font-size: inherit;
+            cursor: inherit;
+            vertical-align: middle;
+            line-height: @row-height;
+            height: inherit;
+            margin: 0;
+            top: 0;
+            right: 0;
+            width: 4rem;
+        }
+    }
+}
+
+.wf-uploader-container {
+    display: inline-block;
+    position: relative;
+    overflow: inherit;
+}
+
+.wf-uploader-element {
+    font-size: 999px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+}
+
+::-ms-clear {
+    display: none;
+}
+
+.wf-upload-dragover > div {
+    border-width: 2px !important;
+}
+
+.queue-item-action {
+    padding: 0 7px;
+}

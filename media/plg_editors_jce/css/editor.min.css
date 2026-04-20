@@ -157,9 +157,7 @@ field-wysiwygeditor {
   padding: 0.75em 1.25em;
   margin-right: 2px;
   line-height: 1.5em;
-  border: 1px solid transparent;
   background-color: inherit;
-  border-radius: 0;
   display: block;
   cursor: pointer;
   border: var(--nav-tabs-border-width) solid transparent;
@@ -287,12 +285,8 @@ joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
 .wf-editor-source textarea:focus {
   border: 0 none;
 }
-.wf-no-editor {
-  width: 100%;
-  min-height: 200px;
-}
 .wf-editor-source,
-.wf-editor-preview {
+.wf-editor-source .wf-editor-preview {
   position: relative;
   width: 100%;
   border: 1px solid #ddd;
@@ -308,6 +302,18 @@ joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
 .wf-editor-source textarea {
   resize: none;
   border: 0 none;
+}
+.wf-no-editor {
+  width: 100%;
+  min-height: 200px;
+}
+.wf-editor-preview {
+  position: relative;
+  width: 100%;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  background: #fff;
+  min-width: 300px;
 }
 .wf-editor-preview iframe {
   position: absolute;

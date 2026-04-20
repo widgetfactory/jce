@@ -1,0 +1,124 @@
+// out: false
+
+.uk-tree {
+    a {
+        display: inline-block;
+        white-space: nowrap;
+
+        &,
+        &:hover,
+        &:active {
+            text-decoration: none;
+            color: inherit;
+        }
+    }
+
+    &,
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    li {
+        line-height: @row-height;
+        vertical-align: middle;
+        margin: 0;
+    }
+}
+
+.uk-tree-toggle {
+    cursor: pointer;
+}
+
+.uk-tree-toggle,
+.uk-tree-icon {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+
+    .uk-icon {
+        height: 2em;
+        width: 2em;
+        vertical-align: middle;
+        line-height: 2em;
+    }
+}
+
+.uk-icon-caret-down {
+    display: none;
+}
+
+.uk-icon-folder-open {
+    display: none;
+}
+
+.uk-tree-open > .uk-tree-row {
+    > .uk-tree-toggle {
+        .uk-icon-caret-right {
+            display: none;
+        }
+
+        .uk-icon-caret-down {
+            display: inline-block;
+        }
+    }
+
+    .uk-tree-icon {
+        .uk-icon-folder {
+            display: none;
+        }
+
+        .uk-icon-folder-open {
+            display: inline-block;
+        }
+    }
+}
+
+.uk-tree-loading > .uk-tree-row > .uk-tree-toggle {
+    .uk-icon {
+        display: none !important;
+    }
+
+    background: url("@{images}/load.gif") no-repeat center;
+    width: @row-height;
+    height: @row-height;
+}
+
+.uk-tree-node li {
+    padding: 0 0 0 @row-height;
+
+    &:empty {
+        padding: 0;
+        margin: 0;
+        visibility: hidden;
+    }
+}
+
+.uk-tree-row {
+    .uk-tree-text {
+        display: inline-block;
+        line-height: @row-height;
+        vertical-align: middle;
+    }
+}
+
+.uk-tree-active > .uk-tree-row,
+.uk-tree-row:hover {
+    background-color: @color-selection-bg;
+}
+
+.uk-tree-active > .uk-tree-row .uk-tree-text {
+    font-weight: bold;
+}
+
+.uk-tree-hide {
+    display: none;
+}
+
+.uk-tree-root > ul > li {
+    padding: 0;
+}

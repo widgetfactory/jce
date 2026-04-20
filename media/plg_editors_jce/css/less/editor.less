@@ -10,6 +10,8 @@
  * other free or open source software licenses.
  */
 
+@import "variables.less";
+
 .wf-editor-container,
 .wf-editor-container * {
     margin: 0;
@@ -18,9 +20,9 @@
     vertical-align: top;
     background: transparent;
     text-decoration: none;
-    color: #444;
-    font-family: apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
-    font-size: 13px;
+    color: @color-text;
+    font-family: @font-family-ui;
+    font-size: @font-size-base;
     text-shadow: none;
     float: none;
     position: static;
@@ -59,7 +61,7 @@
         left: 0;
         top: 0;
         z-index: 10000;
-        background: #fff;
+        background: @color-white;
 
         &.mce-loading:before {
             height: 95.75%;
@@ -68,39 +70,41 @@
         }
 
         .wf-editor-header {
-            background-color: #fff;
+            background-color: @color-white;
         }
     }
 
-    &.mce-loading:before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: calc(100% - 41px);
-        left: 0;
-        top: 41px;
-        background: #fff;
-        opacity: 0.8;
-        border: 1px solid #ccc;
-        z-index: 10000;
-        box-sizing: border-box;
-    }
+    &.mce-loading {
+        &:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: calc(100% - 41px);
+            left: 0;
+            top: 41px;
+            background: @color-white;
+            opacity: 0.8;
+            border: 1px solid @color-border-medium;
+            z-index: 10000;
+            box-sizing: border-box;
+        }
 
-    &.mce-loading:after {
-        content: "";
-        display: block;
-        border: 0.25rem solid rgba(0, 0, 0, 0.1);
-        border-left-color: #888;
-        border-radius: 50%;
-        width: 2rem;
-        height: 2rem;
-        animation: donut-spin 1.2s linear infinite;
-        z-index: 10001;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin: -1rem 0 0 -1rem;
-        box-sizing: border-box;
+        &:after {
+            content: "";
+            display: block;
+            border: 0.25rem solid rgba(0, 0, 0, 0.1);
+            border-left-color: @color-text-light;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            animation: donut-spin 1.2s linear infinite;
+            z-index: 10001;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -1rem 0 0 -1rem;
+            box-sizing: border-box;
+        }
     }
 
     .mce-tinymce {
@@ -110,10 +114,10 @@
     .wf-editor-tabs {
         width: 100%;
         box-sizing: border-box;
-    }
 
-    .wf-editor-tabs li {
-        cursor: pointer
+        li {
+            cursor: pointer;
+        }
     }
 
     +.btn-toolbar {
@@ -131,16 +135,17 @@
 section[role="tabpanel"] .wf-editor-container {
     margin-top: 1rem;
 }
+
 /* Joomla 3 and Widgetkit */
 .joomla3,
 field-wysiwygeditor {
     --nav-tabs-border-width: 1px;
-    --nav-tabs-border-color: #ddd;
-    --nav-tabs-border-radius: 2px;
-    --nav-link-color: #666;
-    --nav-tabs-link-hover-border-color: #ddd;
-    --nav-tabs-link-active-bg: #fff;
-    --nav-tabs-link-active-border-color: #ddd;
+    --nav-tabs-border-color: @color-border;
+    --nav-tabs-border-radius: @border-radius-small;
+    --nav-link-color: @color-text-muted;
+    --nav-tabs-link-hover-border-color: @color-border;
+    --nav-tabs-link-active-bg: @color-white;
+    --nav-tabs-link-active-border-color: @color-border;
     --nav-tabs-link-active-color: #555;
 }
 
@@ -158,7 +163,6 @@ field-wysiwygeditor {
         display: flex;
         justify-content: flex-end;
         margin: 0 0 0.25rem 0;
-
         list-style: none;
         border-bottom: var(--nav-tabs-border-width) solid var(--nav-tabs-border-color);
 
@@ -176,21 +180,16 @@ field-wysiwygeditor {
         >button {
             appearance: none;
             background: transparent none;
-
             padding: 0.75em 1.25em;
             margin-right: 2px;
             line-height: 1.5em;
-            border: 1px solid transparent;
             background-color: inherit;
-            border-radius: 0;
             display: block;
             cursor: pointer;
-
             border: var(--nav-tabs-border-width) solid transparent;
             border-top-left-radius: var(--nav-tabs-border-radius);
             border-top-right-radius: var(--nav-tabs-border-radius);
             margin-bottom: calc(var(--nav-tabs-border-width)*-1);
-
             color: var(--nav-link-color);
 
             &:hover {
@@ -200,9 +199,7 @@ field-wysiwygeditor {
 
             &.active {
                 cursor: default;
-
                 margin-bottom: -1px;
-
                 background-color: var(--nav-tabs-link-active-bg);
                 border-color: var(--nav-tabs-link-active-border-color);
                 border-bottom-color: transparent;
@@ -225,7 +222,6 @@ field-wysiwygeditor {
         background: none;
         appearance: none;
         line-height: 1;
-
         color: inherit;
 
         &:hover {
@@ -289,10 +285,10 @@ joomla-tab {
         display: flex;
         align-items: center;
         justify-content: flex-end;
-    }
 
-    .wf-editor-header:empty {
-        min-height: inherit;
+        &:empty {
+            min-height: inherit;
+        }
     }
 
     .wf-editor-toggle {
@@ -314,13 +310,13 @@ joomla-tab {
 .wf-editor,
 .wf-no-editor,
 .wf-editor-source textarea {
-    background: #fff none;
-    font-family: monospace;
-    font-size: 12px;
-    color: #444;
+    background: @color-white none;
+    font-family: @font-family-mono;
+    font-size: @font-size-code;
+    color: @color-text;
     line-height: 16px;
     position: relative;
-    border: 1px dashed #ccc;
+    border: 1px dashed @color-border-medium;
     box-sizing: border-box;
     box-shadow: inherit;
     padding: 10px;
@@ -328,17 +324,40 @@ joomla-tab {
     width: 100%;
 
     &:focus {
-        background: #fff none;
+        background: @color-white none;
         color: #333;
-        border-color: #ccc;
+        border-color: @color-border-medium;
         box-shadow: inherit;
     }
 }
 
-.wf-editor-source textarea {
-    border: 0 none;
+.wf-editor-source {
+    textarea {
+        border: 0 none;
 
-    &:focus {
+        &:focus {
+            border: 0 none;
+        }
+    }
+
+    &,
+    .wf-editor-preview {
+        position: relative;
+        width: 100%;
+        border: 1px solid @color-border;
+        box-sizing: border-box;
+        background: @color-white;
+        min-width: 300px;
+    }
+
+    iframe {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    textarea {
+        resize: none;
         border: 0 none;
     }
 }
@@ -348,44 +367,32 @@ joomla-tab {
     min-height: 200px;
 }
 
-.wf-editor-source,
 .wf-editor-preview {
     position: relative;
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid @color-border;
     box-sizing: border-box;
-    background: #fff;
+    background: @color-white;
     min-width: 300px;
-}
 
-.wf-editor-source iframe {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.wf-editor-source textarea {
-    resize: none;
-    border: 0 none;
-}
-
-.wf-editor-preview iframe {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    iframe {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
 }
 
 #wf_upload_button {
-    border: 1px solid #bbb;
-    color: #444;
-    font-family: apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
-    font-size: 13px;
-    background-color: #fff;
-    border-radius: 2px;
+    border: 1px solid @color-border-dark;
+    color: @color-text;
+    font-family: @font-family-ui;
+    font-size: @font-size-base;
+    background-color: @color-white;
+    border-radius: @border-radius-small;
     cursor: pointer;
     display: none;
     overflow: hidden;
@@ -393,12 +400,12 @@ joomla-tab {
     text-align: center;
 
     &:hover {
-        background-color: #fff;
+        background-color: @color-white;
     }
 
     label {
         position: relative;
-        border-radius: 2px;
+        border-radius: @border-radius-small;
         cursor: pointer;
         margin: 0;
         padding: 0.25em;
@@ -418,7 +425,7 @@ joomla-tab {
 
 .com_k2 .k2ItemFormEditor {
     .wf-editor-container {
-        background: #fff;
+        background: @color-white;
         border-bottom: 0 none;
 
         .wf-editor-header {
