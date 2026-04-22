@@ -1,11 +1,13 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
-*
+ *
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 namespace Wfe\Plugins\Editor\Browser;
 
 \defined('_JEXEC') or die;
@@ -55,7 +57,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
         if ($caller && ($keys[0] === $caller || count($keys) == 1)) {
             // create new key
             $key = $caller . '.' . 'browser' . '.' . array_pop($keys);
-            
+
             // get namespaced value, fallback to base parameter
             $value = $this->getApplication()->getParam($key, $value, $default, $type);
         }
@@ -119,7 +121,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 
                 // strtolower the value
                 $mediatype = strtolower($mediatype);
-                
+
                 // mediaypes contains a mapped type
                 if (array_key_exists($mediatype, $map)) {
                     // process the map to filter permitted extensions
@@ -163,9 +165,15 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
     {
         $app = Factory::getApplication();
 
-        $folder = $app->input->getPath('mediafolder', '');
+        $folder = $app->input->getString('mediafolder', '');
 
         if ($folder) {
+            // trim the path of leading : if any
+            $folder = trim($folder, ':');
+
+            // trim the path of leading and trailing /
+            $folder = trim($folder, '/');
+
             // clean
             $folder = Utility::cleanPath($folder);
 
@@ -273,9 +281,47 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 
             $prefix = '';
 
+            // check if this is a root folder by looking for a : character at the start of the path value
+            $isRootFolder = strpos($folder, ':') === 0;
+
+            // trim the path of leading : if any
+            $folder = trim($folder, ':');
+
+            // trim the path of leading and trailing /
+            $folder = trim($folder, '/');
+
             if (empty($config['dir'])) {
                 $root = array('path' => '');
             } else {
+                if ($isRootFolder) {
+                    if (!empty($folder)) {
+                        $tmpPath = $folder . '/';
+
+                        foreach ($config['dir'] as $key => $store) {
+                            $base = trim($store['path'], '/');
+
+                            // strip any variable segments (eg: $usergroup) to get the comparable literal prefix
+                            $literalBase = trim(preg_replace('/\/?\$.*$/', '', $base), '/');
+
+                            // check if the folder is within this directory store path
+                            if (!empty($literalBase) && ($folder === $literalBase || strpos($tmpPath, $literalBase . '/') === 0)) {
+                                $hash = md5($folder);
+
+                                $config['dir'] = array(
+                                    $hash => array(
+                                        'label' => '',
+                                        'path'  => $folder,
+                                    ),
+                                );
+
+                                return $config;
+                            }
+                        }
+                    }
+
+                    // no match found - fall through and treat as relative to dir value
+                }
+
                 // get the first directory store prefix
                 $prefix = key($config['dir']);
                 // get the first directory store
