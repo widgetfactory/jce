@@ -10650,7 +10650,6 @@
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
 
-
   /**
    * Copyright (c) 2025 Ryan Demmer
    * Licensed under the GNU General Public License v2.0 or later
@@ -17205,6 +17204,9 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
+        if (predicate && predicate(node)) {
+          break;
+        }
 
         parents.push(node);
       }
@@ -20216,7 +20218,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20256,10 +20257,10 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    clearData: clearData,
-    getData: getData$1,
     hasData: hasData,
-    setData: setData
+    getData: getData$1,
+    setData: setData,
+    clearData: clearData
   });
 
   /**
@@ -20271,7 +20272,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var noop = function () { };
 
@@ -20492,7 +20492,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {};
+    var div = DOM.create('div', {}, content), styles = {}, css = '';
 
     styles = tinymce.extend(styles, parseCSS(content));
 
@@ -20512,10 +20512,16 @@
         return true;
       }
       
-      {
+      if (!embed_stylesheet) {
         DOM.setStyles(DOM.select(selector, div), value.styles);
+      } else {
+        css += value.text;
       }
     });
+
+    if (css) {
+      div.prepend(DOM.create('style', { type: 'text/css' }, css));
+    }
 
     content = div.innerHTML;
 
@@ -20699,7 +20705,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$5 = tinymce.each;
 
@@ -21072,7 +21077,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$4 = tinymce.each,
       Schema = tinymce.html.Schema,
@@ -22011,7 +22015,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   var each$3 = tinymce.each;
   var isIE$1 = tinymce.isIE || tinymce.isIE12;
 
@@ -22434,7 +22437,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$2 = tinymce.each,
       VK = tinymce.VK,
@@ -23117,7 +23119,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   var RangeUtils = tinymce.dom.RangeUtils, Delay = tinymce.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23498,7 +23499,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var Dispatcher = tinymce.util.Dispatcher;
 
@@ -26210,7 +26210,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, 0);
+        }, time || 0);
       };
 
       func.stop = function () {
@@ -44711,7 +44711,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if ((!format.mixed || !isBlock(formatRoot))) {
+            if (split && (!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -44726,7 +44726,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container);
+          return wrapAndSplit(findFormatRoot(container), container, container, true);
         }
 
         function unwrap(start) {
@@ -49149,7 +49149,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(',');
+      return (str || '').split(delim || ',');
   }
 
   // list of HTML tags
@@ -53205,7 +53205,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return ('blobid') + (count++);
+          return (prefix || 'blobid') + (count++);
       };
 
       function isSupportedImage(value) {
