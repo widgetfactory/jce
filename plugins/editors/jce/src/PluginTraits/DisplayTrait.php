@@ -191,6 +191,11 @@ trait DisplayTrait
         // Only add "px" to width and height if they are not given as a percentage
         if (is_numeric($width)) {
             $width .= 'px';
+        }   
+
+        // set default height for Joomla 6.1
+        if (empty($height)) {
+            $height = '500';
         }
 
         if (is_numeric($height)) {
