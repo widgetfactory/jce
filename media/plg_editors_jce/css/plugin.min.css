@@ -8978,6 +8978,42 @@ a.uk-thumbnail:focus {
   }
 }
 /* ========================================================================
+   Component: Accordion
+ ========================================================================== */
+/* Sub-object: `uk-accordion-title`
+ ========================================================================== */
+.uk-accordion-title {
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding: 5px 15px;
+  background: #eee;
+  font-size: 18px;
+  line-height: 24px;
+  cursor: pointer;
+}
+/* Sub-object: `uk-accordion-content`
+ ========================================================================== */
+.uk-accordion-content {
+  padding: 0 15px 15px 15px;
+}
+/*
+ * Micro clearfix to make panels more robust
+ */
+.uk-accordion-content:before,
+.uk-accordion-content:after {
+  content: "";
+  display: table;
+}
+.uk-accordion-content:after {
+  clear: both;
+}
+/*
+ * Remove margin from the last-child
+ */
+.uk-accordion-content > :last-child {
+  margin-bottom: 0;
+}
+/* ========================================================================
    Component: Placeholder
  ========================================================================== */
 .uk-placeholder {
@@ -10104,11 +10140,26 @@ html {
 .uk-button-primary {
   border-color: #337ab7;
 }
+.uk-button-primary:disabled {
+  background-color: #9dc0de;
+  color: #fff;
+  border-color: #9dc0de;
+}
 .uk-button-success {
   border-color: #5cb85c;
 }
+.uk-button-success:disabled {
+  background-color: #aad9aa;
+  color: #fff;
+  border-color: #aad9aa;
+}
 .uk-button-danger {
   border-color: #d9534f;
+}
+.uk-button-danger:disabled {
+  background-color: #eca9a7;
+  color: #fff;
+  border-color: #eca9a7;
 }
 .uk-navbar {
   border: 1px solid #ddd;
@@ -10750,6 +10801,9 @@ select:not([multiple]):not([size]) {
 }
 .uk-form input[type="radio"] {
   border-radius: 50%;
+}
+.uk-accordion-title {
+  border: 1px solid #ddd;
 }
 .uk-datalist-control {
   position: relative;

@@ -145,14 +145,32 @@ html {
 
 .uk-button-primary {
     border-color: @button-primary-border;
+
+    &:disabled {
+        background-color: @button-primary-disabled-background;
+        color: @button-primary-disabled-color;
+        border-color: @button-primary-disabled-border;
+    }
 }
 
 .uk-button-success {
     border-color: @button-success-border;
+
+    &:disabled {
+        background-color: @button-success-disabled-background;
+        color: @button-success-disabled-color;
+        border-color: @button-success-disabled-border;
+    }
 }
 
 .uk-button-danger {
     border-color: @button-danger-border;
+
+    &:disabled {
+        background-color: @button-danger-disabled-background;
+        color: @button-danger-disabled-color;
+        border-color: @button-danger-disabled-border;
+    }
 }
 
 .uk-navbar {
@@ -959,3 +977,7 @@ select:not([multiple]):not([size]) {
         border-radius: 50%;
     }
 }
+
+.uk-accordion-title {
+    border: 1px solid @color-border;
+} 
