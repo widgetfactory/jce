@@ -151,6 +151,11 @@ class JFormFieldMediaJce extends MediaField
 
         $extraData['class'] .= ' wf-media-input-core';
 
+        // Joomla 3: reset the folder value if no default directory is set in parameters
+        if (empty($this->directory)) {
+            $extraData['folder'] = '';
+        }
+
         return array_merge($data, $extraData);
     }
 }
