@@ -30,7 +30,23 @@ const handleClickEvent = (e) => {
 
 const removeRepeatable = (e) => {
     const repeatable = e.target.closest('.form-field-repeatable-item'), parent = repeatable.parentNode;
-    repeatable.remove();
+
+    // if only one repeatable item remains, clear it instead of removing it
+    const repeatables = parent.querySelectorAll('.form-field-repeatable-item');
+
+    if (repeatables.length === 1) {
+        repeatables[0].querySelectorAll('input, select, textarea').forEach((input) => {
+            input.value = '';
+            input.dispatchEvent(new Event('change'));
+        });
+    } else {
+        repeatable.remove();
+    }
+
+    parent.querySelector('.form-field-repeatable-item').querySelectorAll('input, select, textarea').forEach((input) => {
+        input.dispatchEvent(new Event('change'));
+    });
+
     parent.dispatchEvent(new Event('repeatable:delete'));
 };
 
