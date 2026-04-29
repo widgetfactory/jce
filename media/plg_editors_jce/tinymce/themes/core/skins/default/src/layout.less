@@ -9,27 +9,29 @@
     flex-wrap: nowrap;
     gap: 5px;
     flex-direction: row;
-}
 
-.mceSizes {
-    gap: 20px;
-
-    input {
-        text-align: center;
-    }
-
-    .mceSeparator {
-        margin: 0;
-        width: 64px;
-        height: 32px;
-        background: none;
-
-        &::after {
-            content: "x";
-            display: block;
+    &.mceSizes {
+        input {
             text-align: center;
-            line-height: 32px;
-            font-size: 1em;
+        }
+
+        .mceSeparator {
+            margin: 0;
+            width: 32px;
+            height: 32px;
+            background: none;
+
+            &::after {
+                content: "x";
+                display: block;
+                text-align: center;
+                line-height: 32px;
+                font-size: 1em;
+            }
+        }
+
+        input {
+            max-width: 5em;
         }
     }
 }
