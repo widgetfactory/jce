@@ -71,7 +71,7 @@
             o.more_colors_func = function () {
                 ed.execCommand('mceColorPicker', false, {
                     color: c.value,
-                    func: function (co) {
+                    callback: function (co) {
                         c.setColor(co);
                     }
                 });
@@ -123,7 +123,7 @@
             o.more_colors_func = function () {
                 ed.execCommand('mceColorPicker', false, {
                     color: c.value,
-                    func: function (co) {
+                    callback: function (co) {
                         c.setColor(co);
                     }
                 });

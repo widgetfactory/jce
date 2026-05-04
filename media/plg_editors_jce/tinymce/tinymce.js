@@ -5117,6 +5117,149 @@
     };
   })(tinymce);
 
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * Color utility class. Parses and converts between hex, rgb, and hsv.
+   *
+   * @class tinymce.util.Color
+   * @example
+   * var white = new tinymce.util.Color({r: 255, g: 255, b: 255});
+   * var red = new tinymce.util.Color('#FF0000');
+   * console.log(white.toHex(), red.toHsv());
+   */
+
+  (function (tinymce) {
+    var min = Math.min, max = Math.max, round = Math.round;
+
+    function Color(value) {
+      var self = this, r = 0, g = 0, b = 0;
+
+      function rgb2hsv(r, g, b) {
+        var h, s, v, d, minRGB, maxRGB;
+
+        h = 0; s = 0; v = 0;
+        r = r / 255; g = g / 255; b = b / 255;
+
+        minRGB = min(r, min(g, b));
+        maxRGB = max(r, max(g, b));
+
+        if (minRGB == maxRGB) {
+          return { h: 0, s: 0, v: minRGB * 100 };
+        }
+
+        d = (r == minRGB) ? g - b : ((b == minRGB) ? r - g : b - r);
+        h = (r == minRGB) ? 3 : ((b == minRGB) ? 1 : 5);
+        h = 60 * (h - d / (maxRGB - minRGB));
+        s = (maxRGB - minRGB) / maxRGB;
+        v = maxRGB;
+
+        return { h: round(h), s: round(s * 100), v: round(v * 100) };
+      }
+
+      function hsvToRgb(hue, saturation, brightness) {
+        var side, chroma, x, match;
+
+        hue = (parseInt(hue, 10) || 0) % 360;
+        saturation = parseInt(saturation, 10) / 100;
+        brightness = parseInt(brightness, 10) / 100;
+        saturation = max(0, min(saturation, 1));
+        brightness = max(0, min(brightness, 1));
+
+        if (saturation === 0) {
+          r = g = b = round(255 * brightness);
+          return;
+        }
+
+        side = hue / 60;
+        chroma = brightness * saturation;
+        x = chroma * (1 - Math.abs(side % 2 - 1));
+        match = brightness - chroma;
+
+        switch (Math.floor(side)) {
+          case 0: r = chroma; g = x;      b = 0;      break;
+          case 1: r = x;      g = chroma; b = 0;      break;
+          case 2: r = 0;      g = chroma; b = x;      break;
+          case 3: r = 0;      g = x;      b = chroma; break;
+          case 4: r = x;      g = 0;      b = chroma; break;
+          case 5: r = chroma; g = 0;      b = x;      break;
+          default: r = g = b = 0;
+        }
+
+        r = round(255 * (r + match));
+        g = round(255 * (g + match));
+        b = round(255 * (b + match));
+      }
+
+      function toHex() {
+        function hex(val) {
+          val = parseInt(val, 10).toString(16);
+          return val.length > 1 ? val : '0' + val;
+        }
+        return '#' + hex(r) + hex(g) + hex(b);
+      }
+
+      function toRgb() {
+        return { r: r, g: g, b: b };
+      }
+
+      function toHsv() {
+        return rgb2hsv(r, g, b);
+      }
+
+      function parse(value) {
+        var matches;
+
+        if (typeof value == 'object') {
+          if ('r' in value) {
+            r = value.r; g = value.g; b = value.b;
+          } else if ('v' in value) {
+            hsvToRgb(value.h, value.s, value.v);
+          }
+        } else {
+          if ((matches = /rgb\s*\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)[^\)]*\)/gi.exec(value))) {
+            r = parseInt(matches[1], 10);
+            g = parseInt(matches[2], 10);
+            b = parseInt(matches[3], 10);
+          } else if ((matches = /#([0-F]{2})([0-F]{2})([0-F]{2})/gi.exec(value))) {
+            r = parseInt(matches[1], 16);
+            g = parseInt(matches[2], 16);
+            b = parseInt(matches[3], 16);
+          } else if ((matches = /#([0-F])([0-F])([0-F])/gi.exec(value))) {
+            r = parseInt(matches[1] + matches[1], 16);
+            g = parseInt(matches[2] + matches[2], 16);
+            b = parseInt(matches[3] + matches[3], 16);
+          }
+        }
+
+        r = r < 0 ? 0 : (r > 255 ? 255 : r);
+        g = g < 0 ? 0 : (g > 255 ? 255 : g);
+        b = b < 0 ? 0 : (b > 255 ? 255 : b);
+
+        return self;
+      }
+
+      if (value) {
+        parse(value);
+      }
+
+      self.toRgb = toRgb;
+      self.toHsv = toHsv;
+      self.toHex = toHex;
+      self.parse = parse;
+    }
+
+    tinymce.util.Color = Color;
+  })(tinymce);
+
   /* eslint-disable no-misleading-character-class */
   /**
    * Copyright (c) Moxiecode Systems AB. All rights reserved.
@@ -10649,6 +10792,7 @@
    * DOMPurify v3.x (c) Cure53 — licensed under MPL-2.0 (compatible with GPL-2+).
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
+
 
   /**
    * Copyright (c) 2025 Ryan Demmer
@@ -17204,9 +17348,6 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-        if (predicate && predicate(node)) {
-          break;
-        }
 
         parents.push(node);
       }
@@ -20218,6 +20359,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20257,10 +20399,10 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    hasData: hasData,
+    clearData: clearData,
     getData: getData$1,
-    setData: setData,
-    clearData: clearData
+    hasData: hasData,
+    setData: setData
   });
 
   /**
@@ -20272,6 +20414,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var noop = function () { };
 
@@ -20492,7 +20635,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {}, css = '';
+    var div = DOM.create('div', {}, content), styles = {};
 
     styles = tinymce.extend(styles, parseCSS(content));
 
@@ -20512,16 +20655,10 @@
         return true;
       }
       
-      if (!embed_stylesheet) {
+      {
         DOM.setStyles(DOM.select(selector, div), value.styles);
-      } else {
-        css += value.text;
       }
     });
-
-    if (css) {
-      div.prepend(DOM.create('style', { type: 'text/css' }, css));
-    }
 
     content = div.innerHTML;
 
@@ -20705,6 +20842,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$5 = tinymce.each;
 
@@ -21077,6 +21215,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$4 = tinymce.each,
       Schema = tinymce.html.Schema,
@@ -22015,6 +22154,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var each$3 = tinymce.each;
   var isIE$1 = tinymce.isIE || tinymce.isIE12;
 
@@ -22437,6 +22577,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$2 = tinymce.each,
       VK = tinymce.VK,
@@ -23119,6 +23260,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var RangeUtils = tinymce.dom.RangeUtils, Delay = tinymce.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23499,6 +23641,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var Dispatcher = tinymce.util.Dispatcher;
 
@@ -26210,7 +26353,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, time || 0);
+        }, 0);
       };
 
       func.stop = function () {
@@ -29429,6 +29572,128 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+  /**
+   * Drag/drop helper class.
+   *
+   * @class tinymce.ui.DragHelper
+   * @example
+   * new tinymce.ui.DragHelper('mydiv', {
+   *   start: function(e) {},
+   *   drag:  function(e) {},
+   *   stop:  function(e) {}
+   * });
+   */
+
+  (function (tinymce) {
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event;
+
+    function getDocumentSize(doc) {
+      var de = doc.documentElement, body = doc.body, max = Math.max;
+      return {
+        width:  max(de.scrollWidth,  body.scrollWidth,  de.clientWidth,  body.clientWidth,  de.offsetWidth,  body.offsetWidth),
+        height: max(de.scrollHeight, body.scrollHeight, de.clientHeight, body.clientHeight, de.offsetHeight, body.offsetHeight)
+      };
+    }
+
+    function updateWithTouchData(e) {
+      var keys, i;
+      if (e.changedTouches) {
+        keys = 'screenX screenY pageX pageY clientX clientY'.split(' ');
+        for (i = 0; i < keys.length; i++) {
+          e[keys[i]] = e.changedTouches[0][keys[i]];
+        }
+      }
+    }
+
+    function DragHelper(id, settings) {
+      var self = this, doc = settings.document || document, downButton, startX, startY, overlayElm;
+
+      settings = settings || {};
+
+      function getHandleElm() {
+        return doc.getElementById(settings.handle || id);
+      }
+
+      function start(e) {
+        var docSize, handleElm, cursor;
+
+        updateWithTouchData(e);
+        e.preventDefault();
+
+        downButton = e.button;
+        handleElm = getHandleElm();
+        startX = e.screenX;
+        startY = e.screenY;
+
+        if (window.getComputedStyle) {
+          cursor = window.getComputedStyle(handleElm, null).getPropertyValue('cursor');
+        } else {
+          cursor = handleElm.runtimeStyle.cursor;
+        }
+
+        docSize = getDocumentSize(doc);
+        overlayElm = DOM.add(doc.body, 'div', {
+          style: 'position:absolute;top:0;left:0;z-index:2147483647;opacity:0.0001;' +
+                 'width:' + docSize.width + 'px;height:' + docSize.height + 'px;cursor:' + cursor
+        });
+
+        Event.add(doc, 'mousemove touchmove', drag);
+        Event.add(doc, 'mouseup touchend', stop);
+
+        settings.start(e);
+      }
+
+      function drag(e) {
+        updateWithTouchData(e);
+
+        if (e.button !== downButton) {
+          return stop(e);
+        }
+
+        e.deltaX = e.screenX - startX;
+        e.deltaY = e.screenY - startY;
+
+        if (!e.changedTouches) {
+          e.preventDefault();
+        }
+
+        settings.drag(e);
+      }
+
+      function stop(e) {
+        updateWithTouchData(e);
+
+        Event.remove(doc, 'mousemove touchmove', drag);
+        Event.remove(doc, 'mouseup touchend', stop);
+
+        DOM.remove(overlayElm);
+        overlayElm = null;
+
+        if (settings.stop) {
+          settings.stop(e);
+        }
+      }
+
+      self.destroy = function () {
+        Event.clear(getHandleElm());
+      };
+
+      Event.add(getHandleElm(), 'mousedown touchstart', start);
+    }
+
+    tinymce.ui.DragHelper = DragHelper;
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
   (function (tinymce) {
     var Event = tinymce.dom.Event,
       each = tinymce.each;
@@ -30220,11 +30485,15 @@
             html += '<label for="' + ctrl.id + '" id="' + ctrl.id + '_label">' + dom.encode(s.label) + '</label>';
           }
 
+          if (s.label && ctrl.type === 'checkbox' && s.label_position === 'before') {
+            html += '<label for="' + ctrl.id + '" id="' + ctrl.id + '_label">' + dom.encode(s.label) + '</label>';
+          }
+
           html += '	<div class="mceFormControl">';
           html += ctrl.renderHTML();
           html += '	</div>';
 
-          if (s.label && ctrl.type === 'checkbox') {
+          if (s.label && ctrl.type === 'checkbox' && s.label_position !== 'before') {
             html += '<label for="' + ctrl.id + '" id="' + ctrl.id + '_label">' + dom.encode(s.label) + '</label>';
           }
 
@@ -32058,8 +32327,7 @@
 
         // find and clear input element
         input.value = '';
-        input.focus();
-
+        
         if (removetags) {
           DOM.remove(DOM.select('.mceButtonTag', this.id));
         }
@@ -32768,8 +33036,7 @@
           id: this.id,
           class: prefix + ' ' + s['class'],
           title: DOM.encode(s.title),
-          tabindex: 0,
-          autofocus: true
+          tabindex: 0
         };
 
         if (s.description) {
@@ -32846,9 +33113,16 @@
             DOM.setValue(this.id + '_color', DOM.get(self.id).value);
           });
 
-          Event.add(this.id + '_color', 'change', function (e) {
-            DOM.setValue(self.id, DOM.get(self.id + '_color').value);
-          });
+          if (s.colorpicker) {
+            Event.add(this.id + '_color', 'click', function (e) {
+              e.preventDefault();
+              s.colorpicker.apply(self);
+            });
+          } else {
+            Event.add(this.id + '_color', 'change', function (e) {
+              DOM.setValue(self.id, DOM.get(self.id + '_color').value);
+            });
+          }
         }
 
         this.onPostRender.dispatch(this, DOM.get(this.id));
@@ -33206,6 +33480,162 @@
         this._super();
 
         Event.clear(this.id);
+      }
+    });
+  })(tinymce);
+
+  /**
+   * Copyright (c) Moxiecode Systems AB. All rights reserved.
+   * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  /**
+   * Color picker control. Renders an HSV color picker with a hue slider.
+   *
+   * @class tinymce.ui.ColorPicker
+   * @extends tinymce.ui.Control
+   */
+
+  (function (tinymce) {
+    var DOM = tinymce.DOM;
+
+    tinymce.create('tinymce.ui.ColorPicker:tinymce.ui.Control', {
+
+      ColorPicker: function (id, s, ed) {
+        this._super(id, s, ed);
+        this.type = 'colorpicker';
+        this.classPrefix = 'mceColorPicker';
+      },
+
+      color: function () {
+        if (!this._color) {
+          this._color = new tinymce.util.Color();
+        }
+        return this._color;
+      },
+
+      value: function (value) {
+        var self = this;
+
+        if (arguments.length) {
+          self.color().parse(value);
+          if (self._rendered) {
+            self._repaint();
+          }
+        } else {
+          return self.color().toHex();
+        }
+      },
+
+      rgb: function () {
+        return this.color().toRgb();
+      },
+
+      renderHTML: function () {
+        var id = this.id, prefix = this.classPrefix;
+        var stops = '#ff0000,#ff0080,#ff00ff,#8000ff,#0000ff,#0080ff,#00ffff,#00ff80,#00ff00,#80ff00,#ffff00,#ff8000,#ff0000';
+        var gradientStyle = 'background:linear-gradient(to bottom,' + stops + ');';
+
+        return (
+          '<div id="' + id + '" class="' + prefix + '">' +
+            '<div id="' + id + '-sv" class="' + prefix + '-sv">' +
+              '<div class="' + prefix + '-overlay1">' +
+                '<div class="' + prefix + '-overlay2">' +
+                  '<div id="' + id + '-svp" class="' + prefix + '-selector1">' +
+                    '<div class="' + prefix + '-selector2"></div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div id="' + id + '-h" class="' + prefix + '-h" style="' + gradientStyle + '">' +
+              '<div id="' + id + '-hp" class="' + prefix + '-h-marker"></div>' +
+            '</div>' +
+          '</div>'
+        );
+      },
+
+      postRender: function () {
+        var self = this, id = self.id, color = self.color(), hsv;
+        var hueRootElm = DOM.get(id + '-h');
+        var huePointElm = DOM.get(id + '-hp');
+        var svRootElm = DOM.get(id + '-sv');
+        var svPointElm = DOM.get(id + '-svp');
+
+        function getPos(elm, e) {
+          var pos = DOM.getPos(elm), x, y;
+
+          x = e.pageX - pos.x;
+          y = e.pageY - pos.y;
+          x = Math.max(0, Math.min(x / elm.clientWidth, 1));
+          y = Math.max(0, Math.min(y / elm.clientHeight, 1));
+
+          return { x: x, y: y };
+        }
+
+        function updateColor(hsv, hueOnly) {
+          var hue = (360 - hsv.h) / 360;
+
+          DOM.setStyle(huePointElm, 'top', (hue * 100) + '%');
+
+          if (!hueOnly) {
+            DOM.setStyles(svPointElm, {
+              left: hsv.s + '%',
+              top:  (100 - hsv.v) + '%'
+            });
+          }
+
+          svRootElm.style.background = new tinymce.util.Color({ s: 100, v: 100, h: hsv.h }).toHex();
+          color.parse({ h: hsv.h, s: hsv.s, v: hsv.v });
+        }
+
+        function updateSaturationAndValue(e) {
+          var pos = getPos(svRootElm, e);
+          hsv.s = pos.x * 100;
+          hsv.v = (1 - pos.y) * 100;
+          updateColor(hsv);
+          self.onChange.dispatch(self);
+        }
+
+        function updateHue(e) {
+          var pos = getPos(hueRootElm, e);
+          hsv = color.toHsv();
+          hsv.h = (1 - pos.y) * 360;
+          updateColor(hsv, true);
+          self.onChange.dispatch(self);
+        }
+
+        self._repaint = function () {
+          hsv = color.toHsv();
+          updateColor(hsv);
+        };
+
+        self._svDragHelper = new tinymce.ui.DragHelper(id + '-sv', {
+          start: updateSaturationAndValue,
+          drag:  updateSaturationAndValue
+        });
+
+        self._hDragHelper = new tinymce.ui.DragHelper(id + '-h', {
+          start: updateHue,
+          drag:  updateHue
+        });
+
+        self._repaint();
+        self._rendered = true;
+      },
+
+      destroy: function () {
+        if (this._svDragHelper) {
+          this._svDragHelper.destroy();
+        }
+        if (this._hDragHelper) {
+          this._hDragHelper.destroy();
+        }
+        this._super();
       }
     });
   })(tinymce);
@@ -37281,7 +37711,7 @@
 
         self.onPreInit.dispatch(self);
 
-        if (!settings.browser_spellcheck && !settings.gecko_spellcheck) {
+        if (!settings.browser_spellcheck) {
           doc.body.spellcheck = false;
         }
 
@@ -44711,7 +45141,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if (split && (!format.mixed || !isBlock(formatRoot))) {
+            if ((!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -44726,7 +45156,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container, true);
+          return wrapAndSplit(findFormatRoot(container), container, container);
         }
 
         function unwrap(start) {
@@ -49149,7 +49579,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(delim || ',');
+      return (str || '').split(',');
   }
 
   // list of HTML tags
@@ -51972,20 +52402,493 @@
   /*global tinymce:true */
 
   (function () {
-    tinymce.PluginManager.add('colorpicker', function (ed, url) {
-      // Register commands
-      ed.addCommand('mceColorPicker', function (ui, v) {
-        ed.windowManager.open({
-          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=colorpicker',
-          width: 365,
-          height: 320,
-          close_previous: false
-        }, {
-          input_color: v.color,
-          func: v.func
-        });
+      tinymce.PluginManager.add('colorpicker', function (ed) {
+          var each = tinymce.each, DOM = tinymce.DOM, Color = tinymce.util.Color;
+          var cm;
+
+          ed.onPreInit.add(function () {
+              cm = ed.controlManager;
+          });
+
+          var hexColors = [
+              "#000000", "#000033", "#000066", "#000099", "#0000cc", "#0000ff", "#330000", "#330033",
+              "#330066", "#330099", "#3300cc", "#3300ff", "#660000", "#660033", "#660066", "#660099",
+              "#6600cc", "#6600ff", "#990000", "#990033", "#990066", "#990099", "#9900cc", "#9900ff",
+              "#cc0000", "#cc0033", "#cc0066", "#cc0099", "#cc00cc", "#cc00ff", "#ff0000", "#ff0033",
+              "#ff0066", "#ff0099", "#ff00cc", "#ff00ff", "#003300", "#003333", "#003366", "#003399",
+              "#0033cc", "#0033ff", "#333300", "#333333", "#333366", "#333399", "#3333cc", "#3333ff",
+              "#663300", "#663333", "#663366", "#663399", "#6633cc", "#6633ff", "#993300", "#993333",
+              "#993366", "#993399", "#9933cc", "#9933ff", "#cc3300", "#cc3333", "#cc3366", "#cc3399",
+              "#cc33cc", "#cc33ff", "#ff3300", "#ff3333", "#ff3366", "#ff3399", "#ff33cc", "#ff33ff",
+              "#006600", "#006633", "#006666", "#006699", "#0066cc", "#0066ff", "#336600", "#336633",
+              "#336666", "#336699", "#3366cc", "#3366ff", "#666600", "#666633", "#666666", "#666699",
+              "#6666cc", "#6666ff", "#996600", "#996633", "#996666", "#996699", "#9966cc", "#9966ff",
+              "#cc6600", "#cc6633", "#cc6666", "#cc6699", "#cc66cc", "#cc66ff", "#ff6600", "#ff6633",
+              "#ff6666", "#ff6699", "#ff66cc", "#ff66ff", "#009900", "#009933", "#009966", "#009999",
+              "#0099cc", "#0099ff", "#339900", "#339933", "#339966", "#339999", "#3399cc", "#3399ff",
+              "#669900", "#669933", "#669966", "#669999", "#6699cc", "#6699ff", "#999900", "#999933",
+              "#999966", "#999999", "#9999cc", "#9999ff", "#cc9900", "#cc9933", "#cc9966", "#cc9999",
+              "#cc99cc", "#cc99ff", "#ff9900", "#ff9933", "#ff9966", "#ff9999", "#ff99cc", "#ff99ff",
+              "#00cc00", "#00cc33", "#00cc66", "#00cc99", "#00cccc", "#00ccff", "#33cc00", "#33cc33",
+              "#33cc66", "#33cc99", "#33cccc", "#33ccff", "#66cc00", "#66cc33", "#66cc66", "#66cc99",
+              "#66cccc", "#66ccff", "#99cc00", "#99cc33", "#99cc66", "#99cc99", "#99cccc", "#99ccff",
+              "#cccc00", "#cccc33", "#cccc66", "#cccc99", "#cccccc", "#ccccff", "#ffcc00", "#ffcc33",
+              "#ffcc66", "#ffcc99", "#ffcccc", "#ffccff", "#00ff00", "#00ff33", "#00ff66", "#00ff99",
+              "#00ffcc", "#00ffff", "#33ff00", "#33ff33", "#33ff66", "#33ff99", "#33ffcc", "#33ffff",
+              "#66ff00", "#66ff33", "#66ff66", "#66ff99", "#66ffcc", "#66ffff", "#99ff00", "#99ff33",
+              "#99ff66", "#99ff99", "#99ffcc", "#99ffff", "#ccff00", "#ccff33", "#ccff66", "#ccff99",
+              "#ccffcc", "#ccffff", "#ffff00", "#ffff33", "#ffff66", "#ffff99", "#ffffcc", "#ffffff"
+          ];
+
+          var namedColors = {
+              '#F0F8FF': 'AliceBlue',
+              '#FAEBD7': 'AntiqueWhite',
+              '#7FFFD4': 'Aquamarine',
+              '#F0FFFF': 'Azure',
+              '#F5F5DC': 'Beige',
+              '#FFE4C4': 'Bisque',
+              '#000000': 'Black',
+              '#FFEBCD': 'BlanchedAlmond',
+              '#0000FF': 'Blue',
+              '#8A2BE2': 'BlueViolet',
+              '#A52A2A': 'Brown',
+              '#DEB887': 'BurlyWood',
+              '#5F9EA0': 'CadetBlue',
+              '#7FFF00': 'Chartreuse',
+              '#D2691E': 'Chocolate',
+              '#FF7F50': 'Coral',
+              '#6495ED': 'CornflowerBlue',
+              '#FFF8DC': 'Cornsilk',
+              '#DC143C': 'Crimson',
+              '#00008B': 'DarkBlue',
+              '#008B8B': 'DarkCyan',
+              '#B8860B': 'DarkGoldenRod',
+              '#A9A9A9': 'DarkGray',
+              '#006400': 'DarkGreen',
+              '#BDB76B': 'DarkKhaki',
+              '#8B008B': 'DarkMagenta',
+              '#556B2F': 'DarkOliveGreen',
+              '#FF8C00': 'Darkorange',
+              '#9932CC': 'DarkOrchid',
+              '#8B0000': 'DarkRed',
+              '#E9967A': 'DarkSalmon',
+              '#8FBC8F': 'DarkSeaGreen',
+              '#483D8B': 'DarkSlateBlue',
+              '#2F4F4F': 'DarkSlateGrey',
+              '#00CED1': 'DarkTurquoise',
+              '#9400D3': 'DarkViolet',
+              '#FF1493': 'DeepPink',
+              '#00BFFF': 'DeepSkyBlue',
+              '#696969': 'DimGrey',
+              '#1E90FF': 'DodgerBlue',
+              '#B22222': 'FireBrick',
+              '#FFFAF0': 'FloralWhite',
+              '#228B22': 'ForestGreen',
+              '#DCDCDC': 'Gainsboro',
+              '#F8F8FF': 'GhostWhite',
+              '#FFD700': 'Gold',
+              '#DAA520': 'GoldenRod',
+              '#808080': 'Grey',
+              '#008000': 'Green',
+              '#ADFF2F': 'GreenYellow',
+              '#F0FFF0': 'HoneyDew',
+              '#FF69B4': 'HotPink',
+              '#CD5C5C': 'IndianRed',
+              '#4B0082': 'Indigo',
+              '#FFFFF0': 'Ivory',
+              '#F0E68C': 'Khaki',
+              '#E6E6FA': 'Lavender',
+              '#FFF0F5': 'LavenderBlush',
+              '#7CFC00': 'LawnGreen',
+              '#FFFACD': 'LemonChiffon',
+              '#ADD8E6': 'LightBlue',
+              '#F08080': 'LightCoral',
+              '#E0FFFF': 'LightCyan',
+              '#FAFAD2': 'LightGoldenRodYellow',
+              '#D3D3D3': 'LightGrey',
+              '#90EE90': 'LightGreen',
+              '#FFB6C1': 'LightPink',
+              '#FFA07A': 'LightSalmon',
+              '#20B2AA': 'LightSeaGreen',
+              '#87CEFA': 'LightSkyBlue',
+              '#778899': 'LightSlateGrey',
+              '#B0C4DE': 'LightSteelBlue',
+              '#FFFFE0': 'LightYellow',
+              '#00FF00': 'Lime',
+              '#32CD32': 'LimeGreen',
+              '#FAF0E6': 'Linen',
+              '#FF00FF': 'Magenta',
+              '#800000': 'Maroon',
+              '#66CDAA': 'MediumAquaMarine',
+              '#0000CD': 'MediumBlue',
+              '#BA55D3': 'MediumOrchid',
+              '#9370D8': 'MediumPurple',
+              '#3CB371': 'MediumSeaGreen',
+              '#7B68EE': 'MediumSlateBlue',
+              '#00FA9A': 'MediumSpringGreen',
+              '#48D1CC': 'MediumTurquoise',
+              '#C71585': 'MediumVioletRed',
+              '#191970': 'MidnightBlue',
+              '#F5FFFA': 'MintCream',
+              '#FFE4E1': 'MistyRose',
+              '#FFE4B5': 'Moccasin',
+              '#FFDEAD': 'NavajoWhite',
+              '#000080': 'Navy',
+              '#FDF5E6': 'OldLace',
+              '#808000': 'Olive',
+              '#6B8E23': 'OliveDrab',
+              '#FFA500': 'Orange',
+              '#FF4500': 'OrangeRed',
+              '#DA70D6': 'Orchid',
+              '#EEE8AA': 'PaleGoldenRod',
+              '#98FB98': 'PaleGreen',
+              '#AFEEEE': 'PaleTurquoise',
+              '#D87093': 'PaleVioletRed',
+              '#FFEFD5': 'PapayaWhip',
+              '#FFDAB9': 'PeachPuff',
+              '#CD853F': 'Peru',
+              '#FFC0CB': 'Pink',
+              '#DDA0DD': 'Plum',
+              '#B0E0E6': 'PowderBlue',
+              '#800080': 'Purple',
+              '#FF0000': 'Red',
+              '#BC8F8F': 'RosyBrown',
+              '#4169E1': 'RoyalBlue',
+              '#8B4513': 'SaddleBrown',
+              '#FA8072': 'Salmon',
+              '#F4A460': 'SandyBrown',
+              '#2E8B57': 'SeaGreen',
+              '#FFF5EE': 'SeaShell',
+              '#A0522D': 'Sienna',
+              '#C0C0C0': 'Silver',
+              '#87CEEB': 'SkyBlue',
+              '#6A5ACD': 'SlateBlue',
+              '#708090': 'SlateGrey',
+              '#FFFAFA': 'Snow',
+              '#00FF7F': 'SpringGreen',
+              '#4682B4': 'SteelBlue',
+              '#D2B48C': 'Tan',
+              '#008080': 'Teal',
+              '#D8BFD8': 'Thistle',
+              '#FF6347': 'Tomato',
+              '#40E0D0': 'Turquoise',
+              '#EE82EE': 'Violet',
+              '#F5DEB3': 'Wheat',
+              '#FFFFFF': 'White',
+              '#F5F5F5': 'WhiteSmoke',
+              '#FFFF00': 'Yellow',
+              '#9ACD32': 'YellowGreen'
+          };
+
+          function namedToHex(value) {
+              var color = '';
+
+              each(namedColors, function (name, hex) {
+                  if (name.toLowerCase() === value.toLowerCase()) {
+                      color = hex;
+                      return false;
+                  }
+              });
+
+              return color;
+          }
+
+          function getStylesheetColors() {
+              var colorMap = {}, colors = [], hex, rgb, clr = '';
+
+              var hexRe = /#[0-9a-f]{3,6}/gi,
+                  rgbRe = new RegExp('rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)', 'gi');
+
+              function addColor(s) {
+                  if (!s) {
+                      return;
+                  }
+
+                  colorMap[s] = s;
+              }
+
+              function parseCSS(s) {
+                  each(s.cssRules || s.rules, function (r) {
+                      switch (r.type || 1) {
+                          case 1:
+                              var css = r.cssText || r.style.cssText;
+
+                              if (css) {
+                                  hex = css.match(hexRe);
+                                  rgb = css.match(rgbRe);
+
+                                  if (rgb) {
+                                      clr = new Color(rgb[0]).toHex();
+                                  }
+
+                                  if (hex) {
+                                      clr = new Color(hex[0]).toHex();
+                                  }
+
+                                  addColor(clr);
+                              }
+
+                              break;
+
+                          case 3:
+                              if (r.href && r.href.indexOf('://') !== -1) {
+                                  return;
+                              }
+
+                              parseCSS(r.styleSheet);
+                              break;
+                      }
+                  });
+              }
+
+              try {
+                  each(ed.getDoc().styleSheets, function (styleSheet) {
+                      parseCSS(styleSheet);
+                  });
+              } catch (e) {
+                  // ignore
+              }
+
+              each(colorMap, function (value) {
+                  colors.push(value);
+              });
+
+              return colors;
+          }
+
+          // Reusable color grid control for web/named/custom tabs
+          tinymce.create('tinymce.ui.ColorGrid:tinymce.ui.Control', {
+              ColorGrid: function (id, s, ed) {
+                  this._super(id, s, ed);
+                  this.type = 'colorgrid';
+                  this.classPrefix = 'mceColorGrid';
+              },
+              renderHTML: function () {
+                  var self = this, s = self.settings, h = '<div id="' + self.id + '" class="mceColorGrid">';
+                  each(s.colors, function (item) {
+                      h += '<span role="option" title="' + item.text + '" data-mce-color="' + item.value + '" style="background-color:' + item.value + '"></span>';
+                  });
+                  return h + '</div>';
+              },
+              postRender: function () {
+                  var self = this, s = self.settings;
+                  if (s.onclick) {
+                      DOM.bind(self.id, 'click', function (e) {
+                          var val = e.target.getAttribute('data-mce-color');
+                          if (val) {
+                              s.onclick(val);
+                          }
+                      });
+                  }
+                  if (s.onmouseover) {
+                      DOM.bind(self.id, 'mouseover', function (e) {
+                          var val = e.target.getAttribute('data-mce-color');
+                          if (val) {
+                              s.onmouseover(val);
+                          }
+                      });
+                  }
+              }
+          });
+
+          function showDialog(callback, value) {
+              // RGB tab
+              var rgbLayout = cm.createLayout('colorpicker_rgb_layout');
+
+              var rgbForm = cm.createForm('colorpicker_rgb_form');
+
+              var colorPickerCtrl = new tinymce.ui.ColorPicker('colorpicker_picker', {}, ed);
+              colorPickerCtrl.onChange = new tinymce.util.Dispatcher(colorPickerCtrl);
+              rgbLayout.add(colorPickerCtrl);
+
+              var rCtrl = cm.createTextBox('colorpicker_r', { name: 'r', label: 'R', subtype: 'number', size: 5, min: 0, max: 255, value: '0' });
+              rgbForm.add(rCtrl);
+
+              var gCtrl = cm.createTextBox('colorpicker_g', { name: 'g', label: 'G', subtype: 'number', size: 5, min: 0, max: 255, value: '0' });
+              rgbForm.add(gCtrl);
+
+              var bCtrl = cm.createTextBox('colorpicker_b', { name: 'b', label: 'B', subtype: 'number', size: 5, min: 0, max: 255, value: '0' });
+              rgbForm.add(bCtrl);
+
+              // Hex value control (shown below tabs)
+              var hexCtrl = cm.createTextBox('colorpicker_hex', { name: 'hex', label: '#', size: 7 });
+
+              var hexForm = cm.createForm('colorpicker_hex_form', {
+                  class: 'mceColorPickerHex'
+              });
+              
+              hexForm.add(hexCtrl);
+
+              // Web tab
+              var webForm = cm.createForm('colorpicker_web_form');
+              var webColors = [];
+
+              each(hexColors, function (c) {
+                  webColors.push({ value: c, text: c });
+              });
+
+              webForm.add(new tinymce.ui.ColorGrid('colorpicker_web_grid', {
+                  colors: webColors,
+                  onclick: function (val) {
+                      callback(val); win.close();
+                  },
+                  onmouseover: function (val) {
+                      hexCtrl.value(val.replace('#', ''));
+                  }
+              }, ed));
+
+              // Named tab
+              var namedForm = cm.createForm('colorpicker_named_form');
+              var namedList = [];
+
+              each(namedColors, function (name, hex) {
+                  namedList.push({ value: hex, text: name });
+              });
+
+              var namedLabelCtrl = cm.createTextBox('colorpicker_named_label', { name: 'named_label', value: '', attributes : { readonly : true } });
+
+              namedForm.add(new tinymce.ui.ColorGrid('colorpicker_named_grid', {
+                  colors: namedList,
+                  onclick: function (val) {
+                      callback(val); win.close();
+                  },
+                  onmouseover: function (val) {
+                      hexCtrl.value(val.replace('#', ''));
+                      namedLabelCtrl.value(namedColors[val] || '');
+                  }
+              }, ed));
+
+              namedForm.add(namedLabelCtrl);
+
+              // Tabs
+              var tabs = cm.createTabs('colorpicker_tabs');
+              tabs.add({ id: 'colorpicker_tab_rgb', title: 'RGB', items: [rgbLayout, rgbForm], class: 'mceColorRgb' });
+              tabs.add({ id: 'colorpicker_tab_web', title: 'Web', items: [webForm] });
+              tabs.add({ id: 'colorpicker_tab_named', title: 'Named', items: [namedForm] });
+
+              // Optional stylesheet / custom tab
+              var stylesheetColors = getStylesheetColors();
+              var customColors = ed.settings.colorpicker_custom_colors || [];
+
+              if (stylesheetColors.length || customColors.length) {
+                  var customForm = cm.createForm('colorpicker_custom_form');
+
+                  if (stylesheetColors.length) {
+                      var sheetList = [];
+
+                      each(stylesheetColors, function (c) {
+                          sheetList.push({ value: c, text: c });
+                      });
+
+                      customForm.add(new tinymce.ui.ColorGrid('colorpicker_sheet_grid', {
+                          colors: sheetList,
+                          onclick: function (val) {
+                              callback(val); win.close();
+                          },
+                          onmouseover: function (val) {
+                              hexCtrl.value(val.replace('#', ''));
+                          }
+                      }, ed));
+                  }
+
+                  if (customColors.length) {
+                      var customList = [];
+
+                      each(customColors, function (c) {
+                          customList.push({ value: c, text: c });
+                      });
+
+                      customForm.add(new tinymce.ui.ColorGrid('colorpicker_custom_grid', {
+                          colors: customList,
+                          onclick: function (val) {
+                              callback(val); win.close();
+                          },
+                          onmouseover: function (val) {
+                              hexCtrl.value(val.replace('#', ''));
+                          }
+                      }, ed));
+                  }
+
+                  tabs.add({ id: 'colorpicker_tab_custom', title: 'Custom', items: [customForm] });
+              }
+
+              // colorpicker onChange → sync r/g/b + hex
+              colorPickerCtrl.onChange.add(function (ctrl) {
+                  var rgb = ctrl.rgb();
+                  rCtrl.value(rgb.r);
+                  gCtrl.value(rgb.g);
+                  bCtrl.value(rgb.b);
+                  hexCtrl.value(ctrl.value().substr(1));
+              });
+
+              function updateFromRgb() {
+                  var rgb = { r: parseInt(rCtrl.value(), 10) || 0, g: parseInt(gCtrl.value(), 10) || 0, b: parseInt(bCtrl.value(), 10) || 0 };
+                  var hex = new Color(rgb).toHex();
+                  colorPickerCtrl.value(hex);
+                  hexCtrl.value(hex.substr(1));
+              }
+
+              function updateFromHex() {
+                  var hex = '#' + hexCtrl.value();
+                  var color = new Color(hex), rgb = color.toRgb();
+                  colorPickerCtrl.value(color.toHex());
+                  rCtrl.value(rgb.r);
+                  gCtrl.value(rgb.g);
+                  bCtrl.value(rgb.b);
+              }
+
+              var win = ed.windowManager.open({
+                  title: ed.getLang('colorpicker.title', 'Color'),
+                  items: [tabs, hexForm],
+                  classes: 'colorpicker-window',
+                  size: 'mce-modal-square-small',
+                  open: function () {
+                      var initColor = value || '#000000';
+                      if (initColor && !/^#/.test(initColor)) {
+                          initColor = namedToHex(initColor) || '#000000';
+                      }
+                      var color = new Color(initColor), rgb = color.toRgb();
+                      rCtrl.value(rgb.r);
+                      gCtrl.value(rgb.g);
+                      bCtrl.value(rgb.b);
+                      hexCtrl.value(color.toHex().substr(1));
+                      colorPickerCtrl.value(color.toHex());
+
+                      DOM.bind(rCtrl.id, 'change', updateFromRgb);
+                      DOM.bind(gCtrl.id, 'change', updateFromRgb);
+                      DOM.bind(bCtrl.id, 'change', updateFromRgb);
+                      DOM.bind(hexCtrl.id, 'change', updateFromHex);
+                  },
+                  close: function () {
+                      tabs.destroy();
+                  },
+                  buttons: [
+                      {
+                          title: ed.getLang('colorpicker.insert', 'Ok'),
+                          id: 'insert',
+                          classes: 'primary',
+                          onsubmit: function () {
+                              callback('#' + hexCtrl.value());
+                          }
+                      },
+                      {
+                          title: ed.getLang('colorpicker.cancel', 'Cancel'),
+                          id: 'cancel'
+                      }
+                  ]
+              });
+          }
+
+          if (!ed.settings.color_picker_callback) {
+              ed.settings.color_picker_callback = function (callback, value) {
+                  showDialog(callback, value);
+              };
+          }
+
+          ed.addCommand('mceColorPicker', function (ui, value) {
+              showDialog(value.callback, value.color);
+          });
       });
-    });
   })();
 
   /**
@@ -53205,7 +54108,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return (prefix || 'blobid') + (count++);
+          return ('blobid') + (count++);
       };
 
       function isSupportedImage(value) {

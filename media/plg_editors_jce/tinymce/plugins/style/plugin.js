@@ -610,6 +610,15 @@
             label: ed.getLang('style.color', 'Color'),
             name: 'color',
             subtype: 'color',
+            colorpicker: function () {
+                var self = this, value = self.value();
+                var btn = DOM.get(this.id + '_color');
+
+                ed.settings.color_picker_callback(function (color) {
+                    self.value(color);
+                    btn.style.backgroundColor = color;
+                }, value);
+            },
             onchange: function () {
                 var isNone = this.value();
 
@@ -619,7 +628,7 @@
                 textDecBlink.setDisabled(isNone);
             }
         }));
-        
+
         var textDecorationForm = cm.createForm('style_text_decoration_form', {
             class: 'mceFlexWidth25'
         });
@@ -642,7 +651,16 @@
         bgForm.add(cm.createTextBox('style_bg_color', {
             label: ed.getLang('style.background_color', 'Background Color'),
             name: 'background_color',
-            subtype: 'color'
+            subtype: 'color',
+            colorpicker: function () {
+                var self = this, value = self.value();
+                var btn = DOM.get(this.id + '_color');
+
+                ed.settings.color_picker_callback(function (color) {
+                    self.value(color);
+                    btn.style.backgroundColor = color;
+                }, value);
+            }
         }));
 
         var bgImageCtrl = cm.createUrlBox('style_bg_image', {
@@ -766,7 +784,16 @@
             return cm.createTextBox(id, {
                 label: ed.getLang('style.' + label, label),
                 name: name,
-                subtype: 'color'
+                subtype: 'color',
+                colorpicker: function () {
+                    var self = this, value = self.value();
+                    var btn = DOM.get(this.id + '_color');
+
+                    ed.settings.color_picker_callback(function (color) {
+                        self.value(color);
+                        btn.style.backgroundColor = color;
+                    }, value);
+                }
             });
         });
 
@@ -850,22 +877,28 @@
         tabs.add({ id: 'style_tab_text', title: ed.getLang('style.tab_text', 'Text'), items: [textForm] });
         tabs.add({ id: 'style_tab_bg', title: ed.getLang('style.tab_background', 'Background'), items: [bgForm] });
         tabs.add({ id: 'style_tab_block', title: ed.getLang('style.tab_block', 'Block'), items: [blockForm] });
-        tabs.add({ id: 'style_tab_box', title: ed.getLang('style.tab_box', 'Box'), items: [
-            boxStyleForm,
-            boxSpacingLayout
-        ] });
+        tabs.add({
+            id: 'style_tab_box', title: ed.getLang('style.tab_box', 'Box'), items: [
+                boxStyleForm,
+                boxSpacingLayout
+            ]
+        });
 
-        tabs.add({ id: 'style_tab_border', title: ed.getLang('style.tab_border', 'Border'), class: 'mceGridLayout', items: [
-            borderStyleForm,
-            borderWidthForm,
-            borderColorForm
-        ] });
+        tabs.add({
+            id: 'style_tab_border', title: ed.getLang('style.tab_border', 'Border'), class: 'mceGridLayout', items: [
+                borderStyleForm,
+                borderWidthForm,
+                borderColorForm
+            ]
+        });
 
         tabs.add({ id: 'style_tab_list', title: ed.getLang('style.tab_list', 'List'), items: [listForm] });
-        tabs.add({ id: 'style_tab_pos', title: ed.getLang('style.tab_positioning', 'Positioning'), items: [
-            posForm,
-            posLayout
-        ] });
+        tabs.add({
+            id: 'style_tab_pos', title: ed.getLang('style.tab_positioning', 'Positioning'), items: [
+                posForm,
+                posLayout
+            ]
+        });
 
         // ── Apply / collect helpers ───────────────────────────────────────────────
         var applyActionIsInsert = ed.getParam('style_insert_span', false);
@@ -875,7 +908,7 @@
             return dataToStyles(tabs.submit());
         }
 
-        function applyStyles(newStyles) {        
+        function applyStyles(newStyles) {
             if (applyActionIsInsert) {
                 ed.formatter.register('plugin_style', { inline: 'span', styles: existingStyles });
                 ed.formatter.remove('plugin_style');

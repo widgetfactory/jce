@@ -341,9 +341,23 @@
         }
 
         input[type="color"] {
-            width: 3em;
+            width: 2rem;
             margin: 0;
             padding: 0;
+        }
+
+        input[readonly] {
+            cursor: default;
+
+            &:focus {
+                box-shadow: inherit;
+                border-color: inherit;
+                outline: 0;
+                background: inherit;
+                color: inherit;
+            }
+
+            border: 0 none;
         }
 
         select {

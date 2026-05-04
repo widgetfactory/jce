@@ -11737,6 +11737,182 @@ span.uk-slider {
 .uk-tree-root > ul > li {
   padding: 0;
 }
+.mceColorPicker {
+  position: relative;
+  width: 250px;
+  height: 220px;
+}
+.mceColorPicker-sv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90%;
+  height: 100%;
+  border: 1px solid #ddd;
+  cursor: crosshair;
+  overflow: hidden;
+}
+.mceColorPicker-h-chunk {
+  width: 100%;
+}
+.mceColorPicker-overlay1,
+.mceColorPicker-overlay2 {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.mceColorPicker-overlay1 {
+  background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+}
+.mceColorPicker-overlay2 {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000000);
+}
+.mceColorPicker-selector1 {
+  background: none;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: -8px 0 0 -8px;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+.mceColorPicker-selector2 {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid white;
+  border-radius: 50%;
+}
+.mceColorPicker-h {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6.5%;
+  height: 100%;
+  border: 1px solid #ddd;
+  cursor: crosshair;
+}
+.mceColorPicker-h-marker {
+  margin-top: -4px;
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 100%;
+  border: 1px solid #333;
+  background: #fff;
+  height: 4px;
+  z-index: 100;
+}
+.mceColorPicker .mceColorPicker-h,
+.mceColorPicker .mceColorPicker-h-marker {
+  width: 20px;
+}
+.mceColorPickerGrid .mce-grid {
+  max-width: 100%;
+  width: 100%;
+}
+.mceColorPickerGrid .mce-grid > .mce-flex-layout {
+  flex-wrap: wrap;
+  max-width: 320px;
+  gap: 1px;
+  margin: auto;
+}
+.mceColorPickerGrid .mce-grid .mce-grid-cell {
+  border: 0;
+  width: 16px;
+  height: 16px;
+  min-width: inherit;
+  min-height: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS styles go here */
+  .mceColorGrid .mce-grid-cell {
+    margin: 0 1px 1px 0;
+  }
+}
+.mceColorGrid {
+  height: calc(100% - 8px);
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  align-content: flex-start;
+  margin: auto;
+  max-width: 20em;
+  min-height: 12em;
+}
+.mceColorGrid span {
+  width: 1em;
+  height: 1em;
+  display: block;
+}
+.mceColorRgb {
+  flex-wrap: nowrap;
+  flex-direction: row;
+}
+.mceColorRgb .mceForm .mceFormRow {
+  flex-wrap: nowrap;
+}
+.mceColorRgb .mceForm .mceFormRow label:first-child {
+  flex: 0;
+  min-width: 2em;
+}
+.mceColorRgb .mceForm .mceFormRow .mceFormControl {
+  flex: 1;
+}
+.mceColorValue {
+  height: 32px;
+  position: fixed;
+  bottom: 12px;
+  left: 8px;
+  display: flex;
+  max-width: 136px;
+}
+.mceColorValue:before {
+  content: "#";
+  background: #fafafa;
+  border: 1px solid #ddd;
+  display: flex;
+  text-align: center;
+  border-right: 0;
+  color: #888;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+.mceColorValue .mce-textbox[type] {
+  max-width: 72px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 0;
+  height: 32px;
+}
+.mceColorRgb input[type="number"] {
+  width: 64px;
+  text-align: center;
+}
+.mceColorRgb label {
+  min-width: 48px;
+}
+.mceColorRgb .mceColorPicker + div {
+  flex: 0;
+}
+.mceColorRgb .mceColorPicker-sv {
+  width: 100%;
+  cursor: crosshair;
+}
+.mceColorRgb .mceColorPicker-overlay1,
+.mceColorRgb .mceColorPicker-overlay2 {
+  width: 100%;
+}
 #colorpicker {
   margin: 10px 0 0 0;
   min-width: 250px;
@@ -11754,7 +11930,6 @@ body > #colorpicker {
 }
 #colorpicker #colorpicker_tabs .uk-switcher {
   overflow: hidden;
-  padding: 0 32px;
   top: 35px;
 }
 #colorpicker #colorpicker_tabs a {
