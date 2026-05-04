@@ -21,23 +21,31 @@ tinymce.create('tinymce.ui.ColorGrid:tinymce.ui.Control', {
     },
     renderHTML: function () {
         var self = this, s = self.settings, h = '<div id="' + self.id + '" class="mceColorGrid">';
+        
         each(s.colors, function (item) {
             h += '<span role="option" title="' + item.text + '" data-mce-color="' + item.value + '" style="background-color:' + item.value + '"></span>';
         });
+        
         return h + '</div>';
     },
     postRender: function () {
         var self = this, s = self.settings;
+
         if (s.onclick) {
             DOM.bind(self.id, 'click', function (e) {
                 var val = e.target.getAttribute('data-mce-color');
-                if (val) { s.onclick(val); }
+                if (val) {
+                    s.onclick(val);
+                }
             });
         }
+
         if (s.onmouseover) {
             DOM.bind(self.id, 'mouseover', function (e) {
                 var val = e.target.getAttribute('data-mce-color');
-                if (val) { s.onmouseover(val); }
+                if (val) {
+                    s.onmouseover(val);
+                }
             });
         }
     }
@@ -61,7 +69,10 @@ function getStylesheetColors(ed) {
         rgbRe = new RegExp('rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)', 'gi');
 
     function addColor(s) {
-        if (!s) { return; }
+        if (!s) {
+            return;
+        }
+
         colorMap[s] = s;
     }
 
@@ -73,13 +84,19 @@ function getStylesheetColors(ed) {
                     if (css) {
                         hex = css.match(hexRe);
                         rgb = css.match(rgbRe);
-                        if (rgb) { clr = new Color(rgb[0]).toHex(); }
-                        if (hex) { clr = new Color(hex[0]).toHex(); }
+                        if (rgb) {
+                            clr = new Color(rgb[0]).toHex();
+                        }
+                        if (hex) {
+                            clr = new Color(hex[0]).toHex();
+                        }
                         addColor(clr);
                     }
                     break;
                 case 3:
-                    if (r.href && r.href.indexOf('://') !== -1) { return; }
+                    if (r.href && r.href.indexOf('://') !== -1) {
+                        return;
+                    }
                     parseCSS(r.styleSheet);
                     break;
             }
@@ -130,21 +147,31 @@ export function showDialog(ed, callback, value) {
     // Web tab
     var webForm = cm.createForm('colorpicker_web_form');
     var webColors = [];
-    each(hexColors, function (c) { webColors.push({ value: c, text: c }); });
+    each(hexColors, function (c) {
+        webColors.push({ value: c, text: c });
+    });
     webForm.add(new tinymce.ui.ColorGrid('colorpicker_web_grid', {
         colors: webColors,
-        onclick: function (val) { callback(val); win.close(); },
-        onmouseover: function (val) { hexCtrl.value(val.replace('#', '')); }
+        onclick: function (val) {
+            callback(val); win.close();
+        },
+        onmouseover: function (val) {
+            hexCtrl.value(val.replace('#', ''));
+        }
     }, ed));
 
     // Named tab
     var namedForm = cm.createForm('colorpicker_named_form');
     var namedList = [];
-    each(namedColors, function (name, hex) { namedList.push({ value: hex, text: name }); });
+    each(namedColors, function (name, hex) {
+        namedList.push({ value: hex, text: name });
+    });
     var namedLabelCtrl = cm.createTextBox('colorpicker_named_label', { name: 'named_label', disabled: true, value: '' });
     namedForm.add(new tinymce.ui.ColorGrid('colorpicker_named_grid', {
         colors: namedList,
-        onclick: function (val) { callback(val); win.close(); },
+        onclick: function (val) {
+            callback(val); win.close();
+        },
         onmouseover: function (val) {
             hexCtrl.value(val.replace('#', ''));
             namedLabelCtrl.value(namedColors[val] || '');
@@ -167,21 +194,33 @@ export function showDialog(ed, callback, value) {
 
         if (stylesheetColors.length) {
             var sheetList = [];
-            each(stylesheetColors, function (c) { sheetList.push({ value: c, text: c }); });
+            each(stylesheetColors, function (c) {
+                sheetList.push({ value: c, text: c });
+            });
             customForm.add(new tinymce.ui.ColorGrid('colorpicker_sheet_grid', {
                 colors: sheetList,
-                onclick: function (val) { callback(val); win.close(); },
-                onmouseover: function (val) { hexCtrl.value(val.replace('#', '')); }
+                onclick: function (val) {
+                    callback(val); win.close();
+                },
+                onmouseover: function (val) {
+                    hexCtrl.value(val.replace('#', ''));
+                }
             }, ed));
         }
 
         if (customColors.length) {
             var customList = [];
-            each(customColors, function (c) { customList.push({ value: c, text: c }); });
+            each(customColors, function (c) {
+                customList.push({ value: c, text: c });
+            });
             customForm.add(new tinymce.ui.ColorGrid('colorpicker_custom_grid', {
                 colors: customList,
-                onclick: function (val) { callback(val); win.close(); },
-                onmouseover: function (val) { hexCtrl.value(val.replace('#', '')); }
+                onclick: function (val) {
+                    callback(val); win.close();
+                },
+                onmouseover: function (val) {
+                    hexCtrl.value(val.replace('#', ''));
+                }
             }, ed));
         }
 
