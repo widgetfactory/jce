@@ -134,10 +134,13 @@
         });
 
         // Turn spellchecker on if required
-        ed.onInit.add(function () {
+        ed.onPreInit.add(function () {
             if (self.native_spellchecker && ed.getParam('spellchecker_browser_state', 0)) {
-                var body = ed.getBody();
-                body.spellcheck = self.active = !self.active;
+                // prevent editor from disabling spellcheck (on by default) instead of explicitely enabling it
+                ed.settings.browser_spellcheck = true;
+                
+                // set active state
+                self.active = true;
             }
         });
 
