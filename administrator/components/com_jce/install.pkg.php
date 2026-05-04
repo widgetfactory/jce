@@ -528,7 +528,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
         $files['3.0.0'] = array(
             $admin . '/controller.php',
-            $admin . '/jce.php'
+            $admin . '/jce.php',
+            $admin . '/includes/classmap.php'
         );
 
         foreach ($folders as $version => $list) {
