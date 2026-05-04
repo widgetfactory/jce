@@ -19,7 +19,7 @@ use Joomla\CMS\Router\Route;
  *
  * @since  1.5
  */
-class FileBrowserController extends BaseController
+class FilebrowserController extends BaseController
 {
 	/**
 	 * The default view.

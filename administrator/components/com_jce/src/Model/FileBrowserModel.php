@@ -22,7 +22,7 @@ use Joomla\Component\Jce\Administrator\Helper\BrowserHelper;
  *
  * @since  1.5
  */
-class FileBrowserModel extends BaseDatabaseModel
+class FilebrowserModel extends BaseDatabaseModel
 {
 	/**
 	 * The type alias for this content type.
