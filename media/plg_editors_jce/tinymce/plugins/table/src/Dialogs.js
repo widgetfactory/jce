@@ -100,7 +100,8 @@ export function showTableDialog(ed, isBasicDialog) {
 
     var captionCtrl = cm.createCheckBox('table_caption', {
         label: ed.getLang('table.caption', 'Caption'),
-        name: 'caption'
+        name: 'caption',
+        label_position: 'before'
     });
 
     tableForm.add(captionCtrl);
@@ -203,7 +204,18 @@ export function showTableDialog(ed, isBasicDialog) {
         label: ed.getLang('table.background_color', 'Background Color'),
         name: 'background_color',
         value: ed.getParam('table_default_background_color', ''),
-        subtype: 'color'
+        subtype: 'color',
+        colorpicker: function () {
+            var value = this.value();
+            var btn = DOM.get(this.id + '_color');
+
+            ed.settings.color_picker_callback(function (color) {
+                backgroundColorCtrl.value(color);
+
+                btn.style.backgroundColor = color;
+
+            }, value);
+        }
     });
 
     advancedForm.add(idCtrl);
