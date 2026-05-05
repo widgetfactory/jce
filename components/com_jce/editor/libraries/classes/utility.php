@@ -909,8 +909,8 @@ abstract class WFUtility
 
     public static function mb_basename($path, $ext = '')
     {
-        // check if multibyte string, use basename() if not
-        if (function_exists('mb_strlen')) {
+        // use basename() if mbstring is not available
+        if (!function_exists('mb_strlen')) {
             return basename($path, $ext);
         }
 
