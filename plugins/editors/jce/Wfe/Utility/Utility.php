@@ -851,18 +851,7 @@ abstract class Utility
      */
     public static function mb_dirname($path)
     {
-        // check if multibyte string, use dirname() if not
-        if (function_exists('mb_strlen')) {
-            $dir = dirname($path);
-
-            if ($dir == ".") {
-                return "";
-            }
-
-            return $dir;
-        }
-
-        // Normalize the path for non-multibyte environments
+        // Normalize the path
         $path = self::cleanPath($path, '/');
 
         // Get last slash position
@@ -886,11 +875,6 @@ abstract class Utility
 
     public static function mb_basename($path, $ext = '')
     {
-        // check if multibyte string, use basename() if not
-        if (function_exists('mb_strlen')) {
-            return basename($path, $ext);
-        }
-
         // clean
         $path = self::cleanPath($path, '/');
 
