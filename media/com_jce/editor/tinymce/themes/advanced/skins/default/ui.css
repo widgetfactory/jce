@@ -2633,7 +2633,7 @@ select.mceNativeListBox {
 /* General */
 
 .mceModal {
-    position: absolute;
+    position: fixed;
     z-index: 700000;
     width: 100%;
     height: 100%;
@@ -2661,17 +2661,12 @@ select.mceNativeListBox {
     height: 100%;
     left: 0;
     position: absolute;
-    text-align: center;
     top: 0;
     width: 100%;
     padding: 8px;
-}
-
-.mceModal .mceModalFrame:after {
-    content: "";
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /*.mceLoading .mceModalContent {
@@ -2765,6 +2760,10 @@ select.mceNativeListBox {
     text-align: right;
 }
 
+.mceModalBody {
+    flex: 1;
+}
+
 .mceModal .mceModalMove {
     cursor: move;
 }
@@ -2808,8 +2807,6 @@ select.mceNativeListBox {
 .mceModalBody .mceModalBody {
     cursor: default;
     display: block;
-    margin: 0 auto;
-    position: absolute;
     text-align: left;
     width: 100%;
     min-width: 160px;
