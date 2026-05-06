@@ -131,7 +131,7 @@ WfMediaAdapter.add('vimeo', {
             // process default values
             var id = '', hash = '', matches = /vimeo\.com\/([0-9]+)\/?([a-z0-9]+)?/.exec(src);
 
-            if (matches && tinymce.is(matches, 'array')) {
+            if (matches && ibis.is(matches, 'array')) {
                 var id = matches[1];
 
                 if (matches.length > 2) {

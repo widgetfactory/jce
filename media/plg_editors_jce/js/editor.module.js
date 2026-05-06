@@ -1,10 +1,10 @@
 import { JoomlaEditor, JoomlaEditorDecorator, JoomlaEditorButton } from 'editor-api';
 
-/* global tinyMCE, WfEditor */
+/* global ibis, WfEditor */
 
-// core Joomla Tinymce 7, bail due to conflict
-if (tinymce.Annotator) {
-    var msg = "Another extension or plugin has initialized the Joomla Tinymce Editor on this page. JCE cannot be loaded on the same page as the core Joomla Tinymce Editor.";
+// core Joomla ibis 7, bail due to conflict
+if (ibis.Annotator) {
+    var msg = "Another extension or plugin has initialized the Joomla ibis Editor on this page. JCE cannot be loaded on the same page as the core Joomla ibis Editor.";
     alert(msg);
     throw new Error(msg);
 }
@@ -65,7 +65,7 @@ class JceDecorator extends JoomlaEditorDecorator {
     }
 }
 
-tinyMCE.onAddEditor.add(function (mgr, editor) {
+ibis.onAddEditor.add(function (mgr, editor) {
     const elm = editor.getElement(), container = elm.parentNode;
 
     if (editor.settings.theme !== "advanced") {

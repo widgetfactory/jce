@@ -11425,11 +11425,11 @@ div.uk-preview div.uk-dialog-content.uk-widget-content {
 .image-preview.loading,
 .image-preview div.media-preview.loading,
 .image-preview div.iframe-preview.loading {
-  background: url('../tinymce/themes/advanced/img/progress.gif') no-repeat center;
+  background: url('../ibis/themes/advanced/img/progress.gif') no-repeat center;
 }
 div.media-preview.loading,
 div.iframe-preview.loading {
-  background: url('../tinymce/themes/advanced/img/progress.gif') no-repeat center;
+  background: url('../ibis/themes/advanced/img/progress.gif') no-repeat center;
 }
 .uk-dialog-content {
   overflow: hidden;

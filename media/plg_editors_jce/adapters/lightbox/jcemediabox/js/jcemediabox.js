@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/* global tinyMCEPopup, WfLightboxAdapter, jQuery */
+/* global ibisPopup, WfLightboxAdapter, jQuery */
 
 
 (function (window, $) {
@@ -200,7 +200,7 @@
          * @param {Object} n
          */
         remove: function (n) {
-            var ed = tinyMCEPopup.editor;
+            var ed = ibisPopup.editor;
 
             // Cleanup
             $.each(['jcepopup', 'jcelightbox', 'jcebox', 'icon-left', 'icon-right', 'icon-top-left', 'icon-top-right', 'icon-bottom-left', 'icon-bottom-right', 'zoom-left', 'zoom-right', 'zoom-top-left', 'zoom-top-right', 'zoom-bottom-left', 'zoom-bottom-right', 'noicon', 'noshow', 'autopopup-single', 'autopopup-multiple'], function (i, v) {
@@ -233,7 +233,7 @@
             if (/\w+\[[^\]]+\]/.test(s)) {
                 var data = {};
 
-                tinymce.each(tinymce.explode(s, ';'), function (p) {
+                ibis.each(ibis.explode(s, ';'), function (p) {
                     var args = p.match(/([\w-]+)\[(.*)\]$/);
 
                     if (args && args.length === 3) {
@@ -244,7 +244,7 @@
                 return data;
 
                 /*s = s.replace(/([\w-]+)\[([^\]]+)\](;)?/g, function (a, b, c, d) {
-                    return '"' + b + '":"' + tinymce.DOM.encode(c) + '"' + (d ? ',' : '');
+                    return '"' + b + '":"' + ibis.DOM.encode(c) + '"' + (d ? ',' : '');
                 });
     
                 return $.parseJSON('{' + trim(s) + '}');*/
@@ -257,7 +257,7 @@
          * @param {Object} n Popup node
          */
         getAttributes: function (n, index, callback) {
-            var ed = tinyMCEPopup.editor,
+            var ed = ibisPopup.editor,
                 data = {},
                 rv, v, s;
 
@@ -348,7 +348,7 @@
                         }
                     }
 
-                    v = tinymce.DOM.decode(v);
+                    v = ibis.DOM.decode(v);
 
                     $('#jcemediabox_popup_' + k).val(v).trigger('change');
 
@@ -423,7 +423,7 @@
          * @param {Object} n Link Element
          */
         setAttributes: function (n, args, index) {
-            var ed = tinyMCEPopup.editor;
+            var ed = ibisPopup.editor;
 
             // set default index
             index = index || 0;

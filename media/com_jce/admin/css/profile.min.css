@@ -1178,27 +1178,27 @@ html {
   position: relative;
   margin: 20px 60px 50px 0;
 }
-.editor-layout + div.mce-tinymce {
+.editor-layout + div.mce-ibis {
   min-width: 600px;
   display: inline-block;
 }
-.jce-ui .mce-tinymce {
+.jce-ui .mce-ibis {
   box-sizing: content-box;
 }
-.jce-ui .mce-tinymce .mce-statusbar {
+.jce-ui .mce-ibis .mce-statusbar {
   border-width: 1px;
 }
-.jce-ui .mce-tinymce .mce-edit-area {
+.jce-ui .mce-ibis .mce-edit-area {
   border-width: 1px;
 }
-.jce-ui .mce-tinymce .mce-edit-area > div {
+.jce-ui .mce-ibis .mce-edit-area > div {
   min-height: 120px;
 }
-.jce-ui .mce-tinymce .mce-edit-area > div > p {
+.jce-ui .mce-ibis .mce-edit-area > div > p {
   white-space: pre-wrap;
   margin: 5px;
 }
-.jce-ui .mce-tinymce .mce-panel.mce-edit-area {
+.jce-ui .mce-ibis .mce-panel.mce-edit-area {
   background: #fff;
 }
 .jce-ui .mce-toolbar .mce-btn,
@@ -1351,7 +1351,7 @@ html[dir="rtl"] .jce-ui .form-horizontal .control-label {
 .editor-layout .sortable-option i:last-child {
   display: none;
 }
-.mce-tinymce.mce-panel,
+.mce-ibis.mce-panel,
 .mce-toolbar-grp.mce-panel {
   border: 0 none;
   background: none;

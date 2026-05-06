@@ -20,10 +20,6 @@ class Parser
     use ConfigurationTrait;
     
     protected $mode = 'editor';
-    protected $plugins = array();
-    protected $sections = array();
-
-    protected $language = 'en-GB';
 
     /**
      * Cache of processed data.
@@ -329,7 +325,7 @@ class Parser
     public function load($files = array())
     {
         // get language tag
-        $tag = $this->language;
+        $tag = $this->getConfig('language', 'en-GB');
 
         // base language path
         $path = JPATH_SITE . '/language/' . $tag;
@@ -411,7 +407,7 @@ class Parser
         // clean data
         $data = rtrim(trim($data), ',');
 
-        return 'tinyMCE.addI18n({"' . $tag . '":{' . $data . '}});';
+        return 'ibis.addI18n({"' . $tag . '":{' . $data . '}});';
     }
 
     public function output($data)

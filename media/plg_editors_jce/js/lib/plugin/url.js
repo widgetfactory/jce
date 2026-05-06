@@ -1,10 +1,10 @@
-/* global Wf, jQuery, tinyMCEPopup */
+/* global Wf, jQuery, ibisPopup */
 
 (function ($, Wf) {
     var URL = {
         toAbsolute: function (url) {
-            if (typeof tinyMCEPopup !== "undefined") {
-                return tinyMCEPopup.editor.documentBaseURI.toAbsolute(url);
+            if (typeof ibisPopup !== "undefined") {
+                return ibisPopup.editor.documentBaseURI.toAbsolute(url);
             }
 
             if (/http(s)?:\/\//.test(url)) {
@@ -14,8 +14,8 @@
             return Wf.getURI(true) + url.substr(0, url.indexOf('/'));
         },
         toRelative: function (url) {
-            if (typeof tinyMCEPopup !== "undefined") {
-                return tinyMCEPopup.editor.documentBaseURI.toRelative(url);
+            if (typeof ibisPopup !== "undefined") {
+                return ibisPopup.editor.documentBaseURI.toRelative(url);
             }
 
             if (/http(s)?:\/\//.test(url)) {

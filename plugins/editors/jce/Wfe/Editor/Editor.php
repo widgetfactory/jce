@@ -512,16 +512,16 @@ class Editor
             $this->addStyleSheet($this->getURL(true) . '/css/editor.min.css', 'editor.core');
 
             // load default skin
-            $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/core/skins/default/ui.css', 'editor.skin.default');
+            $this->addStyleSheet($this->getURL(true) . '/ibis/themes/core/skins/default/ui.css', 'editor.skin.default');
 
             // load other skin
             if ($settings['skin'] != 'default') {
-                $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/core/skins/' . $settings['skin'] . '/ui.css', 'editor.skin.' . $settings['skin']);
+                $this->addStyleSheet($this->getURL(true) . '/ibis/themes/core/skins/' . $settings['skin'] . '/ui.css', 'editor.skin.' . $settings['skin']);
             }
 
             // load variant
             if (isset($settings['skin_variant'])) {
-                $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/core/skins/' . $settings['skin'] . '/ui.' . $settings['skin_variant'] . '.css', 'editor.skin.' . $settings['skin'] . '.' . $settings['skin_variant']);
+                $this->addStyleSheet($this->getURL(true) . '/ibis/themes/core/skins/' . $settings['skin'] . '/ui.' . $settings['skin_variant'] . '.css', 'editor.skin.' . $settings['skin'] . '.' . $settings['skin_variant']);
             }
         }
 
@@ -546,7 +546,7 @@ class Editor
             $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']), 'editor.pack');
         } else {
             // Tinymce
-            $this->addScript($this->getURL(true) . '/tinymce/tinymce.js', 'editor.tinymce');
+            $this->addScript($this->getURL(true) . '/ibis/ibis.js', 'editor.ibis');
 
             // Editor
             $this->addScript($this->getURL(true) . '/js/editor.min.js', 'editor.core');
@@ -605,9 +605,9 @@ class Editor
 
         if ($autoInit) {
             // encode as json string
-            $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+            $ibis = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
-            $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
+            $this->addScriptDeclaration("try{WfEditor.init(" . $ibis . ");}catch(e){console.debug(e);}");
         } else {
             $this->addScriptOptions($settings);
         }
@@ -942,7 +942,7 @@ class Editor
 
                 // remove missing plugins
                 $items = array_filter($items, function ($item) {
-                    return is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $item . '/plugin.js');
+                    return is_file(WF_EDITOR_MEDIA . '/ibis/plugins/' . $item . '/plugin.js');
                 });
 
                 // update core plugins
@@ -1017,7 +1017,7 @@ class Editor
             if (!is_array($item)) {
                 $item = array(
                     'path' => $item,
-                    'namespace' => '\\Wfe\\Plugins\\' . ucwords($name)
+                    'namespace' => '\\Wfe\\Plugins\\Editor\\' . ucwords($name)
                 );
             }
 
@@ -1456,11 +1456,11 @@ class Editor
                 $files = array();
 
                 // add core file
-                $files[] = WF_EDITOR_MEDIA . '/tinymce/tinymce' . $suffix . '.js';
+                $files[] = WF_EDITOR_MEDIA . '/ibis/ibis' . $suffix . '.js';
 
                 // Add themes in dev mode
                 foreach ($themes as $theme) {
-                    $files[] = WF_EDITOR_MEDIA . '/tinymce/themes/' . $theme . '/theme' . $suffix . '.js';
+                    $files[] = WF_EDITOR_MEDIA . '/ibis/themes/' . $theme . '/theme' . $suffix . '.js';
                 }
 
                 // Add core plugins
@@ -1469,7 +1469,7 @@ class Editor
                         continue;
                     }
 
-                    $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/' . $plugin . '/plugin' . $suffix . '.js';
+                    $files[] = WF_EDITOR_MEDIA . '/ibis/plugins/' . $plugin . '/plugin' . $suffix . '.js';
                 }
 
                 // add external and pro plugins
@@ -1516,7 +1516,7 @@ class Editor
 
                     // Add core plugins
                     foreach ($plugins['core'] as $plugin) {
-                        $content = WF_EDITOR_MEDIA . '/tinymce/plugins/' . $plugin . '/css/content.css';
+                        $content = WF_EDITOR_MEDIA . '/ibis/plugins/' . $plugin . '/css/content.css';
 
                         if (is_file($content)) {
                             $files[] = $content;
@@ -1543,7 +1543,7 @@ class Editor
                     }
                 } elseif ($slot == 'preview') {
                     $files = array();
-                    $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/preview/css/preview.css';
+                    $files[] = WF_EDITOR_MEDIA . '/ibis/plugins/preview/css/preview.css';
 
                     // get template stylesheets
                     $styles = $this->getTemplateStyleSheetsList(true);
@@ -1588,7 +1588,7 @@ class Editor
     }
 
     public function loadlanguages()
-    {
+    {    
         $parser = new \Wfe\Language\Parser(array('language' => $this->getLanguageTag(), 'plugins' => $this->getPlugins()));
         $data = $parser->load();
         $parser->output($data);

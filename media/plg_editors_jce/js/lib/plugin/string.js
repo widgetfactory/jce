@@ -243,7 +243,7 @@
             return s.replace(/ /g, '%20');
         },
         /**
-         * From TinyMCE form_utils.js function, slightly modified.
+         * From ibis form_utils.js function, slightly modified.
          * @author Moxiecode
          * @copyright Copyright 2004-2008, Moxiecode Systems AB, All rights reserved.
          */
@@ -265,7 +265,7 @@
             return color;
         },
         /**
-         * From TinyMCE form_utils.js function, slightly modified.
+         * From ibis form_utils.js function, slightly modified.
          * @author Moxiecode
          * @copyright Copyright  2004-2008, Moxiecode Systems AB, All rights reserved.
          */

@@ -114,7 +114,7 @@ function updateTheme(value) {
 
     document.head.insertAdjacentHTML(
         'beforeend',
-        `<link href="/media/plg_editors_jce/tinymce/themes/core/skins/${stylesheet}/ui.admin.css" rel="stylesheet" id="mce-theme" />`
+        `<link href="/media/plg_editors_jce/ibis/themes/core/skins/${stylesheet}/ui.admin.css" rel="stylesheet" id="mce-theme" />`
     );
 }
 
@@ -131,7 +131,7 @@ function init(form) {
             widthMarker.textContent = str;
         }
 
-        document.querySelectorAll('.widthMarker, .mce-tinymce').forEach((el) => {
+        document.querySelectorAll('.widthMarker, .mce-ibis').forEach((el) => {
             el.style.width = str;
         });
     }
@@ -146,7 +146,7 @@ function init(form) {
     const pathInput = form.querySelector('[name*="[editor][path]"][type="checkbox"]:checked');
     if (pathInput) {
         const value = parseInt(pathInput.value, 10);
-        form.querySelectorAll('.editor-layout .mce-tinymce .mce-statusbar .mce-path').forEach((item) => {
+        form.querySelectorAll('.editor-layout .mce-ibis .mce-statusbar .mce-path').forEach((item) => {
             item.hidden = !value;
         });
     }
@@ -154,7 +154,7 @@ function init(form) {
     // Resizing
     const resizingInput = form.querySelector('[name$="[editor][resizing]"]');
     if (resizingInput) {
-        const handle = form.querySelector('.editor-layout .mce-tinymce .mce-statusbar .mce-resizehandle');
+        const handle = form.querySelector('.editor-layout .mce-ibis .mce-statusbar .mce-resizehandle');
         if (handle) {
             handle.hidden = !parseInt(resizingInput.value, 10);
         }
@@ -182,7 +182,7 @@ function triggerChange(e) {
         const str = /%/.test(value) ? value : parseInt(value, 10) + 'px';
 
         document.querySelector('.widthMarker span').textContent = str;
-        document.querySelectorAll('.widthMarker, .mce-tinymce').forEach((el) => {
+        document.querySelectorAll('.widthMarker, .mce-ibis').forEach((el) => {
             el.style.width = str;
         });
     }
@@ -194,14 +194,14 @@ function triggerChange(e) {
     if (elm.matches('input[name*="[editor][path]"][type="checkbox"]:checked')) {
         const value = parseInt(elm.value, 10);
 
-        form.querySelectorAll('.editor-layout .mce-tinymce .mce-statusbar .mce-path').forEach((item) => {
+        form.querySelectorAll('.editor-layout .mce-ibis .mce-statusbar .mce-path').forEach((item) => {
             item.hidden = !value;
         });
     }
 
     if (elm.matches('[name$="[editor][resizing]"]')) {
         const value = parseInt(elm.value, 10);
-        form.querySelector('.editor-layout .mce-tinymce .mce-statusbar .mce-resizehandle').hidden = !value;
+        form.querySelector('.editor-layout .mce-ibis .mce-statusbar .mce-resizehandle').hidden = !value;
     }
 
     if (elm.matches('[name$="[editor][toggle]"]')) {

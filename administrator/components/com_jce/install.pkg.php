@@ -358,7 +358,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             // process core to pro upgrade - remove branding plugin
             if ((string) $parent->manifest->variant === "pro") {
                 // remove branding plugin
-                $branding = JPATH_SITE . '/media/com_jce/editor/tinymce/plugins/branding';
+                $branding = JPATH_SITE . '/media/com_jce/editor/ibis/plugins/branding';
 
                 if (is_dir($branding)) {
                     Folder::delete($branding);
@@ -524,6 +524,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $media . '/css',
             $media . '/img',
             $media . '/js',
+            $media . '/tinymce'
         );
 
         $files['3.0.0'] = array(

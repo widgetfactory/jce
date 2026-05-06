@@ -413,7 +413,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
                     $settings['callback'] = $callback;
                 }
 
-                $document->addScriptDeclaration('tinymce.settings=' . json_encode($settings) . ';');
+                $document->addScriptDeclaration('ibis.settings=' . json_encode($settings) . ';');
             }
 
             $document->addScript(array('popup.min'), 'plugins');

@@ -316,7 +316,7 @@ class AbstractPlugin
         $document = $this->getDocument();
 
         if ($document->getConfig('standalone') == 0) {
-            $document->addScript(array('tinymce.popup'), 'tinymce');
+            $document->addScript(array('popup'), 'ibis');
         }
 
         $document->addScript(array('jquery.min'), 'jquery');

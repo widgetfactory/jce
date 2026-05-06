@@ -1,6 +1,6 @@
-/* global tinymce */
+/* global ibis */
 
-var DOM = tinymce.DOM;
+var DOM = ibis.DOM;
 
 /**
  * Get or create the wf-editor-header container for a textarea element

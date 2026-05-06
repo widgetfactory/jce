@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/* global tinyMCEPopup, jQuery */
+/* global ibisPopup, jQuery */
 
 // eslint-disable-next-line no-unused-vars
 /* eslint-disable no-var */
@@ -55,7 +55,7 @@ var WfLightboxAdapter = {
      */
     setup: function (options) {
         var self = this;
-        var ed = (window.tinyMCEPopup && tinyMCEPopup.editor) || null;
+        var ed = (window.ibisPopup && ibisPopup.editor) || null;
         var s = ed ? ed.selection : null;
 
         options = jQuery.extend({
@@ -82,7 +82,7 @@ var WfLightboxAdapter = {
 
             if (n) {
                 // one text-node child only (excluding bogus br)
-                var children = tinymce.grep(n.childNodes, function (node) {
+                var children = ibis.grep(n.childNodes, function (node) {
                     return ed.dom.is(node, 'br[data-mce-bogus]') === false;
                 });
                 enableText = children.length === 1 && children[0].nodeType === 3;
@@ -93,7 +93,7 @@ var WfLightboxAdapter = {
                     .removeClass('disabled');
             } else {
                 jQuery('#lightbox_text')
-                    .val(tinyMCEPopup.getLang('dlg.element_selection', 'Element Selection'))
+                    .val(ibisPopup.getLang('dlg.element_selection', 'Element Selection'))
                     .prop('disabled', true)
                     .addClass('disabled');
             }
@@ -122,7 +122,7 @@ var WfLightboxAdapter = {
      */
     getLightbox: function (n, callback, index) {
         var self = this;
-        var ed = tinyMCEPopup.editor;
+        var ed = ibisPopup.editor;
 
         if (n && n.nodeName !== 'A') {
             n = ed.dom.getParent(n, 'a');
@@ -202,7 +202,7 @@ var WfLightboxAdapter = {
      * @param {Number} index
      */
     setAttributes: function (n, args, index) {
-        var ed = tinyMCEPopup.editor;
+        var ed = ibisPopup.editor;
         args = args || {};
 
         // map global config values first
@@ -224,7 +224,7 @@ var WfLightboxAdapter = {
      * @param {Number} index
      */
     getAttributes: function (n, callback, index) {
-        var ed = tinyMCEPopup.editor;
+        var ed = ibisPopup.editor;
         var data;
 
         if (!n || n.nodeName !== 'A') {
@@ -260,7 +260,7 @@ var WfLightboxAdapter = {
      */
     createLightbox: function (n, args, index) {
         var self = this;
-        var ed = tinyMCEPopup.editor;
+        var ed = ibisPopup.editor;
         args = args || {};
 
         if (!this.isEnabled()) {

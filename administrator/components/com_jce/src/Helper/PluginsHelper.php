@@ -83,7 +83,7 @@ abstract class PluginsHelper
             if ($data) {
                 foreach ($data as $name => $attribs) {
                     // skip if the plugin file is missing
-                    if (!is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $name . '/plugin.js')) {
+                    if (!is_file(WF_EDITOR_MEDIA . '/ibis/plugins/' . $name . '/plugin.js')) {
                         continue;
                     }
 

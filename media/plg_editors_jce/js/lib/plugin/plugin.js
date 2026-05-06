@@ -9,11 +9,11 @@
  * other free or open source software licenses.
  */
 
-/* global tinyMCEPopup, jQuery */
+/* global ibisPopup, jQuery */
 
 // String functions
 (function ($) {
-    var standalone = (typeof tinyMCEPopup === "undefined");
+    var standalone = (typeof ibisPopup === "undefined");
 
     // uid counter
     var counter = 0;
@@ -47,7 +47,7 @@
         },
         getURI: function (absolute) {
             if (!standalone) {
-                return tinyMCEPopup.editor.settings.base_url;
+                return ibisPopup.editor.settings.base_url;
             }
 
             return (absolute) ? this.options.root : this.options.site;
@@ -109,7 +109,7 @@
 
             // add button actions
             $('#cancel').on('click', function (e) {
-                tinyMCEPopup.close();
+                ibisPopup.close();
                 e.preventDefault();
             });
 
@@ -160,7 +160,7 @@
             $('.uk-equalize-checkbox').equalize();
 
             // hide HTML4 only attributes
-            if (tinyMCEPopup.editor.settings.schema === 'html5-strict' && tinyMCEPopup.editor.settings.validate) {
+            if (ibisPopup.editor.settings.schema === 'html5-strict' && ibisPopup.editor.settings.validate) {
                 $('.html4').hide().find(':input').prop('disabled', true);
             }
 
@@ -230,12 +230,12 @@
                         return;
                     }
 
-                    tinyMCEPopup.close();
+                    ibisPopup.close();
                 }
             });
 
             if (!standalone) {
-                var ed = tinyMCEPopup.editor;
+                var ed = ibisPopup.editor;
 
                 if (ed.onUpdateMedia) {
                     function updateMedia(before, after) {
@@ -271,28 +271,28 @@
         },
         getPath: function (plugin) {
             if (!standalone) {
-                return tinyMCEPopup.editor.plugins[this.getName()].url;
+                return ibisPopup.editor.plugins[this.getName()].url;
             }
 
             return this.options.site + 'components/com_jce/editor/tiny_mce/plugins/' + this.getName();
         },
         loadLanguage: function () {
             if (!standalone) {
-                var ed = tinyMCEPopup.editor,
+                var ed = ibisPopup.editor,
                     u = ed.getParam('document_base_url') + 'components/com_jce/editor/tiny_mce';
 
                 if (u && ed.settings.language && ed.settings.language_load !== false) {
                     u += '/langs/' + ed.settings.language + '_dlg.js';
 
-                    if (!tinymce.ScriptLoader.isDone(u)) {
-                        document.write('<script type="text/javascript" src="' + tinymce._addVer(u) + '"></script>');
-                        tinymce.ScriptLoader.markDone(u);
+                    if (!ibis.ScriptLoader.isDone(u)) {
+                        document.write('<script type="text/javascript" src="' + ibis._addVer(u) + '"></script>');
+                        ibis.ScriptLoader.markDone(u);
                     }
                 }
             }
         },
         help: function () {
-            var ed = tinyMCEPopup.editor;
+            var ed = ibisPopup.editor;
 
             ed.windowManager.open({
                 url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.settings.language + '&section=editor&category=' + this.getName(),
@@ -305,11 +305,11 @@
         },
 
         createClassList: function (id, options) {
-            var ed = tinyMCEPopup.editor,
+            var ed = ibisPopup.editor,
                 lst = document.getElementById(id),
                 values = [],
                 filter = ed.settings.class_filter,
-                PreviewCss = tinymce.util.PreviewCss;
+                PreviewCss = ibis.util.PreviewCss;
 
             if (!lst) {
                 return;
@@ -432,7 +432,7 @@
 
         createColourPickers: function () {
             var self = this,
-                ed = tinyMCEPopup.editor,
+                ed = ibisPopup.editor,
                 doc = ed.getDoc();
 
             $('input.color, input.colour').each(function () {
@@ -534,7 +534,7 @@
 
                     if (doc.styleSheets.length) {
                         $.each(doc.styleSheets, function (i, s) {
-                            // only load template stylesheets, not from tinymce plugins
+                            // only load template stylesheets, not from ibis plugins
                             if (s.href && s.href.indexOf('tiny_mce') == -1) {
                                 stylesheets.push(s);
                             }
@@ -600,7 +600,7 @@
                 $('<button class="uk-icon uk-icon-' + map[filter] + ' uk-button uk-button-link" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></button>').on('click', function (e) {
                     e.preventDefault();
 
-                    return tinyMCEPopup.execCommand('mceFileBrowser', true, {
+                    return ibisPopup.execCommand('mceFileBrowser', true, {
                         "callback": callback || $(input).attr('id'),
                         "value": input.value,
                         "filter": $(this).attr('data-filter') || filter,
@@ -661,7 +661,7 @@
         },
 
         translate: function (s, ds) {
-            var val = tinyMCEPopup.getLang('dlg.' + s, ds || s);
+            var val = ibisPopup.getLang('dlg.' + s, ds || s);
             return val;
         }
     };
@@ -730,7 +730,7 @@
     window.Wf = Wf;
 
     // backwards compatability
-    window.TinyMCE_Utils = {
+    window.ibis_Utils = {
         fillClassList: function (id) {
             Wf.createClassList(id);
         }

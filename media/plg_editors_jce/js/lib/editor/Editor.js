@@ -1,6 +1,6 @@
-/* global tinymce */
+/* global ibis */
 
-var DOM = tinymce.DOM;
+var DOM = ibis.DOM;
 
 /**
  * Get the stored editor toggle state (on/off)
@@ -12,11 +12,11 @@ function getEditorState(el, settings) {
     var state;
 
     if (settings && settings.use_state_cookies !== false) {
-        state = tinymce.util.Storage.get('wf_editor_state_' + el.id);
+        state = ibis.util.Storage.get('wf_editor_state_' + el.id);
     }
 
     if (state === null || typeof state === "undefined") {
-        state = settings && tinymce.is(settings.toggle_state) ? settings.toggle_state : 1;
+        state = settings && ibis.is(settings.toggle_state) ? settings.toggle_state : 1;
     }
 
     return parseInt(state, 10);
@@ -50,12 +50,12 @@ function isHidden(el) {
  * @returns {number} 1 if enabled, 0 if not
  */
 function canToggle(settings) {
-    return tinymce.is(settings.toggle) ? parseInt(settings.toggle, 10) : 0;
+    return ibis.is(settings.toggle) ? parseInt(settings.toggle, 10) : 0;
 }
 
 /**
  * Get the currently active tab name from the editor UI
- * @param {tinymce.Editor} ed
+ * @param {ibis.Editor} ed
  * @returns {string} 'wysiwyg', 'source', or 'preview'
  */
 function getActiveTab(ed) {
@@ -79,12 +79,12 @@ function getActiveTab(ed) {
 /**
  * Get a reference to the active editor or source plugin
  * @param {string|node} el Editor id or textarea element
- * @returns {tinymce.Editor|object|false}
+ * @returns {ibis.Editor|object|false}
  */
 function get(el) {
     var ed, win = window;
 
-    if (!win.tinymce && window.parent.tinymce) {
+    if (!win.ibis && window.parent.ibis) {
         win = window.parent;
     }
 
@@ -94,12 +94,12 @@ function get(el) {
         }
 
         if (el && el.id) {
-            ed = win.tinymce.get(el.id);
+            ed = win.ibis.get(el.id);
         }
     }
 
     if (!ed) {
-        ed = win.tinymce.activeEditor;
+        ed = win.ibis.activeEditor;
     }
 
     if (!ed || !ed.getElement()) {

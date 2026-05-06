@@ -1,4 +1,4 @@
-/* global tinymce */
+/* global ibis */
 
 import Editor from './Editor';
 
@@ -44,7 +44,7 @@ function setRefocusBookmark(ed, bookmark) {
 }
 
 /**
- * Load content from source editor into tinymce
+ * Load content from source editor into ibis
  */
 function load(editor) {
     var el = editor.getElement(),
@@ -189,13 +189,13 @@ function insertIntoTextarea(el, v) {
 
 /**
  * Get the current block element index (line number)
- * @param {tinymce.Editor} ed
+ * @param {ibis.Editor} ed
  * @returns {number}
  */
 function getActiveLine(ed) {
     var blocks = [], line = 0;
 
-    tinymce.each(ed.schema.getBlockElements(), function (_value, name) {
+    ibis.each(ed.schema.getBlockElements(), function (_value, name) {
         if (/\W/.test(name)) {
             return true;
         }
@@ -226,7 +226,7 @@ function getActiveLine(ed) {
 
 /**
  * Move cursor to a block element by index or character position
- * @param {tinymce.Editor} ed
+ * @param {ibis.Editor} ed
  * @param {number} pos Block index or character position
  * @param {boolean} fromCharacterIndex Use character position instead of block index
  */
@@ -262,7 +262,7 @@ function setActiveLine(ed, pos, fromCharacterIndex) {
     if (fromCharacterIndex) {
         node = getElementNodeAtCharacterIndexPosition(pos);
     } else {
-        tinymce.each(ed.schema.getBlockElements(), function (_value, name) {
+        ibis.each(ed.schema.getBlockElements(), function (_value, name) {
             if (/\W/.test(name)) {
                 return true;
             }

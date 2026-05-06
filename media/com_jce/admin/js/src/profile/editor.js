@@ -3,7 +3,7 @@ const ucfirst = (str) => str.charAt(0).toUpperCase() + str.substring(1);
 // Editor Width
 const EditorWidth = document.querySelector('#jform_config_editor_width');
 const widthMarkerSpan = document.querySelector('.widthMarker span');
-const tinymceElements = document.querySelectorAll('.widthMarker, .mce-tinymce');
+const ibisElements = document.querySelectorAll('.widthMarker, .mce-ibis');
 
 EditorWidth.addEventListener('change', () => {
     let v = EditorWidth.value || '100%';
@@ -19,7 +19,7 @@ EditorWidth.addEventListener('change', () => {
 
     widthMarkerSpan.textContent = s;
 
-    tinymceElements.forEach((element) => {
+    ibisElements.forEach((element) => {
         element.style.width = s;
     });
 });
@@ -50,7 +50,7 @@ ToolbarTheme.addEventListener('change', () => {
 ToolbarTheme.dispatchEvent(new Event('change'));
 
 // Editor Path
-const editorPathStatusbar = document.querySelector('.mce-tinymce .mce-statusbar .mce-path');
+const editorPathStatusbar = document.querySelector('.mce-ibis .mce-statusbar .mce-path');
 
 if (editorPathStatusbar) {
     document.querySelectorAll('#jform_config_editor_path input[name]:checked').forEach((input) => {
@@ -64,7 +64,7 @@ if (editorPathStatusbar) {
 
 // Resizing
 const editorResizing = document.querySelector('#jform_config_editor_resizing');
-const editorResizeHandle = document.querySelector('.mce-tinymce .mce-statusbar .mce-resizehandle');
+const editorResizeHandle = document.querySelector('.mce-ibis .mce-statusbar .mce-resizehandle');
 
 if (editorResizing) {
     editorResizing.addEventListener('change', () => {

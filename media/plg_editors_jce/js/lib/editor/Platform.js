@@ -1,4 +1,4 @@
-/* global Joomla, WfEditor, JceDecorator, JoomlaEditor, tinymce */
+/* global Joomla, WfEditor, JceDecorator, JoomlaEditor, ibis */
 
 /**
  * Get editor settings from Joomla options storage
@@ -128,13 +128,13 @@ var PlatformEditor = {
 
 // Hikashop compatibility - relies on the removed addScriptDeclaration method
 function setupHikashopFix() {
-    Joomla.JoomlaTinyMCE = {
+    Joomla.Joomlaibis = {
         setupEditors: function (form) {
-            if (!tinymce.DOM.get(form)) {
+            if (!ibis.DOM.get(form)) {
                 return;
             }
 
-            var elms = tinymce.DOM.select('.wf-editor', form);
+            var elms = ibis.DOM.select('.wf-editor', form);
 
             if (!elms.length) {
                 return;
@@ -149,11 +149,11 @@ function setupHikashopFix() {
  * Bind native DOM events for subform row add/remove/sort
  */
 function initSubformEvents() {
-    var DOM = tinymce.DOM,
-        each = tinymce.each;
+    var DOM = ibis.DOM,
+        each = ibis.each;
 
     function removeEditor(el) {
-        var ed = tinymce.EditorManager.get(el.id);
+        var ed = ibis.EditorManager.get(el.id);
 
         if (ed) {
             ed.remove();
@@ -163,11 +163,11 @@ function initSubformEvents() {
     }
 
     function createEditor(el) {
-        var ed = tinymce.EditorManager.get(el.id);
+        var ed = ibis.EditorManager.get(el.id);
 
         if (!ed) {
             WfEditor.createInstance(el);
-            ed = new tinymce.Editor(el.id, tinymce.settings);
+            ed = new ibis.Editor(el.id, ibis.settings);
         }
 
         ed.render();

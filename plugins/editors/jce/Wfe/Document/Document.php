@@ -287,12 +287,12 @@ class Document
                     $pre = $base . 'vendor/jquery/' . $type;
                     break;
                 // TinyMCE folder
-                case 'tinymce':
-                    $pre = $base . 'tinymce';
+                case 'ibis':
+                    $pre = $base . 'ibis';
                     break;
                 // Tinymce plugins folder
                 case 'plugins':
-                    $pre = $base . 'tinymce/plugins/' . $plugin . '/' . $type;
+                    $pre = $base . 'ibis/plugins/' . $plugin . '/' . $type;
                     break;
                 // Adapter folder
                 case 'adapters':

@@ -37,7 +37,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                 <span class="badge bg-secondary"><?php echo $width; ?></span>
             </div>
             <!-- Toolbar -->
-            <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout mceDefaultSkin" role="application">
+            <div class="mce-ibis mce-container mce-panel mceEditor mceLayout mceDefaultSkin" role="application">
                 <div class="mce-container-body mce-stack-layout mceLayout" style="max-width:<?php echo $width; ?>" role="presentation">
                     <div class="mceToolbar sortable-list" role="group">
                         <?php foreach ($rows as $key => $groups): ?>
@@ -90,7 +90,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
     </div>
     <div class="controls">
         <div class="editor-button-pool">
-            <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout defaultSkin" role="application">
+            <div class="mce-ibis mce-container mce-panel mceEditor mceLayout defaultSkin" role="application">
                 <div class="mce-container-body mce-stack-layout mceLayout">
                     <div class="mce-toolbar-grp mce-container mce-panel mce-stack-layout-item mceToolbar sortable-list" role="toolbar">
                         <?php for ($i = 0; $i < max(count($rows), 5); ++$i): ?>

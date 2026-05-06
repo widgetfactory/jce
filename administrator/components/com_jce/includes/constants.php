@@ -37,7 +37,7 @@ define('WF_PLUGINS', WF_EDITOR . '/Plugins');
 define('WF_EDITOR_PLUGINS', WF_PLUGINS . '/Editor');
 
 // JCE Editor Themes
-define('WF_EDITOR_THEMES', WF_EDITOR_MEDIA . '/tinymce/themes');
+define('WF_EDITOR_THEMES', WF_EDITOR_MEDIA . '/ibis/themes');
 
 define('WF_EDITOR_URI', Uri::root(true) . '/media/plg_editors_jce/wfe');
 

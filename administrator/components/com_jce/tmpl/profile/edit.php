@@ -24,8 +24,8 @@ $wa->useScript('com_jce.profile.script')
 	->useStyle('com_jce.profile.style');
 
 // load editor skin for button and toolbar styling
-$wa->registerAndUseStyle('com_jce.skin.admin.default', 'media/plg_editors_jce/tinymce/themes/core/skins/default/ui.admin.css')
-	->registerAndUseStyle('com_jce.skin.admin.modern', 'media/plg_editors_jce/tinymce/themes/core/skins/modern/ui.admin.css');
+$wa->registerAndUseStyle('com_jce.skin.admin.default', 'media/plg_editors_jce/ibis/themes/core/skins/default/ui.admin.css')
+	->registerAndUseStyle('com_jce.skin.admin.modern', 'media/plg_editors_jce/ibis/themes/core/skins/modern/ui.admin.css');
 
 ?>
 <div class="jce-ui loading">

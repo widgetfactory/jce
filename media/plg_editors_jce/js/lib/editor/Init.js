@@ -1,4 +1,4 @@
-/* global Joomla, tinymce, tinyMCE */
+/* global Joomla, ibis, ibis */
 
 import Editor from './Editor';
 import Content from './Content';
@@ -6,10 +6,10 @@ import Toggle from './ui/Toggle';
 import Tabs from './ui/Tabs';
 import Platform from './Platform';
 
-var DOM = tinymce.DOM,
-    Event = tinymce.dom.Event,
-    each = tinymce.each,
-    extend = tinymce.extend;
+var DOM = ibis.DOM,
+    Event = ibis.dom.Event,
+    each = ibis.each,
+    extend = ibis.extend;
 
 var corePlugins = ['core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'blobupload', 'figure', 'ui', 'noneditable', 'branding'];
 
@@ -50,7 +50,7 @@ function markLoaded() {
         suffix = s.suffix || '';
 
     function load(u) {
-        tinymce.ScriptLoader.markDone(tinyMCE.baseURL + '/' + u);
+        ibis.ScriptLoader.markDone(ibis.baseURL + '/' + u);
     }
 
     if (s.compress.javascript == 1) {
@@ -72,7 +72,7 @@ function markLoaded() {
 
 /**
  * Set up selection bookmark on mousedown outside the editor
- * @param {tinymce.Editor} ed
+ * @param {ibis.Editor} ed
  */
 function setBookmark(ed) {
     function isEditorHidden(ed) {
@@ -93,7 +93,7 @@ function setBookmark(ed) {
         if (!isEditorHidden(ed) && ed.selection) {
             var n = ed.selection.getNode();
 
-            if (DOM.getParent(n, 'body#tinymce')) {
+            if (DOM.getParent(n, 'body#ibis')) {
                 ed.lastSelectionBookmark = ed.selection.getBookmark(1);
             }
         }
@@ -101,15 +101,15 @@ function setBookmark(ed) {
 }
 
 /**
- * Set up tinyMCE onAddEditor events and window load handlers
+ * Set up ibis onAddEditor events and window load handlers
  */
 function load() {
     var loaded;
 
-    // pass settings to tinymce
-    tinymce.settings = settings;
+    // pass settings to ibis
+    ibis.settings = settings;
 
-    tinyMCE.onAddEditor.add(function (_mgr, ed) {
+    ibis.onAddEditor.add(function (_mgr, ed) {
         var el = ed.getElement();
 
         if (ed.settings.theme !== "core") {
@@ -121,7 +121,7 @@ function load() {
                 var xtdOptions = Platform.getScriptOptions('joomla_xtd_buttons') || {},
                     btns = ed.settings.joomla_xtd_buttons || {};
 
-                if (xtdOptions && tinymce.is(xtdOptions, 'object')) {
+                if (xtdOptions && ibis.is(xtdOptions, 'object')) {
                     each(xtdOptions, function (value, key) {
                         if (value && value.length) {
                             btns[key] = value;
@@ -179,7 +179,7 @@ function load() {
                 ed.formElement = n;
                 n._mceOldSubmit = n.submit;
                 n.submit = function () {
-                    tinymce.each(tinymce.editors, function (e) {
+                    ibis.each(ibis.editors, function (e) {
                         if (e.initialized && e.getElement()) {
                             e.isNotDirty = 1;
                             Content.get(e.id);
@@ -196,7 +196,7 @@ function load() {
         ed.onPostRender.add(function () {
             var el = ed.getElement(),
                 state = Editor.getEditorState(el, settings),
-                toggle = tinymce.is(ed.settings.toggle) ? parseInt(ed.settings.toggle, 10) : 0;
+                toggle = ibis.is(ed.settings.toggle) ? parseInt(ed.settings.toggle, 10) : 0;
 
             if (!state && toggle) {
                 ed.hide();
@@ -211,17 +211,17 @@ function load() {
             }
         });
 
-        ed.onWfEditorChange = new tinymce.util.Dispatcher();
+        ed.onWfEditorChange = new ibis.util.Dispatcher();
 
         ed.onWfEditorChange.add(function (ed, o) {
-            if (tinymce.is(o.content)) {
+            if (ibis.is(o.content)) {
                 ed.setContent(o.content, o);
                 ed.onChange.dispatch();
             }
         });
 
         ed.onSaveContent.add(function () {
-            if (ed !== tinymce.activeEditor) {
+            if (ed !== ibis.activeEditor) {
                 return;
             }
 
@@ -233,7 +233,7 @@ function load() {
             var container = DOM.getParent(ed.getElement(), 'div.wf-editor-container');
 
             if (container) {
-                var nodes = tinymce.grep(DOM.select('div', container), function (node) {
+                var nodes = ibis.grep(DOM.select('div', container), function (node) {
                     return node !== ed.getElement() && node !== ed.getContainer();
                 });
 
@@ -309,10 +309,10 @@ function createInstance(el) {
  */
 function create(elements) {
     if (typeof elements === "string") {
-        var ed = tinymce.get(elements);
+        var ed = ibis.get(elements);
 
         if (ed) {
-            tinymce.remove(ed);
+            ibis.remove(ed);
         }
 
         elements = [elements];
@@ -356,7 +356,7 @@ function preinit(elements) {
 
             var editorId = createId(elm);
 
-            if (tinymce.get(editorId)) {
+            if (ibis.get(editorId)) {
                 return true;
             }
 
@@ -366,7 +366,7 @@ function preinit(elements) {
                 createInstance(elm);
             }
 
-            var editor = new tinymce.Editor(editorId, settings, tinymce.EditorManager);
+            var editor = new ibis.Editor(editorId, settings, ibis.EditorManager);
             editor.render();
         });
     } catch (e) {
@@ -392,12 +392,12 @@ function init(options) {
         base = base.replace(/http:/, 'https:');
     }
 
-    window.tinyMCEPreInit = {};
+    window.ibisPreInit = {};
 
     options.query = http_build_query(options.query);
 
-    extend(tinymce, {
-        baseURL: base + 'media/plg_editors_jce/tinymce',
+    extend(ibis, {
+        baseURL: base + 'media/plg_editors_jce/ibis',
         suffix: '',
         query: options.query
     });

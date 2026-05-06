@@ -9,7 +9,7 @@
  * other free or open source software licenses.
  */
 
-/* global tinyMCEPopup, jQuery, Wf */
+/* global ibisPopup, jQuery, Wf */
 
 (function ($, Wf, undef) {
     var mimeTypes = {};
@@ -3244,17 +3244,17 @@
 
             // Size
             if ($(item).data('size')) {
-                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-size">' + tinyMCEPopup.getLang('dlg.size', 'Size') + ': ' + Wf.String.formatSize($(item).data('size')) + '</div>');
+                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-size">' + ibisPopup.getLang('dlg.size', 'Size') + ': ' + Wf.String.formatSize($(item).data('size')) + '</div>');
             }
 
             // Modified
             if ($(item).data('modified')) {
-                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-modified">' + tinyMCEPopup.getLang('dlg.modified', 'Modified') + ': ' + Wf.String.formatDate($(item).data('modified'), self.options.date_format) + '</div>');
+                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-modified">' + ibisPopup.getLang('dlg.modified', 'Modified') + ': ' + Wf.String.formatDate($(item).data('modified'), self.options.date_format) + '</div>');
             }
 
             // Permissions
             if ($(item).data('permissions')) {
-                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-permissions">' + tinyMCEPopup.getLang('dlg.permissions', 'Permissions') + ': ' + $(item).data('permissions') + '</div>');
+                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-permissions">' + ibisPopup.getLang('dlg.permissions', 'Permissions') + ': ' + $(item).data('permissions') + '</div>');
             }
 
             if (comments) {
@@ -3277,7 +3277,7 @@
                         value = values[0] || '';
                     }
                     
-                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-attribution">' + tinyMCEPopup.getLang('dlg.attribution', 'Attribution') + ': ' + value + '</div>');
+                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-attribution">' + ibisPopup.getLang('dlg.attribution', 'Attribution') + ': ' + value + '</div>');
                 }
                 
                 // Process properties callback
@@ -3296,7 +3296,7 @@
 
                         // Duration (will only apply to file items)
                         if (data.duration) {
-                            $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-duration">' + tinyMCEPopup.getLang('dlg.duration', 'Duration') + ': ' + data.duration + '</div>');
+                            $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-duration">' + ibisPopup.getLang('dlg.duration', 'Duration') + ': ' + data.duration + '</div>');
                         }
 
                         self._trigger('onFileDetails', [item, data]);

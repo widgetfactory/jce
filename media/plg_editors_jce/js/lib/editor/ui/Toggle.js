@@ -1,11 +1,11 @@
-/* global tinymce */
+/* global ibis */
 
 import Header from './Header';
 import Editor from '../Editor';
 import Content from '../Content';
 
-var DOM = tinymce.DOM,
-    Event = tinymce.dom.Event;
+var DOM = ibis.DOM,
+    Event = ibis.dom.Event;
 
 var svgToggleIcon = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 448 448"><title></title><g id="wf-toggle-icon" stroke="none" stroke-width="1"></g><path d="M280 64.132v59.482c15.84 6.914 30.406 16.803 42.995 29.391 26.443 26.442 41.005 61.6 41.005 98.995s-14.563 72.552-41.005 98.995c-26.442 26.442-61.599 41.005-98.995 41.005s-72.552-14.563-98.995-41.005c-26.442-26.442-41.005-61.6-41.005-98.995s14.563-72.552 41.005-98.995c12.589-12.589 27.155-22.478 42.995-29.392v-59.481c-80.959 24.097-140 99.082-140 187.868 0 108.248 87.753 196 196 196s196-87.752 196-196c0-88.786-59.041-163.77-140-187.868zM196 0h56v224h-56z"></path></svg>';
 
@@ -15,7 +15,7 @@ var svgToggleIcon = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width
  * @param {object} settings Editor settings
  */
 function toggle(el, settings) {
-    var ed = tinymce.get(el.id);
+    var ed = ibis.get(el.id);
 
     // editor not yet created — turn it on
     if (!ed) {
@@ -24,10 +24,10 @@ function toggle(el, settings) {
         DOM.removeClass(el.parentNode, 'wf-editor-toggle-off');
 
         if (settings && settings.use_state_cookies !== false) {
-            tinymce.util.Storage.set('wf_editor_state_' + el.id, 1);
+            ibis.util.Storage.set('wf_editor_state_' + el.id, 1);
         }
 
-        tinymce.execCommand('mceToggleEditor', false, el.id);
+        ibis.execCommand('mceToggleEditor', false, el.id);
 
         setTimeout(function () {
             DOM.removeClass(el.parentNode, 'mce-loading');
@@ -40,7 +40,7 @@ function toggle(el, settings) {
             DOM.removeClass(el.parentNode, 'wf-editor-toggle-off');
 
             if (settings && settings.use_state_cookies !== false) {
-                tinymce.util.Storage.set('wf_editor_state_' + el.id, 1);
+                ibis.util.Storage.set('wf_editor_state_' + el.id, 1);
             }
 
             var activeTab;
@@ -84,7 +84,7 @@ function toggle(el, settings) {
             }
 
             if (settings && settings.use_state_cookies !== false) {
-                tinymce.util.Storage.set('wf_editor_state_' + el.id, 0);
+                ibis.util.Storage.set('wf_editor_state_' + el.id, 0);
             }
 
             ed.hide();

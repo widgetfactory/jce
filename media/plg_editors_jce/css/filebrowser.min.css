@@ -810,7 +810,7 @@ nav.uk-navbar .uk-button.action {
 }
 /* Loader */
 .uk-dialog div.big-loader {
-  background: url("../tinymce/themes/advanced/img/progress.gif") center 50% no-repeat;
+  background: url("../ibis/themes/advanced/img/progress.gif") center 50% no-repeat;
   margin-top: -33px !important;
   width: 100%;
   height: 100%;

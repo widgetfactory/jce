@@ -9,7 +9,7 @@
  * other free or open source software licenses.
  */
 
-/* global tinyMCEPopup, jQuery */
+/* global ibisPopup, jQuery */
 
 (function ($) {
     var ColorPicker = function (element, options) {
@@ -227,8 +227,8 @@
 
             var v = o.labels[s] || d || '';
 
-            if (typeof tinyMCEPopup !== 'undefined') {
-                v = tinyMCEPopup.getLang('colorpicker.' + s, v);
+            if (typeof ibisPopup !== 'undefined') {
+                v = ibisPopup.getLang('colorpicker.' + s, v);
             }
 
             return v;
@@ -589,7 +589,7 @@
 
             $parent.html(html).addClass('colorpicker_generated');
 
-            var color = new tinymce.util.Color();
+            var color = new ibis.util.Color();
             var hsv;
 
             var $svRoot = $('#' + svId);
@@ -608,7 +608,7 @@
                 hsv = color.toHsv();
                 $hPoint.css('top', ((360 - hsv.h) / 360 * 100) + '%');
                 $svPoint.css({ left: hsv.s + '%', top: (100 - hsv.v) + '%' });
-                $svRoot.css('background-color', new tinymce.util.Color({ s: 100, v: 100, h: hsv.h }).toHex());
+                $svRoot.css('background-color', new ibis.util.Color({ s: 100, v: 100, h: hsv.h }).toHex());
             }
 
             function updateSV(e) {
@@ -617,7 +617,7 @@
                 hsv.v = (1 - pos.y) * 100;
                 color.parse({ h: hsv.h, s: hsv.s, v: hsv.v });
                 $svPoint.css({ left: hsv.s + '%', top: (100 - hsv.v) + '%' });
-                $svRoot.css('background-color', new tinymce.util.Color({ s: 100, v: 100, h: hsv.h }).toHex());
+                $svRoot.css('background-color', new ibis.util.Color({ s: 100, v: 100, h: hsv.h }).toHex());
                 self._showColor(color.toHex());
             }
 
@@ -627,7 +627,7 @@
                 hsv.h = (1 - pos.y) * 360;
                 color.parse({ h: hsv.h, s: hsv.s, v: hsv.v });
                 $hPoint.css('top', ((360 - hsv.h) / 360 * 100) + '%');
-                $svRoot.css('background-color', new tinymce.util.Color({ s: 100, v: 100, h: hsv.h }).toHex());
+                $svRoot.css('background-color', new ibis.util.Color({ s: 100, v: 100, h: hsv.h }).toHex());
                 self._showColor(color.toHex());
             }
 

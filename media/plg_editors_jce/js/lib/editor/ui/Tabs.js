@@ -1,14 +1,14 @@
-/* global tinymce */
+/* global ibis */
 
 import Header from './Header';
 import Editor from '../Editor';
 import Content from '../Content';
 
-var DOM = tinymce.DOM;
+var DOM = ibis.DOM;
 
 /**
  * Switch between editor tabs (wysiwyg / source / preview)
- * @param {tinymce.Editor} ed
+ * @param {ibis.Editor} ed
  * @param {string} tab Target tab: 'wf-editor-wysiwyg', 'wf-editor-source', 'wf-editor-preview'
  * @param {object} settings Editor settings
  */
@@ -36,7 +36,7 @@ function toggle(ed, tab, settings) {
                 ca = ed.getContentAreaContainer(),
                 p = ca.parentNode;
 
-            tinymce.each(p.childNodes, function (n) {
+            ibis.each(p.childNodes, function (n) {
                 if (n !== ca) {
                     h += n.offsetHeight;
                 }
@@ -111,7 +111,7 @@ function toggle(ed, tab, settings) {
 
 /**
  * Create the tab navigation UI in the editor header
- * @param {tinymce.Editor} ed
+ * @param {ibis.Editor} ed
  * @param {object} settings Editor settings
  */
 function create(ed, settings) {
@@ -128,7 +128,7 @@ function create(ed, settings) {
         return;
     }
 
-    ed.onToggleTab = new tinymce.util.Dispatcher(ed);
+    ed.onToggleTab = new ibis.util.Dispatcher(ed);
 
     var tablist = DOM.add(header, 'div', { 'role': 'tablist', 'class': 'wf-editor-tabs nav nav-tabs' });
 

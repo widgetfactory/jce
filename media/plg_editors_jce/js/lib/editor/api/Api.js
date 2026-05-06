@@ -1,12 +1,12 @@
-/* global tinymce */
+/* global ibis */
 
 import Init from '../Init';
 import Content from '../Content';
 import Toggle from '../ui/Toggle';
 
-// core Joomla Tinymce, bail due to conflict
-if (tinymce.Annotator) {
-    var msg = "Another extension or plugin has initialized the Joomla Tinymce Editor on this page. JCE cannot be loaded on the same page as the core Joomla Tinymce Editor.";
+// core Joomla ibis, bail due to conflict
+if (ibis.Annotator) {
+    var msg = "Another extension or plugin has initialized the Joomla ibis Editor on this page. JCE cannot be loaded on the same page as the core Joomla ibis Editor.";
     alert(msg);
     throw new Error(msg);
 }
@@ -24,7 +24,7 @@ function convertURL(url, elm) {
         return url;
     }
 
-    var ed = tinymce.EditorManager.activeEditor;
+    var ed = ibis.EditorManager.activeEditor;
 
     if (!ed) {
         return url;
@@ -62,7 +62,7 @@ function convertURL(url, elm) {
 
 function indent(h) {
     h = h.replace(/\n+/g, '\n');
-    return tinymce.trim(h);
+    return ibis.trim(h);
 }
 
 var WfEditor = {

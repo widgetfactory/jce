@@ -1,4 +1,4 @@
-/* global Wf, jQuery, tinyMCEPopup*/
+/* global Wf, jQuery, ibisPopup*/
 
 (function ($) {
 
@@ -11,7 +11,7 @@
          * @returns {String|Integer}
          */
         getAttrib: function (e, at) {
-            var ed = tinyMCEPopup.editor,
+            var ed = ibisPopup.editor,
                 v;
 
             switch (at) {
@@ -81,7 +81,7 @@
                 case 'border-style':
                 case 'border-color':
                     v = '';
-                    tinymce.each(['top', 'right', 'bottom', 'left'], function (n) {
+                    ibis.each(['top', 'right', 'bottom', 'left'], function (n) {
                         var s = at.replace(/-/, '-' + n + '-');
                         var sv = ed.dom.getStyle(e, s);
                         // False or not the same as prev
@@ -137,7 +137,7 @@
          * Set / update styles on a sample image, eg: <img src="image.jpg" id="sample" />
          */
         setStyles: function () {
-            var ed = tinyMCEPopup.editor,
+            var ed = ibisPopup.editor,
                 $img = $('#sample');
 
             if (!$img.length) {
@@ -149,7 +149,7 @@
 
             // Margin
             $.each(['top', 'right', 'bottom', 'left'], function (i, k) {
-                // need to use tinymce DOMUilts for this because jQuery returns 0px for blank values
+                // need to use ibis DOMUilts for this because jQuery returns 0px for blank values
                 var v = ed.dom.getStyle($img.get(0), 'margin-' + k);
 
                 if (v && v.indexOf('px') != -1) {
@@ -165,12 +165,12 @@
 
             // Handle border
             $.each(['width', 'color', 'style'], function (i, k) {
-                // need to use tinymce DOMUilts for this because jQuery returns odd results for blank values
+                // need to use ibis DOMUilts for this because jQuery returns odd results for blank values
                 var v = ed.dom.getStyle($img.get(0), 'border-' + k);
 
                 if (v == '') {
                     $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
-                        // need to use tinymce DOMUilts for this because jQuery returns odd results for blank values
+                        // need to use ibis DOMUilts for this because jQuery returns odd results for blank values
                         var sv = ed.dom.getStyle($img.get(0), 'border-' + n + '-' + k);
 
                         // False or not the same as prev
@@ -232,7 +232,7 @@
          * Update styles field with style values from a sample image
          */
         updateStyles: function () {
-            var ed = tinyMCEPopup.editor, v, img = new Image(), preview = $('#sample'), k;
+            var ed = ibisPopup.editor, v, img = new Image(), preview = $('#sample'), k;
 
             $(img).attr('style', $('#style').val());
             $(img).add(preview).attr('dir', $('#dir').val());
