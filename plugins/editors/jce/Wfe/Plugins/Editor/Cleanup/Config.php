@@ -64,7 +64,11 @@ class Config
 
         // process extended_valid_elements
         if ($settings['extended_valid_elements']) {
-            $extended_elements = explode(',', $settings['extended_valid_elements']);
+            $extended_elements =  $settings['extended_valid_elements'];
+
+            if (!is_array($extended_elements)) {
+                $extended_elements = explode(',', $extended_elements);
+            }
 
             $elements = array();
 
