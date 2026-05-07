@@ -416,10 +416,13 @@
                 return self._changeDir(u);
             });
 
+            // append list
+            $('#browser-list').append(list);
+
             // update browser list on scroll
-            $('#browser-list').append(list).on('scroll.browser-list', function (e) {
+            /*$('#browser-list').on('scroll.browser-list', function (e) {
                 self._updateList();
-            });
+            });*/
 
             // Item details navigation
             $('.details-nav-left, .details-nav-right', '#browser-details-nav').on('click', function (e) {
