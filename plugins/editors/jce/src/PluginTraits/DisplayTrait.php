@@ -13,7 +13,6 @@ namespace Joomla\Plugin\Editors\Jce\PluginTraits;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 
@@ -168,10 +167,6 @@ trait DisplayTrait
             }
         }
 
-        if (empty($id)) {
-            $id = $name;
-        }
-
         // Only add "px" to width and height if they are not given as a percentage
         if (is_numeric($width)) {
             $width .= 'px';
@@ -200,10 +195,10 @@ trait DisplayTrait
         if ($editor->hasProfile()) {
             if (!$editor->hasPlugin('joomla')) {
                 if ((bool) $editor->getParam('editor.xtd_buttons', 1)) {
-                    $buttonsStr = $this->displayXtdButtons($id, $buttons, $asset, $author);
+                    $buttonsStr = $this->displayXtdButtons($id, ['buttons' => $buttons, 'asset' => $asset, 'author' => $author]);
                 }
             } else {
-                $list = $this->getXtdButtonsList($id, $buttons, $asset, $author);
+                $list = $this->getXtdButtonsList($id, ['buttons' => $buttons, 'asset' => $asset, 'author' => $author]);
 
                 if (!empty($list)) {
                     $options = array(
@@ -213,7 +208,7 @@ trait DisplayTrait
                     Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
                 }
 
-                $buttonsStr = $this->displayXtdButtons($id, $buttons, $asset, $author, true);
+                $buttonsStr = $this->displayXtdButtons($id, ['buttons' => $buttons, 'asset' => $asset, 'author' => $author, 'hidden' => true]);
             }
         }
 

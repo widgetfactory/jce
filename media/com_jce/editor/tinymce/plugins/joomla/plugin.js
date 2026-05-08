@@ -107,35 +107,42 @@
                                 }
                             ];
 
+                            item.setSelected(false);
+
                             // store bookmark
                             ed.lastSelectionBookmark = ed.selection.getBookmark(1);
 
-                            if (href) {
+                            if (plg.options && plg.options.confirmCallback) {
+                                buttons.unshift({
+                                    id: 'confirm',
+                                    title: plg.options.confirmText || ed.getLang('insert', 'Insert'),
+                                    classes: 'primary',
+                                    onsubmit: function (e) {
+                                        new Function(plg.options.confirmCallback).apply();
+                                    }
+                                });
+                            }
 
-                                if (plg.options && plg.options.confirmCallback) {
-                                    buttons.unshift({
-                                        id: 'confirm',
-                                        title: plg.options.confirmText || ed.getLang('insert', 'Insert'),
-                                        classes: 'primary',
-                                        onsubmit: function (e) {
-                                            new Function(plg.options.confirmCallback).apply();
-                                        }
-                                    });
+                            // Joomla 5+ modal
+                            if (plg.action) {
+                                try {
+                                    ed.editorXtdButtons(plg);
+                                } catch (e) {
+                                    console.log('This option is not supported');
                                 }
 
-                                // bootstrap modal in Joomla 4+
-                                var modal = DOM.get(plg.id + '_modal');
+                                return true;
+                            }
 
-                                if (modal) {
-                                    modal.open();
-                                    // Joomla 5+ modal
-                                } else if (plg.action) {
-                                    try {
-                                        ed.editorXtdButtons(plg);
-                                    } catch (e) {
-                                        console.log('This option is not supported');
+                            if (href) {
+                                if (plg.bsModal) {
+                                    // bootsrap modal in Joomla 4+
+                                    var modal = DOM.get(plg.id + '_modal');
+
+                                    if (modal) {
+                                        modal.open();
                                     }
-                                    // legacy modal, eg: Joomla 3.x
+
                                 } else {
                                     ed.windowManager.open({
                                         file: href,
@@ -152,15 +159,15 @@
                                         Joomla.Modal.setCurrent(ed.windowManager);
                                     }
                                 }
+
+                                return true;
                             }
 
                             if (plg.onclick) {
-                                new Function(plg.onclick).apply();
+                                new Function(plg.onclick)();
+
+                                return true;
                             }
-
-                            item.setSelected(false);
-
-                            return false;
                         }
                     });
                 });
