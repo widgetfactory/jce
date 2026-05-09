@@ -119,7 +119,7 @@
                 if (options.elements) {
                     var html = '';
                     
-                    if ($.type(options.elements) === 'string' && options.elements) {
+                    if (typeof options.elements === 'string' && options.elements) {
                         html = options.elements;
                     } else {
                         html = getElementHtml(options.elements);
@@ -136,7 +136,7 @@
                         var btn = $('<button class="uk-button uk-margin-small-left" id="' + options.id + '_button_' + i + '"></button>').on('click', function (e) {
                             e.preventDefault();
 
-                            if ($.isFunction(o.click)) {
+                            if (typeof o.click === 'function') {
                                 o.click.call(this, e);
                             }
                             // cancel submit
@@ -706,7 +706,7 @@
                             'scrolling': 'auto',
                             'frameborder': 0
                         }).on('load', function () {
-                            if ($.isFunction(options.onFrameLoad)) {
+                            if (typeof options.onFrameLoad === 'function') {
                                 options.onFrameLoad.call(this);
                             }
 

@@ -57,7 +57,7 @@
 
             // cancel scrolling animation
             $(this.element).on(scrollEvents, function () {
-                $(this).stop();
+                this.scrollTo({ left: this.scrollLeft, top: this.scrollTop, behavior: 'instant' });
             });
         },
         /**
@@ -126,7 +126,7 @@
          * @return {Boolean}.
          */
         _hasNodes: function (parent) {
-            if ($.type(parent) == 'string') {
+            if (typeof parent === 'string') {
                 parent = this._findParent(parent);
             }
             var c = $('li', parent);
@@ -154,7 +154,7 @@
          * @return {Boolean}.
          */
         _getNode: function (parent) {
-            if ($.type(parent) === "string") {
+            if (typeof parent === 'string') {
                 parent = this._findParent(parent);
             }
 
@@ -264,7 +264,7 @@
                 parent = Wf.String.dirname($(nodes[0]).attr('data-id') || $(nodes[0]).attr('id'));
             }
 
-            if ($.type(parent) == 'string') {
+            if (typeof parent === 'string') {
                 parent = this._findParent(parent);
             }
 
@@ -363,7 +363,7 @@
          * @return {Element} The parent node.
          */
         _findParent: function (el) {
-            if ($.type(el) === "string") {
+            if (typeof el === 'string') {
                 // excape for regex
                 el = escapeRegex(el);
                 
@@ -386,7 +386,7 @@
                 parent = this.element;
             }
 
-            if ($.type(parent) === "string") {
+            if (typeof parent === 'string') {
                 parent = this._findParent(parent);
             }
 
@@ -525,13 +525,11 @@
                 // remove active states
                 $(el).find('.uk-tree-active').removeClass('uk-tree-active');
 
-                $(el).animate({
-                    scrollLeft: Math.round(left)
-                }, 500).animate({
-                    scrollTop: Math.round(top)
-                }, 1500, function () {
-                    $(this).off(scrollEvents);
-                });
+                el.scrollTo({ left: Math.round(left), top: Math.round(top), behavior: 'smooth' });
+
+                setTimeout(function () {
+                    $(el).off(scrollEvents);
+                }, 2000);
 
                 // mark as active
                 $(node).addClass('uk-tree-active');

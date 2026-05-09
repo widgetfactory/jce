@@ -131,7 +131,7 @@
                     });
                 }
 
-                $(input).val($.trim(data.text || data.value)).trigger('datalist-input:clear');
+                $(input).val((data.text || data.value).trim()).trigger('datalist-input:clear');
 
                 if (multiple) {
                     // clear input and focus
@@ -388,7 +388,7 @@
             $(input).on('keyup paste', function (e) {
                 // create tag on space / seperator input
                 if (multiple && e.originalEvent.key === settings.seperator) {
-                    selectItem({ value: $.trim(this.value), text: '' });
+                    selectItem({ value: this.value.trim(), text: '' });
                     hideMenu(e);
                 }
 

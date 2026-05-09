@@ -46,7 +46,7 @@
     function getMimeType(ext) {
         ext = ext.toLowerCase();
 
-        ext = $.trim(ext);
+        ext = ext.trim();
 
         return mimeTypes[ext] || ext;
     }
@@ -416,10 +416,13 @@
                 return self._changeDir(u);
             });
 
+            // append list
+            $('#browser-list').append(list);
+
             // update browser list on scroll
-            $('#browser-list').append(list).on('scroll.browser-list', function (e) {
+            /*$('#browser-list').on('scroll.browser-list', function (e) {
                 self._updateList();
-            });
+            });*/
 
             // Item details navigation
             $('.details-nav-left, .details-nav-right', '#browser-details-nav').on('click', function (e) {
@@ -1367,7 +1370,7 @@
             });
 
             // trim path
-            dir = $.trim(this._trimPath(dir));
+            dir = this._trimPath(dir).trim();
 
             // add folder count
             var $count = $('<li class="count">( ' + this._foldercount + ' ' + this._translate('folders', 'folders') + ', ' + this._filecount + ' ' + this._translate('files', 'files') + ')</li>').appendTo($pathway);
@@ -1455,7 +1458,7 @@
          * @return {Object} file The item.
          */
         _addReturnedItem: function (items) {
-            if ($.type(items) == 'array') {
+            if (Array.isArray(items)) {
                 $.merge(this._returnedItems, items);
             } else {
                 this._returnedItems.push(items);
@@ -1611,12 +1614,12 @@
 
             // add returned items
             if (items) {
-                if ($.type(items) == 'string') {
+                if (typeof items === 'string') {
                     items = [items];
                 }
 
                 $.each(items, function (i, item) {
-                    if ($.type(item) == 'string') {
+                    if (typeof item === 'string') {
                         item = { name: item };
                     }
 
@@ -2308,19 +2311,14 @@
             var self = this,
                 err = '';
 
-            switch ($.type(error)) {
-                case 'array':
-                    err += '<ul class="error-list">';
-                    $.each(error, function (k, v) {
-                        err += '<li>' + v + '</li>';
-                    });
-
-                    err += '</ul>';
-                    break;
-                case 'string':
-                default:
-                    err = error;
-                    break;
+            if (Array.isArray(error)) {
+                err += '<ul class="error-list">';
+                $.each(error, function (k, v) {
+                    err += '<li>' + v + '</li>';
+                });
+                err += '</ul>';
+            } else {
+                err = error;
             }
 
             this._dialog.alert = Wf.Modal.alert(err, {
@@ -2395,7 +2393,7 @@
                         e.preventDefault();
                         e.stopImmediatePropagation();
 
-                        if ($.type(fn) == 'function') {
+                        if (typeof fn === 'function') {
                             return fn.call(self, name);
                         }
 
@@ -2509,7 +2507,7 @@
                                 return self._execute('custom', type, evt, o);
                             }
 
-                            if ($.type(fn) == 'function') {
+                            if (typeof fn === 'function') {
                                 return fn.call(self, name, type, evt);
                             }
 
@@ -2533,7 +2531,7 @@
                 'element': button,
                 'trigger': o.trigger,
                 'multiple': o.multiple,
-                'single': $.type(o.single) === 'undefined' ? true : o.single,
+                'single': o.single === undefined ? true : o.single,
                 'restrict': o.restrict || '',
                 'sticky': o.sticky
             };
@@ -2920,7 +2918,7 @@
                 items = [];
             type = type || 'file';
 
-            if ($.type(files) == 'string') {
+            if (typeof files === 'string') {
                 files = [files];
             }
 

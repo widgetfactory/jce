@@ -167,8 +167,8 @@
                 // Split tooltip text ie: title::text
                 if (/::/.test(text)) {
                     var parts = text.split('::');
-                    title = $.trim(parts[0]);
-                    text = $.trim(parts[1]);
+                    title = parts[0].trim();
+                    text = parts[1].trim();
                 }
 
                 // use element innerText for title

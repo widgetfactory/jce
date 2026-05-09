@@ -47,7 +47,7 @@
             return info;
         },
         path: function (a, b) {
-            if ($.type(a) === "array") {
+            if (Array.isArray(a)) {
                 return this.clean(a.join('/'));
             }
 

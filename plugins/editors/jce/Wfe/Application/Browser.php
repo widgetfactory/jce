@@ -858,7 +858,7 @@ class Browser
             $filter = trim($filter, '/');
 
             if (strpos($filter, '+') === 0) {
-                $filter = substr($filterPath, 1);
+                $filter = substr($filter, 1);
 
                 $filterPath = $this->resolveFilterPath($store, $filter);
 
@@ -878,9 +878,6 @@ class Browser
 
         $access = true; // Default deny policy
 
-        // explode path to array
-        $path_parts = explode('/', $path);
-
         // Check allow filters
         foreach ($allowFilters as $filter) {
             $access = false;
@@ -888,11 +885,12 @@ class Browser
             // process path for variables, text case etc.
             $this->processPath($filter);
 
-            // explode to array
-            $filter_parts = explode('/', $filter);
-
-            // filter match
-            if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
+            // Allow if path is empty (root ancestor), exact match, an ancestor of the
+            // filter (so the user can navigate into it), or a descendant of the filter.
+            if (empty($path) ||
+                $path === $filter ||
+                strpos($filter, $path . '/') === 0 ||
+                strpos($path, $filter . '/') === 0) {
                 $access = true;
                 break;
             }
@@ -906,6 +904,9 @@ class Browser
         if (empty($path)) {
             return true;
         }
+
+        // explode path to array for deny filter matching
+        $path_parts = explode('/', $path);
 
         // Check deny filters
         foreach ($denyFilters as $filter) {

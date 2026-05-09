@@ -754,7 +754,7 @@
             if (this.template_colors) {
                 var templateColors = this.template_colors;
 
-                if ($.type(this.template_colors) == 'string') {
+                if (typeof this.template_colors === 'string') {
                     templateColors = templateColors.split(',');
                 }
 
@@ -974,7 +974,7 @@
             }
 
             // list of css files
-            if ($.type(o.stylesheets[0]) == 'string') {
+            if (typeof o.stylesheets[0] === 'string') {
                 var doc, el, ifr;
 
                 // only do this once

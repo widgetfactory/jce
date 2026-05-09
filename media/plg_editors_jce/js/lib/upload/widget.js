@@ -195,7 +195,7 @@
 
             error = $.extend({ "message": "", "code": 500 }, error);
 
-            if ($.type(error.message) === "array") {
+            if (Array.isArray(error.message)) {
                 error.message = error.message.join("\n");
             }
             
@@ -260,7 +260,7 @@
         },
         _isError: function (err) {
             if (err) {
-                if ($.isArray(err)) {
+                if (Array.isArray(err)) {
                     return err.length;
                 }
 

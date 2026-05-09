@@ -38,7 +38,7 @@
 
                 var selector = props.selector;
 
-                if ($.type(selector) == 'string') {
+                if (typeof selector === 'string') {
                     selector = [selector];
                 }
 

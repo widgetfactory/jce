@@ -82,7 +82,7 @@
                 var r;
                 // parse JSON data if valid
                 try {
-                    r = $.parseJSON(data);
+                    r = JSON.parse(data);
                 } catch (e) {
                     // malformed JSON
                     if (data.indexOf('{') !== -1) {
@@ -166,7 +166,7 @@
 
             // Add multipart params
             $.each(o.multipart, function (name, value) {
-                if ($.type(value) === "object") {
+                if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
                     formData.append(value.name, value.value);
                 } else {
                     formData.append(name, value);
@@ -176,7 +176,7 @@
             // add file specific data
             if (file.data) {
                 $.each(file.data, function (name, value) {
-                    if ($.type(value) === "object") {
+                    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
                         formData.append(value.name, value.value);
                     } else {
                         formData.append(name, value);
@@ -500,11 +500,11 @@
                 o = this.options,
                 data;
 
-            if ($.type(o.data) === "object") {
+            if (typeof o.data === 'object' && o.data !== null && !Array.isArray(o.data)) {
                 data = $.extend({ "name": file.filename || "" }, o.data);
             }
 
-            if ($.type(o.data) === "array") {
+            if (Array.isArray(o.data)) {
                 data = $.merge([{ "name": "name", "value": file.filename || "" }], o.data);
             }
 
