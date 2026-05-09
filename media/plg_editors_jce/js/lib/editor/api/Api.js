@@ -1,15 +1,11 @@
 /* global ibis */
 
+// create global tinymce instance mapped to ibis
+window.tinymce = window.tinyMCE = ibis;
+
 import Init from '../Init';
 import Content from '../Content';
 import Toggle from '../ui/Toggle';
-
-// core Joomla ibis, bail due to conflict
-if (ibis.Annotator) {
-    var msg = "Another extension or plugin has initialized the Joomla ibis Editor on this page. JCE cannot be loaded on the same page as the core Joomla ibis Editor.";
-    alert(msg);
-    throw new Error(msg);
-}
 
 /**
  * Convert URLs to relative or absolute based on editor settings
