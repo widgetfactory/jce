@@ -87,7 +87,9 @@ trait XTDButtonsTrait
                 }
 
                 if ($action === 'modal') {
-                    $wa->useScript('joomla.dialog');
+                    if ($wa->assetExists('script', 'joomla.dialog')) {
+                        $wa->useScript('joomla.dialog');
+                    }
 
                     $legacyModal = false;
 
