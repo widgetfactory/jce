@@ -23,7 +23,7 @@ class WFImgmanagerPluginConfig
 
         if ($plugin->getParam('upload', 1)) {
             $config['upload'] = array(
-                'max_size' => $plugin->getParam('max_size', 1024),
+                'max_size' => $plugin->getParam('max_size', 10240),
                 'filetypes' => $filetypes,
                 'inline' => $plugin->getParam('inline_upload', 1),
             );

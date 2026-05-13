@@ -47,7 +47,7 @@ class WFFileBrowser extends CMSObject
 
     /* @var array */
     public $upload = array(
-        'max_size' => 1024,
+        'max_size' => 10240,
         'validate_mimetype' => 1,
         'add_random' => 0,
         'total_files' => 0,
@@ -1862,7 +1862,7 @@ class WFFileBrowser extends CMSObject
         $size = round(filesize($file['tmp_name']) / 1024);
 
         if (empty($upload['max_size'])) {
-            $upload['max_size'] = 1024;
+            $upload['max_size'] = 10240;
         }
 
         // validate size
@@ -2618,7 +2618,7 @@ class WFFileBrowser extends CMSObject
 
         // get max size as kilobytes
         if (empty($upload['max_size'])) {
-            $upload['max_size'] = 1024;
+            $upload['max_size'] = 10240;
         }
 
         // get upload size as integer
