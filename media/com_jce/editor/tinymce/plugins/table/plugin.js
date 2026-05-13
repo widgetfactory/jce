@@ -1,10 +1,13 @@
 /**
-* Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
- * Copyright (c) Moxiecode Systems AB. All rights reserved.
- * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
- * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
- * Licensed under the GNU General Public License version 2 or later (GPL v2+):
- * https://www.gnu.org/licenses/gpl-2.0.html
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
 
 (function (tinymce) {
@@ -32,10 +35,8 @@
 
         if (selectedCell) {
             startPos = getPos(selectedCell);
-            if (startPos) {
-                endPos = findEndPos();
-                selectedCell = getCell(startPos.x, startPos.y);
-            }
+            endPos = findEndPos();
+            selectedCell = getCell(startPos.x, startPos.y);
         }
 
         function cloneNode(node, children) {
@@ -57,7 +58,7 @@
                 each(rows, function (tr, y) {
                     y += startY;
 
-                    each(Array.from(tr.cells), function (td, x) {
+                    each(dom.select('> td, > th', tr), function (td, x) {
                         var x2, y2, rowspan, colspan;
 
                         // Skip over existing cells produced by rowspan
@@ -228,13 +229,11 @@
             buildGrid();
 
             // Restore the selection to the closest table position
-            if (startPos) {
-                var row = grid[Math.min(grid.length - 1, startPos.y)];
+            var row = grid[Math.min(grid.length - 1, startPos.y)];
 
-                if (row) {
-                    selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
-                    selection.collapse(true);
-                }
+            if (row) {
+                selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
+                selection.collapse(true);
             }
         }
 
@@ -302,9 +301,6 @@
             // Use specified cell and cols/rows
             if (cell) {
                 pos = getPos(cell);
-                if (!pos) {
-                    return;
-                }
                 startX = pos.x;
                 startY = pos.y;
                 endX = startX + (cols - 1);
@@ -332,9 +328,6 @@
                 });
 
                 // Use selection
-                if (!startPos || !endPos) {
-                    return;
-                }
                 startX = startPos.x;
                 startY = startPos.y;
                 endX = endPos.x;
@@ -419,13 +412,9 @@
                 }
             });
 
-            if (posY === undefined || !gridWidth) {
-                return;
-            }
-
-            for (x = 0; x < gridWidth; x++) {
+            for (x = 0; x < grid[0].length; x++) {
                 // Cell not found could be because of an invalid table structure
-                if (!grid[posY] || !grid[posY][x]) {
+                if (!grid[posY][x]) {
                     continue;
                 }
 
@@ -526,10 +515,6 @@
                 each(row, function (cell, x) {
                     if (isCellSelected(cell) && tinymce.inArray(cols, x) === -1) {
                         each(grid, function (row) {
-                            if (!row[x]) {
-                                return;
-                            }
-
                             var cell = row[x].elm,
                                 colSpan;
 
@@ -2872,7 +2857,7 @@
 
             // Register commands
             ed.addCommand('mceTableMergeCells', function () {
-                var grid = createTableGrid(), cell = ed.dom.getParent(ed.selection.getNode(), 'th,td');
+                var grid = createTableGrid();
 
                 if (ed.dom.select('td.mceSelected,th.mceSelected').length) {
                     grid.merge();
@@ -2887,7 +2872,7 @@
                     items: [form],
                     size: 'mce-modal-landscape-small',
                     open: function () {
-                        var rowSpan = 1, colSpan = 1;
+                        var cell = ed.dom.getParent(ed.selection.getNode(), 'th,td'), rowSpan = 1, colSpan = 1;
 
                         if (cell) {
                             rowSpan = cell.rowSpan;
@@ -2906,7 +2891,7 @@
                             title: ed.getLang('update', 'Update'),
                             id: 'insert',
                             onsubmit: function (e) {
-                                var data = form.submit();
+                                var data = form.submit(), grid = createTableGrid(), node = ed.selection.getNode(), cell = ed.dom.getParent(node, 'th,td');
 
                                 grid.merge(cell, data.cols, data.rows);
 
