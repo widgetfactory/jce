@@ -218,6 +218,11 @@ class pkg_jceInstallerScript
             throw new RuntimeException('JCE requires Joomla 3.10 or later - ' . $requirements);
         }
 
+        // joomla 4 version check, must be 4.2 or later
+        if (version_compare(JVERSION, '4.0', 'ge') && version_compare(JVERSION, '4.2', 'lt')) {
+            throw new RuntimeException('JCE requires Joomla 4.2 or later - ' . $requirements);
+        }
+
         // set current package version and variant
         list($version, $variant) = $this->getCurrentVersion();
 
