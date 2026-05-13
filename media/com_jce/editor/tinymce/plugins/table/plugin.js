@@ -515,6 +515,10 @@
                 each(row, function (cell, x) {
                     if (isCellSelected(cell) && tinymce.inArray(cols, x) === -1) {
                         each(grid, function (row) {
+                            if (!row[x]) {
+                                return;
+                            }
+
                             var cell = row[x].elm,
                                 colSpan;
 
