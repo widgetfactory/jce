@@ -15634,7 +15634,8 @@
         if (n) {
 
           // Use getBoundingClientRect if it exists since it's faster than looping offset nodes
-          if (ro === body && n.getBoundingClientRect && self.getStyle(body, 'position') === 'static') {
+          // Must check the computed style (pass true) — inline style is '' when unset, not 'static'
+          if (ro === body && n.getBoundingClientRect && self.getStyle(body, 'position', true) === 'static') {
             n = n.getBoundingClientRect();
             e = self.boxModel ? d.documentElement : d.body;
 
@@ -33745,7 +33746,7 @@
         m.settings.vp_offset_x = pos.x;
         m.settings.vp_offset_y = pos.y;
         m.settings.keyboard_focus = self._focused;
-        m.showMenu(0, e.firstChild.clientHeight);
+        m.showMenu(0, e.offsetHeight);
 
         Event.add(DOM.doc, 'mousedown', self.hideMenu, self);
         self.setState('Selected', 1);

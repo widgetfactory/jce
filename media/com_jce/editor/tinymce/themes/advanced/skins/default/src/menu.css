@@ -11,9 +11,7 @@
     border-radius: 2px;
     overflow: visible;
     overflow-y: auto;
-    margin-top: 3px;
-    margin-left: 1px;
-
+    margin: 2px 0 0;
     min-width: 10em;
 }
 
