@@ -86,11 +86,9 @@ trait XTDButtonsTrait
                     $btnOptions['src'] ??= $link;
                 }
 
-                if ($action === 'modal') {
-                    if ($wa->assetExists('script', 'joomla.dialog')) {
-                        $wa->useScript('joomla.dialog');
-                    }
-
+                if ($action === 'modal' && $wa->assetExists('script', 'joomla.dialog')) {
+                    $wa->useScript('joomla.dialog');
+                
                     $legacyModal = false;
 
                     $btnOptions['src']        = $btnOptions['src'] ?? $link;
@@ -167,7 +165,7 @@ trait XTDButtonsTrait
                     $wa->useScript($btnAsset);
                 }
 
-                if ($button->get('action') === 'modal') {
+                if ($button->get('action') === 'modal' && $wa->assetExists('script', 'joomla.dialog')) {
                     $wa->useScript('joomla.dialog');
                 }
             }
