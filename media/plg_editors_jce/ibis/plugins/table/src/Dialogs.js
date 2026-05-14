@@ -1,17 +1,17 @@
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @copyright   Copyright 2009, Moxiecode Systems AB
- * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+* Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+ * Copyright (c) Moxiecode Systems AB. All rights reserved.
+ * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+ * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+ * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+ * https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-import { languageValues } from './Languages.js';
 import { insertTableHtml, updateRows, updateCells } from './TableUtils.js';
+import {
+    createIdCtrl, createStyleCtrl, createLangListCtrl, createDirListCtrl,
+    createClassesCtrl, createAlignCtrl, createBackgroundColorCtrl, createBackgroundImageCtrl
+} from './Controls.js';
 
 var DOM = ibis.DOM,
     Event = ibis.dom.Event,
@@ -89,12 +89,7 @@ export function showTableDialog(ed, isBasicDialog) {
 
     tableForm.add(heightCtrl);
 
-    var stylesList = cm.createStylesBox('table_classes', {
-        label: ed.getLang('table.classes', 'Classes'),
-        onselect: function (v) { },
-        name: 'classes',
-        styles: ed.getParam('table_classes_custom', [])
-    });
+    var stylesList = createClassesCtrl(cm, 'table', ed);
 
     tableForm.add(stylesList);
 
@@ -106,11 +101,7 @@ export function showTableDialog(ed, isBasicDialog) {
 
     tableForm.add(captionCtrl);
 
-    var idCtrl = cm.createTextBox('table_id', {
-        label: ed.getLang('table.id', 'ID'),
-        name: 'id',
-        value: ed.getParam('table_default_id', '')
-    });
+    var idCtrl = createIdCtrl(cm, 'table', ed, ed.getParam('table_default_id', ''));
 
     var summaryCtrl = cm.createTextBox('table_summary', {
         label: ed.getLang('table.summary', 'Summary'),
@@ -118,36 +109,11 @@ export function showTableDialog(ed, isBasicDialog) {
         value: ed.getParam('table_default_summary', '')
     });
 
-    var styleCtrl = cm.createTextBox('table_style', {
-        label: ed.getLang('table.style', 'Style'),
-        name: 'style',
-        value: ed.getParam('table_default_style', '')
-    });
+    var styleCtrl = createStyleCtrl(cm, 'table', ed, ed.getParam('table_default_style', ''));
 
-    var langListCtrl = cm.createListBox('table_lang', {
-        label: ed.getLang('attributes.label_lang', 'Language'),
-        onselect: function (v) { },
-        name: 'lang',
-        filter: true
-    });
+    var langListCtrl = createLangListCtrl(cm, 'table', ed);
 
-    langListCtrl.add('--', '');
-
-    each(languageValues, function (value, name) {
-        langListCtrl.add(name, value);
-    });
-
-    var dirListCtrl = cm.createListBox('table_dir', {
-        label: ed.getLang('attributes.label_dir', 'Text Direction'),
-        onselect: function (v) { },
-        name: 'dir'
-    });
-
-    dirListCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
-
-    each(['ltr', 'rtl'], function (value) {
-        dirListCtrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
-    });
+    var dirListCtrl = createDirListCtrl(cm, 'table', ed);
 
     var frameCtrl = cm.createListBox('table_frame', {
         label: ed.getLang('table.frame', 'Frame'),
@@ -173,50 +139,9 @@ export function showTableDialog(ed, isBasicDialog) {
         rulesCtrl.add(ed.getLang('table.rules_' + value, value), value);
     });
 
-    var backgroundImageCtrl = cm.createUrlBox('table_background_image', {
-        label: ed.getLang('table.background_image', 'Background Image'),
-        name: 'background_image',
-        value: '',
-        clear: true,
-        picker: true,
-        picker_label: 'browse',
-        picker_icon: 'image',
-        onpick: function () {
-            ed.execCommand('mceFileBrowser', true, {
-                caller: 'imagepro',
-                callback: function (selected, data) {
-                    if (data.length) {
-                        var src = data[0].url;
-                        backgroundImageCtrl.value(src);
+    var backgroundImageCtrl = createBackgroundImageCtrl(cm, 'table', ed);
 
-                        window.setTimeout(function () {
-                            backgroundImageCtrl.focus();
-                        }, 10);
-                    }
-                },
-                filter: 'images',
-                value: backgroundImageCtrl.value()
-            });
-        }
-    });
-
-    var backgroundColorCtrl = cm.createTextBox('table_background_color', {
-        label: ed.getLang('table.background_color', 'Background Color'),
-        name: 'background_color',
-        value: ed.getParam('table_default_background_color', ''),
-        subtype: 'color',
-        colorpicker: function () {
-            var value = this.value();
-            var btn = DOM.get(this.id + '_color');
-
-            ed.settings.color_picker_callback(function (color) {
-                backgroundColorCtrl.value(color);
-
-                btn.style.backgroundColor = color;
-
-            }, value);
-        }
-    });
+    var backgroundColorCtrl = createBackgroundColorCtrl(cm, 'table', ed, ed.getParam('table_default_background_color', ''));
 
     advancedForm.add(idCtrl);
     advancedForm.add(summaryCtrl);
@@ -459,48 +384,45 @@ export function showRowDialog(ed, isBasicDialog) {
 
     form.add(heightCtrl);
 
-    var stylesList = cm.createStylesBox('table_row_classes', {
-        label: ed.getLang('table.classes', 'Classes'),
-        onselect: function (v) { },
-        name: 'classes',
-        styles: ed.getParam('table_classes_custom', [])
-    });
+    var stylesList = createClassesCtrl(cm, 'table_row', ed);
 
     form.add(stylesList);
 
-    var idCtrl = cm.createTextBox('table_row_id', {
-        label: ed.getLang('table.id', 'ID'),
-        name: 'id'
+    var alignCtrl = createAlignCtrl(cm, 'table_row', ed);
+
+    form.add(alignCtrl);
+
+    var actionCtrl = cm.createListBox('table_row_action', {
+        label: ed.getLang('table.action', 'Update'),
+        name: 'action',
+        onselect: function () { },
+        value: 'current'
     });
 
-    var langListCtrl = cm.createListBox('table_row_lang', {
-        label: ed.getLang('attributes.label_lang', 'Language'),
-        onselect: function (v) { },
-        name: 'lang',
-        filter: true
+    each([
+        { title: ed.getLang('table.action_current_row', 'Update Current Row'), value: 'current' },
+        { title: ed.getLang('table.action_odd_rows', 'Update Odd Rows'), value: 'odd' },
+        { title: ed.getLang('table.action_even_rows', 'Update Even Rows'), value: 'even' },
+        { title: ed.getLang('table.action_all_rows', 'Update All Rows'), value: 'all' }
+    ], function (item) {
+        actionCtrl.add(item.title, item.value);
     });
 
-    langListCtrl.add('--', '');
+    var idCtrl = createIdCtrl(cm, 'table_row', ed);
 
-    each(languageValues, function (value, name) {
-        langListCtrl.add(name, value);
-    });
+    var langListCtrl = createLangListCtrl(cm, 'table_row', ed);
 
-    var dirListCtrl = cm.createListBox('table_row_dir', {
-        label: ed.getLang('attributes.label_dir', 'Text Direction'),
-        onselect: function (v) { },
-        name: 'dir'
-    });
+    var dirListCtrl = createDirListCtrl(cm, 'table_row', ed);
 
-    dirListCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+    var rowStyleCtrl = createStyleCtrl(cm, 'table_row', ed);
 
-    each(['ltr', 'rtl'], function (value) {
-        dirListCtrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
-    });
+    var rowBackgroundColorCtrl = createBackgroundColorCtrl(cm, 'table_row', ed);
 
     advancedForm.add(idCtrl);
+    advancedForm.add(rowStyleCtrl);
     advancedForm.add(langListCtrl);
     advancedForm.add(dirListCtrl);
+    advancedForm.add(rowBackgroundColorCtrl);
 
     var tabs = cm.createTabs('table_row_tabs');
 
@@ -523,7 +445,7 @@ export function showRowDialog(ed, isBasicDialog) {
         ed.windowManager.open({
             title: ed.getLang('table.row_desc', 'Table Rows'),
             items: [tabs],
-            size: 'mce-modal-landscape-small',
+            size: 'mce-modal-landscape-medium',
             open: function () {
                 var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getStart(), "tr");
 
@@ -547,16 +469,32 @@ export function showRowDialog(ed, isBasicDialog) {
                     return cls.trim() !== '';
                 });
 
+                var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                var backgroundColor = styles['background-color'] || '';
+                var align = styles['text-align'] || '';
+
+                // strip managed properties before passing remainder to style field
+                each(['height', 'text-align', 'background-color'], function (key) {
+                    delete styles[key];
+                });
+
                 tabs.update({
                     rowtype: rowtype,
                     height: height,
                     classes: classes,
+                    align: align,
+                    action: 'current',
+                    style: ed.dom.serializeStyle(styles),
+                    background_color: backgroundColor,
                     id: ed.dom.getAttrib(elm, 'id') || '',
                     lang: ed.dom.getAttrib(elm, 'lang') || '',
                     dir: ed.dom.getAttrib(elm, 'dir') || ''
                 });
 
                 DOM.setHTML(this.id + '_insert', label);
+
+                actionCtrl.insertBefore(DOM.get(this.id + '_cancel'));
             },
             buttons: [
                 {
@@ -570,18 +508,28 @@ export function showRowDialog(ed, isBasicDialog) {
                         var data = tabs.submit();
 
                         var elm = ed.dom.getParent(ed.selection.getStart(), "tr");
-                        var selected = ed.dom.select('td.mceSelected,th.mceSelected', elm);
 
-                        data.action = selected.length ? 'all' : 'insert';
-
-                        data.style = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+                        // start from user's raw style input, layer managed properties on top
+                        var styleObj = ed.dom.parseStyle(data.style || '');
 
                         // add px to height if it is an integer
                         if (data.height && !isNaN(data.height)) {
                             data.height += 'px';
                         }
 
-                        data.style.height = data.height;
+                        styleObj.height = data.height || '';
+
+                        if (data.align) {
+                            styleObj['text-align'] = data.align;
+                        } else {
+                            delete styleObj['text-align'];
+                        }
+
+                        if (data.background_color) {
+                            styleObj['background-color'] = data.background_color;
+                        } else {
+                            delete styleObj['background-color'];
+                        }
 
                         // Apply advanced attributes before updateRows so they are
                         // preserved if the row is cloned during a rowtype change
@@ -590,9 +538,9 @@ export function showRowDialog(ed, isBasicDialog) {
                         ed.dom.setAttrib(elm, 'dir', data.dir || '');
 
                         var args = {
-                            style: ed.dom.serializeStyle(data.style),
+                            style: ed.dom.serializeStyle(styleObj),
                             rowtype: data.rowtype,
-                            action: data.action,
+                            action: data.action || 'current',
                             class: data.classes
                         };
 
@@ -642,55 +590,81 @@ export function showCellDialog(ed, isBasicDialog) {
 
     form.add(heightCtrl);
 
-    var stylesList = cm.createStylesBox('table_cell_classes', {
-        label: ed.getLang('table.classes', 'Classes'),
-        onselect: function (v) { },
-        name: 'classes',
-        styles: ed.getParam('table_classes_custom', [])
-    });
+    var stylesList = createClassesCtrl(cm, 'table_cell', ed);
 
     form.add(stylesList);
 
-    var idCtrl = cm.createTextBox('table_cell_id', {
-        label: ed.getLang('table.id', 'ID'),
-        name: 'id'
+    var alignCtrl = createAlignCtrl(cm, 'table_cell', ed);
+
+    form.add(alignCtrl);
+
+    var valignCtrl = cm.createListBox('table_cell_valign', {
+        label: ed.getLang('table.valign', 'Vertical Alignment'),
+        name: 'valign',
+        onselect: function () { }
     });
 
-    var langListCtrl = cm.createListBox('table_cell_lang', {
-        label: ed.getLang('attributes.label_lang', 'Language'),
-        onselect: function (v) { },
-        name: 'lang',
-        filter: true
+    valignCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+    each(['top', 'middle', 'bottom'], function (value) {
+        var label = value === 'middle' ? 'Center' : value.charAt(0).toUpperCase() + value.slice(1);
+        valignCtrl.add(ed.getLang('table.valign_' + value, label), value);
     });
 
-    langListCtrl.add('--', '');
+    form.add(valignCtrl);
 
-    each(languageValues, function (value, name) {
-        langListCtrl.add(name, value);
+    var scopeCtrl = cm.createListBox('table_cell_scope', {
+        label: ed.getLang('table.scope', 'Scope'),
+        name: 'scope',
+        onselect: function () { }
     });
 
-    var dirListCtrl = cm.createListBox('table_cell_dir', {
-        label: ed.getLang('attributes.label_dir', 'Text Direction'),
-        onselect: function (v) { },
-        name: 'dir'
+    scopeCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+    each([
+        { title: ed.getLang('table.scope_col', 'Column'), value: 'col' },
+        { title: ed.getLang('table.scope_row', 'Row'), value: 'row' },
+        { title: ed.getLang('table.scope_colgroup', 'Column Group'), value: 'colgroup' },
+        { title: ed.getLang('table.scope_rowgroup', 'Row Group'), value: 'rowgroup' }
+    ], function (item) {
+        scopeCtrl.add(item.title, item.value);
     });
 
-    dirListCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+    form.add(scopeCtrl);
 
-    each(['ltr', 'rtl'], function (value) {
-        dirListCtrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
+    var actionCtrl = cm.createListBox('table_cell_action', {
+        label: ed.getLang('table.action', 'Update'),
+        name: 'action',
+        onselect: function () { },
+        value: 'current'
     });
 
-    var backgroundColorCtrl = cm.createTextBox('table_cell_background_color', {
-        label: ed.getLang('table.background_color', 'Background Color'),
-        name: 'background_color',
-        subtype: 'color'
+    each([
+        { title: ed.getLang('table.action_current_cell', 'Update Current Cell'), value: 'current' },
+        { title: ed.getLang('table.action_all_cells_row', 'Update All Cells in Row'), value: 'row' },
+        { title: ed.getLang('table.action_all_cells_table', 'Update All Cells in Table'), value: 'table' }
+    ], function (item) {
+        actionCtrl.add(item.title, item.value);
     });
+
+    var idCtrl = createIdCtrl(cm, 'table_cell', ed);
+
+    var langListCtrl = createLangListCtrl(cm, 'table_cell', ed);
+
+    var dirListCtrl = createDirListCtrl(cm, 'table_cell', ed);
+
+    var backgroundColorCtrl = createBackgroundColorCtrl(cm, 'table_cell', ed);
+
+    var cellStyleCtrl = createStyleCtrl(cm, 'table_cell', ed);
+
+    var cellBackgroundImageCtrl = createBackgroundImageCtrl(cm, 'table_cell', ed);
 
     advancedForm.add(idCtrl);
+    advancedForm.add(cellStyleCtrl);
     advancedForm.add(langListCtrl);
     advancedForm.add(dirListCtrl);
     advancedForm.add(backgroundColorCtrl);
+    advancedForm.add(cellBackgroundImageCtrl);
 
     var tabs = cm.createTabs('table_cell_tabs');
 
@@ -713,7 +687,7 @@ export function showCellDialog(ed, isBasicDialog) {
         ed.windowManager.open({
             title: ed.getLang('table.cell_desc', 'Table Cells'),
             items: [tabs],
-            size: 'mce-modal-landscape-small',
+            size: 'mce-modal-landscape-medium',
             open: function () {
                 var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getStart(), "td,th");
 
@@ -742,18 +716,34 @@ export function showCellDialog(ed, isBasicDialog) {
                     return cls.trim() !== '';
                 });
 
+                var backgroundColor = styles['background-color'] || '';
+                var backgroundImage = (styles['background-image'] || '').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+
+                // strip managed properties before passing remainder to style field
+                each(['width', 'height', 'text-align', 'vertical-align', 'background-color', 'background-image'], function (key) {
+                    delete styles[key];
+                });
+
                 tabs.update({
                     celltype: celltype,
                     width: width,
                     height: height,
                     classes: classes,
+                    align: styles['text-align'] || '',
+                    valign: styles['vertical-align'] || '',
+                    scope: ed.dom.getAttrib(elm, 'scope') || '',
+                    action: 'current',
+                    style: ed.dom.serializeStyle(styles),
                     id: ed.dom.getAttrib(elm, 'id') || '',
                     lang: ed.dom.getAttrib(elm, 'lang') || '',
                     dir: ed.dom.getAttrib(elm, 'dir') || '',
-                    background_color: styles['background-color'] || ''
+                    background_color: backgroundColor,
+                    background_image: backgroundImage
                 });
 
                 DOM.setHTML(this.id + '_insert', label);
+
+                 actionCtrl.insertBefore(DOM.get(this.id + '_cancel'));
             },
             buttons: [
                 {
@@ -768,7 +758,8 @@ export function showCellDialog(ed, isBasicDialog) {
 
                         var elm = ed.dom.getParent(ed.selection.getStart(), "td,th");
 
-                        data.style = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+                        // start from user's raw style input, layer managed properties on top
+                        var styleObj = ed.dom.parseStyle(data.style || '');
 
                         // add px to width if it is an integer
                         if (data.width && !isNaN(data.width)) {
@@ -780,19 +771,44 @@ export function showCellDialog(ed, isBasicDialog) {
                             data.height += 'px';
                         }
 
-                        data.style.width = data.width;
-                        data.style.height = data.height;
-                        data.style['background-color'] = data.background_color || '';
+                        styleObj.width = data.width || '';
+                        styleObj.height = data.height || '';
+
+                        if (data.background_color) {
+                            styleObj['background-color'] = data.background_color;
+                        } else {
+                            delete styleObj['background-color'];
+                        }
+
+                        if (data.background_image) {
+                            styleObj['background-image'] = 'url(' + data.background_image + ')';
+                        } else {
+                            delete styleObj['background-image'];
+                        }
+
+                        if (data.align) {
+                            styleObj['text-align'] = data.align;
+                        } else {
+                            delete styleObj['text-align'];
+                        }
+
+                        if (data.valign) {
+                            styleObj['vertical-align'] = data.valign;
+                        } else {
+                            delete styleObj['vertical-align'];
+                        }
 
                         // Apply advanced attributes before updateCells so they are
                         // preserved if the cell is recreated during a celltype change
                         ed.dom.setAttrib(elm, 'id', data.id || '');
                         ed.dom.setAttrib(elm, 'lang', data.lang || '');
                         ed.dom.setAttrib(elm, 'dir', data.dir || '');
+                        ed.dom.setAttrib(elm, 'scope', data.scope || '');
 
                         var args = {
-                            style: ed.dom.serializeStyle(data.style),
+                            style: ed.dom.serializeStyle(styleObj),
                             celltype: data.celltype,
+                            action: data.action || 'current',
                             class: data.classes
                         };
 

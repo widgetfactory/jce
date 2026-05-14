@@ -1,13 +1,10 @@
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @copyright   Copyright 2009, Moxiecode Systems AB
- * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+* Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+ * Copyright (c) Moxiecode Systems AB. All rights reserved.
+ * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+ * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+ * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+ * https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 var each = ibis.each,
@@ -29,8 +26,12 @@ export function TableGrid(table, dom, selection, settings) {
 
     if (selectedCell) {
         startPos = getPos(selectedCell);
-        endPos = findEndPos();
-        selectedCell = getCell(startPos.x, startPos.y);
+        if (startPos) {
+            endPos = findEndPos();
+            selectedCell = getCell(startPos.x, startPos.y);
+        } else {
+            selectedCell = null;
+        }
     }
 
     function cloneNode(node, children) {
@@ -52,7 +53,7 @@ export function TableGrid(table, dom, selection, settings) {
             each(rows, function (tr, y) {
                 y += startY;
 
-                each(dom.select('> td, > th', tr), function (td, x) {
+                each(Array.from(tr.cells), function (td, x) {
                     var x2, y2, rowspan, colspan;
 
                     // Skip over existing cells produced by rowspan
@@ -223,11 +224,13 @@ export function TableGrid(table, dom, selection, settings) {
         buildGrid();
 
         // Restore the selection to the closest table position
-        var row = grid[Math.min(grid.length - 1, startPos.y)];
+        if (startPos) {
+            var row = grid[Math.min(grid.length - 1, startPos.y)];
 
-        if (row) {
-            selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
-            selection.collapse(true);
+            if (row) {
+                selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
+                selection.collapse(true);
+            }
         }
     }
 
@@ -295,6 +298,9 @@ export function TableGrid(table, dom, selection, settings) {
         // Use specified cell and cols/rows
         if (cell) {
             pos = getPos(cell);
+            if (!pos) {
+                return;
+            }
             startX = pos.x;
             startY = pos.y;
             endX = startX + (cols - 1);
@@ -322,6 +328,9 @@ export function TableGrid(table, dom, selection, settings) {
             });
 
             // Use selection
+            if (!startPos || !endPos) {
+                return;
+            }
             startX = startPos.x;
             startY = startPos.y;
             endX = endPos.x;
@@ -406,9 +415,13 @@ export function TableGrid(table, dom, selection, settings) {
             }
         });
 
-        for (x = 0; x < grid[0].length; x++) {
+        if (posY === undefined || !gridWidth) {
+            return;
+        }
+
+        for (x = 0; x < gridWidth; x++) {
             // Cell not found could be because of an invalid table structure
-            if (!grid[posY][x]) {
+            if (!grid[posY] || !grid[posY][x]) {
                 continue;
             }
 
@@ -509,6 +522,10 @@ export function TableGrid(table, dom, selection, settings) {
             each(row, function (cell, x) {
                 if (isCellSelected(cell) && ibis.inArray(cols, x) === -1) {
                     each(grid, function (row) {
+                        if (!row[x]) {
+                            return;
+                        }
+
                         var cell = row[x].elm,
                             colSpan;
 

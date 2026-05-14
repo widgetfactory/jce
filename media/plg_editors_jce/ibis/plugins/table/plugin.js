@@ -4,18 +4,15 @@
     /* eslint-disable */
 
     /**
-     * @package   	JCE
-     * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-     * @copyright   Copyright 2009, Moxiecode Systems AB
-     * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-     * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-     * JCE is free software. This version may have been modified pursuant
-     * to the GNU General Public License, and as distributed it includes or
-     * is derivative of works licensed under the GNU General Public License or
-     * other free or open source software licenses.
+    * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+     * Copyright (c) Moxiecode Systems AB. All rights reserved.
+     * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+     * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+     * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
 
-    var each$3 = ibis.each,
+    var each$4 = ibis.each,
         extend$1 = ibis.extend;
 
     function getSpanVal(td, name) {
@@ -34,8 +31,12 @@
 
         if (selectedCell) {
             startPos = getPos(selectedCell);
-            endPos = findEndPos();
-            selectedCell = getCell(startPos.x, startPos.y);
+            if (startPos) {
+                endPos = findEndPos();
+                selectedCell = getCell(startPos.x, startPos.y);
+            } else {
+                selectedCell = null;
+            }
         }
 
         function cloneNode(node, children) {
@@ -51,13 +52,13 @@
             grid = [];
             gridWidth = 0;
 
-            each$3(['thead', 'tbody', 'tfoot'], function (part) {
+            each$4(['thead', 'tbody', 'tfoot'], function (part) {
                 var rows = dom.select('> ' + part + ' tr', table);
 
-                each$3(rows, function (tr, y) {
+                each$4(rows, function (tr, y) {
                     y += startY;
 
-                    each$3(dom.select('> td, > th', tr), function (td, x) {
+                    each$4(Array.from(tr.cells), function (td, x) {
                         var x2, y2, rowspan, colspan;
 
                         // Skip over existing cells produced by rowspan
@@ -124,8 +125,8 @@
         function getSelectedRows() {
             var rows = [];
 
-            each$3(table.rows, function (row) {
-                each$3(row.cells, function (cell) {
+            each$4(table.rows, function (row) {
+                each$4(row.cells, function (cell) {
                     if (dom.hasClass(cell, 'mceSelected') || cell == selectedCell.elm) {
                         rows.push(row);
                         return false;
@@ -159,7 +160,7 @@
                 var curNode;
 
                 if (node.nodeType == 3) {
-                    each$3(dom.getParents(node.parentNode, null, cell).reverse(), function (node) {
+                    each$4(dom.getParents(node.parentNode, null, cell).reverse(), function (node) {
                         if (!cloneFormats[node.nodeName]) {
                             return;
                         }
@@ -202,7 +203,7 @@
             var rng = dom.createRng();
 
             // Empty rows
-            each$3(dom.select('tr', table), function (tr) {
+            each$4(dom.select('tr', table), function (tr) {
                 if (tr.cells.length == 0) {
                     dom.remove(tr);
                 }
@@ -218,7 +219,7 @@
             }
 
             // Empty header/body/footer
-            each$3(dom.select('thead,tbody,tfoot', table), function (part) {
+            each$4(dom.select('thead,tbody,tfoot', table), function (part) {
                 if (part.rows.length == 0) {
                     dom.remove(part);
                 }
@@ -228,11 +229,13 @@
             buildGrid();
 
             // Restore the selection to the closest table position
-            var row = grid[Math.min(grid.length - 1, startPos.y)];
+            if (startPos) {
+                var row = grid[Math.min(grid.length - 1, startPos.y)];
 
-            if (row) {
-                selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
-                selection.collapse(true);
+                if (row) {
+                    selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
+                    selection.collapse(true);
+                }
             }
         }
 
@@ -269,8 +272,8 @@
         }
 
         function split() {
-            each$3(grid, function (row, y) {
-                each$3(row, function (cell, x) {
+            each$4(grid, function (row, y) {
+                each$4(row, function (cell, x) {
                     var colSpan, rowSpan, i;
 
                     if (isCellSelected(cell)) {
@@ -300,6 +303,9 @@
             // Use specified cell and cols/rows
             if (cell) {
                 pos = getPos(cell);
+                if (!pos) {
+                    return;
+                }
                 startX = pos.x;
                 startY = pos.y;
                 endX = startX + (cols - 1);
@@ -308,8 +314,8 @@
                 startPos = endPos = null;
 
                 // Calculate start/end pos by checking for selected cells in grid works better with context menu
-                each$3(grid, function (row, y) {
-                    each$3(row, function (cell, x) {
+                each$4(grid, function (row, y) {
+                    each$4(row, function (cell, x) {
                         if (isCellSelected(cell)) {
                             if (!startPos) {
                                 startPos = {
@@ -327,6 +333,9 @@
                 });
 
                 // Use selection
+                if (!startPos || !endPos) {
+                    return;
+                }
                 startX = startPos.x;
                 startY = startPos.y;
                 endX = endPos.x;
@@ -360,7 +369,7 @@
                         if (cell != startCell) {
                             // Move children to startCell
                             children = ibis.grep(cell.childNodes);
-                            each$3(children, function (node) {
+                            each$4(children, function (node) {
                                 startCell.appendChild(node);
                             });
 
@@ -370,7 +379,7 @@
                                 count = 0;
 
                                 // eslint-disable-next-line no-loop-func
-                                each$3(children, function (node) {
+                                each$4(children, function (node) {
                                     if (node.nodeName == 'BR' && dom.getAttrib(node, 'data-mce-bogus') && count++ < children.length - 1) {
                                         startCell.removeChild(node);
                                     }
@@ -392,8 +401,8 @@
             var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell, rowSpan;
 
             // Find first/last row
-            each$3(grid, function (row, y) {
-                each$3(row, function (cell, x) {
+            each$4(grid, function (row, y) {
+                each$4(row, function (cell, x) {
                     if (isCellSelected(cell)) {
                         cell = cell.elm;
                         rowElm = cell.parentNode;
@@ -411,9 +420,13 @@
                 }
             });
 
-            for (x = 0; x < grid[0].length; x++) {
+            if (posY === undefined || !gridWidth) {
+                return;
+            }
+
+            for (x = 0; x < gridWidth; x++) {
                 // Cell not found could be because of an invalid table structure
-                if (!grid[posY][x]) {
+                if (!grid[posY] || !grid[posY][x]) {
                     continue;
                 }
 
@@ -461,8 +474,8 @@
             var posX, lastCell;
 
             // Find first/last column
-            each$3(grid, function (row, y) {
-                each$3(row, function (cell, x) {
+            each$4(grid, function (row, y) {
+                each$4(row, function (cell, x) {
                     if (isCellSelected(cell)) {
                         posX = x;
 
@@ -477,7 +490,7 @@
                 }
             });
 
-            each$3(grid, function (row, y) {
+            each$4(grid, function (row, y) {
                 var cell, rowSpan, colSpan;
 
                 if (!row[posX]) {
@@ -510,10 +523,14 @@
             var cols = [];
 
             // Get selected column indexes
-            each$3(grid, function (row, y) {
-                each$3(row, function (cell, x) {
+            each$4(grid, function (row, y) {
+                each$4(row, function (cell, x) {
                     if (isCellSelected(cell) && ibis.inArray(cols, x) === -1) {
-                        each$3(grid, function (row) {
+                        each$4(grid, function (row) {
+                            if (!row[x]) {
+                                return;
+                            }
+
                             var cell = row[x].elm,
                                 colSpan;
 
@@ -543,7 +560,7 @@
                 //var nextTr = dom.getNext(tr, 'tr');
 
                 // Move down row spanned cells
-                each$3(tr.cells, function (cell) {
+                each$4(tr.cells, function (cell) {
                     var rowSpan = getSpanVal(cell, 'rowSpan');
 
                     if (rowSpan > 1) {
@@ -555,7 +572,7 @@
 
                 // Delete cells
                 pos = getPos(tr.cells[0]);
-                each$3(grid[pos.y], function (cell) {
+                each$4(grid[pos.y], function (cell) {
                     var rowSpan;
 
                     cell = cell.elm;
@@ -578,7 +595,7 @@
             rows = getSelectedRows();
 
             // Delete all selected rows
-            each$3(rows.reverse(), function (tr) {
+            each$4(rows.reverse(), function (tr) {
                 deleteRow(tr);
             });
 
@@ -597,7 +614,7 @@
         function copyRows() {
             var rows = getSelectedRows();
 
-            each$3(rows, function (row, i) {
+            each$4(rows, function (row, i) {
                 rows[i] = cloneNode(row, true);
             });
 
@@ -615,11 +632,11 @@
                 targetCellCount = targetRow.cells.length;
 
             // Calc target cell count
-            each$3(grid, function (row) {
+            each$4(grid, function (row) {
                 var match;
 
                 targetCellCount = 0;
-                each$3(row, function (cell, x) {
+                each$4(row, function (cell, x) {
                     if (cell.real) {
                         targetCellCount += cell.colspan;
                     }
@@ -638,7 +655,7 @@
                 rows.reverse();
             }
 
-            each$3(rows, function (row) {
+            each$4(rows, function (row) {
                 var cellCount = row.cells.length,
                     cell;
 
@@ -674,8 +691,8 @@
         function getPos(target) {
             var pos;
 
-            each$3(grid, function (row, y) {
-                each$3(row, function (cell, x) {
+            each$4(grid, function (row, y) {
+                each$4(row, function (cell, x) {
                     if (cell.elm == target) {
                         pos = {
                             x: x,
@@ -700,8 +717,8 @@
 
             maxX = maxY = 0;
 
-            each$3(grid, function (row, y) {
-                each$3(row, function (cell, x) {
+            each$4(grid, function (row, y) {
+                each$4(row, function (cell, x) {
                     var colSpan, rowSpan;
 
                     if (isCellSelected(cell)) {
@@ -866,18 +883,15 @@
     }
 
     /**
-     * @package   	JCE
-     * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-     * @copyright   Copyright 2009, Moxiecode Systems AB
-     * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-     * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-     * JCE is free software. This version may have been modified pursuant
-     * to the GNU General Public License, and as distributed it includes or
-     * is derivative of works licensed under the GNU General Public License or
-     * other free or open source software licenses.
+    * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+     * Copyright (c) Moxiecode Systems AB. All rights reserved.
+     * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+     * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+     * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
 
-    var each$2 = ibis.each;
+    var each$3 = ibis.each;
 
     function mergeTableCells(ed, startCell, table) {
         var dom = ed.dom;
@@ -1004,7 +1018,7 @@
         }
 
         // Update all selected sells
-        each$2(cells, function (td) {
+        each$3(cells, function (td) {
             updateCell(ed, td, data);
         });
 
@@ -1072,7 +1086,7 @@
             // update all td cells in the header to th
             var cells = ed.dom.select('td', tr);
 
-            each$2(cells, function (cell) {
+            each$3(cells, function (cell) {
                 ed.dom.rename(cell, 'th');
             });
         }
@@ -1093,7 +1107,7 @@
             data.skip_parent = true;
 
             // all rows
-            each$2(tableElm.rows, function (tr) {
+            each$3(tableElm.rows, function (tr) {
                 var i;
 
                 for (i = 0; i < tr.cells.length; i++) {
@@ -1105,7 +1119,7 @@
             });
         }
 
-        each$2(rows, function (tr) {
+        each$3(rows, function (tr) {
             updateRow(ed, tr, data);
         });
 
@@ -1129,7 +1143,7 @@
                 patt += n + ' ._mce_marker';
             });
 
-            each$2(ed.dom.select(patt), function (n) {
+            each$3(ed.dom.select(patt), function (n) {
                 ed.dom.split(ed.dom.getParent(n, 'h1,h2,h3,h4,h5,h6,p'), n);
             });
 
@@ -1140,15 +1154,9 @@
     }
 
     /**
-     * @package   	JCE
-     * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-     * @copyright   Copyright 2009, Moxiecode Systems AB
-     * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-     * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-     * JCE is free software. This version may have been modified pursuant
-     * to the GNU General Public License, and as distributed it includes or
-     * is derivative of works licensed under the GNU General Public License or
-     * other free or open source software licenses.
+     * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+     * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
 
     var languageValues = {
@@ -1280,15 +1288,146 @@
     };
 
     /**
-     * @package   	JCE
-     * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-     * @copyright   Copyright 2009, Moxiecode Systems AB
-     * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-     * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-     * JCE is free software. This version may have been modified pursuant
-     * to the GNU General Public License, and as distributed it includes or
-     * is derivative of works licensed under the GNU General Public License or
-     * other free or open source software licenses.
+     * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+     * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+     * https://www.gnu.org/licenses/gpl-2.0.html
+     */
+
+
+    var DOM$2 = ibis.DOM,
+        each$2 = ibis.each;
+
+    function createIdCtrl(cm, prefix, ed, value) {
+        return cm.createTextBox(prefix + '_id', {
+            label: ed.getLang('table.id', 'ID'),
+            name: 'id',
+            value: value || ''
+        });
+    }
+
+    function createStyleCtrl(cm, prefix, ed, value) {
+        return cm.createTextBox(prefix + '_style', {
+            label: ed.getLang('table.style', 'Style'),
+            name: 'style',
+            value: value || ''
+        });
+    }
+
+    function createLangListCtrl(cm, prefix, ed) {
+        var ctrl = cm.createListBox(prefix + '_lang', {
+            label: ed.getLang('attributes.label_lang', 'Language'),
+            onselect: function () { },
+            name: 'lang',
+            filter: true
+        });
+
+        ctrl.add('--', '');
+
+        each$2(languageValues, function (value, name) {
+            ctrl.add(name, value);
+        });
+
+        return ctrl;
+    }
+
+    function createDirListCtrl(cm, prefix, ed) {
+        var ctrl = cm.createListBox(prefix + '_dir', {
+            label: ed.getLang('attributes.label_dir', 'Text Direction'),
+            onselect: function () { },
+            name: 'dir'
+        });
+
+        ctrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+        each$2(['ltr', 'rtl'], function (value) {
+            ctrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
+        });
+
+        return ctrl;
+    }
+
+    function createClassesCtrl(cm, prefix, ed) {
+        return cm.createStylesBox(prefix + '_classes', {
+            label: ed.getLang('table.classes', 'Classes'),
+            onselect: function () { },
+            name: 'classes',
+            styles: ed.getParam('table_classes_custom', [])
+        });
+    }
+
+    function createAlignCtrl(cm, prefix, ed) {
+        var ctrl = cm.createListBox(prefix + '_align', {
+            label: ed.getLang('table.align', 'Alignment'),
+            name: 'align',
+            onselect: function () { }
+        });
+
+        ctrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+        each$2(['left', 'center', 'right'], function (value) {
+            ctrl.add(ed.getLang('table.align_' + value, value.charAt(0).toUpperCase() + value.slice(1)), value);
+        });
+
+        return ctrl;
+    }
+
+    function createBackgroundColorCtrl(cm, prefix, ed, value) {
+        var ctrl = cm.createTextBox(prefix + '_background_color', {
+            label: ed.getLang('table.background_color', 'Background Color'),
+            name: 'background_color',
+            value: value || '',
+            subtype: 'color',
+            colorpicker: function () {
+                var current = this.value();
+                var btn = DOM$2.get(this.id + '_color');
+
+                ed.settings.color_picker_callback(function (color) {
+                    ctrl.value(color);
+                    btn.style.backgroundColor = color;
+                }, current);
+            }
+        });
+
+        return ctrl;
+    }
+
+    function createBackgroundImageCtrl(cm, prefix, ed) {
+        var ctrl = cm.createUrlBox(prefix + '_background_image', {
+            label: ed.getLang('table.background_image', 'Background Image'),
+            name: 'background_image',
+            value: '',
+            clear: true,
+            picker: true,
+            picker_label: 'browse',
+            picker_icon: 'image',
+            onpick: function () {
+                ed.execCommand('mceFileBrowser', true, {
+                    caller: 'imagepro',
+                    callback: function (selected, data) {
+                        if (data.length) {
+                            ctrl.value(data[0].url);
+
+                            window.setTimeout(function () {
+                                ctrl.focus();
+                            }, 10);
+                        }
+                    },
+                    filter: 'images',
+                    value: ctrl.value()
+                });
+            }
+        });
+
+        return ctrl;
+    }
+
+    /**
+    * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+     * Copyright (c) Moxiecode Systems AB. All rights reserved.
+     * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+     * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+     * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
 
 
@@ -1368,12 +1507,7 @@
 
         tableForm.add(heightCtrl);
 
-        var stylesList = cm.createStylesBox('table_classes', {
-            label: ed.getLang('table.classes', 'Classes'),
-            onselect: function (v) { },
-            name: 'classes',
-            styles: ed.getParam('table_classes_custom', [])
-        });
+        var stylesList = createClassesCtrl(cm, 'table', ed);
 
         tableForm.add(stylesList);
 
@@ -1385,11 +1519,7 @@
 
         tableForm.add(captionCtrl);
 
-        var idCtrl = cm.createTextBox('table_id', {
-            label: ed.getLang('table.id', 'ID'),
-            name: 'id',
-            value: ed.getParam('table_default_id', '')
-        });
+        var idCtrl = createIdCtrl(cm, 'table', ed, ed.getParam('table_default_id', ''));
 
         var summaryCtrl = cm.createTextBox('table_summary', {
             label: ed.getLang('table.summary', 'Summary'),
@@ -1397,36 +1527,11 @@
             value: ed.getParam('table_default_summary', '')
         });
 
-        var styleCtrl = cm.createTextBox('table_style', {
-            label: ed.getLang('table.style', 'Style'),
-            name: 'style',
-            value: ed.getParam('table_default_style', '')
-        });
+        var styleCtrl = createStyleCtrl(cm, 'table', ed, ed.getParam('table_default_style', ''));
 
-        var langListCtrl = cm.createListBox('table_lang', {
-            label: ed.getLang('attributes.label_lang', 'Language'),
-            onselect: function (v) { },
-            name: 'lang',
-            filter: true
-        });
+        var langListCtrl = createLangListCtrl(cm, 'table', ed);
 
-        langListCtrl.add('--', '');
-
-        each$1(languageValues, function (value, name) {
-            langListCtrl.add(name, value);
-        });
-
-        var dirListCtrl = cm.createListBox('table_dir', {
-            label: ed.getLang('attributes.label_dir', 'Text Direction'),
-            onselect: function (v) { },
-            name: 'dir'
-        });
-
-        dirListCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
-
-        each$1(['ltr', 'rtl'], function (value) {
-            dirListCtrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
-        });
+        var dirListCtrl = createDirListCtrl(cm, 'table', ed);
 
         var frameCtrl = cm.createListBox('table_frame', {
             label: ed.getLang('table.frame', 'Frame'),
@@ -1452,50 +1557,9 @@
             rulesCtrl.add(ed.getLang('table.rules_' + value, value), value);
         });
 
-        var backgroundImageCtrl = cm.createUrlBox('table_background_image', {
-            label: ed.getLang('table.background_image', 'Background Image'),
-            name: 'background_image',
-            value: '',
-            clear: true,
-            picker: true,
-            picker_label: 'browse',
-            picker_icon: 'image',
-            onpick: function () {
-                ed.execCommand('mceFileBrowser', true, {
-                    caller: 'imagepro',
-                    callback: function (selected, data) {
-                        if (data.length) {
-                            var src = data[0].url;
-                            backgroundImageCtrl.value(src);
+        var backgroundImageCtrl = createBackgroundImageCtrl(cm, 'table', ed);
 
-                            window.setTimeout(function () {
-                                backgroundImageCtrl.focus();
-                            }, 10);
-                        }
-                    },
-                    filter: 'images',
-                    value: backgroundImageCtrl.value()
-                });
-            }
-        });
-
-        var backgroundColorCtrl = cm.createTextBox('table_background_color', {
-            label: ed.getLang('table.background_color', 'Background Color'),
-            name: 'background_color',
-            value: ed.getParam('table_default_background_color', ''),
-            subtype: 'color',
-            colorpicker: function () {
-                var value = this.value();
-                var btn = DOM$1.get(this.id + '_color');
-
-                ed.settings.color_picker_callback(function (color) {
-                    backgroundColorCtrl.value(color);
-
-                    btn.style.backgroundColor = color;
-
-                }, value);
-            }
-        });
+        var backgroundColorCtrl = createBackgroundColorCtrl(cm, 'table', ed, ed.getParam('table_default_background_color', ''));
 
         advancedForm.add(idCtrl);
         advancedForm.add(summaryCtrl);
@@ -1738,48 +1802,45 @@
 
         form.add(heightCtrl);
 
-        var stylesList = cm.createStylesBox('table_row_classes', {
-            label: ed.getLang('table.classes', 'Classes'),
-            onselect: function (v) { },
-            name: 'classes',
-            styles: ed.getParam('table_classes_custom', [])
-        });
+        var stylesList = createClassesCtrl(cm, 'table_row', ed);
 
         form.add(stylesList);
 
-        var idCtrl = cm.createTextBox('table_row_id', {
-            label: ed.getLang('table.id', 'ID'),
-            name: 'id'
+        var alignCtrl = createAlignCtrl(cm, 'table_row', ed);
+
+        form.add(alignCtrl);
+
+        var actionCtrl = cm.createListBox('table_row_action', {
+            label: ed.getLang('table.action', 'Update'),
+            name: 'action',
+            onselect: function () { },
+            value: 'current'
         });
 
-        var langListCtrl = cm.createListBox('table_row_lang', {
-            label: ed.getLang('attributes.label_lang', 'Language'),
-            onselect: function (v) { },
-            name: 'lang',
-            filter: true
+        each$1([
+            { title: ed.getLang('table.action_current_row', 'Update Current Row'), value: 'current' },
+            { title: ed.getLang('table.action_odd_rows', 'Update Odd Rows'), value: 'odd' },
+            { title: ed.getLang('table.action_even_rows', 'Update Even Rows'), value: 'even' },
+            { title: ed.getLang('table.action_all_rows', 'Update All Rows'), value: 'all' }
+        ], function (item) {
+            actionCtrl.add(item.title, item.value);
         });
 
-        langListCtrl.add('--', '');
+        var idCtrl = createIdCtrl(cm, 'table_row', ed);
 
-        each$1(languageValues, function (value, name) {
-            langListCtrl.add(name, value);
-        });
+        var langListCtrl = createLangListCtrl(cm, 'table_row', ed);
 
-        var dirListCtrl = cm.createListBox('table_row_dir', {
-            label: ed.getLang('attributes.label_dir', 'Text Direction'),
-            onselect: function (v) { },
-            name: 'dir'
-        });
+        var dirListCtrl = createDirListCtrl(cm, 'table_row', ed);
 
-        dirListCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+        var rowStyleCtrl = createStyleCtrl(cm, 'table_row', ed);
 
-        each$1(['ltr', 'rtl'], function (value) {
-            dirListCtrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
-        });
+        var rowBackgroundColorCtrl = createBackgroundColorCtrl(cm, 'table_row', ed);
 
         advancedForm.add(idCtrl);
+        advancedForm.add(rowStyleCtrl);
         advancedForm.add(langListCtrl);
         advancedForm.add(dirListCtrl);
+        advancedForm.add(rowBackgroundColorCtrl);
 
         var tabs = cm.createTabs('table_row_tabs');
 
@@ -1802,7 +1863,7 @@
             ed.windowManager.open({
                 title: ed.getLang('table.row_desc', 'Table Rows'),
                 items: [tabs],
-                size: 'mce-modal-landscape-small',
+                size: 'mce-modal-landscape-medium',
                 open: function () {
                     var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getStart(), "tr");
 
@@ -1826,16 +1887,32 @@
                         return cls.trim() !== '';
                     });
 
+                    var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                    var backgroundColor = styles['background-color'] || '';
+                    var align = styles['text-align'] || '';
+
+                    // strip managed properties before passing remainder to style field
+                    each$1(['height', 'text-align', 'background-color'], function (key) {
+                        delete styles[key];
+                    });
+
                     tabs.update({
                         rowtype: rowtype,
                         height: height,
                         classes: classes,
+                        align: align,
+                        action: 'current',
+                        style: ed.dom.serializeStyle(styles),
+                        background_color: backgroundColor,
                         id: ed.dom.getAttrib(elm, 'id') || '',
                         lang: ed.dom.getAttrib(elm, 'lang') || '',
                         dir: ed.dom.getAttrib(elm, 'dir') || ''
                     });
 
                     DOM$1.setHTML(this.id + '_insert', label);
+
+                    actionCtrl.insertBefore(DOM$1.get(this.id + '_cancel'));
                 },
                 buttons: [
                     {
@@ -1849,18 +1926,28 @@
                             var data = tabs.submit();
 
                             var elm = ed.dom.getParent(ed.selection.getStart(), "tr");
-                            var selected = ed.dom.select('td.mceSelected,th.mceSelected', elm);
 
-                            data.action = selected.length ? 'all' : 'insert';
-
-                            data.style = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+                            // start from user's raw style input, layer managed properties on top
+                            var styleObj = ed.dom.parseStyle(data.style || '');
 
                             // add px to height if it is an integer
                             if (data.height && !isNaN(data.height)) {
                                 data.height += 'px';
                             }
 
-                            data.style.height = data.height;
+                            styleObj.height = data.height || '';
+
+                            if (data.align) {
+                                styleObj['text-align'] = data.align;
+                            } else {
+                                delete styleObj['text-align'];
+                            }
+
+                            if (data.background_color) {
+                                styleObj['background-color'] = data.background_color;
+                            } else {
+                                delete styleObj['background-color'];
+                            }
 
                             // Apply advanced attributes before updateRows so they are
                             // preserved if the row is cloned during a rowtype change
@@ -1869,9 +1956,9 @@
                             ed.dom.setAttrib(elm, 'dir', data.dir || '');
 
                             var args = {
-                                style: ed.dom.serializeStyle(data.style),
+                                style: ed.dom.serializeStyle(styleObj),
                                 rowtype: data.rowtype,
-                                action: data.action,
+                                action: data.action || 'current',
                                 class: data.classes
                             };
 
@@ -1921,55 +2008,81 @@
 
         form.add(heightCtrl);
 
-        var stylesList = cm.createStylesBox('table_cell_classes', {
-            label: ed.getLang('table.classes', 'Classes'),
-            onselect: function (v) { },
-            name: 'classes',
-            styles: ed.getParam('table_classes_custom', [])
-        });
+        var stylesList = createClassesCtrl(cm, 'table_cell', ed);
 
         form.add(stylesList);
 
-        var idCtrl = cm.createTextBox('table_cell_id', {
-            label: ed.getLang('table.id', 'ID'),
-            name: 'id'
+        var alignCtrl = createAlignCtrl(cm, 'table_cell', ed);
+
+        form.add(alignCtrl);
+
+        var valignCtrl = cm.createListBox('table_cell_valign', {
+            label: ed.getLang('table.valign', 'Vertical Alignment'),
+            name: 'valign',
+            onselect: function () { }
         });
 
-        var langListCtrl = cm.createListBox('table_cell_lang', {
-            label: ed.getLang('attributes.label_lang', 'Language'),
-            onselect: function (v) { },
-            name: 'lang',
-            filter: true
+        valignCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+        each$1(['top', 'middle', 'bottom'], function (value) {
+            var label = value === 'middle' ? 'Center' : value.charAt(0).toUpperCase() + value.slice(1);
+            valignCtrl.add(ed.getLang('table.valign_' + value, label), value);
         });
 
-        langListCtrl.add('--', '');
+        form.add(valignCtrl);
 
-        each$1(languageValues, function (value, name) {
-            langListCtrl.add(name, value);
+        var scopeCtrl = cm.createListBox('table_cell_scope', {
+            label: ed.getLang('table.scope', 'Scope'),
+            name: 'scope',
+            onselect: function () { }
         });
 
-        var dirListCtrl = cm.createListBox('table_cell_dir', {
-            label: ed.getLang('attributes.label_dir', 'Text Direction'),
-            onselect: function (v) { },
-            name: 'dir'
+        scopeCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+        each$1([
+            { title: ed.getLang('table.scope_col', 'Column'), value: 'col' },
+            { title: ed.getLang('table.scope_row', 'Row'), value: 'row' },
+            { title: ed.getLang('table.scope_colgroup', 'Column Group'), value: 'colgroup' },
+            { title: ed.getLang('table.scope_rowgroup', 'Row Group'), value: 'rowgroup' }
+        ], function (item) {
+            scopeCtrl.add(item.title, item.value);
         });
 
-        dirListCtrl.add(ed.getLang('common.not_set', '-- Not set --'), '');
+        form.add(scopeCtrl);
 
-        each$1(['ltr', 'rtl'], function (value) {
-            dirListCtrl.add(ed.getLang('attributes.label_dir_' + value, value), value);
+        var actionCtrl = cm.createListBox('table_cell_action', {
+            label: ed.getLang('table.action', 'Update'),
+            name: 'action',
+            onselect: function () { },
+            value: 'current'
         });
 
-        var backgroundColorCtrl = cm.createTextBox('table_cell_background_color', {
-            label: ed.getLang('table.background_color', 'Background Color'),
-            name: 'background_color',
-            subtype: 'color'
+        each$1([
+            { title: ed.getLang('table.action_current_cell', 'Update Current Cell'), value: 'current' },
+            { title: ed.getLang('table.action_all_cells_row', 'Update All Cells in Row'), value: 'row' },
+            { title: ed.getLang('table.action_all_cells_table', 'Update All Cells in Table'), value: 'table' }
+        ], function (item) {
+            actionCtrl.add(item.title, item.value);
         });
+
+        var idCtrl = createIdCtrl(cm, 'table_cell', ed);
+
+        var langListCtrl = createLangListCtrl(cm, 'table_cell', ed);
+
+        var dirListCtrl = createDirListCtrl(cm, 'table_cell', ed);
+
+        var backgroundColorCtrl = createBackgroundColorCtrl(cm, 'table_cell', ed);
+
+        var cellStyleCtrl = createStyleCtrl(cm, 'table_cell', ed);
+
+        var cellBackgroundImageCtrl = createBackgroundImageCtrl(cm, 'table_cell', ed);
 
         advancedForm.add(idCtrl);
+        advancedForm.add(cellStyleCtrl);
         advancedForm.add(langListCtrl);
         advancedForm.add(dirListCtrl);
         advancedForm.add(backgroundColorCtrl);
+        advancedForm.add(cellBackgroundImageCtrl);
 
         var tabs = cm.createTabs('table_cell_tabs');
 
@@ -1992,7 +2105,7 @@
             ed.windowManager.open({
                 title: ed.getLang('table.cell_desc', 'Table Cells'),
                 items: [tabs],
-                size: 'mce-modal-landscape-small',
+                size: 'mce-modal-landscape-medium',
                 open: function () {
                     var label = ed.getLang('insert', 'Insert'), elm = ed.dom.getParent(ed.selection.getStart(), "td,th");
 
@@ -2021,18 +2134,34 @@
                         return cls.trim() !== '';
                     });
 
+                    var backgroundColor = styles['background-color'] || '';
+                    var backgroundImage = (styles['background-image'] || '').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+
+                    // strip managed properties before passing remainder to style field
+                    each$1(['width', 'height', 'text-align', 'vertical-align', 'background-color', 'background-image'], function (key) {
+                        delete styles[key];
+                    });
+
                     tabs.update({
                         celltype: celltype,
                         width: width,
                         height: height,
                         classes: classes,
+                        align: styles['text-align'] || '',
+                        valign: styles['vertical-align'] || '',
+                        scope: ed.dom.getAttrib(elm, 'scope') || '',
+                        action: 'current',
+                        style: ed.dom.serializeStyle(styles),
                         id: ed.dom.getAttrib(elm, 'id') || '',
                         lang: ed.dom.getAttrib(elm, 'lang') || '',
                         dir: ed.dom.getAttrib(elm, 'dir') || '',
-                        background_color: styles['background-color'] || ''
+                        background_color: backgroundColor,
+                        background_image: backgroundImage
                     });
 
                     DOM$1.setHTML(this.id + '_insert', label);
+
+                     actionCtrl.insertBefore(DOM$1.get(this.id + '_cancel'));
                 },
                 buttons: [
                     {
@@ -2047,7 +2176,8 @@
 
                             var elm = ed.dom.getParent(ed.selection.getStart(), "td,th");
 
-                            data.style = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+                            // start from user's raw style input, layer managed properties on top
+                            var styleObj = ed.dom.parseStyle(data.style || '');
 
                             // add px to width if it is an integer
                             if (data.width && !isNaN(data.width)) {
@@ -2059,19 +2189,44 @@
                                 data.height += 'px';
                             }
 
-                            data.style.width = data.width;
-                            data.style.height = data.height;
-                            data.style['background-color'] = data.background_color || '';
+                            styleObj.width = data.width || '';
+                            styleObj.height = data.height || '';
+
+                            if (data.background_color) {
+                                styleObj['background-color'] = data.background_color;
+                            } else {
+                                delete styleObj['background-color'];
+                            }
+
+                            if (data.background_image) {
+                                styleObj['background-image'] = 'url(' + data.background_image + ')';
+                            } else {
+                                delete styleObj['background-image'];
+                            }
+
+                            if (data.align) {
+                                styleObj['text-align'] = data.align;
+                            } else {
+                                delete styleObj['text-align'];
+                            }
+
+                            if (data.valign) {
+                                styleObj['vertical-align'] = data.valign;
+                            } else {
+                                delete styleObj['vertical-align'];
+                            }
 
                             // Apply advanced attributes before updateCells so they are
                             // preserved if the cell is recreated during a celltype change
                             ed.dom.setAttrib(elm, 'id', data.id || '');
                             ed.dom.setAttrib(elm, 'lang', data.lang || '');
                             ed.dom.setAttrib(elm, 'dir', data.dir || '');
+                            ed.dom.setAttrib(elm, 'scope', data.scope || '');
 
                             var args = {
-                                style: ed.dom.serializeStyle(data.style),
+                                style: ed.dom.serializeStyle(styleObj),
                                 celltype: data.celltype,
+                                action: data.action || 'current',
                                 class: data.classes
                             };
 
@@ -2088,15 +2243,12 @@
     }
 
     /**
-     * @package   	JCE
-     * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-     * @copyright   Copyright 2009, Moxiecode Systems AB
-     * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-     * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-     * JCE is free software. This version may have been modified pursuant
-     * to the GNU General Public License, and as distributed it includes or
-     * is derivative of works licensed under the GNU General Public License or
-     * other free or open source software licenses.
+    * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+     * Copyright (c) Moxiecode Systems AB. All rights reserved.
+     * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+     * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+     * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+     * https://www.gnu.org/licenses/gpl-2.0.html
      */
 
 
@@ -3334,7 +3486,7 @@
 
             // Register commands
             ed.addCommand('mceTableMergeCells', function () {
-                var grid = createTableGrid();
+                var grid = createTableGrid(), cell = ed.dom.getParent(ed.selection.getNode(), 'th,td');
 
                 if (ed.dom.select('td.mceSelected,th.mceSelected').length) {
                     grid.merge();
@@ -3349,7 +3501,7 @@
                     items: [form],
                     size: 'mce-modal-landscape-small',
                     open: function () {
-                        var cell = ed.dom.getParent(ed.selection.getNode(), 'th,td'), rowSpan = 1, colSpan = 1;
+                        var rowSpan = 1, colSpan = 1;
 
                         if (cell) {
                             rowSpan = cell.rowSpan;
@@ -3368,7 +3520,7 @@
                             title: ed.getLang('update', 'Update'),
                             id: 'insert',
                             onsubmit: function (e) {
-                                var data = form.submit(), grid = createTableGrid(), node = ed.selection.getNode(), cell = ed.dom.getParent(node, 'th,td');
+                                var data = form.submit();
 
                                 grid.merge(cell, data.cols, data.rows);
 

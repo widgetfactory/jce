@@ -1,13 +1,10 @@
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @copyright   Copyright 2009, Moxiecode Systems AB
- * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+* Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+ * Copyright (c) Moxiecode Systems AB. All rights reserved.
+ * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+ * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+ * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+ * https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 var each = ibis.each;

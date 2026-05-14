@@ -1,13 +1,10 @@
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @copyright   Copyright 2009, Moxiecode Systems AB
- * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+* Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+ * Copyright (c) Moxiecode Systems AB. All rights reserved.
+ * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
+ * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+ * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+ * https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 import { TableGrid, getSpanVal } from './TableGrid.js';
@@ -1253,7 +1250,7 @@ ibis.PluginManager.add('table', function (ed, url) {
 
         // Register commands
         ed.addCommand('mceTableMergeCells', function () {
-            var grid = createTableGrid();
+            var grid = createTableGrid(), cell = ed.dom.getParent(ed.selection.getNode(), 'th,td');
 
             if (ed.dom.select('td.mceSelected,th.mceSelected').length) {
                 grid.merge();
@@ -1268,7 +1265,7 @@ ibis.PluginManager.add('table', function (ed, url) {
                 items: [form],
                 size: 'mce-modal-landscape-small',
                 open: function () {
-                    var cell = ed.dom.getParent(ed.selection.getNode(), 'th,td'), rowSpan = 1, colSpan = 1;
+                    var rowSpan = 1, colSpan = 1;
 
                     if (cell) {
                         rowSpan = cell.rowSpan;
@@ -1287,7 +1284,7 @@ ibis.PluginManager.add('table', function (ed, url) {
                         title: ed.getLang('update', 'Update'),
                         id: 'insert',
                         onsubmit: function (e) {
-                            var data = form.submit(), grid = createTableGrid(), node = ed.selection.getNode(), cell = ed.dom.getParent(node, 'th,td');
+                            var data = form.submit();
 
                             grid.merge(cell, data.cols, data.rows);
 
