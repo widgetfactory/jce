@@ -118,17 +118,22 @@ function getStylesheetColors(ed) {
     return colors;
 }
 
+function setHexColor(elm, val) {
+    elm.value(val.replace('#', ''));
+    DOM.get(elm.id + '_description').style.backgroundColor = val;
+}
+
 export function showDialog(ed, callback, value) {
     var cm = ed.controlManager;
 
-    // RGB tab — colorpicker left, r/g/b form right (flex row via Layout)
-    var rgbLayout = cm.createLayout('colorpicker_rgb_layout', { 'class': 'colorpicker-rgb' });
+    // RGB tab
+    var rgbLayout = cm.createLayout('colorpicker_rgb_layout');
+
+    var rgbForm = cm.createForm('colorpicker_rgb_form');
 
     var colorPickerCtrl = new ibis.ui.ColorPicker('colorpicker_picker', {}, ed);
     colorPickerCtrl.onChange = new ibis.util.Dispatcher(colorPickerCtrl);
     rgbLayout.add(colorPickerCtrl);
-
-    var rgbForm = cm.createForm('colorpicker_rgb_form');
 
     var rCtrl = cm.createTextBox('colorpicker_r', { name: 'r', label: 'R', subtype: 'number', size: 5, min: 0, max: 255, value: '0' });
     rgbForm.add(rCtrl);
@@ -139,49 +144,62 @@ export function showDialog(ed, callback, value) {
     var bCtrl = cm.createTextBox('colorpicker_b', { name: 'b', label: 'B', subtype: 'number', size: 5, min: 0, max: 255, value: '0' });
     rgbForm.add(bCtrl);
 
-    rgbLayout.add(rgbForm);
-
     // Hex value control (shown below tabs)
-    var hexCtrl = cm.createTextBox('colorpicker_hex', { name: 'hex', label: '#', size: 7 });
+    var hexCtrl = cm.createTextBox('colorpicker_hex', { 
+        name: 'hex', 
+        label: '#',
+        description: 'Color Preview'
+    });
+
+    var hexForm = cm.createForm('colorpicker_hex_form', {
+        class: 'mceColorPickerHex'
+    });
+
+    hexForm.add(hexCtrl);
 
     // Web tab
     var webForm = cm.createForm('colorpicker_web_form');
     var webColors = [];
+
     each(hexColors, function (c) {
         webColors.push({ value: c, text: c });
     });
+
     webForm.add(new ibis.ui.ColorGrid('colorpicker_web_grid', {
         colors: webColors,
         onclick: function (val) {
             callback(val); win.close();
         },
         onmouseover: function (val) {
-            hexCtrl.value(val.replace('#', ''));
+            setHexColor(hexCtrl, val);
         }
     }, ed));
 
     // Named tab
     var namedForm = cm.createForm('colorpicker_named_form');
     var namedList = [];
+
     each(namedColors, function (name, hex) {
         namedList.push({ value: hex, text: name });
     });
-    var namedLabelCtrl = cm.createTextBox('colorpicker_named_label', { name: 'named_label', disabled: true, value: '' });
+
+    var namedLabelCtrl = cm.createTextBox('colorpicker_named_label', { name: 'named_label', value: '', attributes : { readonly : true } });
     namedForm.add(new ibis.ui.ColorGrid('colorpicker_named_grid', {
         colors: namedList,
         onclick: function (val) {
             callback(val); win.close();
         },
         onmouseover: function (val) {
-            hexCtrl.value(val.replace('#', ''));
+            setHexColor(hexCtrl, val);
             namedLabelCtrl.value(namedColors[val] || '');
         }
     }, ed));
+
     namedForm.add(namedLabelCtrl);
 
     // Tabs
     var tabs = cm.createTabs('colorpicker_tabs');
-    tabs.add({ id: 'colorpicker_tab_rgb', title: 'RGB', items: [rgbLayout] });
+    tabs.add({ id: 'colorpicker_tab_rgb', title: 'RGB', items: [rgbLayout, rgbForm], class: 'mceColorRgb' });
     tabs.add({ id: 'colorpicker_tab_web', title: 'Web', items: [webForm] });
     tabs.add({ id: 'colorpicker_tab_named', title: 'Named', items: [namedForm] });
 
@@ -203,7 +221,7 @@ export function showDialog(ed, callback, value) {
                     callback(val); win.close();
                 },
                 onmouseover: function (val) {
-                    hexCtrl.value(val.replace('#', ''));
+                    setHexColor(hexCtrl, val);
                 }
             }, ed));
         }
@@ -219,7 +237,7 @@ export function showDialog(ed, callback, value) {
                     callback(val); win.close();
                 },
                 onmouseover: function (val) {
-                    hexCtrl.value(val.replace('#', ''));
+                    setHexColor(hexCtrl, val);
                 }
             }, ed));
         }
@@ -233,14 +251,15 @@ export function showDialog(ed, callback, value) {
         rCtrl.value(rgb.r);
         gCtrl.value(rgb.g);
         bCtrl.value(rgb.b);
-        hexCtrl.value(ctrl.value().substr(1));
+
+        setHexColor(hexCtrl, ctrl.value());
     });
 
     function updateFromRgb() {
         var rgb = { r: parseInt(rCtrl.value(), 10) || 0, g: parseInt(gCtrl.value(), 10) || 0, b: parseInt(bCtrl.value(), 10) || 0 };
         var hex = new Color(rgb).toHex();
         colorPickerCtrl.value(hex);
-        hexCtrl.value(hex.substr(1));
+        setHexColor(hexCtrl, hex);
     }
 
     function updateFromHex() {
@@ -254,20 +273,26 @@ export function showDialog(ed, callback, value) {
 
     var win = ed.windowManager.open({
         title: ed.getLang('colorpicker.title', 'Color'),
-        items: [tabs, hexCtrl],
+        items: [tabs, hexForm],
         classes: 'colorpicker-window',
-        size: 'square-small',
+        size: 'mce-modal-square-small',
         open: function () {
             var initColor = value || '#000000';
+
             if (initColor && !/^#/.test(initColor)) {
                 initColor = namedToHex(initColor) || '#000000';
             }
+
             var color = new Color(initColor), rgb = color.toRgb();
             rCtrl.value(rgb.r);
             gCtrl.value(rgb.g);
             bCtrl.value(rgb.b);
-            hexCtrl.value(color.toHex().substr(1));
-            colorPickerCtrl.value(color.toHex());
+
+            var hex = color.toHex();
+
+            setHexColor(hexCtrl, hex);
+
+            colorPickerCtrl.value(hex);
 
             DOM.bind(rCtrl.id, 'change', updateFromRgb);
             DOM.bind(gCtrl.id, 'change', updateFromRgb);
