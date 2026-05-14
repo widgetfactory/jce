@@ -57,7 +57,7 @@
 
             // cancel scrolling animation
             $(this.element).on(scrollEvents, function () {
-                this.scrollTo({ left: this.scrollLeft, top: this.scrollTop, behavior: 'instant' });
+                $(this).stopScroll();
             });
         },
         /**
@@ -525,11 +525,9 @@
                 // remove active states
                 $(el).find('.uk-tree-active').removeClass('uk-tree-active');
 
-                el.scrollTo({ left: Math.round(left), top: Math.round(top), behavior: 'smooth' });
-
-                setTimeout(function () {
+                $(el).animateScroll(Math.round(left), Math.round(top), 2000, function () {
                     $(el).off(scrollEvents);
-                }, 2000);
+                });
 
                 // mark as active
                 $(node).addClass('uk-tree-active');

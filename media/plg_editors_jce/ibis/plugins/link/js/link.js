@@ -26,7 +26,7 @@
         var newRel = rel ? rel.split(/\s+/) : [];
 
         var toString = function (rel) {
-            return $.trim(rel.sort().join(' '));
+            return rel.sort().join(' ').trim();
         };
 
         var addTargetRules = function (rel) {
@@ -99,7 +99,7 @@
             $('#link-browser').tree({
                 collapseTree: true,
                 charLength: 50
-            }).on('tree:nodeclick', function (e, evt, node) {
+            }).on('tree:nodeclick', function (e, evt, node) {                
                 if ($(evt.target).is('button.link-preview')) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -130,7 +130,7 @@
 
                     url = Wf.String.decode(url);
 
-                    text = $.trim(text.split('/')[0]);
+                    text = text.split('/')[0].trim();
 
                     self.insertLink({ 'url': url, text: text });
                 }
@@ -295,7 +295,7 @@
                 // Class
                 $('#classes').val(function () {
                     var values = ed.dom.getAttrib(anchorElm, 'class');
-                    return $.trim(values);
+                    return values.trim();
                 }).trigger('change');
 
                 // check for popups
@@ -313,7 +313,7 @@
                         return '';
                     }
 
-                    v = $.trim(v);
+                    v = v.trim();
 
                     v = ed.dom.encode(v);
 
@@ -505,7 +505,7 @@
                 if (k == 'class') {
                     v = $('#classes').val() || '';
                     // trim
-                    v = $.trim(v);
+                    v = v.trim();
                 }
 
                 args[k] = v;
@@ -734,7 +734,7 @@
             $('#search-browser').addClass('loading');
 
             // clean query
-            query = $.trim(query.replace(/[\///<>#]/g, ''));
+            query = query.replace(/[\///<>#]/g, '').trim();
 
             Wf.JSON.request('doSearch', {
                 'json': [query]
@@ -756,7 +756,7 @@
 
                                     url = Wf.String.decode(url);
 
-                                    text = $.trim(text.split('/')[0]);
+                                    text = text.split('/')[0].trim();
 
                                     self.insertLink({ 'url': url, text: text });
                                 }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);

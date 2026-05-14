@@ -174,7 +174,7 @@
                 // Class
                 $('#classes').val(function () {
                     var values = ed.dom.getAttrib(n, 'class');
-                    return $.trim(values);
+                    return values.trim();
                 }).trigger('change');
 
                 $('#style').val(ed.dom.getAttrib(n, 'style'));
@@ -193,7 +193,7 @@
                     // get value from data-* attributes
                     var val = ed.dom.getAttrib(n, 'data-' + key);
                     // trim whitespace
-                    val = $.trim(val);
+                    val = val.trim();
                     // clean url
                     val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
                     // convert to relative

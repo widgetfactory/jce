@@ -75,7 +75,7 @@
          * @param {String} s
          */
         trim: function (s) {
-            return $.trim(s);
+            return s.trim();
         }
     };
 
@@ -307,13 +307,13 @@
 
                 if (/^\w+\[/.test((rel))) {
                     // convert to object
-                    data = this.convertData($.trim(rel)) || {};
+                    data = this.convertData(rel.trim()) || {};
                     // add to object
                     data.rel = ra;
                 }
             } else {
                 // remove standard rel values
-                var group = $.trim(rel.replace(relRX, ''));
+                var group = rel.replace(relRX, '').trim();
 
                 $('#jcemediabox_popup_group').val(group);
             }
@@ -531,7 +531,7 @@
             });
 
             // set data to rel attribute
-            ed.dom.setAttrib(n, 'rel', $.trim(rel));
+            ed.dom.setAttrib(n, 'rel', rel.trim());
 
             // Add noicon class
             if ($('#jcemediabox_popup_icon').val() == 0) {

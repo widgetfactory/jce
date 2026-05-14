@@ -406,7 +406,7 @@
             var el = this;
 
             $(this).addClass('uk-form-icon uk-form-icon-flip');
-            
+
             $('<button class="uk-icon uk-icon-close uk-button uk-button-link">').on('click', function () {
                 $(el).find('input').val('').trigger('change');
             }).appendTo(this);
@@ -414,6 +414,55 @@
     };
 
     $.fn.dialog = function () {
+        return this;
+    };
+
+    $.fn.animateScroll = function (left, top, duration, callback) {
+        var el = this.get(0);
+
+        if (!el) {
+            return this;
+        }
+
+        var startLeft = el.scrollLeft, startTop = el.scrollTop;
+        var deltaLeft = left - startLeft, deltaTop = top - startTop;
+        var startTime = null;
+
+        function easeInOut(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+
+        cancelAnimationFrame(el._scrollRaf);
+
+        function step(timestamp) {
+            if (!startTime) {
+                startTime = timestamp;
+            }
+
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+
+            el.scrollLeft = startLeft + deltaLeft * easeInOut(progress);
+            el.scrollTop = startTop + deltaTop * easeInOut(progress);
+
+            if (progress < 1) {
+                el._scrollRaf = requestAnimationFrame(step);
+            } else if (callback) {
+                callback();
+            }
+        }
+
+        el._scrollRaf = requestAnimationFrame(step);
+
+        return this;
+    };
+
+    $.fn.stopScroll = function () {
+        var el = this.get(0);
+
+        if (el) {
+            cancelAnimationFrame(el._scrollRaf);
+        }
+
         return this;
     };
 })(jQuery);

@@ -652,7 +652,7 @@
 
             // set scrollEvents cancel
             $('#browser-list').on(scrollEvents, function () {
-                $(this).stop();
+                $(this).stopScroll();
             });
 
             // setup directory
@@ -2975,11 +2975,11 @@
 
                 top = Math.round(top);
 
-                $('#browser-list').delay(100).animate({
-                    scrollTop: top
-                }, 1500, function () {
-                    $(this).off(scrollEvents);
-                });
+                setTimeout(function () {
+                    $('#browser-list').animateScroll($('#browser-list').scrollLeft(), top, 1500, function () {
+                        $('#browser-list').off(scrollEvents);
+                    });
+                }, 100);
             }
 
             // Select items and display properties

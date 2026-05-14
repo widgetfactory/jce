@@ -71,10 +71,10 @@
             var fields = $(':input', 'form').serialize();
 
             // if data is a string or array
-            if ($.type(data) === 'string' || $.type(data) === 'array') {
+            if (typeof data === 'string' || Array.isArray(data)) {
                 $.extend(json, {
-                    'params': $.type(data) === 'string' ? Wf.String.encodeURI(data) : $.map(data, function (s) {
-                        if (s && $.type(s) === 'string') {
+                    'params': typeof data === 'string' ? Wf.String.encodeURI(data) : $.map(data, function (s) {
+                        if (s && typeof s === 'string') {
                             return Wf.String.encodeURI(s);
                         }
 
@@ -84,7 +84,7 @@
                 });
             } else {
                 // if data is an object
-                if ($.type(data) === 'object' && data.json) {
+                if (typeof data === 'object' && data.json) {
                     $.extend(json, {
                         'params': data.json
                     });
@@ -111,7 +111,7 @@
                 if ($.isPlainObject(e)) {
                     txt = e.text || "";
                 } else {
-                    txt = $.type(e) === 'array' ? e.join('\n') : e;
+                    txt = Array.isArray(e) ? e.join('\n') : e;
                 }
 
                 if (txt) {
@@ -123,18 +123,30 @@
                 Wf.Modal.alert(txt);
             }
 
-            instance[func] = $.ajax({
-                "context": scope || this,
-                "url": url,
-                "dataType": "text",
-                "method": "post",
-                "data": "json=" + JSON.stringify(json) + '&' + fields
-            }).done(function (o) {
+            // eslint-disable-next-line consistent-this
+            var self = scope || this;
+            var controller = new AbortController();
+            instance[func] = controller;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: "json=" + encodeURIComponent(JSON.stringify(json)) + '&' + fields,
+                signal: controller.signal
+            }).then(function (response) {
+                if (!response.ok) {
+                    throw new Error(response.statusText || ('HTTP ' + response.status));
+                }
+                return response.text();
+            }).then(function (o) {
                 var r;
 
                 if (o) {
                     // check result - should be object, parse as JSON if string
-                    if ($.type(o) === 'string' && isJSON(o)) {
+                    if (typeof o === 'string' && isJSON(o)) {
                         // parse string as JSON object
                         var s = JSON.parse(o);
                         // pass if successful
@@ -155,7 +167,7 @@
                             showError(r.error || '');
                         }
                         // show error
-                    } else {                        
+                    } else {
                         // check for malformed JSON
                         if (/[{}]/.test(o)) {
                             showError('The server returned an invalid JSON response.');
@@ -170,15 +182,14 @@
                 // clear instance
                 instance[func] = null;
 
-                if ($.isFunction(callback)) {
-                    callback.call(scope || this, r);
-                } else {
-                    return r;
+                if (typeof callback === 'function') {
+                    callback.call(self, r);
                 }
-            }).fail(function (e, status, txt) {
-                // don't show alert for jQuery abort
-                if (status !== "abort") {
-                    Wf.Modal.alert(status || ('Server Error - ' + txt));
+                // eslint-disable-next-line dot-notation
+            }).catch(function (e) {
+                // don't show alert for aborted requests
+                if (e.name !== 'AbortError') {
+                    Wf.Modal.alert('Server Error - ' + e.message);
                 }
 
                 // clear instance
