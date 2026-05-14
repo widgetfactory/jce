@@ -337,8 +337,8 @@ class Editor
                 $value = '';
 
                 // legacy string
-                if (is_string($userParam)) {
-                    list($name, $value) = explode(':', $userParam);
+                if (is_string($userParam) && strpos($userParam, ':') !== false) {
+                    list($name, $value) = explode(':', $userParam, 2);
                 }
 
                 // json associative array
