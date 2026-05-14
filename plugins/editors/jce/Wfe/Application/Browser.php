@@ -1895,7 +1895,7 @@ class Browser
         $size = round(filesize($file['tmp_name']) / 1024);
 
         if (empty($upload['max_size'])) {
-            $upload['max_size'] = 1024;
+            $upload['max_size'] = 10240;
         }
 
         // validate size
@@ -2651,7 +2651,7 @@ class Browser
 
         // get max size as kilobytes
         if (empty($upload['max_size'])) {
-            $upload['max_size'] = 1024;
+            $upload['max_size'] = 10240;
         }
 
         // get upload size as integer

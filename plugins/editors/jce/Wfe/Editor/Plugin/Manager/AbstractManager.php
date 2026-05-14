@@ -452,7 +452,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
             'filetypes' => $filetypes,
             'filter' => $filter,
             'upload' => array(
-                'max_size' => $this->getParam('max_size', 1024),
+                'max_size' => $this->getParam('max_size', 10240),
                 'validate_mimetype' => (int) $this->getParam('editor.validate_mimetype', 1),
                 'add_random' => (int) $this->getParam('editor.upload_add_random', 0),
                 'total_files' => (float) $this->getParam('editor.total_files', 0),
