@@ -256,30 +256,43 @@ ibis.PluginManager.add('table', function (ed, url) {
 
     // Handle node change updates
     ed.onNodeChange.add(function (ed, cm, n) {
-        var p;
+        var p, parent;
 
         n = ed.selection.getStart();
         p = ed.dom.getParent(n, 'td,th,caption');
         cm.setActive('table', n.nodeName === 'TABLE' || !!p);
+
+        if (p) {
+            parent = ed.dom.getParent(p, 'TABLE');
+        }
 
         // Disable table tools if we are in caption
         if (p && p.nodeName === 'CAPTION') {
             p = 0;
         }
 
+        var multiple = false;
+
+        if (parent) {
+            var selected = ed.dom.select('td.mceSelected,th.mceSelected', parent);
+
+            if (selected.length > 1) {
+                multiple = true;
+            }
+        }
+
         if (ed.getParam('table_buttons', 1)) {
             cm.setDisabled('delete_table', !p);
             cm.setDisabled('delete_col', !p);
-            cm.setDisabled('delete_table', !p);
             cm.setDisabled('delete_row', !p);
-            cm.setDisabled('col_after', !p);
-            cm.setDisabled('col_before', !p);
-            cm.setDisabled('row_after', !p);
-            cm.setDisabled('row_before', !p);
+            cm.setDisabled('col_after', !p || multiple);
+            cm.setDisabled('col_before', !p || multiple);
+            cm.setDisabled('row_after', !p || multiple);
+            cm.setDisabled('row_before', !p || multiple);
             cm.setDisabled('row_props', !p);
             cm.setDisabled('cell_props', !p);
-            cm.setDisabled('split_cells', !p);
-            cm.setDisabled('merge_cells', !p);
+            cm.setDisabled('split_cells', !p || multiple);
+            cm.setDisabled('merge_cells', !multiple);
 
             cm.setDisabled('table_props', !p);
         }
