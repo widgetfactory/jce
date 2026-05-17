@@ -431,6 +431,7 @@
                 $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
                 $('#action').hide();
+                $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             }
         },
         merge: function () {
@@ -766,7 +767,7 @@
             }
 
             function setAttrib(elm, name, value) {
-                if (cells.length === 1 || tinymce.is(value)) {
+                if (cells.length === 1 || value !== '') {
                     dom.setAttrib(elm, name, value);
                 }
             }
@@ -806,6 +807,13 @@
                 // get compile styles attribute value
                 if (k === "style") {
                     v = self.getStyles();
+
+                    // For bulk updates, merge form styles into each cell's existing styles
+                    // rather than replacing them, so existing properties (width, alignment, etc.) are preserved
+                    if (cells.length > 1) {
+                        var existingStyle = dom.parseStyle(dom.getAttrib(td, 'style'));
+                        v = dom.serializeStyle($.extend(existingStyle, dom.parseStyle(v)));
+                    }
                 }
 
                 if (k === "classes") {

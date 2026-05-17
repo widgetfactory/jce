@@ -202,10 +202,26 @@
         function cleanup() {
             var rng = dom.createRng();
 
-            // Empty rows
-            each(dom.select('tr', table), function (tr) {
+            // Rebuild grid to identify rows spanned by rowspan cells from other rows
+            buildGrid();
+
+            // Empty rows - preserve rows that are covered by rowspan cells from other rows
+            each(dom.select('tr', table), function (tr, y) {
                 if (tr.cells.length == 0) {
-                    dom.remove(tr);
+                    var isSpanned = false;
+
+                    if (grid[y]) {
+                        each(grid[y], function (cell) {
+                            if (cell && !cell.real) {
+                                isSpanned = true;
+                                return false;
+                            }
+                        });
+                    }
+
+                    if (!isSpanned) {
+                        dom.remove(tr);
+                    }
                 }
             });
 
@@ -1187,7 +1203,7 @@
 
                     each(ed.dom.select('table'), function (table) {
                         ed.dom.addClass(table, 'mce-item-table');
-                        
+
                         // Ensure empty cells have a <br> to avoid empty cell issues
                         each(ed.dom.select('td,th', table), function (cell) {
                             if (!cell.hasChildNodes()) {
@@ -1368,32 +1384,46 @@
 
         // Handle node change updates
         ed.onNodeChange.add(function (ed, cm, n) {
-            var p;
+            var cell, parent;
 
             n = ed.selection.getStart();
-            p = ed.dom.getParent(n, 'td,th,caption');
-            cm.setActive('table', n.nodeName === 'TABLE' || !!p);
+            cell = ed.dom.getParent(n, 'td,th,caption');
+
+            cm.setActive('table', n.nodeName === 'TABLE' || !!cell);
+
+            if (cell) {
+                parent = ed.dom.getParent(cell, 'TABLE');
+            }
 
             // Disable table tools if we are in caption
-            if (p && p.nodeName === 'CAPTION') {
-                p = 0;
+            if (cell && cell.nodeName === 'CAPTION') {
+                cell = 0;
+            }
+
+            var multiple = false;
+
+            if (parent) {
+                var selected = ed.dom.select('td.mceSelected,th.mceSelected', parent);
+
+                if (selected.length > 1) {
+                    multiple = true;
+                }
             }
 
             if (ed.getParam('table_buttons', 1)) {
-                cm.setDisabled('delete_table', !p);
-                cm.setDisabled('delete_col', !p);
-                cm.setDisabled('delete_table', !p);
-                cm.setDisabled('delete_row', !p);
-                cm.setDisabled('col_after', !p);
-                cm.setDisabled('col_before', !p);
-                cm.setDisabled('row_after', !p);
-                cm.setDisabled('row_before', !p);
-                cm.setDisabled('row_props', !p);
-                cm.setDisabled('cell_props', !p);
-                cm.setDisabled('split_cells', !p);
-                cm.setDisabled('merge_cells', !p);
+                cm.setDisabled('delete_table', !cell);
+                cm.setDisabled('delete_col', !cell);
+                cm.setDisabled('delete_row', !cell);
+                cm.setDisabled('col_after', !cell || multiple);
+                cm.setDisabled('col_before', !cell || multiple);
+                cm.setDisabled('row_after', !cell || multiple);
+                cm.setDisabled('row_before', !cell || multiple);
+                cm.setDisabled('row_props', !cell);
+                cm.setDisabled('cell_props', !cell);
+                cm.setDisabled('split_cells', !cell || multiple);
+                cm.setDisabled('merge_cells', !multiple);
 
-                cm.setDisabled('table_props', !p);
+                cm.setDisabled('table_props', !cell);
             }
         });
 
