@@ -34,8 +34,10 @@
                 editor.plugins.autosave.storeDraft();
             }
 
+            console.log(msg, editor.isDirty(), editor.settings.autosave_ask_before_unload);
+
             // Setup a return message if the editor is dirty
-            if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload")) {
+            if (!msg && editor.isDirty() && editor.settings.autosave_ask_before_unload) {
                 msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
 
                 // hide joomla loader
@@ -193,6 +195,18 @@
             if (ed.controlManager.get('autosave')) {
                 startStoreDraft();
             }
+
+            if (ed.settings.autosave_restore_when_empty !== false) {
+                if (hasDraft() && isEmpty()) {
+                    restoreDraft();
+                }
+            }
+        });
+
+        ed.onSaveContent.add(function (ed, o) {
+            if (ed.settings.autosave_restore_when_empty !== false) {
+                removeDraft();
+            }
         });
 
         function isEmpty(html) {
@@ -203,18 +217,6 @@
             return html === '' || new RegExp(
                 '^<' + forcedRootBlockName + '[^>]*>((\u00a0|&nbsp;|[ \t]|<br[^>]*>)+?|)<\/' + forcedRootBlockName + '>|<br>$', 'i'
             ).test(html);
-        }
-
-        if (ed.settings.autosave_restore_when_empty !== false) {
-            ed.onInit.add(function () {
-                if (hasDraft() && isEmpty()) {
-                    restoreDraft();
-                }
-            });
-
-            ed.onSaveContent.add(function () {
-                removeDraft();
-            });
         }
 
         self.storeDraft = storeDraft;
