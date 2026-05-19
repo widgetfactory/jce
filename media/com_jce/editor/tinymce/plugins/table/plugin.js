@@ -276,9 +276,13 @@
                     }
 
                     if (x2 == -1) {
-                        // Insert nodes before first cell
+                        // Insert nodes before first cell, or append if row is entirely spanned (no real cells)
                         for (c = 1; c <= cols; c++) {
-                            tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                            if (tr.cells.length > 0) {
+                                tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                            } else {
+                                tr.appendChild(cloneCell(cell));
+                            }
                         }
                     }
                 }
