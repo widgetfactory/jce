@@ -10,7 +10,8 @@
 import { insertTableHtml, updateRows, updateCells } from './TableUtils.js';
 import {
     createIdCtrl, createStyleCtrl, createLangListCtrl, createDirListCtrl,
-    createClassesCtrl, createAlignCtrl, createBackgroundColorCtrl, createBackgroundImageCtrl
+    createClassesCtrl, createAlignCtrl, createBackgroundColorCtrl, createBackgroundImageCtrl,
+    createBorderCtrl
 } from './Controls.js';
 
 var DOM = ibis.DOM,
@@ -143,6 +144,8 @@ export function showTableDialog(ed, isBasicDialog) {
 
     var backgroundColorCtrl = createBackgroundColorCtrl(cm, 'table', ed, ed.getParam('table_default_background_color', ''));
 
+    var borderCtrl = createBorderCtrl(cm, 'table', ed);
+
     advancedForm.add(idCtrl);
     advancedForm.add(summaryCtrl);
     advancedForm.add(styleCtrl);
@@ -150,9 +153,9 @@ export function showTableDialog(ed, isBasicDialog) {
     advancedForm.add(dirListCtrl);
     advancedForm.add(frameCtrl);
     advancedForm.add(rulesCtrl);
-
     advancedForm.add(backgroundImageCtrl);
     advancedForm.add(backgroundColorCtrl);
+    advancedForm.add(borderCtrl);
 
     var tabs = cm.createTabs('table_tabs');
 
@@ -188,7 +191,8 @@ export function showTableDialog(ed, isBasicDialog) {
                 });
 
                 var data = {
-                    classes: classes
+                    classes: classes,
+                    border: ''
                 };
 
                 if (elm) {
@@ -223,12 +227,13 @@ export function showTableDialog(ed, isBasicDialog) {
 
                     var backgroundColor = styles['background-color'] || '';
                     var backgroundImage = styles['background-image'] || '';
+                    var border = styles.border || '';
 
                     // remove url() from backgroundImage
                     backgroundImage = backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 
-                    // remove them from styles and serialize
-                    each(['background-color', 'background-image', 'width', 'height'], function (key) {
+                    // remove managed properties before passing remainder to style field
+                    each(['background-color', 'background-image', 'width', 'height', 'border'], function (key) {
                         delete styles[key];
                     });
 
@@ -243,7 +248,8 @@ export function showTableDialog(ed, isBasicDialog) {
                         caption: caption,
                         style: styles,
                         background_color: backgroundColor,
-                        background_image: backgroundImage
+                        background_image: backgroundImage,
+                        border: border
                     });
 
                     window.setTimeout(function () {
@@ -293,6 +299,10 @@ export function showTableDialog(ed, isBasicDialog) {
 
                         if (data.background_image) {
                             args.style.backgroundImage = 'url(' + data.background_image + ')';
+                        }
+
+                        if (data.border) {
+                            args.style.border = data.border;
                         }
 
                         var elm = ed.dom.getParent(ed.selection.getNode(), "table");
@@ -418,11 +428,14 @@ export function showRowDialog(ed, isBasicDialog) {
 
     var rowBackgroundColorCtrl = createBackgroundColorCtrl(cm, 'table_row', ed);
 
+    var rowBorderCtrl = createBorderCtrl(cm, 'table_row', ed);
+
     advancedForm.add(idCtrl);
     advancedForm.add(rowStyleCtrl);
     advancedForm.add(langListCtrl);
     advancedForm.add(dirListCtrl);
     advancedForm.add(rowBackgroundColorCtrl);
+    advancedForm.add(rowBorderCtrl);
 
     var tabs = cm.createTabs('table_row_tabs');
 
@@ -473,9 +486,10 @@ export function showRowDialog(ed, isBasicDialog) {
 
                 var backgroundColor = styles['background-color'] || '';
                 var align = styles['text-align'] || '';
+                var border = styles.border || '';
 
                 // strip managed properties before passing remainder to style field
-                each(['height', 'text-align', 'background-color'], function (key) {
+                each(['height', 'text-align', 'background-color', 'border'], function (key) {
                     delete styles[key];
                 });
 
@@ -487,6 +501,7 @@ export function showRowDialog(ed, isBasicDialog) {
                     action: 'current',
                     style: ed.dom.serializeStyle(styles),
                     background_color: backgroundColor,
+                    border: border,
                     id: ed.dom.getAttrib(elm, 'id') || '',
                     lang: ed.dom.getAttrib(elm, 'lang') || '',
                     dir: ed.dom.getAttrib(elm, 'dir') || ''
@@ -529,6 +544,12 @@ export function showRowDialog(ed, isBasicDialog) {
                             styleObj['background-color'] = data.background_color;
                         } else {
                             delete styleObj['background-color'];
+                        }
+
+                        if (data.border) {
+                            styleObj.border = data.border;
+                        } else {
+                            delete styleObj.border;
                         }
 
                         // Apply advanced attributes before updateRows so they are
@@ -659,12 +680,15 @@ export function showCellDialog(ed, isBasicDialog) {
 
     var cellBackgroundImageCtrl = createBackgroundImageCtrl(cm, 'table_cell', ed);
 
+    var cellBorderCtrl = createBorderCtrl(cm, 'table_cell', ed);
+
     advancedForm.add(idCtrl);
     advancedForm.add(cellStyleCtrl);
     advancedForm.add(langListCtrl);
     advancedForm.add(dirListCtrl);
     advancedForm.add(backgroundColorCtrl);
     advancedForm.add(cellBackgroundImageCtrl);
+    advancedForm.add(cellBorderCtrl);
 
     var tabs = cm.createTabs('table_cell_tabs');
 
@@ -718,9 +742,10 @@ export function showCellDialog(ed, isBasicDialog) {
 
                 var backgroundColor = styles['background-color'] || '';
                 var backgroundImage = (styles['background-image'] || '').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                var border = styles.border || '';
 
                 // strip managed properties before passing remainder to style field
-                each(['width', 'height', 'text-align', 'vertical-align', 'background-color', 'background-image'], function (key) {
+                each(['width', 'height', 'text-align', 'vertical-align', 'background-color', 'background-image', 'border'], function (key) {
                     delete styles[key];
                 });
 
@@ -738,7 +763,8 @@ export function showCellDialog(ed, isBasicDialog) {
                     lang: ed.dom.getAttrib(elm, 'lang') || '',
                     dir: ed.dom.getAttrib(elm, 'dir') || '',
                     background_color: backgroundColor,
-                    background_image: backgroundImage
+                    background_image: backgroundImage,
+                    border: border
                 });
 
                 DOM.setHTML(this.id + '_insert', label);
@@ -784,6 +810,12 @@ export function showCellDialog(ed, isBasicDialog) {
                             styleObj['background-image'] = 'url(' + data.background_image + ')';
                         } else {
                             delete styleObj['background-image'];
+                        }
+
+                        if (data.border) {
+                            styleObj.border = data.border;
+                        } else {
+                            delete styleObj.border;
                         }
 
                         if (data.align) {

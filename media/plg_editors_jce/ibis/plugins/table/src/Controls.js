@@ -92,16 +92,24 @@ export function createBackgroundColorCtrl(cm, prefix, ed, value) {
         subtype: 'color',
         colorpicker: function () {
             var current = this.value();
-            var btn = DOM.get(this.id + '_color');
 
             ed.settings.color_picker_callback(function (color) {
                 ctrl.value(color);
-                btn.style.backgroundColor = color;
             }, current);
         }
     });
 
     return ctrl;
+}
+
+export function createBorderCtrl(cm, prefix, ed, value) {
+    
+    return cm.createBorderBox(prefix + '_border', {
+        label: ed.getLang('table.border', 'Border'),
+        name: 'border',
+        class: 'mceBorderBox',
+        value: value || ''
+    });
 }
 
 export function createBackgroundImageCtrl(cm, prefix, ed) {
