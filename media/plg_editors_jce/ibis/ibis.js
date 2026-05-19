@@ -28451,8 +28451,8 @@
           settings = this.settings,
           i;
 
-        if (settings.label) {
-          html += '<legend>' + dom.encode(settings.label) + '</legend>';
+        if (settings.legend) {
+          html += '<legend>' + dom.encode(settings.legend) + '</legend>';
         }
 
         for (i = 0; i < this.controls.length; i++) {
@@ -29185,8 +29185,9 @@
         if (s.constrain) {
           w = co.clientWidth - ot;
           h = co.clientHeight - ot;
-          mx = vp.x + vp.w;
-          my = vp.y + vp.h;
+          // fixed menus use viewport-relative coords; absolute menus use document coords
+          mx = s.fixed ? vp.w : vp.x + vp.w;
+          my = s.fixed ? vp.h : vp.y + vp.h;
 
           if ((x + s.vp_offset_x + w) > mx) {
             x = px ? px - w : Math.max(0, (mx - s.vp_offset_x) - w);
@@ -29199,7 +29200,8 @@
 
         DOM.setStyles(co, {
           left: x,
-          top: y
+          top: y,
+          position: s.fixed ? 'fixed' : 'absolute'
         });
 
         self.isMenuVisible = 1;
@@ -30064,6 +30066,30 @@
         }
       },
 
+      setDisabled: function (state) {
+        this._super(state);
+
+        var openBtn = DOM.get(this.id + '_open');
+        if (openBtn) {
+          openBtn.disabled = !!state;
+        }
+
+        // _text is a button only in standard (non-combobox, non-multiple) mode
+        if (!this.settings.combobox && !this.settings.multiple) {
+          var textBtn = DOM.get(this.id + '_text');
+          if (textBtn) {
+            textBtn.disabled = !!state;
+          }
+        }
+
+        if (this.settings.combobox) {
+          var input = DOM.get(this.id + '_input');
+          if (input) {
+            input.disabled = !!state;
+          }
+        }
+      },
+
       /**
        * Selects a item/option by value. This will both add a visual selection to the
        * item and change the title of the control to the title of the option.
@@ -30105,8 +30131,8 @@
         }
 
         if (ibis.is(values, 'string')) {
-          if (self.settings.multiple && self.settings.seperator) {
-            values = values.split(self.settings.seperator);
+          if (self.settings.multiple && self.settings.separator) {
+            values = values.split(self.settings.separator);
           } else {
             values = [values];
           }
@@ -30125,17 +30151,25 @@
           self.selectByIndex(i);
         });
 
-        // clear combobox and add a tag for each selected item
+        // rebuild tags for combobox or multiple mode
         if (this.settings.combobox) {
           this.clearComboBox(true);
-
-          if (this.settings.multiple) {
-            each(this.items, function (item) {
-              if (item.selected) {
-                self.addTag(item.value);
-              }
-            });
+          each(this.items, function (item) {
+            if (item.selected) {
+              self.addTag(item.value);
+            }
+          });
+        } else if (this.settings.multiple) {
+          DOM.remove(DOM.select('.mceButtonTag', self.id + '_text'));
+          var titleSpan = DOM.select('.mceTitle', self.id + '_text')[0];
+          if (titleSpan) {
+            titleSpan.style.display = '';
           }
+          each(this.items, function (item) {
+            if (item.selected) {
+              self.addTag(item.value);
+            }
+          });
         }
       },
 
@@ -30149,7 +30183,7 @@
             }
           });
 
-          return val.join(' ').trim();
+          return val.join(this.settings.separator || ' ').trim();
         }
 
         this.select(val);
@@ -30178,7 +30212,7 @@
             this.selectedValue = null;
           }
 
-          if (!this.settings.combobox) {
+          if (!this.settings.combobox && !this.settings.multiple) {
             DOM.setHTML(elm, DOM.encode(item.title));
             DOM.removeClass(elm, 'mceTitle');
             DOM.setAttrib(this.id, 'aria-valuenow', item.title);
@@ -30189,14 +30223,21 @@
           }
 
         } else {
-          DOM.setHTML(elm, DOM.encode(this.settings.title));
-          DOM.addClass(elm, 'mceTitle');
-          this.selectedValue = null;
+          if (!this.settings.multiple) {
+            DOM.setHTML(elm, DOM.encode(this.settings.title));
+            DOM.addClass(elm, 'mceTitle');
+          }
 
+          this.selectedValue = null;
           DOM.setAttrib(this.id, 'aria-valuenow', this.settings.title);
 
           if (self.settings.multiple) {
             self.deselectAll();
+            DOM.remove(DOM.select('.mceButtonTag', self.id + '_text'));
+            var titleSpan = DOM.select('.mceTitle', self.id + '_text')[0];
+            if (titleSpan) {
+              titleSpan.style.display = '';
+            }
           }
         }
       },
@@ -30278,6 +30319,11 @@
             class: 'mceComboBox'
           }, inp);
 
+        } else if (this.settings.multiple) {
+          html += DOM.createHTML('div', {
+            id: this.id + '_text',
+            class: 'mceText mceComboBox'
+          }, DOM.createHTML('span', { 'class': 'mceTitle' }, DOM.encode(this.settings.title)));
         } else {
           html += DOM.createHTML('button', {
             type: 'button',
@@ -30327,27 +30373,49 @@
             if (self.selectedValue == item.value) {
               self.selectedValue = null;
             }
+
+            if (self.menu && self.menu.items[item.id]) {
+              self.menu.selectItem(self.menu.items[item.id], false);
+            }
           }
         });
 
         Event.clear(btn);
         DOM.remove(btn);
+
+        if (self.settings.multiple && !self.settings.combobox) {
+          var remaining = DOM.select('.mceButtonTag', self.id + '_text');
+          if (!remaining.length) {
+            var titleSpan = DOM.select('.mceTitle', self.id + '_text')[0];
+            if (titleSpan) {
+              titleSpan.style.display = '';
+            }
+          }
+        }
       },
 
       addTag: function (value) {
         var self = this, btn, inp;
-
-        inp = DOM.get(self.id + '_input');
 
         btn = DOM.create('button', {
           'class': 'mceButton mceButtonTag',
           'value': value
         }, '<label>' + value + '</label>');
 
-        DOM.insertBefore(btn, inp);
+        inp = DOM.get(self.id + '_input');
+
+        if (inp) {
+          DOM.insertBefore(btn, inp);
+        } else {
+          var titleSpan = DOM.select('.mceTitle', self.id + '_text')[0];
+          if (titleSpan) {
+            DOM.insertBefore(btn, titleSpan);
+            titleSpan.style.display = 'none';
+          }
+        }
 
         Event.add(btn, 'click', function (evt) {
-          evt.preventDefault();
+          Event.cancel(evt);
 
           if (evt.target.nodeName == 'LABEL') {
             return;
@@ -30380,11 +30448,21 @@
           return;
         }
 
-        pos = DOM.getPos(elm);
-
         menu = this.menu;
-        menu.settings.offset_x = pos.x;
-        menu.settings.offset_y = pos.y;
+
+        // When the trigger is inside a fixed-position modal, use viewport-relative
+        // coordinates and position:fixed so the menu doesn't drift on page scroll.
+        if (DOM.getParent(elm, '.mceModal')) {
+          var rect = elm.getBoundingClientRect();
+          menu.settings.offset_x = rect.left;
+          menu.settings.offset_y = rect.top;
+          menu.settings.fixed = true;
+        } else {
+          pos = DOM.getPos(elm);
+          menu.settings.offset_x = pos.x;
+          menu.settings.offset_y = pos.y;
+          menu.settings.fixed = false;
+        }
 
         if (!this.settings.max_width) {
           menu.settings.max_width = elm.offsetWidth;
@@ -30403,7 +30481,7 @@
           }
         });
 
-        menu.showMenu(0, elm.clientHeight, 0, pos.y);
+        menu.showMenu(0, elm.clientHeight, 0, menu.settings.offset_y);
 
         Event.add(DOM.doc, 'mousedown', this.hideMenu, this);
 
@@ -30423,7 +30501,7 @@
         }
 
         // Prevent double toggles by canceling the mouse click event to the button
-        if (e && e.type == "mousedown" && (e.target.id == this.id + '_text' || e.target.id == this.id + '_open')) {
+        if (e && e.type == "mousedown" && (DOM.getParent(e.target, '#' + this.id + '_text') || DOM.getParent(e.target, '#' + this.id + '_open'))) {
           return;
         }
 
@@ -30552,30 +30630,31 @@
           }
         });
 
-        Event.add(this.id + '_input', 'keyup', function (evt) {
+        if (this.settings.combobox) {
+          Event.add(this.id + '_input', 'keyup', function (evt) {
 
-          setTimeout(function () {
-            var value = evt.target.value;
+            setTimeout(function () {
+              var value = evt.target.value;
 
-            if (!value) {
-              Event.cancel(evt);
-              self.hideMenu();
-              return;
-            }
-
-            if (!specialKeyCodeMap[evt.keyCode]) {
-              if (!self.menu || !self.menu.isMenuVisible) {
-                self.showMenu();
+              if (!value) {
+                Event.cancel(evt);
+                self.hideMenu();
+                return;
               }
 
-              evt.target.focus();
+              if (!specialKeyCodeMap[evt.keyCode]) {
+                if (!self.menu || !self.menu.isMenuVisible) {
+                  self.showMenu();
+                }
 
-              self.menu.filterItems(value);
-            }
-          }, 0);
-        });
+                evt.target.focus();
 
-        Event.add(this.id + '_input', 'keydown', function (evt) {
+                self.menu.filterItems(value);
+              }
+            }, 0);
+          });
+
+          Event.add(this.id + '_input', 'keydown', function (evt) {
           switch (evt.keyCode) {
             // enter
             case 13:
@@ -30624,7 +30703,8 @@
 
               break;
           }
-        });
+          });
+        } // end combobox input handlers
 
         Event.add(this.id, 'focus', function () {
           if (!this._focused) {
@@ -33609,6 +33689,166 @@
   })(ibis);
 
   /**
+   * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+  (function (ibis) {
+      var DOM = ibis.DOM,
+          Dispatcher = ibis.util.Dispatcher,
+          each = ibis.each;
+
+      var STYLE_KEYWORDS = ['none', 'hidden', 'solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset'];
+
+      function parseBorder(val) {
+          if (!val) {
+              return { width: '', style: '', color: '' };
+          }
+
+          var parts = val.trim().split(/\s+/);
+          var result = { width: '', style: '', color: '' };
+
+          each(parts, function (part) {
+              if (STYLE_KEYWORDS.indexOf(part) !== -1) {
+                  result.style = part;
+              } else if (/^(thin|medium|thick)$/.test(part) || /^[0-9.]/.test(part)) {
+                  result.width = part;
+              } else {
+                  result.color = part;
+              }
+          });
+
+          return result;
+      }
+
+      /**
+       * A container control combining a Checkbox (enable toggle), two ListBoxes
+       * (width and style), and a ColorBox. Returns/accepts a CSS border shorthand
+       * string: "1px solid #000", or "" when disabled.
+       *
+       * @class ibis.ui.BorderBox
+       * @extends ibis.ui.Container
+       */
+      ibis.create('ibis.ui.BorderBox:ibis.ui.Form', {
+
+          BorderBox: function (id, s, ed) {
+              this._super(id, s, ed);
+
+              this.classPrefix = 'mceBorderBox';
+              this.onChange = new Dispatcher(this);
+              this.onPostRender = new Dispatcher(this);
+          },
+
+          value: function (val) {
+              var enableCtrl = this.get(this.id + '_enabled');
+              var widthCtrl = this.get(this.id + '_width');
+              var styleCtrl = this.get(this.id + '_style');
+              var colorCtrl = this.get(this.id + '_color');
+
+              if (!arguments.length) {
+                  if (!enableCtrl || !enableCtrl.value()) {
+                      return '';
+                  }
+
+                  return [widthCtrl.value(), styleCtrl.value(), colorCtrl.value()]
+                      .filter(function (v) {
+                          return !!v;
+                      }).join(' ');
+              }
+
+              var enabled = !!val;
+
+              if (enableCtrl) {
+                  enableCtrl.value(enabled ? 1 : 0);
+              }
+
+              widthCtrl.setDisabled(!enabled);
+              styleCtrl.setDisabled(!enabled);
+              colorCtrl.setDisabled(!enabled);
+
+              var p = parseBorder(val);
+              widthCtrl.value(p.width);
+              styleCtrl.value(p.style);
+              colorCtrl.value(p.color);
+          },
+
+          postRender: function () {
+              var self = this;
+
+              var enableCtrl = this.get(this.id + '_enabled');
+              var widthCtrl = this.get(this.id + '_width');
+              var styleCtrl = this.get(this.id + '_style');
+              var colorCtrl = this.get(this.id + '_color');
+
+              each(this.controls, function (ctrl) {
+                  ctrl.postRender();
+              });
+
+              widthCtrl.disabled = -1;
+              widthCtrl.setDisabled(true);
+
+              styleCtrl.disabled = -1;
+              styleCtrl.setDisabled(true);
+
+              colorCtrl.disabled = -1;
+              colorCtrl.setDisabled(true);
+
+              if (this.rendered) {
+                  return;
+              }
+
+              enableCtrl.onChange.add(function () {
+                  var enabled = !!enableCtrl.value();
+
+                  widthCtrl.setDisabled(!enabled);
+                  styleCtrl.setDisabled(!enabled);
+                  colorCtrl.setDisabled(!enabled);
+
+                  self.onChange.dispatch(self);
+              });
+
+              each([widthCtrl, styleCtrl, colorCtrl], function (ctrl) {
+                  ctrl.onChange.add(function () {
+                      self.onChange.dispatch(self);
+                  });
+              });
+
+              this.onPostRender.dispatch(this, DOM.get(this.id));
+
+              this.rendered = true;
+          },
+
+          setDisabled: function (state) {
+              this._super(state);
+
+              var enableCtrl = this.get(this.id + '_enabled');
+
+              if (enableCtrl) {
+                  enableCtrl.setDisabled(state);
+              }
+
+              if (state || !enableCtrl || !enableCtrl.value()) {
+                  var widthCtrl = this.get(this.id + '_width');
+                  var styleCtrl = this.get(this.id + '_style');
+                  var colorCtrl = this.get(this.id + '_color');
+
+                  if (widthCtrl) {
+                      widthCtrl.setDisabled(true);
+                  }
+
+                  if (styleCtrl) {
+                      styleCtrl.setDisabled(true);
+                  }
+
+                  if (colorCtrl) {
+                      colorCtrl.setDisabled(true);
+                  }
+              }
+          }
+      });
+  })(ibis);
+
+  /**
    * Copyright (c) Moxiecode Systems AB. All rights reserved.
    * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
    * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
@@ -34844,7 +35084,7 @@
 
 
   (function (ibis) {
-    
+
     // Shorten these names
     var DOM = ibis.DOM,
       Event = ibis.dom.Event,
@@ -35115,7 +35355,7 @@
           self.onSubmit.addToTop(function () {
             if (self.initialized) {
               self.save();
-              self.isNotDirty = true;
+              self.setDirty(false);
             }
           });
         }
@@ -35153,7 +35393,7 @@
               n.submit = function () {
                 // Save all instances
                 ibis.triggerSave();
-                self.isNotDirty = true;
+                self.setDirty(false);
 
                 return self.formElement._mceOldSubmit(self.formElement);
               };
@@ -35252,7 +35492,7 @@
         }
 
 
-        function initPlugin(p) {                
+        function initPlugin(p) {
           var c = PluginManager.get(p),
             u = PluginManager.urls[p] || ibis.documentBaseURL.replace(/\/$/, ''),
             po;
@@ -36713,6 +36953,14 @@
       },
 
       /**
+       * Sets the dirty state of the editor.
+       * @param {Boolean} state True if the editor is dirty, false otherwise.
+       */
+      setDirty: function (state) {
+        this.isNotDirty = !state;
+      },
+
+      /**
        * Returns true/false if the editor is dirty or not. It will get dirty if the user has made modifications to the contents.
        *
        * @method isDirty
@@ -36722,11 +36970,7 @@
        *     alert("You must save your contents.");
        */
       isDirty: function () {
-        var self = this;
-
-        return ibis.trim(self.startContent) !== ibis.trim(self.getContent({
-          format: 'raw'
-        })) && !self.isNotDirty;
+        return !this.isNotDirty;
       },
 
       /**
@@ -40034,7 +40278,7 @@
           index = data.length - 1;
 
           um.onAdd.dispatch(um, level);
-          editor.isNotDirty = 0;
+          editor.setDirty(true);
 
           return level;
         },
@@ -40736,6 +40980,90 @@
         c.onPostRender.add(function (c, n) {
           loadClasses(c);
         });
+
+        return c;
+      },
+
+      /**
+       * Creates a BorderBox control instance by id.
+       * Child controls are created first (each factory applies the prefix internally),
+       * then the BorderBox id is prefixed, and children are added to the container.
+       * 
+       * @method createBorderBox
+       * @param {String} id Unique id for the new BorderBox instance.
+       * @param {Object} s Optional settings object for the BorderBox.
+       * @returns {ibis.ui.BorderBox} BorderBox instance that got created and added.
+       */
+      createBorderBox: function (id, s) {
+        var self = this, ed = self.editor, c;
+
+        c = self.get(id);
+
+        if (c) {
+          return c;
+        }
+
+        s = extend({
+          widths: ['thin', 'medium', 'thick', '1px', '2px', '3px', '4px', '5px'],
+          styles: ['solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset']
+        }, s);
+
+        var enableCtrl = self.createCheckBox(id + '_enabled', {
+          label_position: 'after'
+        });
+
+        var widthCtrl = self.createListBox(id + '_width', {
+          name: 'border_width',
+          label: 'Width',
+          combobox: true,
+          onselect: function () { }
+        });
+
+        widthCtrl.add('', '');
+
+        each(s.widths, function (w) { 
+          widthCtrl.add(w, w); 
+        });
+
+        var styleCtrl = self.createListBox(id + '_style', {
+          name: 'border_style',
+          label: 'Style',
+          filter: true,
+          onselect: function () { }
+        });
+
+        styleCtrl.add('', '');
+
+        each(s.styles, function (st) { 
+          styleCtrl.add(st, st); 
+        });
+
+        var colorCtrl = self.createTextBox(id + '_color', {
+          name: 'border_color',
+          subtype: 'color',
+          label: 'Color',
+          colorpicker: function () {
+            var self = this, value = self.value();
+
+            ed.settings.color_picker_callback(function (color) {
+              self.value(color);
+            }, value);
+          }
+        });
+
+        s.label = ed.translate(s.label);
+        s.scope = s.scope || ed;
+
+        id = self.prefix + id;
+
+        s = extend({ 'class': 'mce_' + id, scope: s.scope, control_manager: self }, s);
+
+        c = new ibis.ui.BorderBox(id, s, ed);
+
+        c.add(enableCtrl);
+        c.add(widthCtrl);
+        c.add(styleCtrl);
+        c.add(colorCtrl);
 
         return c;
       },
