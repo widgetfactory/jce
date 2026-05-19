@@ -202,10 +202,26 @@
         function cleanup() {
             var rng = dom.createRng();
 
-            // Empty rows
-            each$4(dom.select('tr', table), function (tr) {
+            // Rebuild grid to detect rows covered by rowspan before removing anything
+            buildGrid();
+
+            // Empty rows - preserve rows covered by rowspan cells from preceding rows
+            each$4(dom.select('tr', table), function (tr, y) {
                 if (tr.cells.length == 0) {
-                    dom.remove(tr);
+                    var isSpanned = false;
+
+                    if (grid[y]) {
+                        each$4(grid[y], function (cell) {
+                            if (cell && !cell.real) {
+                                isSpanned = true;
+                                return false;
+                            }
+                        });
+                    }
+
+                    if (!isSpanned) {
+                        dom.remove(tr);
+                    }
                 }
             });
 
@@ -262,9 +278,13 @@
                     }
 
                     if (x2 == -1) {
-                        // Insert nodes before first cell
+                        // Insert nodes before first cell, or append if row is entirely spanned (no real cells)
                         for (c = 1; c <= cols; c++) {
-                            tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                            if (tr.cells.length > 0) {
+                                tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                            } else {
+                                tr.appendChild(cloneCell(cell));
+                            }
                         }
                     }
                 }
@@ -1017,9 +1037,20 @@
             cells.push(tdElm);
         }
 
-        // Update all selected sells
+        // Update all selected cells
         each$3(cells, function (td) {
-            updateCell(ed, td, data);
+            var cellData = data;
+
+            // For bulk updates, merge form styles into each cell's existing styles
+            // rather than replacing them, so existing properties are preserved
+            if (cells.length > 1 && data.style) {
+                var existingStyle = ed.dom.parseStyle(ed.dom.getAttrib(td, 'style'));
+                cellData = Object.assign({}, data, {
+                    style: ed.dom.serializeStyle(Object.assign(existingStyle, ed.dom.parseStyle(data.style)))
+                });
+            }
+
+            updateCell(ed, td, cellData);
         });
 
         ed.addVisual();
@@ -1294,8 +1325,8 @@
      */
 
 
-    var DOM$2 = ibis.DOM,
-        each$2 = ibis.each;
+    ibis.DOM;
+        var each$2 = ibis.each;
 
     function createIdCtrl(cm, prefix, ed, value) {
         return cm.createTextBox(prefix + '_id', {
@@ -1379,16 +1410,24 @@
             subtype: 'color',
             colorpicker: function () {
                 var current = this.value();
-                var btn = DOM$2.get(this.id + '_color');
 
                 ed.settings.color_picker_callback(function (color) {
                     ctrl.value(color);
-                    btn.style.backgroundColor = color;
                 }, current);
             }
         });
 
         return ctrl;
+    }
+
+    function createBorderCtrl(cm, prefix, ed, value) {
+        
+        return cm.createBorderBox(prefix + '_border', {
+            label: ed.getLang('table.border', 'Border'),
+            name: 'border',
+            class: 'mceBorderBox',
+            value: ''
+        });
     }
 
     function createBackgroundImageCtrl(cm, prefix, ed) {
@@ -1561,6 +1600,8 @@
 
         var backgroundColorCtrl = createBackgroundColorCtrl(cm, 'table', ed, ed.getParam('table_default_background_color', ''));
 
+        var borderCtrl = createBorderCtrl(cm, 'table', ed);
+
         advancedForm.add(idCtrl);
         advancedForm.add(summaryCtrl);
         advancedForm.add(styleCtrl);
@@ -1568,9 +1609,9 @@
         advancedForm.add(dirListCtrl);
         advancedForm.add(frameCtrl);
         advancedForm.add(rulesCtrl);
-
         advancedForm.add(backgroundImageCtrl);
         advancedForm.add(backgroundColorCtrl);
+        advancedForm.add(borderCtrl);
 
         var tabs = cm.createTabs('table_tabs');
 
@@ -1606,7 +1647,8 @@
                     });
 
                     var data = {
-                        classes: classes
+                        classes: classes,
+                        border: ''
                     };
 
                     if (elm) {
@@ -1641,12 +1683,13 @@
 
                         var backgroundColor = styles['background-color'] || '';
                         var backgroundImage = styles['background-image'] || '';
+                        var border = styles.border || '';
 
                         // remove url() from backgroundImage
                         backgroundImage = backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 
-                        // remove them from styles and serialize
-                        each$1(['background-color', 'background-image', 'width', 'height'], function (key) {
+                        // remove managed properties before passing remainder to style field
+                        each$1(['background-color', 'background-image', 'width', 'height', 'border'], function (key) {
                             delete styles[key];
                         });
 
@@ -1661,7 +1704,8 @@
                             caption: caption,
                             style: styles,
                             background_color: backgroundColor,
-                            background_image: backgroundImage
+                            background_image: backgroundImage,
+                            border: border
                         });
 
                         window.setTimeout(function () {
@@ -1711,6 +1755,10 @@
 
                             if (data.background_image) {
                                 args.style.backgroundImage = 'url(' + data.background_image + ')';
+                            }
+
+                            if (data.border) {
+                                args.style.border = data.border;
                             }
 
                             var elm = ed.dom.getParent(ed.selection.getNode(), "table");
@@ -1836,11 +1884,14 @@
 
         var rowBackgroundColorCtrl = createBackgroundColorCtrl(cm, 'table_row', ed);
 
+        var rowBorderCtrl = createBorderCtrl(cm, 'table_row', ed);
+
         advancedForm.add(idCtrl);
         advancedForm.add(rowStyleCtrl);
         advancedForm.add(langListCtrl);
         advancedForm.add(dirListCtrl);
         advancedForm.add(rowBackgroundColorCtrl);
+        advancedForm.add(rowBorderCtrl);
 
         var tabs = cm.createTabs('table_row_tabs');
 
@@ -1891,9 +1942,10 @@
 
                     var backgroundColor = styles['background-color'] || '';
                     var align = styles['text-align'] || '';
+                    var border = styles.border || '';
 
                     // strip managed properties before passing remainder to style field
-                    each$1(['height', 'text-align', 'background-color'], function (key) {
+                    each$1(['height', 'text-align', 'background-color', 'border'], function (key) {
                         delete styles[key];
                     });
 
@@ -1905,6 +1957,7 @@
                         action: 'current',
                         style: ed.dom.serializeStyle(styles),
                         background_color: backgroundColor,
+                        border: border,
                         id: ed.dom.getAttrib(elm, 'id') || '',
                         lang: ed.dom.getAttrib(elm, 'lang') || '',
                         dir: ed.dom.getAttrib(elm, 'dir') || ''
@@ -1947,6 +2000,12 @@
                                 styleObj['background-color'] = data.background_color;
                             } else {
                                 delete styleObj['background-color'];
+                            }
+
+                            if (data.border) {
+                                styleObj.border = data.border;
+                            } else {
+                                delete styleObj.border;
                             }
 
                             // Apply advanced attributes before updateRows so they are
@@ -2077,12 +2136,15 @@
 
         var cellBackgroundImageCtrl = createBackgroundImageCtrl(cm, 'table_cell', ed);
 
+        var cellBorderCtrl = createBorderCtrl(cm, 'table_cell', ed);
+
         advancedForm.add(idCtrl);
         advancedForm.add(cellStyleCtrl);
         advancedForm.add(langListCtrl);
         advancedForm.add(dirListCtrl);
         advancedForm.add(backgroundColorCtrl);
         advancedForm.add(cellBackgroundImageCtrl);
+        advancedForm.add(cellBorderCtrl);
 
         var tabs = cm.createTabs('table_cell_tabs');
 
@@ -2136,9 +2198,10 @@
 
                     var backgroundColor = styles['background-color'] || '';
                     var backgroundImage = (styles['background-image'] || '').replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                    var border = styles.border || '';
 
                     // strip managed properties before passing remainder to style field
-                    each$1(['width', 'height', 'text-align', 'vertical-align', 'background-color', 'background-image'], function (key) {
+                    each$1(['width', 'height', 'text-align', 'vertical-align', 'background-color', 'background-image', 'border'], function (key) {
                         delete styles[key];
                     });
 
@@ -2156,7 +2219,8 @@
                         lang: ed.dom.getAttrib(elm, 'lang') || '',
                         dir: ed.dom.getAttrib(elm, 'dir') || '',
                         background_color: backgroundColor,
-                        background_image: backgroundImage
+                        background_image: backgroundImage,
+                        border: border
                     });
 
                     DOM$1.setHTML(this.id + '_insert', label);
@@ -2202,6 +2266,12 @@
                                 styleObj['background-image'] = 'url(' + data.background_image + ')';
                             } else {
                                 delete styleObj['background-image'];
+                            }
+
+                            if (data.border) {
+                                styleObj.border = data.border;
+                            } else {
+                                delete styleObj.border;
                             }
 
                             if (data.align) {
@@ -2497,30 +2567,43 @@
 
         // Handle node change updates
         ed.onNodeChange.add(function (ed, cm, n) {
-            var p;
+            var p, parent;
 
             n = ed.selection.getStart();
             p = ed.dom.getParent(n, 'td,th,caption');
             cm.setActive('table', n.nodeName === 'TABLE' || !!p);
+
+            if (p) {
+                parent = ed.dom.getParent(p, 'TABLE');
+            }
 
             // Disable table tools if we are in caption
             if (p && p.nodeName === 'CAPTION') {
                 p = 0;
             }
 
+            var multiple = false;
+
+            if (parent) {
+                var selected = ed.dom.select('td.mceSelected,th.mceSelected', parent);
+
+                if (selected.length > 1) {
+                    multiple = true;
+                }
+            }
+
             if (ed.getParam('table_buttons', 1)) {
                 cm.setDisabled('delete_table', !p);
                 cm.setDisabled('delete_col', !p);
-                cm.setDisabled('delete_table', !p);
                 cm.setDisabled('delete_row', !p);
-                cm.setDisabled('col_after', !p);
-                cm.setDisabled('col_before', !p);
-                cm.setDisabled('row_after', !p);
-                cm.setDisabled('row_before', !p);
+                cm.setDisabled('col_after', !p || multiple);
+                cm.setDisabled('col_before', !p || multiple);
+                cm.setDisabled('row_after', !p || multiple);
+                cm.setDisabled('row_before', !p || multiple);
                 cm.setDisabled('row_props', !p);
                 cm.setDisabled('cell_props', !p);
-                cm.setDisabled('split_cells', !p);
-                cm.setDisabled('merge_cells', !p);
+                cm.setDisabled('split_cells', !p || multiple);
+                cm.setDisabled('merge_cells', !multiple);
 
                 cm.setDisabled('table_props', !p);
             }

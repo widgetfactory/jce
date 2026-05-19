@@ -133,9 +133,20 @@ export function updateCells(ed, data) {
         cells.push(tdElm);
     }
 
-    // Update all selected sells
+    // Update all selected cells
     each(cells, function (td) {
-        updateCell(ed, td, data);
+        var cellData = data;
+
+        // For bulk updates, merge form styles into each cell's existing styles
+        // rather than replacing them, so existing properties are preserved
+        if (cells.length > 1 && data.style) {
+            var existingStyle = ed.dom.parseStyle(ed.dom.getAttrib(td, 'style'));
+            cellData = Object.assign({}, data, {
+                style: ed.dom.serializeStyle(Object.assign(existingStyle, ed.dom.parseStyle(data.style)))
+            });
+        }
+
+        updateCell(ed, td, cellData);
     });
 
     ed.addVisual();

@@ -197,10 +197,26 @@ export function TableGrid(table, dom, selection, settings) {
     function cleanup() {
         var rng = dom.createRng();
 
-        // Empty rows
-        each(dom.select('tr', table), function (tr) {
+        // Rebuild grid to detect rows covered by rowspan before removing anything
+        buildGrid();
+
+        // Empty rows - preserve rows covered by rowspan cells from preceding rows
+        each(dom.select('tr', table), function (tr, y) {
             if (tr.cells.length == 0) {
-                dom.remove(tr);
+                var isSpanned = false;
+
+                if (grid[y]) {
+                    each(grid[y], function (cell) {
+                        if (cell && !cell.real) {
+                            isSpanned = true;
+                            return false;
+                        }
+                    });
+                }
+
+                if (!isSpanned) {
+                    dom.remove(tr);
+                }
             }
         });
 
@@ -257,9 +273,13 @@ export function TableGrid(table, dom, selection, settings) {
                 }
 
                 if (x2 == -1) {
-                    // Insert nodes before first cell
+                    // Insert nodes before first cell, or append if row is entirely spanned (no real cells)
                     for (c = 1; c <= cols; c++) {
-                        tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                        if (tr.cells.length > 0) {
+                            tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                        } else {
+                            tr.appendChild(cloneCell(cell));
+                        }
                     }
                 }
             }
