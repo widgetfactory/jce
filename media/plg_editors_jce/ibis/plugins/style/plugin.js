@@ -729,7 +729,7 @@
         boxStyleForm.add(listBox('style_clear', 'clear', 'Clear', ['none', 'left', 'right', 'both']));
 
         var boxPaddingForm = cm.createForm('style_box_padding_form', {
-            label: ed.getLang('style.box_padding', 'Box Padding')
+            legend: ed.getLang('style.box_padding', 'Box Padding')
         });
 
         var padding = fourSides('padding', function (id, name, label) {
@@ -739,7 +739,7 @@
         addFourToForm(boxPaddingForm, padding);
 
         var boxMarginForm = cm.createForm('style_box_margin_form', {
-            label: ed.getLang('style.box_margin', 'Box Margin')
+            legend: ed.getLang('style.box_margin', 'Box Margin')
         });
 
         var margin = fourSides('margin', function (id, name, label) {
@@ -757,7 +757,7 @@
 
         // ── Tab 5: Border ────────────────────────────────────────────────────────
         var borderStyleForm = cm.createForm('border_style_form', {
-            label: ed.getLang('style.border_style', 'Border Style')
+            legend: ed.getLang('style.border_style', 'Border Style')
         });
 
         var borderStyle = fourSides('border_style', function (id, name, label) {
@@ -767,7 +767,7 @@
         addFourToForm(borderStyleForm, borderStyle);
 
         var borderWidthForm = cm.createForm('border_width_form', {
-            label: ed.getLang('style.border_width', 'Border Width')
+            legend: ed.getLang('style.border_width', 'Border Width')
         });
 
         var borderWidth = fourSides('border_width', function (id, name, label) {
@@ -777,7 +777,7 @@
         addFourToForm(borderWidthForm, borderWidth);
 
         var borderColorForm = cm.createForm('border_color_form', {
-            label: ed.getLang('style.border_color', 'Border Color')
+            legend: ed.getLang('style.border_color', 'Border Color')
         });
 
         var borderColor = fourSides('border_color', function (id, name, label) {
@@ -846,7 +846,7 @@
         posForm.add(listBox('style_overflow', 'overflow', 'Overflow', ['visible', 'hidden', 'scroll', 'auto']));
 
         var placementForm = cm.createForm('style_placement_form', {
-            label: ed.getLang('style.placement', 'Placement')
+            legend: ed.getLang('style.placement', 'Placement')
         });
 
         var placement = fourSides('placement', function (id, name, label) {
@@ -856,7 +856,7 @@
         addFourToForm(placementForm, placement);
 
         var clipForm = cm.createForm('style_clip_form', {
-            label: ed.getLang('style.clip', 'Clip')
+            legend: ed.getLang('style.clip', 'Clip')
         });
 
         var clip = fourSides('clip', function (id, name, label) {
