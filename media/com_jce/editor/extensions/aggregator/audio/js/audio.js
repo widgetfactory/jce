@@ -20,7 +20,8 @@ WFAggregator.add('audio', {
         autoplay: 0,
         loop: 0,
         controls: 1,
-        mute: 0
+        muted: 0,
+        preload: 'auto'
     },
 
     setup: function () {
@@ -85,9 +86,9 @@ WFAggregator.add('audio', {
 
     getValues: function (data) {
         // get source values for audio
-        var sources = [];
+        var self = this, sources = [];
 
-        $('input[id], select[id]', '#audio_options').each(function () {
+        $('input[id], select[id]', '.media_option.audio').each(function () {
             var key = $(this).attr('id');
             var val = $(this).val();
 
@@ -96,7 +97,15 @@ WFAggregator.add('audio', {
             }
 
             if (this.type === 'checkbox') {
-                val = this.checked ? true : false;
+                val = this.checked ? 1 : 0;
+            }
+
+            if (key == 'preload') {
+                val = val || 'auto';
+            }
+
+            if (key in self.props && val == self.props[key]) {
+                return true;
             }
 
             data[key] = val;
@@ -141,7 +150,7 @@ WFAggregator.add('audio', {
     },
 
     setValues: function (data) {
-        var x = 0;
+        var x = 0, self = this;
         
         $.each(data, function (key, val) {
             if (key.indexOf('audio_') === -1) {
@@ -150,7 +159,16 @@ WFAggregator.add('audio', {
 
             // remove audio_ prefix
             key = key.substr(key.indexOf('_') + 1);
-            
+
+            // skip default props
+            if (key in self.props) {
+                return true;
+            }
+
+            if (val == '' || val == true) {
+                val = key;
+            }
+
             var $repeatable = $('.uk-repeatable', '#audio_attributes');
 
             if (x > 0) {

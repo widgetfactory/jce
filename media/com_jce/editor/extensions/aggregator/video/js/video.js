@@ -89,7 +89,7 @@ WFAggregator.add('video', {
     getValues: function (data) {
         var sources = [];
 
-        $('input[id], select[id]', '#video_options').each(function () {
+        $('input[id], select[id]', '.media_option.video').each(function () {
             var key = $(this).attr('id');
             var val = $(this).val();
 
