@@ -924,8 +924,18 @@
                 }
             }
 
-            if (targetNode.name === 'img' && (!htmlSchema.isValid('img', attrName) || attrName == 'src')) {
-                attrName = 'data-mce-p-' + attrName;
+            // node uses img placeholder, so store element specific attributes
+            if (targetNode.name === 'img') {
+                // autoplay has already been handled to prevent autoplay
+                if (attrName === 'data-mce-p-autoplay') {
+                    targetNode.attr(attrName, attrValue);
+
+                    continue;
+                }
+
+                if (!htmlSchema.isValid('img', attrName) || attrName == 'src') {
+                    attrName = 'data-mce-p-' + attrName;
+                }
             }
 
             if (attrName.indexOf('on') === 0 && editor.settings.allow_event_attributes) {
