@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved.
  * @copyright   Copyright 2009, Moxiecode Systems AB
  * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
@@ -17,13 +17,6 @@
         DOM = ibis.DOM,
         Event = ibis.dom.Event;
 
-    /**
-     * Compile a filter regex or string into a function
-     * From - https://github.com/ibis/ibis/blob/4.5.x/js/ibis/plugins/importcss/plugin.js
-     * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-     * @param {*} filter 
-     * @returns
-     */
     function compileFilter(filter) {
         if (Array.isArray(filter)) {
             var filters = filter.map(compileFilter);
@@ -68,7 +61,46 @@
         return { element, className };
     }
 
+    var collectNodesInRange = function (rng, predicate) {
+        if (rng.collapsed) {
+            return [];
+        } else {
+            var contents = rng.cloneContents();
+
+            var walker = new ibis.dom.TreeWalker(contents.firstChild, contents);
+            var elements = [];
+            var current = contents.firstChild;
+
+            do {
+                if (predicate(current)) {
+                    elements.push(current);
+                }
+            } while ((current = walker.next()));
+
+            return elements;
+        }
+    };
+
     ibis.PluginManager.add('styleselect', function (ed, url) {
+        // get list of inline text elements
+        var inlineTextElements = {};
+
+        // check if valid text selection element
+        var isElement = function (elm) {
+            return NodeType.isElement(elm) && !NodeType.isInternal(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
+        };
+
+        var isOnlyTextSelected = function () {
+            // Collect all non inline text elements in the range and make sure no elements were found
+            var elements = collectNodesInRange(ed.selection.getRng(), isElement);
+
+            return elements.length === 0;
+        };
+
+        ed.onPreInit.add(function () {
+            inlineTextElements = ed.schema.getTextInlineElements();
+        });
+
         this.createControl = function (n, cf) {
 
             if (n !== 'styleselect') {
@@ -227,39 +259,6 @@
                         removedFormat, selection = ed.selection,
                         node = selection.getNode();
 
-                    var collectNodesInRange = function (rng, predicate) {
-                        if (rng.collapsed) {
-                            return [];
-                        } else {
-                            var contents = rng.cloneContents();
-
-                            var walker = new ibis.dom.TreeWalker(contents.firstChild, contents);
-                            var elements = [];
-                            var current = contents.firstChild;
-                            do {
-                                if (predicate(current)) {
-                                    elements.push(current);
-                                }
-                            } while ((current = walker.next()));
-                            return elements;
-                        }
-                    };
-
-                    // get list of inline text elements
-                    var inlineTextElements = ed.schema.getTextInlineElements();
-
-                    // check if valid text selection element
-                    var isElement = function (elm) {
-                        return NodeType.isElement(elm) && !NodeType.isInternal(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
-                    };
-
-                    var isOnlyTextSelected = function () {
-                        // Collect all non inline text elements in the range and make sure no elements were found
-                        var elements = collectNodesInRange(ed.selection.getRng(), isElement);
-
-                        return elements.length === 0;
-                    };
-
                     var isRoot = function (node) {
                         return node === ed.dom.getRoot();
                     };
@@ -275,8 +274,38 @@
                     ed.focus();
                     ed.undoManager.add();
 
-                    var nodes = [node];
                     var isCollapsed = selection.isCollapsed();
+
+                    // select anchor node if selection is collapsed
+                    if (isCollapsed) {
+                        var anchorNode = ed.dom.getParent(node, 'a[href]');
+
+                        if (anchorNode) {
+                            selection.select(anchorNode);
+                            node = anchorNode;
+
+                            isCollapsed = false;
+                        }
+                    }
+
+                    // normalize a non-collapsed selection that bleeds outside an anchor
+                    if (!isCollapsed) {
+                        var rng = selection.getRng();
+                        var startAnchor = ed.dom.getParent(rng.startContainer, 'a[href]');
+                        var endAnchor = ed.dom.getParent(rng.endContainer, 'a[href]');
+
+                        // only snap when one end is outside the anchor (true bleed)
+                        // if both ends are inside the same anchor, preserve the partial selection
+                        if (startAnchor && !endAnchor) {
+                            selection.select(startAnchor);
+                            node = startAnchor;
+                        } else if (!startAnchor && endAnchor) {
+                            selection.select(endAnchor);
+                            node = endAnchor;
+                        }
+                    }
+
+                    var nodes = [node];
 
                     // special consideration for fake root
                     if (isRoot(node)) {
@@ -301,12 +330,9 @@
                             return false;
                         }*/
 
-                        // Toggle off the current format(s)
-                        each(ctrl.items, function (item) {                            
-                            if ((fmt = ed.formatter.matchNode(node, item.value))) {
-                                matches.push(fmt);
-                            }
-                        });
+                        if ((fmt = ed.formatter.matchNode(node, name))) {
+                            matches.push(fmt);
+                        }
 
                         //node = nodes.length > 1 || selection.isCollapsed() ? node : null;
                         //node = isCollapsed ? node : null;
@@ -352,7 +378,7 @@
                                     name: name,
                                     node: node
                                 });
-                            // custom class
+                                // custom class
                             } else {
                                 node = selection.getNode();
 
@@ -497,7 +523,7 @@
                     removeFilterTags();
 
                     each(ctrl.items, function (item) {
-                        if (ed.formatter.matchNode(node, item.value)) {                            
+                        if (ed.formatter.matchNode(node, item.value)) {
                             matches.push(item.value);
 
                             // add new tag
@@ -550,7 +576,7 @@
                             formats = [];
                         }
                     }
-                    
+
                     each(formats, function (fmt) {
                         var name, keys = 0;
 
@@ -618,7 +644,7 @@
                 // custom styles
                 if (styles) {
                     each(styles, function (val, key) {
-                        if (val) {                            
+                        if (val) {
                             var fmt, name;
 
                             var parsed = parseCustomValue(val);
@@ -626,7 +652,7 @@
                             name = 'style_custom_' + (counter++);
 
                             fmt = {
-                                classes : parsed.className,
+                                classes: parsed.className,
                                 selector: parsed.element,
                                 ceFalseOverride: true
                             };
