@@ -31239,11 +31239,11 @@
             }
 
             if (item.settings.onAction) {
-              item.settings.onAction(e);
+              item.settings.onAction(e, item);
             }
 
             if (item.settings.onclick) {
-              var state = item.settings.onclick(e);
+              var state = item.settings.onclick(e, item);
 
               if (state !== false) {
                 self.close();
@@ -31507,10 +31507,10 @@
         return menu;
       },
 
-      selectAndClear: function (value) {
+      selectAndClear: function (value, item) {
         var self = this;
 
-        self.settings.onselect.call(self, value);
+        self.settings.onselect.call(self, value, item);
         self.clearFilterInput();
       },
 
@@ -31569,7 +31569,7 @@
             item = item || self.items[id];
 
             if (item && item.settings.value) {
-              self.selectAndClear(item.settings.value);
+              self.selectAndClear(item.settings.value, item);
             }
           },
           enableUpDown: true
@@ -32471,8 +32471,8 @@
           max_height: this.settings.max_height || '',
           filter: !!this.settings.filter,
           keyboard_focus: true,
-          onselect: function (value) {
-            if (self.settings.onselect(value) !== false) {
+          onselect: function (value, item) {
+            if (self.settings.onselect(value, item) !== false) {
               self.select(value);
               menu.close();
             }
@@ -32510,7 +32510,7 @@
             item.id = DOM.uniqueId();
             item.role = "option";
             item.onAction = function (e) {
-              if (self.settings.onselect(item.value) !== false) {
+              if (self.settings.onselect(item.value, item) !== false) {
                 self.select(item.value);
               }
 
@@ -44137,7 +44137,7 @@
       var canFormatBR = function (editor, format, node, parentName) {
         // TINY-6483: Can format 'br' if it is contained in a valid empty block and an inline format is being applied
         if (editor.settings.format_empty_lines !== false && format.inline && node.parentNode) {
-          
+
           // allow links to wrap br tags
           if (format.inline == 'a') {
             return true;
@@ -45341,7 +45341,7 @@
        */
       function matchNode(node, name, vars, similar) {
         var formatList = get(name),
-          format, i, classes;
+          format, i;
 
         function matchItems(node, format, item_name) {
           var key, value, items = format[item_name],
@@ -45395,7 +45395,9 @@
             // Name name, attributes, styles and classes
             if (matchName(node, format) && matchItems(node, format, 'attributes') && matchItems(node, format, 'styles')) {
               // Match classes
-              if ((classes = format.classes)) {
+              var classes = format.classes;
+
+              if (classes) {
                 for (i = 0; i < classes.length; i++) {
                   if (!dom.hasClass(node, classes[i])) {
                     return;
@@ -45644,12 +45646,12 @@
       function matchName(node, format) {
         // Check for inline match
         if (isEq(node, format.inline)) {
-          return TRUE;
+          return true;
         }
 
         // Check for block match
         if (isEq(node, format.block)) {
-          return TRUE;
+          return true;
         }
 
         // Check for selector match
