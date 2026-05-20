@@ -311,7 +311,7 @@ figure figcaption:empty[data-mce-empty]::after {
   cursor: initial;
 }
 [data-mce-selected="inline-boundary"] {
-  background-color: #b4d7ff;
+  background-color: #e0e0e0;
 }
 .mce-item-hidden-spellword {
   text-decoration-line: underline;
@@ -662,6 +662,7 @@ img.mce-object.mce-object-iframe {
 }
 img.mce-object.mce-object-audio {
   background-image: url(img/media/audio.svg);
+  background-size: 96px;
   /* default for Chrome */
   min-width: 300px;
   height: 54px;
