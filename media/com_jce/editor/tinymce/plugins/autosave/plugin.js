@@ -34,8 +34,6 @@
                 editor.plugins.autosave.storeDraft();
             }
 
-            console.log(msg, editor.isDirty(), editor.settings.autosave_ask_before_unload);
-
             // Setup a return message if the editor is dirty
             if (!msg && editor.isDirty() && editor.settings.autosave_ask_before_unload) {
                 msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
