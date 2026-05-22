@@ -7,7 +7,7 @@ defined('JPATH_SITE') or die;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Form\Field\TextField;
 
-class FileTypeField extends TextField
+class FiletypeField extends TextField
 {
     /**
      * The form field type.

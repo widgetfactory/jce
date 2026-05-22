@@ -4,9 +4,9 @@ namespace Joomla\Component\Jce\Administrator\Field;
 
 defined('JPATH_SITE') or die;
 
-use Joomla\CMS\Form\Field\FileListField;
+use Joomla\CMS\Form\Field\FilelistField;
 
-class FontListField extends FileListField
+class FontlistField extends FilelistField
 {
     /**
      * The form field type.
@@ -15,7 +15,7 @@ class FontListField extends FileListField
      *
      * @since  11.1
      */
-    protected $type = 'FontList';
+    protected $type = 'Fontlist';
 
     /**
      * Method to get the field input for a fontlist field.

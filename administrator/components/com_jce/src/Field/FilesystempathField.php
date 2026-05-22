@@ -5,7 +5,7 @@ defined('JPATH_SITE') or die;
 
 use Joomla\CMS\Form\Field\TextField;
 
-class FileSystemPathField extends TextField
+class FilesystempathField extends TextField
 {
 
     /**
@@ -15,7 +15,7 @@ class FileSystemPathField extends TextField
      *
      * @since  2.8
      */
-    protected $type = 'FilesystemPath';
+    protected $type = 'Filesystempath';
 
     /**
      * Method to get the field input markup.

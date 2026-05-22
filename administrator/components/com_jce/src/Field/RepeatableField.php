@@ -50,12 +50,19 @@ class RepeatableField extends FormField
         // And finaly build a main container
         $str = array();
 
-        $values = $this->value;
+       $values = $this->value;
+
+        if (empty($values)) {
+            $values = array();
+        }
 
         // explode to array if string
         if (is_string($values)) {
             $values = explode(',', $values);
         }
+
+        // remove emtpy arrays
+        $values = array_filter($values);
 
         $fields = $subForm->getFieldset();
 

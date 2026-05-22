@@ -20,7 +20,7 @@ use Joomla\CMS\Language\Text;
 /**
  * Renders a select element.
  */
-class StyleFormatField extends FormField
+class StyleformatField extends FormField
 {
     /*
      * Element type
@@ -28,7 +28,7 @@ class StyleFormatField extends FormField
      * @access    protected
      * @var        string
      */
-    protected $type = 'StyleFormat';
+    protected $type = 'Styleformat';
 
     protected function getInput()
     {

@@ -15,7 +15,7 @@ use Joomla\CMS\Form\Field\OrderingField;
  *
  * @since       1.6
  */
-class ProfileOrderingField extends OrderingField
+class ProfileorderingField extends OrderingField
 {
     /**
      * The form field type.
@@ -29,7 +29,7 @@ class ProfileOrderingField extends OrderingField
     /**
      * Builds the query for the ordering list.
      *
-     * @return JDatabaseQuery The query for the ordering form field
+     * @return \Joomla\Database\DatabaseQuery The query for the ordering form field
      */
     protected function getQuery()
     {

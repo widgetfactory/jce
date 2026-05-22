@@ -7,7 +7,7 @@ defined('JPATH_SITE') or die;
 use Joomla\CMS\Form\Field\CheckboxesField;
 use Joomla\CMS\Language\Text;
 
-class BlockFormatsField extends CheckboxesField
+class BlockformatsField extends CheckboxesField
 {
     /**
      * The form field type.

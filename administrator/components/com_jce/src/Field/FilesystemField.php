@@ -8,9 +8,8 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormFactoryInterface;
-use Joomla\CMS\Plugin\PluginHelper;
 
-class FileSystemField extends ListField
+class FilesystemField extends ListField
 {
     /**
      * The form field type.

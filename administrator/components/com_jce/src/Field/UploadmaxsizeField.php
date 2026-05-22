@@ -11,7 +11,7 @@ defined('JPATH_SITE') or die;
 use Joomla\CMS\Form\Field\NumberField;
 use Joomla\CMS\Language\Text;
 
-class UploadMaxSizeField extends NumberField
+class UploadmaxsizeField extends NumberField
 {
     /**
      * The form field type.

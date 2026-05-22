@@ -11,7 +11,7 @@ use Joomla\CMS\Language\Text;
 \defined('_JEXEC') or die;
 // phpcs:enable PSR1.Files.SideEffects
 
-class KeyValueField extends FormField
+class KeyvalueField extends FormField
 {
     /**
      * The form field type.
@@ -20,7 +20,7 @@ class KeyValueField extends FormField
      *
      * @since  2.8
      */
-    protected $type = 'KeyValue';
+    protected $type = 'Keyvalue';
 
     /**
      * Method to get the field input markup.

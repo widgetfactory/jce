@@ -79,7 +79,7 @@ class ContainerField extends FormField
     /**
      * Build a subform from a container <field> but strip nested <field> descendants.
      *
-     * @param  SimpleXMLElement $container  The <field type="container" ...> element (eg. $this->element)
+     * @param  \SimpleXMLElement $container  The <field type="container" ...> element (eg. $this->element)
      * @param  array            $data       Data to bind
      * @param  string           $control    Control name
      * @param  string           $name       Form name

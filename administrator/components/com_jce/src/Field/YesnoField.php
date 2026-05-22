@@ -4,9 +4,9 @@ namespace Joomla\Component\Jce\Administrator\Field;
 defined('JPATH_SITE') or die;
 
 use Joomla\CMS\Form\Field\RadioField;
-use SimpleXMLElement;
+use \SimpleXMLElement;
 
-class YesNoField extends RadioField
+class YesnoField extends RadioField
 {
     /**
      * The form field type.
@@ -15,12 +15,12 @@ class YesNoField extends RadioField
      *
      * @since  11.1
      */
-    protected $type = 'YesNo';
+    protected $type = 'Yesno';
 
     /**
      * Method to attach a JForm object to the field.
      *
-     * @param SimpleXMLElement $element The SimpleXMLElement object representing the <field /> tag for the form field object
+     * @param \SimpleXMLElement $element The \SimpleXMLElement object representing the <field /> tag for the form field object
      * @param mixed            $value   The form field value to validate
      * @param string           $group   The field name group control value. This acts as as an array container for the field.
      *                                  For example if the field has name="foo" and the group value is set to "bar" then the

@@ -7,7 +7,7 @@ defined('JPATH_SITE') or die;
 use Joomla\CMS\Form\Field\ListField;
 use Joomla\CMS\Language\Text;
 
-class ElementListField extends ListField
+class ElementlistField extends ListField
 {
     /**
      * The form field type.
@@ -16,7 +16,7 @@ class ElementListField extends ListField
      *
      * @since  11.1
      */
-    protected $type = 'ElementList';
+    protected $type = 'Elementlist';
 
     /**
      * Method to get the field options.
