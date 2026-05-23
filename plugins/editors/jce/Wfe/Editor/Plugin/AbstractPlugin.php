@@ -34,19 +34,28 @@ class AbstractPlugin
 {
     use ConfigurationTrait;
 
-    // Application instance
+    /** 
+     * Application instance
+     * @var    \Wfe\Application\Application
+     */
     protected $application;
 
-    // Document instance
+    /** 
+     * Document instance
+     * @var    \Wfe\Document\Document
+     */
     protected $document;
 
-    // Tabs instance
+    /** 
+     * Tabs instance
+     * @var    \Wfe\Document\Tabs
+     */
     protected $tabs;
 
-    // array of alerts
-    private $_alerts = array();
-
-    // plugin name
+    /** 
+     * Plugin name
+     * @var    string
+     */
     protected $name = '';
 
     /**
@@ -86,7 +95,7 @@ class AbstractPlugin
         $config['name'] = $name;
 
         if (!array_key_exists('base_path', $config)) {
-            $config['base_path'] = WF_EDITOR_PLUGINS . '/' . $name;
+            $config['base_path'] = WF_EDITOR_PLUGINS . '/' . ucfirst($name);
         }
 
         if (!defined('WF_EDITOR_PLUGIN')) {
@@ -126,7 +135,7 @@ class AbstractPlugin
     /**
      * Get plugin View.
      *
-     * @return WFView
+     * @return \Wfe\Document\View
      */
     public function getView()
     {
@@ -611,7 +620,7 @@ class AbstractPlugin
     /**
      * Convert a url to path.
      *
-     * @param    string     The url to convert
+     * @param  string $url The url to convert
      *
      * @return string Full path to file
      */
@@ -623,7 +632,8 @@ class AbstractPlugin
     /**
      * Returns an image url.
      *
-     * @param    string     The file to load including path and extension eg: libaries.image.gif
+     * @param  string $image The file to load including path and extension eg: libaries.image.gif
+     * @param  string $root  The root directory
      *
      * @return string Image url
      */
