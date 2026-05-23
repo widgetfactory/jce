@@ -12,8 +12,9 @@
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+
 ?>
-<form class="uk-form uk-form-horizontal" onsubmit="return false;" action="<?php echo $this->action; ?>" target="_self" method="post" enctype="multipart/form-data">
+<form class="uk-form uk-form-horizontal" onsubmit="return false;" action="<?php echo $this->getConfig('action'); ?>" target="_self" method="post" enctype="multipart/form-data">
   <div id="browser">
     <nav class="uk-navbar uk-grid uk-grid-collapse uk-width-1-1">
       <div id="browser-message" class="uk-width-5-10 uk-navbar-content uk-padding-remove">
