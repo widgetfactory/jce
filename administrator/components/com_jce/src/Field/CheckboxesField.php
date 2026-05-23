@@ -176,6 +176,6 @@ class CheckboxesField extends ListField
      */
     protected function getLayoutPaths()
     {
-        return array(JPATH_ADMINISTRATOR . '/layouts', JPATH_SITE . '/layouts');
+        return array(JPATH_ADMINISTRATOR . '/components/com_jce/layouts', JPATH_SITE . '/layouts');
     }
 }
