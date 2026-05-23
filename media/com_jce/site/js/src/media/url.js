@@ -31,7 +31,7 @@ export function getBasePath(elm) {
 export function updateMediaUrl(row, options) {
     const elements = Array.from(row.querySelectorAll('.field-media-wrapper'));
 
-    if (!elements.includes(row)) {
+    if (!elements.length) {
         elements.push(row);
     }
 
@@ -53,9 +53,11 @@ export function updateMediaUrl(row, options) {
         }
 
         // update field id with index
-        const rowIndex = row.parentNode ? Array.from(row.parentNode.children).indexOf(row) : 0;
-        id = id.replace('rowX', 'row' + rowIndex);
-        inp.setAttribute('id', id);
+        if (id.indexOf('rowX') !== -1) {
+            const rowIndex = row.parentNode ? Array.from(row.parentNode.children).indexOf(row) : 0;
+            id = id.replace('rowX', 'row' + rowIndex);
+            inp.setAttribute('id', id);
+        }
 
         el.classList.add('wf-media-wrapper');
 
@@ -91,7 +93,7 @@ export function updateMediaUrl(row, options) {
             let supportedExtensions = false;
 
             try {
-                supportedExtensions = JSON.parse(row.getAttribute('supported-extensions') || '{}');
+                supportedExtensions = JSON.parse(el.getAttribute('supported-extensions') || '{}');
             } catch (e) {
                 supportedExtensions = false;
             }
