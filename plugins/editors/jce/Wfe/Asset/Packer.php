@@ -21,7 +21,6 @@ class Packer
     const IMPORT_RX = '#@import.*?(?:\(([^\)]+)\);|(?:[\'"]([^\'"]+)[\'"]);)#i'; // match @import url('...'); or @import '...'; or @import "...";
 
     protected $files = array();
-    protected $type = 'javascript';
     protected $text = '';
     protected $start = '';
     protected $end = '';
@@ -72,12 +71,12 @@ class Packer
 
     public function setType($type)
     {
-        $this->type = $type;
+        $this->setConfig(array('type' => $type));
     }
 
     public function getType()
     {
-        return $this->type;
+        return $this->getConfig('type');
     }
 
     /**
@@ -240,7 +239,7 @@ class Packer
 
         try {
             $compressor = new \tubalmartin\CssMin\Minifier();
-            $css = $compressor->run($text);
+            $css = $compressor->run($css);
         } catch (\Exception $e) {
         }
 
@@ -338,7 +337,7 @@ class Packer
                     $this->setConfig('_imgbase', dirname($file));
 
                     // process urls
-                    $text = preg_replace_callback('#url\s?\([\'"]?([^\'"\))]+)[\'"]?\)#', array('WFPacker', 'processPaths'), $text);
+                    $text = preg_replace_callback('#url\s?\([\'"]?([^\'"\))]+)[\'"]?\)#', [$this, 'processPaths'], $text);
                 }
                 // make sure text ends in a semi-colon;
                 if ($this->getType() == 'javascript') {
