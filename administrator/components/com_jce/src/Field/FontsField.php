@@ -54,18 +54,6 @@ class FontsField extends CheckboxesField
         'Wingdings' => 'wingdings,zapf dingbats',
     );
 
-    /**
-     * Allow to override renderer include paths in child fields
-     *
-     * @return  array
-     *
-     * @since   3.5
-     */
-    protected function getLayoutPaths()
-    {
-        return array(JPATH_ADMINISTRATOR . '/components/com_jce/layouts', JPATH_SITE . '/layouts');
-    }
-
     protected function getOptions()
     {
         $fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
@@ -140,5 +128,17 @@ class FontsField extends CheckboxesField
         }
 
         return array_merge($options, $custom);
+    }
+
+    /**
+     * Allow to override renderer include paths in child fields
+     *
+     * @return  array
+     *
+     * @since   3.5
+     */
+    protected function getLayoutPaths()
+    {
+        return array(JPATH_ADMINISTRATOR . '/components/com_jce/layouts', JPATH_SITE . '/layouts');
     }
 }
