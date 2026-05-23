@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -7,6 +8,7 @@
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 namespace Wfe\Document;
 
 \defined('_JEXEC') or die;
@@ -25,7 +27,7 @@ use Wfe\Utility\Utility;
 class Document
 {
     use ConfigurationTrait;
-    
+
     /**
      * Array of linked scripts.
      *
@@ -94,6 +96,11 @@ class Document
         'imgmanager_ext' => 'imagepro',
     );
 
+    /**
+     * Document instance
+     *
+     * @var \Wfe\Document\Document 
+     */
     private static $sharedInstance;
 
     /**
@@ -226,7 +233,7 @@ class Document
     /**
      * Sets the global document direction declaration. Default is left-to-right (ltr).
      *
-     * @param string $lang
+     * @param string $dir The direction to set
      */
     public function setDirection($dir = 'ltr')
     {
@@ -234,7 +241,7 @@ class Document
     }
 
     /**
-     * Returns the document language.
+     * Returns the document direction.
      *
      * @return string
      */
@@ -246,10 +253,10 @@ class Document
     /**
      * Returns a JCE resource url.
      *
-     * @param     string  The path to resolve eg: libaries
-     * @param     bool Create a relative url
+     * @param  string $path The path to resolve eg: libaries
+     * @param  string $type The url type
      *
-     * @return full url
+     * @return string Full url
      */
     private function getBaseURL($path, $type = '')
     {
@@ -319,7 +326,12 @@ class Document
 
         return $url[$signature];
     }
-
+    
+    /**
+     * Returns the loaded scripts.
+     *
+     * @return array
+     */
     public function getScripts()
     {
         return $this->scripts;
@@ -332,7 +344,7 @@ class Document
      *
      * @return string
      */
-    private function urlToPath($url)
+    public function urlToPath($url)
     {
         $root = Uri::root(true);
 
@@ -347,9 +359,10 @@ class Document
     /**
      * Returns an image url.
      *
-     * @param string  The file to load including path and extension eg: libaries.image.gif
+     * @param string $image The file to load including path and extension eg: libaries.image.gif
+     * @param string $root  The root directory
      *
-     * @return Image url
+     * @return string Image url
      *
      * @since 1.5
      */
@@ -366,19 +379,40 @@ class Document
 
         return $this->getBaseURL($root) . implode('/', $parts);
     }
-
+    
+    /**
+     * Removes a javascript file.
+     *
+     * @param string $file The file to remove
+     * @param string $root The root directory
+     * @return void
+     */
     public function removeScript($file, $root = 'media')
     {
         $file = $this->buildAssetPath($file, $root, 'js');
         unset($this->scripts[$file]);
     }
-
+    
+    /**
+     * Removes a CSS file.
+     *
+     * @param string $file The file to remove
+     * @param string $root The root directory
+     * @return void
+     */                
     public function removeCss($file, $root = 'media')
     {
         $file = $this->buildAssetPath($file, $root, 'css');
         unset($this->styles[$file]);
     }
-
+    /**
+     * Build an asset path
+     *
+     * @param string $file The file to build the path for
+     * @param string $root The root directory
+     * @param string $ext The file extension
+     * @return string The generated path
+     */
     private function buildAssetPath($file, $root, $ext)
     {
         $file = preg_replace('#[^A-Z0-9-_\/\.]#i', '', $file);
@@ -390,11 +424,25 @@ class Document
         return preg_replace('#[/\\\\]+#', '/', $file);
     }
 
+    /**
+     * Build a script path
+     *
+     * @param string $file The file to build the path for
+     * @param string $root The root directory
+     * @return string The generated path
+     */
     public function buildScriptPath($file, $root)
     {
         return $this->buildAssetPath($file, $root, 'js');
     }
-
+    
+    /**
+     * Build a style path
+     *
+     * @param string $file The file to build the path for
+     * @param string $root The root directory
+     * @return string The generated path
+     */
     public function buildStylePath($file, $root)
     {
         return $this->buildAssetPath($file, $root, 'css');
@@ -403,10 +451,11 @@ class Document
     /**
      * Loads a javascript file.
      *
-     * @param string  The file to load including path eg: libaries.manager
-     * @param bool Debug mode load src file
+     * @param string|array $files The file(s) to load including path eg: libaries.manager
+     * @param string $root The root directory
+     * @param string $type The script type
      *
-     * @return echo script html
+     * @return void
      *
      * @since 1.5
      */
@@ -429,10 +478,11 @@ class Document
     /**
      * Loads a css file.
      *
-     * @param string The file to load including path eg: libaries.manager
-     * @param string Root folder
+     * @param string|array $files The file(s) to load including path eg: libaries.manager
+     * @param string $root The root directory
+     * @param string $type The stylesheet type
      *
-     * @return echo css html
+     * @return void
      *
      * @since 1.5
      */
@@ -447,6 +497,13 @@ class Document
         }
     }
 
+    /**
+     * Adds a script declaration.
+     *
+     * @param string $content The script content
+     * @param string $type The script type
+     * @return void
+     */
     public function addScriptDeclaration($content, $type = 'text/javascript')
     {
         if (!isset($this->script[strtolower($type)])) {
@@ -455,19 +512,13 @@ class Document
             $this->script[strtolower($type)] .= chr(13) . $content;
         }
     }
-
+    
     /**
-     * Setup head data.
+     * Build a query string
+     *
+     * @param array $query The query parameters
+     * @return string The generated query string
      */
-    private function setHead($data)
-    {
-        if (is_array($data)) {
-            $this->head = array_merge($this->head, $data);
-        } else {
-            $this->head[] = $data;
-        }
-    }
-
     public function getQueryString($query = array())
     {
         $app = Factory::getApplication();
@@ -503,6 +554,12 @@ class Document
         return http_build_query($query);
     }
 
+    /**
+     * Generate a hash for the given files.
+     *
+     * @param array|string $files The files to generate the hash for
+     * @return string The generated hash
+     */
     private function getHash($files)
     {
         $seed = '';
@@ -528,6 +585,8 @@ class Document
 
     /**
      * Render document head data.
+     *
+     * @return string The document head data
      */
     private function getHead()
     {
@@ -587,17 +646,29 @@ class Document
         return $output;
     }
 
+    /**
+     * Set the body content.
+     *
+     * @param string $data The body content
+     * @return void
+     */
     public function setBody($data = '')
     {
         $this->body = $data;
     }
 
+    /** 
+     * Load the template data.
+     *
+     * @return string The template data
+     */
     private function loadData()
     {
-        //get the file content
         ob_start();
+
         require_once WF_EDITOR . '/views/plugin/index.php';
         $data = ob_get_contents();
+
         ob_end_clean();
 
         return $data;
@@ -605,6 +676,8 @@ class Document
 
     /**
      * Render the document.
+     *
+     * @return void
      */
     public function render()
     {
@@ -615,16 +688,28 @@ class Document
         exit($output);
     }
 
+    /**
+     * Parse the document data.
+     *
+     * @param string $data The document data
+     * @return string The parsed data
+     */
     private function parseData($data)
     {
         $data = preg_replace_callback('#<!-- \[head\] -->#', array($this, 'getHead'), $data);
-        $data = preg_replace_callback('#<!-- \[body\] -->#', function() { return $this->body; }, $data);
+        $data = preg_replace_callback('#<!-- \[body\] -->#', function () {
+            return $this->body;
+        }, $data);
 
         return $data;
     }
 
     /**
-     * pack function for plugins.
+     * Pack function for plugins.
+     *
+     * @param bool $minify Whether to minify the files
+     * @param bool $gzip Whether to gzip the files
+     * @return void
      */
     public function pack($minify = true, $gzip = false)
     {
