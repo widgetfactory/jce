@@ -15,9 +15,8 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\MVC\Model\AdminModel;
-use Joomla\CMS\Table\Table;
 
-use Wfe\Utility\Utility;
+use Wfe\Helper\StringHelper;
 
 /**
  * Releases model.
@@ -94,7 +93,7 @@ class ConfigModel extends AdminModel
             // settings syntax, eg: key:value
             if (is_string($config['custom_config']) && strpos($config['custom_config'], ':') !== false) {
 
-                if (!Utility::isJson($config['custom_config'])) {
+                if (!StringHelper::isJson($config['custom_config'])) {
                     $values = explode(';', $config['custom_config']);
 
                     // reset as array
