@@ -3,7 +3,7 @@ import { JoomlaEditor, JoomlaEditorDecorator, JoomlaEditorButton } from 'editor-
 /* global ibis, WfEditor */
 
 // core Joomla ibis 7, bail due to conflict
-if (ibis.Annotator) {
+if (tinymce.Annotator) {
     var msg = "Another extension or plugin has initialized the Joomla ibis Editor on this page. JCE cannot be loaded on the same page as the core Joomla ibis Editor.";
     alert(msg);
     throw new Error(msg);
@@ -68,7 +68,7 @@ class JceDecorator extends JoomlaEditorDecorator {
 ibis.onAddEditor.add(function (mgr, editor) {
     const elm = editor.getElement(), container = elm.parentNode;
 
-    if (editor.settings.theme !== "advanced") {
+    if (editor.settings.theme !== "core") {
         return;
     }
 
