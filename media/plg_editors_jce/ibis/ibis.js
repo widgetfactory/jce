@@ -10793,7 +10793,6 @@
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
 
-
   /**
    * Copyright (c) 2025 Ryan Demmer
    * Licensed under the GNU General Public License v2.0 or later
@@ -17380,6 +17379,9 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
+        if (predicate && predicate(node)) {
+          break;
+        }
 
         parents.push(node);
       }
@@ -20391,7 +20393,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20431,10 +20432,10 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    clearData: clearData,
-    getData: getData$1,
     hasData: hasData,
-    setData: setData
+    getData: getData$1,
+    setData: setData,
+    clearData: clearData
   });
 
   /**
@@ -20446,7 +20447,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var noop = function () { };
 
@@ -20667,7 +20667,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {};
+    var div = DOM.create('div', {}, content), styles = {}, css = '';
 
     styles = ibis.extend(styles, parseCSS(content));
 
@@ -20687,10 +20687,16 @@
         return true;
       }
       
-      {
+      if (!embed_stylesheet) {
         DOM.setStyles(DOM.select(selector, div), value.styles);
+      } else {
+        css += value.text;
       }
     });
+
+    if (css) {
+      div.prepend(DOM.create('style', { type: 'text/css' }, css));
+    }
 
     content = div.innerHTML;
 
@@ -20874,7 +20880,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$5 = ibis.each;
 
@@ -21247,7 +21252,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$4 = ibis.each,
       Schema = ibis.html.Schema,
@@ -22186,7 +22190,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   var each$3 = ibis.each;
   var isIE$1 = ibis.isIE || ibis.isIE12;
 
@@ -22609,7 +22612,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$2 = ibis.each,
       VK = ibis.VK,
@@ -23292,7 +23294,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   var RangeUtils = ibis.dom.RangeUtils, Delay = ibis.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23673,7 +23674,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var Dispatcher = ibis.util.Dispatcher;
 
@@ -24324,7 +24324,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, 0);
+        }, time || 0);
       };
 
       func.stop = function () {
@@ -29185,9 +29185,8 @@
         if (s.constrain) {
           w = co.clientWidth - ot;
           h = co.clientHeight - ot;
-          // fixed menus use viewport-relative coords; absolute menus use document coords
-          mx = s.fixed ? vp.w : vp.x + vp.w;
-          my = s.fixed ? vp.h : vp.y + vp.h;
+          mx = vp.x + vp.w;
+          my = vp.y + vp.h;
 
           if ((x + s.vp_offset_x + w) > mx) {
             x = px ? px - w : Math.max(0, (mx - s.vp_offset_x) - w);
@@ -29198,10 +29197,24 @@
           }
         }
 
+        // Flip above the control if the menu extends below the viewport bottom and the page is not scrolled
+        if (py && vp.y === 0 && (y + co.clientHeight) > (vp.y + vp.h)) {
+          y = py - co.clientHeight;
+          DOM.addClass(co, cp + 'Above');
+        } else {
+          DOM.removeClass(co, cp + 'Above');
+        }
+
+        // use fixed positioning if the menu originates in a modal
+        if (document.querySelector('.mceModal')) {
+          x -= vp.x;
+          y -= vp.y;
+          DOM.setStyle(co, 'position', 'fixed');
+        }
+
         DOM.setStyles(co, {
           left: x,
-          top: y,
-          position: s.fixed ? 'fixed' : 'absolute'
+          top: y
         });
 
         self.isMenuVisible = 1;
@@ -30218,7 +30231,7 @@
             DOM.setAttrib(this.id, 'aria-valuenow', item.title);
           }
 
-          if (self.menu) {          
+          if (self.menu) {
             self.menu.selectItem(self.menu.items[item.id], item.selected);
           }
 
@@ -30357,7 +30370,7 @@
 
         // find and clear input element
         input.value = '';
-        
+
         if (removetags) {
           DOM.remove(DOM.select('.mceButtonTag', this.id));
         }
@@ -30433,7 +30446,7 @@
       showMenu: function () {
         var self = this,
           pos, elm = DOM.get(this.id),
-          menu;
+          menu, prefix = this.classPrefix;
 
         if (this.isDisabled()) {
           return;
@@ -30448,21 +30461,11 @@
           return;
         }
 
-        menu = this.menu;
+        pos = DOM.getPos(elm);
 
-        // When the trigger is inside a fixed-position modal, use viewport-relative
-        // coordinates and position:fixed so the menu doesn't drift on page scroll.
-        if (DOM.getParent(elm, '.mceModal')) {
-          var rect = elm.getBoundingClientRect();
-          menu.settings.offset_x = rect.left;
-          menu.settings.offset_y = rect.top;
-          menu.settings.fixed = true;
-        } else {
-          pos = DOM.getPos(elm);
-          menu.settings.offset_x = pos.x;
-          menu.settings.offset_y = pos.y;
-          menu.settings.fixed = false;
-        }
+        menu = this.menu;
+        menu.settings.offset_x = pos.x;
+        menu.settings.offset_y = pos.y;
 
         if (!this.settings.max_width) {
           menu.settings.max_width = elm.offsetWidth;
@@ -30481,11 +30484,19 @@
           }
         });
 
-        menu.showMenu(0, elm.clientHeight, 0, menu.settings.offset_y);
+        menu.showMenu(0, elm.clientHeight, 0, pos.y);
 
         Event.add(DOM.doc, 'mousedown', this.hideMenu, this);
 
-        DOM.addClass(this.id, this.classPrefix + 'Selected');
+        DOM.addClass(this.id, prefix + 'Selected');
+
+        window.setTimeout(function () {
+          if (DOM.hasClass('menu_' + menu.id, 'mceMenuAbove')) {
+            DOM.addClass(self.id, 'mceMenuAbove');
+          } else {
+            DOM.removeClass(self.id, 'mceMenuAbove');
+          }
+        }, 0);
 
         this.setAriaProperty('expanded', true);
       },
@@ -30524,9 +30535,10 @@
         var self = this,
           menu;
 
-          var cls = this.classPrefix + 'Menu' + (this.settings.menu_class ? ' ' + this.settings.menu_class : '');
+        var cm = this.settings.control_manager;
+        var cls = this.classPrefix + 'Menu' + (this.settings.menu_class ? ' ' + this.settings.menu_class : '');
 
-        menu = this.settings.control_manager.createDropMenu(this.id + '_menu', {
+        menu = cm.createDropMenu(this.id + '_menu', {
           class: cls,
           max_width: this.settings.max_width || 250,
           max_height: this.settings.max_height || '',
@@ -30655,54 +30667,54 @@
           });
 
           Event.add(this.id + '_input', 'keydown', function (evt) {
-          switch (evt.keyCode) {
-            // enter
-            case 13:
-              Event.cancel(evt);
-
-              if (this.value === "") {
-                self.showMenu();
-              } else {
-                if (self.settings.onselect(this.value) !== false) {
-                  self.select(this.value);
-                }
-
-                self.hideMenu();
-
-                this.value = "";
-              }
-              break;
-            // down arrow
-            case 40:
-            case 38:
-              self.showMenu();
-              Event.cancel(evt);
-              self.menu.focus();
-              break;
-            // backspace
-            case 8:
-              // keep normal behaviour while input has a value
-              if (this.value) {
-                return;
-              }
-
-              var tags = DOM.select('button', evt.target.parentNode);
-
-              if (tags.length) {
-                var tag = tags.pop(), val = tag.value;
-
-                // remove tag
-                self.removeTag(tag);
-
+            switch (evt.keyCode) {
+              // enter
+              case 13:
                 Event.cancel(evt);
 
-                // update value with tag value and focus
-                this.value = val;
-                this.focus();
-              }
+                if (this.value === "") {
+                  self.showMenu();
+                } else {
+                  if (self.settings.onselect(this.value) !== false) {
+                    self.select(this.value);
+                  }
 
-              break;
-          }
+                  self.hideMenu();
+
+                  this.value = "";
+                }
+                break;
+              // down arrow
+              case 40:
+              case 38:
+                self.showMenu();
+                Event.cancel(evt);
+                self.menu.focus();
+                break;
+              // backspace
+              case 8:
+                // keep normal behaviour while input has a value
+                if (this.value) {
+                  return;
+                }
+
+                var tags = DOM.select('button', evt.target.parentNode);
+
+                if (tags.length) {
+                  var tag = tags.pop(), val = tag.value;
+
+                  // remove tag
+                  self.removeTag(tag);
+
+                  Event.cancel(evt);
+
+                  // update value with tag value and focus
+                  this.value = val;
+                  this.focus();
+                }
+
+                break;
+            }
           });
         } // end combobox input handlers
 
@@ -31813,10 +31825,16 @@
         m.settings.vp_offset_x = pos.x;
         m.settings.vp_offset_y = pos.y;
         m.settings.keyboard_focus = self._focused;
-        m.showMenu(0, e.offsetHeight);
+        m.showMenu(0, e.offsetHeight, 0, pos.y);
 
         Event.add(DOM.doc, 'mousedown', self.hideMenu, self);
         self.setState('Selected', 1);
+
+        if (DOM.hasClass('menu_' + m.id, 'mceMenuAbove')) {
+          DOM.addClass(self.id, 'mceMenuAbove');
+        } else {
+          DOM.removeClass(self.id, 'mceMenuAbove');
+        }
 
         self.isMenuVisible = 1;
 
@@ -33846,6 +33864,249 @@
               }
           }
       });
+  })(ibis);
+
+  /**
+   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+  (function (ibis) {
+    var DOM = ibis.DOM,
+      each = ibis.each,
+      extend = ibis.extend,
+      Event = ibis.dom.Event,
+      Dispatcher = ibis.util.Dispatcher;
+
+    /**
+     * This class is used to create a size (dimension) control.
+     *
+     * @class ibis.ui.SizeBox
+     * @extends ibis.ui.Control
+     * @example
+     */
+    ibis.create('ibis.ui.SizeBox:ibis.ui.Control', {
+      /**
+       * Constructs a new textbox control instance.
+       *
+       * @constructor
+       * @method TextBox
+       * @param {String} id Control id for the list box.
+       * @param {Object} s Optional name/value settings object.
+       * @param {Editor} ed Optional the editor instance this button is for.
+       */
+      SizeBox: function (id, s, ed) {
+
+        s = ibis.extend({
+          class: ''
+        }, s);
+
+        this._super(id, s, ed);
+
+        this.type = 'sizebox';
+
+        /**
+         * Fires when the selection has been changed.
+         *
+         * @event onChange
+         */
+        this.onChange = new Dispatcher(this);
+
+        /**
+         * Fires after the element has been rendered to DOM.
+         *
+         * @event onPostRender
+         */
+        this.onPostRender = new Dispatcher(this);
+
+        this.classPrefix = 'mceSizeBox';
+      },
+
+      /**
+       * Sets / gets the input value.
+       *
+       * @method select
+       * @param {String/function} val Value to set for the textbox.
+       */
+      value: function (val) {
+        var self = this;
+        
+        if (!arguments.length) {
+          var values = {
+            'width' : DOM.get(this.id + '_width').value,
+            'height': DOM.get(this.id + '_height').value
+          };
+
+          return values;
+        }
+
+        if (typeof val === 'object') {
+          each(['width', 'height'], function (name) {
+            var value = val[name] || '';
+            DOM.setValue(self.id + '_' + name, value);
+          });
+
+          return this;
+        }
+      },
+
+      /**
+       * Renders the text box as a HTML string. This method is much faster than using the DOM and when
+       * creating a whole toolbar with buttons it does make a lot of difference.
+       *
+       * @method renderHTML
+       * @return {String} HTML for the text control element.
+       */
+      renderHTML: function () {
+        var self = this, html = '',
+          prefix = this.classPrefix, s = this.settings;
+
+        var type = s.subtype ? s.subtype : 'text';
+
+        html += '<div class="' + prefix + '">';
+
+        var controls = [];
+
+        each(['width', 'height'], function (name) {
+
+          var attribs = extend({
+            type: type,
+            class: 'mceTextBox ' + s['class'],
+            tabindex: 0
+          }, s.attributes || {});
+
+          attribs.id = self.id + '_' + name;
+          attribs.name = name;
+
+          controls.push(DOM.createHTML('input', attribs));
+        });
+
+        html += controls.join('<span class="mceSeparator">x</span>');
+
+        // add a checkbox to trigger proportional sizing
+        html += '<input type="checkbox" id="' + self.id + '_proportional" class="mceCheckBox" />';
+
+        html += '</div>';
+
+        return html;
+      },
+
+      updateSize: function (name, fromInput) {
+        var other, tmp, temp;
+
+        // get the value of the current input element
+        var value = DOM.get(this.id + '_' + name).value;
+
+        var values = this.value(),
+          constrain = DOM.get(this.id + '_proportional').checked;
+
+        for (var key in values) {
+          if (key === name) {
+            tmp = values[key];
+
+            values[key] = value;
+          } else {
+            other = DOM.get(this.id + '_' + key).value;
+            values[key] = other;
+          }
+        }
+
+        // update values
+        this.value(values);
+
+        // passed in value, not altered
+        if (!fromInput) {
+          return;
+        }
+
+        if (tmp && value && other) {
+
+          if (value.indexOf('%') !== -1 || other.indexOf('%') !== -1) {
+            return;
+          }
+
+          if (constrain) {
+            temp = ((value / tmp) * other).toFixed(0);
+          }
+        }
+
+        for (var key in values) {
+          if (key === name) {
+            values[key] = value;
+          } else {
+            values[key] = temp || other;
+
+            // set the other field
+            if (temp) {
+              DOM.setValue(this.id + '_' + key, temp);
+            }
+          }
+        }
+
+        // update values
+        this.value(values);
+      },
+
+      /**
+       * Post render event. This will be executed after the control has been rendered and can be used to
+       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
+       *
+       * @method postRender
+       */
+      postRender: function () {
+        var self = this, s = this.settings;
+
+        if (typeof s.value !== 'undefined') {
+          this.value(s.value);
+        }
+
+        each(['width', 'height'], function (name) {
+          Event.add(self.id + '_' + name, 'change', function (e) {
+            var fromInput = !!e.target.nodeType;
+
+            self.updateSize(name, fromInput);
+
+            self.onChange.dispatch(self, this);
+          });
+        });
+
+        if (s.onchange && typeof s.onchange === 'function') {
+          this.onChange.add(s.onchange);
+        }
+
+        this.onPostRender.dispatch(this, DOM.get(this.id));
+      },
+
+      /**
+       * Sets the disabled state for the control. This will add CSS classes to the
+       * element that contains the control. So that it can be disabled visually.
+       *
+       * @method setDisabled
+       * @param {Boolean} state Boolean state if the control should be disabled or not.
+       */
+      setDisabled: function (state) {
+        this._super(state);
+
+        var elm = DOM.get(this.id);
+
+        if (elm) {
+          elm.disabled = state;
+        }
+      },
+
+      /**
+       * Destroys the TextBox i.e. clear memory and events.
+       *
+       * @method destroy
+       */
+      destroy: function () {
+        this._super();
+
+        Event.clear(this.id);
+      }
+    });
   })(ibis);
 
   /**
@@ -41370,6 +41631,36 @@
         return self.add(c);
       },
 
+      createSizeBox: function (id, s, cc) {
+        var self = this,
+          ed = self.editor,
+          c, cls;
+
+        id = self.prefix + id;
+
+        c = self.get(id);
+
+        if (c) {
+          return c;
+        }
+
+        s.title = ed.translate(s.title);
+        s.label = ed.translate(s.label);
+        s.scope = s.scope || ed;
+
+        s = extend({
+          title: s.title,
+          'class': 'mce_' + id,
+          scope: s.scope,
+          control_manager: self
+        }, s);
+
+        cls = cc || ibis.ui.SizeBox;
+        c = new cls(id, s, ed);
+
+        return self.add(c);
+      },
+
       /**
        * Creates a panel container control instance by id.
        *
@@ -43446,7 +43737,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if ((!format.mixed || !isBlock(formatRoot))) {
+            if (split && (!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -43461,7 +43752,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container);
+          return wrapAndSplit(findFormatRoot(container), container, container, true);
         }
 
         function unwrap(start) {
@@ -47890,7 +48181,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(',');
+      return (str || '').split(delim || ',');
   }
 
   // list of HTML tags
@@ -52446,7 +52737,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return ('blobid') + (count++);
+          return (prefix || 'blobid') + (count++);
       };
 
       function isSupportedImage(value) {
