@@ -110,6 +110,12 @@
             border-bottom: 0 none;
         }
 
+        &.mceMenuAbove::after {
+            bottom: 0;
+            top: 1px;
+            height: 2px;
+        }
+
         .mceText,
         &:hover .mceText {
             background: #fff;
@@ -260,6 +266,10 @@
     overflow: visible;
     overflow-y: auto;
     max-width: 20em;
+
+    &.mceMenuAbove {
+        margin: 0;
+    }
 }
 
 /*.mceSplitButtonMenu:before {

@@ -1,224 +1,24 @@
 // out: false
-/* ListBox */
-.mceDefaultSkin {
-    .mceListBox {
-        display: flex;
-        flex-direction: row;
 
-        .mceText {
-            padding: 0 4px;
-            min-width: 96px;
-            height: 32px;
-            text-align: left;
-            border: 1px solid #ddd;
-            border-right: 0;
-            background: #fff;
-            line-height: 2;
-            overflow: hidden;
-            border-radius: 2px 0 0 2px;
-            cursor: pointer;
-        }
+@listbox-height: 32px;
+@listbox-combo-height: 30px;
+@listbox-min-width: 113px;
+@listbox-max-height: 386px;
+@border-color: #ddd;
+@border-color-active: #ccc;
+@color-text: #444;
+@color-disabled: gray;
+@bg-white: #fff;
+@bg-light: #fafafa;
+@bg-muted: #eee;
+@border-radius-base: 2px;
 
-        .mceOpen {
-            width: 16px;
-            height: 32px;
-            border: 1px solid #ddd;
-            text-align: center;
-            border-radius: 0 2px 2px 0;
-            cursor: pointer;
-
-            &:after {
-                content: "\25BC";
-                display: block;
-                font-size: 9px;
-                line-height: 32px;
-                color: #444;
-                text-align: center;
-            }
-        }
-
-        &:hover:not(.mceListBoxDisabled),
-        &:focus:not(.mceListBoxDisabled) {
-            .mceOpen {
-                border-color: #ccc;
-                background-color: #fafafa;
-            }
-
-            .mceText {
-                border-color: #ccc;
-            }
-        }
-
-        .mceComboBox {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            min-width: 50%;
-            flex: 1;
-            flex-wrap: wrap;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 2px;
-
-            .mceText {
-                height: 30px;
-                line-height: 32px;
-                width: 100%;
-                min-width: 25%;
-                flex: 1;
-                background: #fff;
-                cursor: text;
-                padding: 4px;
-                box-sizing: border-box;
-                border: 0 none;
-                outline: none;
-            }
-
-            .mceOpen {
-                border: 0 none;
-            }
-        }
-
-        &[role="combobox"] > button.mceOpen {
-            position: absolute;
-            right: 0;
-            height: 30px;
-            border-width: 1px 1px 0 0;
-        }
-    }
-
-    .mceListBoxSelected {
-        .mceText {
-            border: 1px solid #ccc;
-            border-right: 0;
-            background: #fff;
-            border-radius: 2px 0 0 0;
-        }
-
-        .mceOpen {
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-left: 0;
-            padding-left: 1px;
-            border-radius: 0 2px 0 0;
-        }
-
-        &:hover,
-        &:focus {
-            .mceOpen {
-                background-color: #fff;
-            }
-        }
-
-        &::after {
-            content: "";
-            padding: 2px 0;
-            width: 100%;
-            position: absolute;
-            left: 0;
-            bottom: -3px;
-            background: #fff;
-            box-sizing: border-box;
-            z-index: 700011;
-            border: 1px solid #ccc;
-            border-top: 0 none;
-            border-bottom: 0 none;
-        }
-    }
-
-    .mceListBoxDisabled {
-        .mceOpen:after {
-            color: gray;
-            cursor: not-allowed;
-        }
-
-        .mceText {
-            color: gray;
-            background-color: transparent;
-            cursor: not-allowed;
-        }
-    }
+.flex-row() {
+    display: flex;
+    flex-direction: row;
 }
 
-.mceListBoxMenu {
-    min-width: calc(113px * 2);
-    min-height: 68px;
-    height: auto;
-    max-height: 386px;
-    margin-top: 2px;
-    overflow: hidden;
-
-    .mceMenuItems {
-        overflow: hidden auto;
-        max-height: 386px;
-
-        .mceText {
-            padding: 0 8px 0 24px;
-        }
-
-        .mceSelected {
-            outline: 1px dashed #ddd;
-            background-color: #eee;
-        }
-
-        .mceHasIcon.mceSelected:before {
-            left: inherit;
-            right: 0.5em;
-        }
-    }
-
-    .mceMenuFilter {
-        border: 1px solid #ddd;
-        width: auto;
-        margin: 0.125em;
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        border-radius: 2px;
-        align-items: center;
-        padding: 0;
-        box-sizing: border-box;
-        transition: border 0.2s linear, background 0.2s linear;
-        cursor: text;
-
-        .mceMenuFilterInput {
-            position: relative;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            min-width: 50%;
-            flex: 1;
-        }
-
-        input {
-            height: 32px;
-            line-height: 32px;
-            width: 100%;
-            background: #fff;
-            cursor: text;
-            padding: 4px;
-            box-sizing: border-box;
-            border: 0 none;
-            outline: none;
-        }
-
-        svg {
-            position: absolute;
-            right: 14px;
-            top: 14px;
-            fill: #888;
-            width: 14px;
-            height: 14px;
-            vertical-align: middle;
-        }
-    }
-}
-
-/* Shared button styles: filter bar and combobox */
-.mceListBoxMenu .mceMenuFilter .mceButton,
-.mceListBox .mceComboBox .mceButton {
+.mce-button() {
     margin: 0.125em;
     position: relative;
     display: flex;
@@ -229,7 +29,7 @@
     min-height: inherit;
     padding: 0;
     box-sizing: border-box;
-    background: #eee;
+    background: @bg-muted;
 
     label {
         padding: 0.25em;
@@ -244,7 +44,7 @@
         text-align: center;
         text-indent: 0;
         content: "\00d7";
-        color: #444;
+        color: @color-text;
         line-height: 1.4;
         font-size: 1.25em;
         font-weight: 700;
@@ -253,23 +53,261 @@
     }
 }
 
-.mceListBox .mceComboBox .mceButton {
-    margin: 1px;
-    min-width: 3em;
-    padding: 0 1px 0 0;
+.text-input() {
+    height: @listbox-height;
+    line-height: @listbox-height;
+    width: 100%;
+    background: @bg-white;
+    cursor: text;
+    padding: 4px;
+    box-sizing: border-box;
+    border: 0 none;
+    outline: none;
+}
 
-    label {
-        min-width: 3em;
+/* ListBox */
+.mceDefaultSkin {
+    .mceListBox {
+        .flex-row();
+
+        .mceText {
+            padding: 0 4px;
+            min-width: 96px;
+            height: @listbox-height;
+            text-align: left;
+            border: 1px solid @border-color;
+            border-right: 0;
+            background: @bg-white;
+            line-height: 2;
+            overflow: hidden;
+            border-radius: @border-radius-base 0 0 @border-radius-base;
+            cursor: pointer;
+        }
+
+        .mceOpen {
+            width: 16px;
+            height: @listbox-height;
+            border: 1px solid @border-color;
+            text-align: center;
+            border-radius: 0 @border-radius-base @border-radius-base 0;
+            cursor: pointer;
+
+            background: inherit;
+            border-left-width: 0;
+
+            &:after {
+                content: "\25BC";
+                display: block;
+                font-size: 9px;
+                line-height: @listbox-height;
+                color: @color-text;
+                text-align: center;
+            }
+        }
+
+        &:hover:not(.mceListBoxDisabled),
+        &:focus:not(.mceListBoxDisabled) {
+            .mceText {
+                border-color: @border-color-active;
+            }
+        }
+
+        .mceComboBox {
+            position: relative;
+            .flex-row();
+            width: 100%;
+            min-width: 50%;
+            flex: 1;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid @border-color;
+            border-radius: @border-radius-base;
+
+            .mceText {
+                .text-input();
+                height: @listbox-combo-height;
+                min-width: 25%;
+                flex: 1;
+            }
+
+            .mceOpen {
+                border: 0 none;
+            }
+
+            .mceButton {
+                .mce-button();
+                margin: 1px;
+                min-width: 3em;
+                padding: 0 1px 0 0;
+
+                label {
+                    min-width: 3em;
+                    width: auto;
+                    font-size: 12px;
+                    line-height: 1.75em;
+                }
+            }
+        }
+
+        &[role="combobox"]>button.mceOpen {
+            position: absolute;
+            right: 0;
+        }
+    }
+
+    .mceListBoxSelected {
+        .mceText {
+            border: 1px solid @border-color-active;
+            border-right: 0;
+            background: @bg-white;
+            border-radius: @border-radius-base 0 0 0;
+        }
+
+        .mceOpen {
+            background-color: @bg-white;
+            border: 1px solid @border-color-active;
+            border-left: 0;
+            padding-left: 1px;
+            border-radius: 0 @border-radius-base 0 0;
+        }
+
+        &:hover,
+        &:focus {
+            .mceOpen {
+                background-color: @bg-white;
+            }
+        }
+
+        &::after {
+            content: "";
+            padding: 2px 0;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            background: @bg-white;
+            box-sizing: border-box;
+            z-index: 700011;
+            border: 1px solid @border-color-active;
+            border-top: 0 none;
+            border-bottom: 0 none;
+        }
+
+        &.mceMenuAbove::after {
+            bottom: 0;
+            top: 1px;
+            height: 2px;
+        }
+    }
+
+    .mceListBoxDisabled {
+        .mceOpen:after {
+            color: @color-disabled;
+            cursor: not-allowed;
+        }
+
+        .mceText {
+            color: @color-disabled;
+            background-color: transparent;
+            cursor: not-allowed;
+        }
+    }
+
+    &.mceModal {
+        .mceListBoxSelected {
+            &::after {
+                display: none;
+            }
+        }
+
+        .mceListBoxMenu {
+            margin: 0;
+
+            &.mceMenuAbove {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.mceListBoxMenu {
+    min-width: @listbox-min-width * 2;
+    min-height: 68px;
+    height: auto;
+    max-height: @listbox-max-height;
+    margin-top: 2px;
+    overflow: hidden;
+
+    &.mceMenuAbove {
+        margin-top: 0;
+        margin-bottom: 2px;
+    }
+
+    .mceMenuItems {
+        overflow: hidden auto;
+        max-height: @listbox-max-height;
+
+        .mceText {
+            padding: 0 8px 0 24px;
+        }
+
+        .mceSelected {
+            outline: 1px dashed @border-color;
+            background-color: @bg-muted;
+        }
+
+        .mceHasIcon.mceSelected:before {
+            left: inherit;
+            right: 0.5em;
+        }
+    }
+
+    .mceMenuFilter {
+        border: 1px solid @border-color;
         width: auto;
-        font-size: 12px;
-        line-height: 1.75em;
+        margin: 0.125em;
+        position: relative;
+        .flex-row();
+        flex-wrap: wrap;
+        border-radius: @border-radius-base;
+        align-items: center;
+        padding: 0;
+        box-sizing: border-box;
+        transition: border 0.2s linear, background 0.2s linear;
+        cursor: text;
+
+        .mceMenuFilterInput {
+            position: relative;
+            .flex-row();
+            width: 100%;
+            min-width: 50%;
+            flex: 1;
+        }
+
+        input {
+            .text-input();
+        }
+
+        .mceButton {
+            .mce-button();
+        }
+
+        svg {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+            fill: #888;
+            width: 14px;
+            height: 14px;
+            vertical-align: middle;
+        }
     }
 }
 
 select.mceNativeListBox {
     font-size: 7pt;
-    background: #fafafa;
-    border: 1px solid gray;
+    background: @bg-light;
+    border: 1px solid @color-disabled;
     margin-right: 2px;
 }
 
