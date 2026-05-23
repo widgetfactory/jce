@@ -66,7 +66,7 @@
             <file>config.xml</file>
             <file>index.html</file>
             <file>joomla.asset.json</file>
-            <file>LICENCE.txt</file>
+            <file>LICENSE.txt</file>
         </files>
 
         <languages folder="administrator/language/en-GB">
