@@ -179,10 +179,10 @@ class KeyvalueField extends FormField
                     }
                 }
 
-                // escape value
-                $tmpField->value = htmlspecialchars_decode($val);
+                $tmpField->setup($tmpField->element, $val, $this->group);
 
-                $tmpField->setup($tmpField->element, $tmpField->value, $this->group);
+                // assign value after setup() to prevent multiple-field JSON decoding
+                $tmpField->value = htmlspecialchars_decode($val);
 
                 // reset id
                 $tmpField->id .= '_' . $n;
