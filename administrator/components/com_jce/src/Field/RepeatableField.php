@@ -64,6 +64,11 @@ class RepeatableField extends FormField
         // remove emtpy arrays
         $values = array_filter($values);
 
+        // ensure at least one row so the Add button is always rendered
+        if (empty($values)) {
+            $values = [''];
+        }
+
         $fields = $subForm->getFieldset();
 
         $str[] = '<div class="form-field-repeatable">';
@@ -97,10 +102,10 @@ class RepeatableField extends FormField
                     $value = isset($value[$n]) ? $value[$n] : $value[0];
                 }
 
-                // escape value
-                $tmpField->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+                $tmpField->setup($tmpField->element, $value, $this->group);
 
-                $tmpField->setup($tmpField->element, $tmpField->value, $this->group);
+                // assign value after setup() to prevent multiple-field JSON decoding
+                $tmpField->value = htmlspecialchars_decode($value);
                 
                 // reset id
                 $tmpField->id = $field->id .= '_' . $key;
