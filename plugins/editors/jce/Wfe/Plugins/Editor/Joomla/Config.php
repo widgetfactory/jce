@@ -11,7 +11,6 @@ namespace Wfe\Plugins\Editor\Joomla;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Editor\Editor;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 
 class Config
