@@ -465,6 +465,10 @@ ibis.PluginManager.add('searchreplace', function (editor, url) {
 
             if (keepEditorSelection !== false) {
                 editor.selection.setRng(rng);
+                var scrollTarget = startContainer.parentNode;
+                window.setTimeout(function () {
+                    editor.selection.scrollIntoView(scrollTarget);
+                }, 0);
             }
 
             return rng;
