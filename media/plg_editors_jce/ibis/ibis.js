@@ -10793,6 +10793,7 @@
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
 
+
   /**
    * Copyright (c) 2025 Ryan Demmer
    * Licensed under the GNU General Public License v2.0 or later
@@ -17379,9 +17380,6 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-        if (predicate && predicate(node)) {
-          break;
-        }
 
         parents.push(node);
       }
@@ -20393,6 +20391,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20432,10 +20431,10 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    hasData: hasData,
+    clearData: clearData,
     getData: getData$1,
-    setData: setData,
-    clearData: clearData
+    hasData: hasData,
+    setData: setData
   });
 
   /**
@@ -20447,6 +20446,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var noop = function () { };
 
@@ -20667,7 +20667,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {}, css = '';
+    var div = DOM.create('div', {}, content), styles = {};
 
     styles = ibis.extend(styles, parseCSS(content));
 
@@ -20687,16 +20687,10 @@
         return true;
       }
       
-      if (!embed_stylesheet) {
+      {
         DOM.setStyles(DOM.select(selector, div), value.styles);
-      } else {
-        css += value.text;
       }
     });
-
-    if (css) {
-      div.prepend(DOM.create('style', { type: 'text/css' }, css));
-    }
 
     content = div.innerHTML;
 
@@ -20880,6 +20874,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$5 = ibis.each;
 
@@ -21252,6 +21247,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$4 = ibis.each,
       Schema = ibis.html.Schema,
@@ -22190,6 +22186,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var each$3 = ibis.each;
   var isIE$1 = ibis.isIE || ibis.isIE12;
 
@@ -22612,6 +22609,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$2 = ibis.each,
       VK = ibis.VK,
@@ -23294,6 +23292,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var RangeUtils = ibis.dom.RangeUtils, Delay = ibis.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23674,6 +23673,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var Dispatcher = ibis.util.Dispatcher;
 
@@ -24324,7 +24324,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, time || 0);
+        }, 0);
       };
 
       func.stop = function () {
@@ -29158,6 +29158,13 @@
         // clear selection
         self.selected = [];
 
+        if (s.fetchItems) {
+          self.removeAll();
+          each(s.fetchItems(), function (item) {
+            self.add(item);
+          });
+        }
+
         if (!self.rendered) {
           co = DOM.add(self.settings.container, self.renderNode());
 
@@ -29451,6 +29458,17 @@
         Event.remove(co, 'keydown', self._keyDownHandler);
 
         DOM.remove(co);
+      },
+
+      removeAll: function () {
+        var self = this,
+          itemsContainer = DOM.get('menu_' + self.id + '_items');
+
+        if (itemsContainer) {
+          DOM.setHTML(itemsContainer, '');
+        }
+
+        self.items = {};
       },
 
       /**
@@ -43737,7 +43755,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if (split && (!format.mixed || !isBlock(formatRoot))) {
+            if ((!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -43752,7 +43770,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container, true);
+          return wrapAndSplit(findFormatRoot(container), container, container);
         }
 
         function unwrap(start) {
@@ -48181,7 +48199,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(delim || ',');
+      return (str || '').split(',');
   }
 
   // list of HTML tags
@@ -48533,11 +48551,6 @@
           });
         }
 
-        if (!ed.getParam('table_pad_empty_cells', true)) {
-          elements.th.paddEmpty = false;
-          elements.td.paddEmpty = false;
-        }
-
         each(elements, function (v, k) {
           if (k.indexOf('mce:') === 0) {
             return true;
@@ -48611,10 +48624,6 @@
           if (!ed.getParam('remove_tag_padding')) {
             o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
           }
-        }
-
-        if (!ed.getParam('table_pad_empty_cells', true)) {
-          o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
         }
 
         o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
@@ -52737,7 +52746,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return (prefix || 'blobid') + (count++);
+          return ('blobid') + (count++);
       };
 
       function isSupportedImage(value) {
