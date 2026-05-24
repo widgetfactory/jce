@@ -1210,7 +1210,7 @@
 
                         // Ensure empty cells have a <br> to avoid empty cell issues
                         each(ed.dom.select('td,th', table), function (cell) {
-                            if (!cell.hasChildNodes()) {
+                            if (ed.dom.isEmpty(cell) || /^[\s\u00a0]+$/.test(cell.textContent)) {
                                 cell.innerHTML = '<br data-mce-bogus="1" />';
                             }
                         });
@@ -1326,6 +1326,35 @@
 
             basicDialog();
             mergeDialog(ed);
+
+            ed.serializer.addNodeFilter('td,th', function (nodes) {
+                var pad = ed.getParam('table_pad_empty_cells', true);
+                var i = nodes.length, node, fc;
+
+                while (i--) {
+                    node = nodes[i];
+                    fc = node.firstChild;
+
+                    if (pad) {
+                        if (!fc || (!fc.next && fc.name === 'br' && fc.attr('data-mce-bogus'))) {
+                            node.empty();
+                            var textNode = new tinymce.html.Node('#text', 3);
+                            textNode.value = '\u00a0';
+                            node.append(textNode);
+                        }
+                    } else {
+                        if (fc && !fc.next && fc.type === 3 && fc.value === '\u00a0') {
+                            node.empty();
+                        }
+                    }
+                }
+            });
+
+            if (!ed.getParam('table_pad_empty_cells', true)) {
+                var elements = ed.schema.elements;
+                elements.th.paddEmpty = false;
+                elements.td.paddEmpty = false;
+            }
         });
 
         ed.onPreProcess.add(function (ed, args) {
