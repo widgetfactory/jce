@@ -778,7 +778,8 @@
 .mceModernSkin span.mce_langcode:before {
   content: "\e9c9";
 }
-.mceModernSkin span.mce_date:before {
+.mceModernSkin span.mce_date:before,
+.mceModernSkin span.mce_insertdatetime:before {
   content: "\e94e";
 }
 .mceModernSkin span.mce_spinner:before {

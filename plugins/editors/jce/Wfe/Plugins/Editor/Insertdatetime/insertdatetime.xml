@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<extension type="plugin" group="jce" method="upgrade">
+    <name>WF_INSERTDATETIME_TITLE</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>@@e-mail@@</authorEmail>
+    <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+    <copyright>Ryan Demmer</copyright>
+    <license>@@licence@@</license>
+    <description>WF_INSERTDATETIME_DESC</description>
+    <icon>insertdatetime</icon>
+
+    <fields name="insertdatetime">
+
+        <fieldset name="config">
+            <field name="dateformat" type="text" size="50" default="%Y-%m-%d" hint="%Y-%m-%d" label="WF_INSERTDATETIME_DATEFORMAT_LABEL" description="WF_INSERTDATETIME_DATEFORMAT_DESC" />
+            <field name="timeformat" type="text" size="50" default="%H:%M:%S" hint="%H:%M:%S" label="WF_INSERTDATETIME_TIMEFORMAT_LABEL" description="WF_INSERTDATETIME_TIMEFORMAT_DESC" />
+            <field name="formats" type="text" size="100" class="input-xlarge" default="%H:%M:%S,%Y-%m-%d,%I:%M:%S %p,%D" hint="%H:%M:%S,%Y-%m-%d,%I:%M:%S %p,%D" label="WF_INSERTDATETIME_FORMATS_LABEL" description="WF_INSERTDATETIME_FORMATS_DESC" />
+            <field name="element" type="list" default="0" label="WF_INSERTDATETIME_ELEMENT_LABEL" description="WF_INSERTDATETIME_ELEMENT_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+        </fieldset>
+    </fields>
+
+    <help>
+        <topic key="insertdatetime.about" title="WF_INSERTDATETIME_HELP_ABOUT" />
+    </help>
+    <languages></languages>
+</extension>

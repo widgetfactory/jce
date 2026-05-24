@@ -168,6 +168,15 @@
         "core": 1,
         "checksum": "${checksum:imgmanager}"
     },
+    "insertdatetime": {
+        "title": "WF_INSERTDATETIME_TITLE",
+        "description": "WF_INSERTDATETIME_DESC",
+        "icon": "insertdatetime",
+        "editable": 1,
+        "row": 4,
+        "core": 1,
+        "class": "split-button"
+    },
     "joomla": {
         "title": "WF_JOOMLABUTTONS_TITLE",
         "description": "WF_JOOMLABUTTONS_DESC",
