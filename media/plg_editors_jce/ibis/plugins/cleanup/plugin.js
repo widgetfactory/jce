@@ -96,11 +96,6 @@ ibis.PluginManager.add('cleanup', function (ed, url) {
         });
       }
 
-      if (!ed.getParam('table_pad_empty_cells', true)) {
-        elements.th.paddEmpty = false;
-        elements.td.paddEmpty = false;
-      }
-
       each(elements, function (v, k) {
         if (k.indexOf('mce:') === 0) {
           return true;
@@ -174,10 +169,6 @@ ibis.PluginManager.add('cleanup', function (ed, url) {
         if (!ed.getParam('remove_tag_padding')) {
           o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
         }
-      }
-
-      if (!ed.getParam('table_pad_empty_cells', true)) {
-        o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
       }
 
       o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
