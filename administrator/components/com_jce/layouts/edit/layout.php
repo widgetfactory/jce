@@ -46,7 +46,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                                     <!--div class="mce-container mce-flow-layout-item mce-btn-group" role="group"-->
                                     <?php foreach ($buttons as $button): ?>
                                         <?php if (!empty($button->icon)): ?>
-                                            <div tabindex="-1" class="mceToolbarItem <?php echo $button->type; ?> mce-toolbar-item mce-widget mce-btn" data-name="<?php echo $button->name; ?>" role="button" aria-label="<?php echo $button->title; ?>" aria-description="<?php echo $button->description; ?>">
+                                            <div tabindex="-1" class="mceToolbarItem mce-toolbar-item <?php echo $button->type; ?> mce-widget mce-btn" data-name="<?php echo $button->name; ?>" role="button" aria-label="<?php echo $button->title; ?>" aria-description="<?php echo $button->description; ?>">
                                                 <?php foreach ($button->icon as $icon): ?>
                                                     <div tabindex="-1" class="mceButton <?php echo $button->class; ?>" role="presentation" title="<?php echo $button->title; ?>">
                                                         <?php if ($button->image): ?>
@@ -98,7 +98,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                                 <!--div class="mce-container mce-flow-layout-item mce-btn-group"-->
                                 <?php foreach ($available as $plugin): ?>
                                     <?php if ($plugin->row && $plugin->row === $i): ?>
-                                        <div tabindex="-1" class="mceToolbarItem <?php echo $plugin->type; ?> mce-widget mce-btn" data-name="<?php echo $plugin->name; ?>" role="button" aria-label="<?php echo $plugin->title; ?>" aria-description="<?php echo $plugin->description; ?>">
+                                        <div tabindex="-1" class="mceToolbarItem mce-toolbar-item <?php echo $plugin->type; ?> mce-widget mce-btn" data-name="<?php echo $plugin->name; ?>" role="button" aria-label="<?php echo $plugin->title; ?>" aria-description="<?php echo $plugin->description; ?>">
                                             <?php foreach ($plugin->icon as $icon): ?>
                                                 <div tabindex="-1" class="mceButton <?php echo $plugin->class; ?>" role="presentation" title="<?php echo $plugin->title; ?>">
                                                     <?php if ($plugin->image): ?>
