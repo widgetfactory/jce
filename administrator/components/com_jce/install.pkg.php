@@ -506,8 +506,10 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             JPATH_PLUGINS . '/editors/jce/src/Provider',
              // remove old layout file
             JPATH_PLUGINS . '/editors/jce/layouts/editor/textarea.php',
-            // mediafield files
-            JPATH_PLUGINS . '/fields/mediajce/fields/extendedmedia.php',
+            // mediafield fields folder
+            JPATH_PLUGINS . '/fields/mediajce/fields',
+            // JCE Pro fields folder
+            JPATH_PLUGINS . '/system/jcepro/fields',
         
             $admin . '/controller',
             $admin . '/helpers',
