@@ -48,12 +48,6 @@ class Jce extends MVCComponent implements RouterServiceInterface, BootableExtens
 	 */
 	public function boot(ContainerInterface $container)
 	{
-		/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
-		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
-
-		$wr = $wa->getRegistry();
-		$wr->addRegistryFile('administrator/components/com_jce/joomla.asset.json');
-
 		require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 	}
 
