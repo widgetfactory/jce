@@ -305,7 +305,7 @@
                 $('#rel').val(function () {
                     var v = data.rel;
 
-                    if ($.type(v) !== "string") {
+                    if (typeof v !== "string") {
                         v = ed.dom.getAttrib(anchorElm, 'rel');
                     }
 
