@@ -16,7 +16,6 @@
 
     <files folder="components/com_jce">
         <folder>src</folder>
-        <folder>tmpl</folder>
     </files>
 
     <!-- Component Media -->
