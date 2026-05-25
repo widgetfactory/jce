@@ -90,7 +90,19 @@ final class Jce extends CMSPlugin
     public function onAfterInitialise(Event $event): void
     {
         // Core namespace
-        \JLoader::registerNamespace('Wfe', JPATH_PLUGINS . '/editors/jce/Wfe', false, false, 'psr4');
+        \JLoader::registerNamespace('Wfe', JPATH_PLUGINS . '/editors/jce/Wfe', false, false);
+
+        $app = $this->getApplication();
+
+        if (!$app->isClient('site')) {
+            return;
+        }
+
+        $input = $app->getInput();
+
+        if ($input->get('option') === 'com_jce' && $input->get('format', 'html') === 'html') {
+            $input->set('format', 'raw');
+        }
     }
 
     public function onAfterDispatch()
@@ -133,11 +145,11 @@ final class Jce extends CMSPlugin
     public function onCustomFieldsPrepareDom(PrepareDomEvent $event)
     {
         $field = $event->getField();
-    
+
         if ($field->type !== 'mediajce') {
             return;
         }
-        
+
         // check if field media have been loaded
         if ($this->mediaLoaded) {
             return;
@@ -154,7 +166,7 @@ final class Jce extends CMSPlugin
             'context' => (int) $component->id,
         ), true);
 
-         $wa = $document->getWebAssetManager();
+        $wa = $document->getWebAssetManager();
 
         $wa->registerAndUseScript('plg_system_jce.media', 'media/com_jce/site/js/media.min.js');
         $wa->registerAndUseStyle('plg_system_jce.media', 'media/com_jce/site/css/media.min.css');
@@ -234,14 +246,14 @@ final class Jce extends CMSPlugin
         $this->booted = true;
     }
 
-    public function onWfEditorBeforeProfileItem(Event $event) : void
+    public function onWfEditorBeforeProfileItem(Event $event): void
     {
         $item = $event->getArgument('item');
-        
+
         $plugins = explode(',', $item->plugins);
 
         // convert legacy plugin names
-        array_walk($plugins, function (&$name) {            
+        array_walk($plugins, function (&$name) {
             $name = $this->mapLegacyName($name);
         });
 
