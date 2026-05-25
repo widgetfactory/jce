@@ -10,10 +10,8 @@
  */
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Path;
-use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Layout\LayoutHelper;
 
 use Joomla\Plugin\Fields\MediaJce\Helper\MediaHelper;

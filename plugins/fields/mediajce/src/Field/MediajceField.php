@@ -1,13 +1,13 @@
 <?php
 /**
  * @package     JCE
- * @subpackage  Fields.MediaJce
+ * @subpackage  Fields.Mediajce
  *
  * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved.
  * @copyright   Copyright (C) 2020 - 2024 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-namespace Joomla\Plugin\Fields\MediaJce\Fields;
+namespace Joomla\Plugin\Fields\Mediajce\Field;
 
 \defined('_JEXEC') or die;
 
@@ -23,14 +23,14 @@ use Joomla\Component\Jce\Administrator\Helper\BrowserHelper;
  *
  * @since  2.6.17
  */
-class MediaJceField extends MediaField
+class MediajceField extends MediaField
 {
     /**
      * The form field type.
      *
      * @var    string
      */
-    protected $type = 'MediaJce';
+    protected $type = 'Mediajce';
 
     /**
      * Layout to render

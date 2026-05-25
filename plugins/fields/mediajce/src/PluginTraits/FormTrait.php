@@ -13,7 +13,6 @@ namespace Joomla\Plugin\Fields\MediaJce\PluginTraits;
 defined('_JEXEC') or die;
 
 use Joomla\Event\Event;
-use Joomla\CMS\Event\CustomFields\PrepareDomEvent;
 use Joomla\CMS\Event\CustomFields\BeforePrepareFieldEvent;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
@@ -30,9 +29,11 @@ trait FormTrait
     /**
      * Transforms the field into a DOM XML element and appends it as a child on the given parent.
      *
-     * @param   PrepareDomEvent  $event  The event.
+     * @param   \stdClass        $field   The field.
+     * @param   \DOMElement      $parent The parent element.
+     * @param   Form             $form   The form object.
      *
-     * @return  DOMElement
+     * @return  \DOMElement
      *
      * @since   3.7.0
      */
@@ -56,7 +57,7 @@ trait FormTrait
 
         $field->fieldparams = clone $fieldParams;
 
-        FormHelper::addFieldPrefix('Joomla\\Plugin\\Fields\\MediaJce\\Fields');
+        FormHelper::addFieldPrefix('Joomla\\Plugin\\Fields\\MediaJce\\Field');
 
         $event = new Event('onWfCustomFieldsPrepareDom', array(
             'subject' => $this,
@@ -75,13 +76,11 @@ trait FormTrait
     /**
      * Before prepares the field value.
      *
-     * @param   string     $context  The context.
-     * @param   \stdclass  $item     The item.
-     * @param   \stdclass  $field    The field.
+     * @param   BeforePrepareFieldEvent $event    The event instance.
      *
      * @return  void
      *
-     * @since   3.7.0
+     * @since   3.0.0
      */
     public function onCustomFieldsBeforePrepareField(BeforePrepareFieldEvent $event)
     {

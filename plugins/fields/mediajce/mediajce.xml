@@ -14,8 +14,7 @@
 
 	<files folder="plugins/fields/mediajce">
 		<folder plugin="mediajce">language</folder>
-		<folder>fields</folder>
-		<folder>helper</folder>
+		<folder>forms</folder>
 		<folder>layouts</folder>
 		<folder>params</folder>
 		<folder>services</folder>
