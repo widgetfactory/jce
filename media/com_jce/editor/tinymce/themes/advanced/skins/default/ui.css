@@ -2663,8 +2663,9 @@ select.mceNativeListBox {
     width: 100%;
     padding: 8px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    overflow: auto;
 }
 
 /*.mceLoading .mceModalContent {
@@ -2760,6 +2761,7 @@ select.mceNativeListBox {
 
 .mceModalBody {
     flex: 1;
+    margin: auto;
 }
 
 .mceModal .mceModalMove {
