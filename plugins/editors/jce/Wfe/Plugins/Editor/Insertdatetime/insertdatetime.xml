@@ -16,8 +16,10 @@
         <fieldset name="config">
             <field name="dateformat" type="text" size="50" default="%Y-%m-%d" hint="%Y-%m-%d" label="WF_INSERTDATETIME_DATEFORMAT_LABEL" description="WF_INSERTDATETIME_DATEFORMAT_DESC" />
             <field name="timeformat" type="text" size="50" default="%H:%M:%S" hint="%H:%M:%S" label="WF_INSERTDATETIME_TIMEFORMAT_LABEL" description="WF_INSERTDATETIME_TIMEFORMAT_DESC" />
-            <field name="formats" type="text" size="100" class="input-xlarge" default="%H:%M:%S,%Y-%m-%d,%I:%M:%S %p,%D" hint="%H:%M:%S,%Y-%m-%d,%I:%M:%S %p,%D" label="WF_INSERTDATETIME_FORMATS_LABEL" description="WF_INSERTDATETIME_FORMATS_DESC" />
-            <field name="element" type="list" default="0" label="WF_INSERTDATETIME_ELEMENT_LABEL" description="WF_INSERTDATETIME_ELEMENT_DESC">
+            <field name="formats" type="repeatable" default="%H:%M:%S,%Y-%m-%d,%I:%M:%S %p,%D" label="WF_INSERTDATETIME_FORMATS_LABEL" description="WF_INSERTDATETIME_FORMATS_DESC">
+                <field type="text" size="50" hiddenLabel="true" hint="%H:%M:%S"/>
+            </field>
+            <field name="element" type="yesno" default="0" label="WF_INSERTDATETIME_ELEMENT_LABEL" description="WF_INSERTDATETIME_ELEMENT_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>

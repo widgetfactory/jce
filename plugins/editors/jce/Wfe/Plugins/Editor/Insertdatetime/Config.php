@@ -31,7 +31,11 @@ class Config
         $formats = $wf->getParam('insertdatetime.formats', '');
 
         if ($formats) {
-            $settings['insertdatetime_formats'] = array_map('trim', explode(',', $formats));
+            if (is_string($formats)) {
+                $formats = explode(',', $formats);
+            }
+        
+            $settings['insertdatetime_formats'] = array_map('trim', $formats);
         }
 
         $settings['insertdatetime_element'] = (bool) $wf->getParam('insertdatetime.element', 0);
