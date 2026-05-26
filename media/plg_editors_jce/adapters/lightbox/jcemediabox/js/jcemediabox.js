@@ -13,9 +13,9 @@
 
 (function (window, $) {
     "use strict";
-/**
- * JCEMediaBox Popup functions
- */
+    /**
+     * JCEMediaBox Popup functions
+     */
     var JCEMediaBox = {
         Popup: {
             /**
@@ -429,9 +429,6 @@
             index = index || 0;
 
             this.remove(n);
-
-            // set default index
-            index = index || 0;
 
             // Add jcepopup class
             ed.dom.addClass(n, 'jcepopup');

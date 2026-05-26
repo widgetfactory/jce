@@ -23,6 +23,12 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
 {
     private $templates = array();
 
+    /**
+     * Constructor.
+     *
+     * @param mixed $container The container object.
+     * @param array $config An optional array of configuration settings.
+     */
     public function __construct($container, $config = array())
     {
         parent::__construct($container, $config);
@@ -63,6 +69,8 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
                         'WfLightboxAdapter.setParams("' . $plugin->getName() . '",' . json_encode($params) . ');'
                     );
                 }
+
+                $plugin->display();
             }
         }
 
@@ -81,6 +89,11 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         return $this->templates;
     }
 
+    /**
+     * Add a template to the list.
+     *
+     * @param string $template The template name.
+     */
     protected function addTemplate($template)
     {
         $this->templates[] = $template;

@@ -130,6 +130,7 @@ var WfLightboxAdapter = {
 
         // detect which adapter matches
         self.current = null;
+
         jQuery.each(this.items, function (name) {
             if (!self.current && self.isLightbox(n, name)) {
                 self.current = name;
@@ -183,7 +184,7 @@ var WfLightboxAdapter = {
         var self = this;
         this.current = name || null;
 
-        jQuery('#popup_list').val(name).children('option').each(function () {
+        jQuery('#lightbox_list').val(name).children('option').each(function () {
             if (this.value) {
                 jQuery('#lightbox_adapter_' + this.value).hide();
             }
@@ -210,6 +211,7 @@ var WfLightboxAdapter = {
             jQuery.each(this.config.map, function (to, from) {
                 var v = args[from] || jQuery('#' + from).val();
                 ed.dom.setAttrib(n, to, v);
+
                 delete args[from]; // consume
             });
         }
@@ -266,9 +268,11 @@ var WfLightboxAdapter = {
         if (!this.isEnabled()) {
             // If disabled and node has a lightbox, remove it
             n = ed.dom.getParent(n, 'A');
+
             if (n) {
                 self.removeLightbox(n);
             }
+
             return;
         }
 
@@ -276,6 +280,7 @@ var WfLightboxAdapter = {
             if (n.nodeName !== 'A') {
                 n = ed.dom.getParent(n, 'A');
             }
+
             this.removeLightbox(n, true);
             this.setAttributes(n, args, index);
         } else {
@@ -291,6 +296,7 @@ var WfLightboxAdapter = {
             }
 
             n = ed.dom.get('__mce_tmp');
+
             if (n) {
                 ed.dom.setAttrib(n, 'id', null);
                 self.setAttributes(n, args, index);
@@ -326,20 +332,24 @@ var WfLightboxAdapter = {
      */
     _call: function (fn, args, adapter) {
         var adp = adapter || this.current;
+
         if (typeof adp === 'string') {
             adp = this.items[adp] || null;
         }
+
         if (!adp) {
             return null;
         }
 
         var method = adp[fn];
+
         if (typeof method === 'function') {
             if (Array.isArray ? Array.isArray(args) : Object.prototype.toString.call(args) === '[object Array]') {
                 return method.apply(adp, args);
             }
             return method.call(adp, args);
         }
+
         return null;
     }
 };
