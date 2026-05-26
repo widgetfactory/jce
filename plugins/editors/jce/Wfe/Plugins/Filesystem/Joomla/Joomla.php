@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -60,9 +59,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      */
     protected $allowroot = false;
 
-    /**
-     * Constructor activating the default information of the class.
-     */
     public function __construct($config = array(), $container = null)
     {
         parent::__construct($config, $container);
@@ -109,8 +105,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
     /**
      * Get the base directory.
-     *
-     * @return string base dir
+     * @param string $path The path to get the base directory for
+     * @return string The base directory
      */
     public function getBaseDir($path = '')
     {
@@ -120,7 +116,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Get the full base url.
      *
-     * @return string base url
+     * @param string $path The path to get the base URL for
+     * @return string The full base URL
      */
     public function getBaseURL($path = '')
     {
@@ -130,9 +127,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Return the full user directory path. Create if required.
      *
-     * @param string    The base path
-     *
-     * @return Full path to folder
+     * @return string Full path to folder
      */
     public function getRootDir()
     {
@@ -143,11 +138,24 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return 'images';
     }
 
+    /**
+     * Convert a relative path to an absolute path.
+     *
+     * @param string $path The relative path
+     * @return string The absolute path
+     */
     public function toAbsolute($path)
     {
         return Utility::makePath($this->getBaseDir(), $path);
     }
 
+    /**
+     * Convert an absolute path to a relative path.
+     *
+     * @param string $path The absolute path
+     * @param boolean $isabsolute Whether the path is absolute
+     * @return string The relative path
+     */
     public function toRelative($path, $isabsolute = true)
     {
         // path is absolute
@@ -182,6 +190,13 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $FTPOptions['enabled'] == 1;
     }
 
+    /**
+     * Get the total size of a folder.
+     *
+     * @param string $path The path to the folder
+     * @param boolean $recurse Whether to include subfolders
+     * @return int The total size in bytes
+     */
     public function getTotalSize($path, $recurse = true)
     {
         $total = 0;
@@ -203,10 +218,10 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
     /**
      * Count the number of files in a folder.
-     *
-     * @return int File total
-     *
-     * @param string $path Absolute path to folder
+     * @param string $path The path to the folder
+     * @param boolean $recurse Whether to include subfolders
+     * 
+     * @return int The total number of files
      */
     public function countFiles($path, $recurse = false)
     {
@@ -226,9 +241,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Count the number of folders in a folder.
      *
-     * @return int Folder total
-     *
-     * @param string $path Absolute path to folder
+     * @param string $path The path to the folder
+     * @return int The total number of folders
      */
     public function countFolders($path)
     {
@@ -245,6 +259,18 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return 0;
     }
 
+    /**
+     * Get a list of folders.
+     *
+     * @param string $relative The relative path
+     * @param string $filter The filter for folder names
+     * @param string $sort The sort order
+     * @param integer $limit The maximum number of folders to return
+     * @param integer $start The starting index
+     * @param integer $depth The depth of folders to include
+     * 
+     * @return array The list of folders
+     */
     public function getFolders($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
         $path = $this->toAbsolute($relative);
@@ -310,6 +336,18 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $folders;
     }
 
+    /**
+     * Get a list of files.
+     *
+     * @param string $relative The relative path
+     * @param string $filter The filter for file names
+     * @param string $sort The sort order
+     * @param integer $limit The maximum number of files to return
+     * @param integer $start The starting index
+     * @param integer $depth The depth of folders to include
+     * 
+     * @return array The list of files
+     */
     public function getFiles($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
         $path = $this->toAbsolute($relative);
@@ -385,6 +423,17 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $files;
     }
 
+    /**
+     * Search for items.
+     *
+     * @param string $relative The relative path
+     * @param string $query The search query
+     * @param array $filetypes The file types to include
+     * @param string $sort The sort order
+     * @param integer $depth The depth of folders to include
+     * 
+     * @return array The search results
+     */
     public function searchItems($relative, $query = '', $filetypes = array(), $sort = '', $depth = 3)
     {
         $result = array(
@@ -413,10 +462,9 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Get a folders properties.
      *
+     * @param string $dir Folder relative path
+     * 
      * @return array Array of properties
-     *
-     * @param string $dir   Folder relative path
-     * @param string $types File Types
      */
     public function getFolderDetails($dir)
     {
@@ -438,6 +486,9 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
     /**
      * Get the source directory of a file path.
+     *
+     * @param string $path The file path
+     * @return string The source directory
      */
     public function getSourceDir($path)
     {
@@ -459,6 +510,13 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return '';
     }
 
+    /**
+     * Check if two values match.
+     *
+     * @param string $needle
+     * @param string $haystack
+     * @return boolean
+     */
     public function isMatch($needle, $haystack)
     {
         return $needle == $haystack;
@@ -467,7 +525,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Return constituent parts of a file path eg: base directory, file name.
      *
-     * @param $path Relative or absolute path
+     * @param string $path Relative or absolute path
+     * @return array Array of path information
      */
     public function pathinfo($path)
     {
@@ -476,10 +535,10 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
     /**
      * Get a files properties.
-     *
-     * @return array Array of properties
-     *
+     * 
      * @param string $file File relative path
+     * @param int $count The count of files
+     * @return array Array of file properties
      */
     public function getFileDetails($file, $count = 1)
     {
@@ -537,6 +596,13 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $data;
     }
 
+    /**
+     * Check if a directory is restricted.
+     *
+     * @param string $path The directory path
+     * @return void
+     * @throws \Exception If access to the directory is restricted
+     */
     private function checkRestrictedDirectory($path)
     {
         if ($this->getConfig('allowroot')) {
@@ -563,9 +629,9 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Delete the relative file(s).
      *
-     * @param $files the relative path to the file name or comma seperated list of multiple paths
+     * @param string $src The relative path to the file name or comma separated list of multiple paths
      *
-     * @return string $error on failure
+     * @return FilesystemResult
      */
     public function delete($src)
     {
@@ -618,7 +684,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      * @param string $src  The relative path of the source file
      * @param string $dest The name of the new file
      *
-     * @return string $error
+     * @return FilesystemResult
      */
     public function rename($src, $dest)
     {
@@ -676,10 +742,11 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     /**
      * Copy a file.
      *
-     * @param string $files The relative file or comma seperated list of files
-     * @param string $dest  The relative path of the destination dir
+     * @param string $file The relative file or comma separated list of files
+     * @param string $destination  The relative path of the destination dir
+     * @param string $conflict  The conflict resolution strategy ('replace' or 'copy')
      *
-     * @return string $error on failure
+     * @return FilesystemResult
      */
     public function copy($file, $destination, $conflict = 'replace')
     {
@@ -750,12 +817,12 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     }
 
     /**
-     * Copy a file.
+     * Move a file.
      *
-     * @param string $files The relative file or comma seperated list of files
-     * @param string $dest  The relative path of the destination dir
+     * @param string $file The relative file or comma separated list of files
+     * @param string $destination  The relative path of the destination dir
      *
-     * @return string $error on failure
+     * @return FilesystemResult
      */
     public function move($file, $destination)
     {
@@ -845,12 +912,12 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     }
 
     /**
-     * New folder.
+     * Create a folder.
      *
-     * @param string $dir     The base dir
-     * @param string $new_dir The folder to be created
+     * @param string $dir   The base dir
+     * @param string $new   The folder to be created
      *
-     * @return string $error on failure
+     * @return FilesystemResult
      */
     public function createFolder($dir, $new)
     {
@@ -881,6 +948,12 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $result;
     }
 
+    /**
+     * Get the dimensions of an image file.
+     *
+     * @param string $file The relative path to the image file
+     * @return array An array containing the width and height of the image
+     */
     public function getDimensions($file)
     {
         $path = $this->toAbsolute(utf8_decode(rawurldecode($file)));
@@ -900,6 +973,14 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $data;
     }
 
+    /**
+     * Resolve filename conflict by creating a unique filename if required.
+     *
+     * @param string $destination The full path of the destination file
+     * @param string $name The original name of the file
+     * @param boolean $createCopy Whether to create a copy if a conflict exists
+     * @return string The resolved filename
+     */
     protected function resolveFilenameConflict($destination, $name, $createCopy = false)
     {
         // get overwrite state
@@ -936,6 +1017,17 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $destination;
     }
 
+    /**
+     * Upload a file.
+     *
+     * @param string $method The upload method
+     * @param string $src The source file path
+     * @param string $dir The destination directory
+     * @param string $name The name of the file
+     * @param integer $chunks The total number of chunks
+     * @param integer $chunk The current chunk number
+     * @return FilesystemResult The result of the upload
+     */
     public function upload($method, $src, $dir, $name, $chunks = 1, $chunk = 0)
     {
         $app = Factory::getApplication();
@@ -983,15 +1075,14 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
         $event = new BeforeSaveEvent('onContentBeforeSave', array(
             'context' => 'com_jce.file',
-            'item' => $object_file,
-            'subject' => $this
+            'subject' => $object_file,
         ));
 
         $dispatcher->dispatch('onContentBeforeSave', $event);
 
-        $object_file = $event->getArgument('item');
+        $object_file = $event->getItem();
 
-        if (File::upload($src, $dest, false, true)) {
+        if (File::upload($src, $dest, false)) {
             $result->state = true;
             $result->path = $dest;
         }
@@ -1011,20 +1102,31 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
         $event = new AfterSaveEvent('onContentAfterSave', array(
             'context' => 'com_jce.file',
-            'item' => $object_file,
-            'subject' => $this
+            'subject' => $object_file,
         ));
 
-        $dispatcher->dispatch('onContentBeforeSave', $event);
+        $dispatcher->dispatch('onContentAfterSave', $event);
 
         return $result;
     }
 
+    /**
+     * Check if a file or directory exists.
+     *
+     * @param string $path The path to check
+     * @return boolean True if the file or directory exists, false otherwise
+     */
     public function exists($path)
     {
         return $this->is_dir($path) || $this->is_file($path);
     }
 
+    /**
+     * Read the contents of a file.
+     *
+     * @param string $file The path to the file
+     * @return string The contents of the file
+     */
     public function read($file)
     {
         $file = rawurldecode($file);
@@ -1034,6 +1136,13 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return file_get_contents($path);
     }
 
+    /**
+     * Write content to a file.
+     *
+     * @param string $file The path to the file
+     * @param string $content The content to write
+     * @return boolean True on success, false on failure
+     */
     public function write($file, $content)
     {
         $dispatcher = Factory::getApplication()->getDispatcher();
@@ -1071,12 +1180,24 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         return $result;
     }
 
+    /**
+     * Check if a path is a file.
+     *
+     * @param string $path The path to check
+     * @return boolean True if the path is a file, false otherwise
+     */
     public function is_file($path)
     {
         $path = $this->toAbsolute($path);
         return is_file($path);
     }
 
+    /**
+     * Check if a path is a directory.
+     *
+     * @param string $path The path to check
+     * @return boolean True if the path is a directory, false otherwise
+     */
     public function is_dir($path)
     {
         $path = $this->toAbsolute($path);
