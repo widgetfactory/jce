@@ -590,9 +590,9 @@ class AbstractPlugin
     /**
      * Add an alert array to the stack.
      *
-     * @param object $class Alert classname
-     * @param object $title Alert title
-     * @param object $text  Alert text
+     * @param string $class Alert classname
+     * @param string $title Alert title
+     * @param string $text  Alert text
      */
     protected function addAlert($class = 'info', $title = '', $text = '')
     {
@@ -692,7 +692,7 @@ class AbstractPlugin
         // root key set
         if ($keys[0] == 'editor' || $keys[0] == $name || $keys[0] == $caller) {
             return $wf->getParam($key, $fallback, $default, $type);
-            // no root key set, treat as shared param
+        // no root key set, treat as shared param
         } else {
             // get fallback param from editor key
             $fallback = $wf->getParam('editor.' . $key, $fallback, $default, $type);
@@ -716,8 +716,8 @@ class AbstractPlugin
     /**
      * Named wrapper to check access to a feature.
      *
-     * @param string    The feature to check, eg: upload
-     * @param mixed        The defalt value
+     * @param string  $option  The feature to check, eg: upload
+     * @param mixed   $default The default value
      *
      * @return bool
      */
