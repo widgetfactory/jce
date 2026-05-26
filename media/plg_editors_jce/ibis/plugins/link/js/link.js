@@ -99,7 +99,7 @@
             $('#link-browser').tree({
                 collapseTree: true,
                 charLength: 50
-            }).on('tree:nodeclick', function (e, evt, node) {                
+            }).on('tree:nodeclick', function (e, evt, node) {
                 if ($(evt.target).is('button.link-preview')) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -594,7 +594,7 @@
             el = el || node;
 
             // Create or remove popup
-            WfLightboxAdapter.createPopup(el);
+            WfLightboxAdapter.createLightbox(el);
 
             ed.undoManager.add();
 
@@ -722,6 +722,7 @@
 
         _search: function () {
             var self = this,
+                ed = ibisPopup.editor,
                 $p = $('#search-result').parent();
 
             var query = $('#search-input').val();
@@ -776,11 +777,14 @@
                         });
 
                         $('dl:odd', '#search-result').addClass('odd');
+                    } else {
+                        $('<h3 class="uk-text-bold">' + ed.getLang('link_dlg.search_no_results', 'No results found') + '</h3>').appendTo('#search-result');
                     }
+
                     $('#search-options-button').trigger('close');
                     $('#search-result').height($p.parent().height() - $p.outerHeight() - 32).show();
                 }
-                
+
                 $('#search-browser').removeClass('loading');
                 $('#search-clear').addClass('uk-active');
             }, self);
