@@ -44,7 +44,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
 
         $value = parent::getParam($key, '');
 
-        if ($value === '') {
+        if ($value === '' && $legacyKey !== '') {
             $value = parent::getParam($legacyKey);
         }
 
