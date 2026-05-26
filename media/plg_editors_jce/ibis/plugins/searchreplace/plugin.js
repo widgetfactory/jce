@@ -824,9 +824,24 @@
         };
 
         self.done = function (keepEditorSelection) {
-            var i, nodes, startContainer, endContainer;
+            var i, nodes, startContainer, endContainer, scrollBookmark;
 
             nodes = ibis.toArray(editor.getBody().getElementsByTagName('span'));
+
+            // Insert a temporary bookmark element before the first match span so we
+            // have a stable element to scroll to after all match spans are unwrapped.
+            // Using an element (rather than startContainer.parentNode) handles the edge
+            // case where text sits directly in the body.
+            if (keepEditorSelection !== false && currentIndex >= 0) {
+                for (i = 0; i < nodes.length; i++) {
+                    if (getElmIndex(nodes[i]) === currentIndex.toString()) {
+                        scrollBookmark = editor.dom.create('span', { 'data-mce-type': 'bookmark', 'data-mce-bogus': '1' });
+                        nodes[i].parentNode.insertBefore(scrollBookmark, nodes[i]);
+                        break;
+                    }
+                }
+            }
+
             for (i = 0; i < nodes.length; i++) {
                 var nodeIndex = getElmIndex(nodes[i]);
 
@@ -850,13 +865,20 @@
 
                 if (keepEditorSelection !== false) {
                     editor.selection.setRng(rng);
-                    var scrollTarget = startContainer.parentNode;
-                    window.setTimeout(function () {
-                        editor.selection.scrollIntoView(scrollTarget);
-                    }, 0);
+
+                    if (scrollBookmark) {
+                        window.setTimeout(function () {
+                            editor.selection.scrollIntoView(scrollBookmark);
+                            editor.dom.remove(scrollBookmark);
+                        }, 0);
+                    }
                 }
 
                 return rng;
+            }
+
+            if (scrollBookmark) {
+                editor.dom.remove(scrollBookmark);
             }
         };
     });
