@@ -153,12 +153,6 @@ class WFApplication extends CMSObject
                     $settings['option'] = $component->option;
                 }
             }
-
-            $profile_id = $app->input->getInt('profile_id');
-
-            if ($profile_id) {
-                $settings['profile_id'] = $profile_id;
-            }
         }
 
         // get the Joomla! area, default to "site"
@@ -284,11 +278,6 @@ class WFApplication extends CMSObject
         // add plugin to vars array
         $vars['plugin'] = $plugin;
 
-        // assign profile_id to simple variable
-        if (isset($vars['profile_id'])) {
-            $id = (int) $vars['profile_id'];
-        }
-
         $db = Factory::getDBO();
         $user = Factory::getUser();
         $app = Factory::getApplication();
@@ -296,21 +285,12 @@ class WFApplication extends CMSObject
         $query = $db->getQuery(true);
         $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
 
-        if ($id) {
-            $query->where('id = ' . (int) $id);
-        }
-
         $db->setQuery($query);
         $items = $db->loadObjectList();
 
         // nothing found...
         if (empty($items)) {
             return null;
-        }
-
-        // select and return a specific profile by id
-        if ($id) {
-            return $items[0];
         }
 
         $app->triggerEvent('onWfEditorProfileOptions', array(&$vars));
