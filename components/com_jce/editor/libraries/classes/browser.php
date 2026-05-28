@@ -987,6 +987,9 @@ class WFFileBrowser extends CMSObject
 
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
+        // check path for traversal sequences before any other processing
+        WFUtility::checkPath($path);
+
         $result = array(
             'folders' => array(),
             'files' => array(),
@@ -1170,18 +1173,18 @@ class WFFileBrowser extends CMSObject
      */
     public function getItems($source, $limit = 25, $start = 0, $filter = '', $sort = '')
     {
+        // decode path
+        $source = rawurldecode($source);
+
+        // check if source is a valid path
+        WFUtility::checkPath($source);
+
         $filesystem = $this->getFileSystem();
 
         $files = array();
         $folders = array();
 
         clearstatcache();
-
-        // decode path
-        $source = rawurldecode($source);
-
-        // check if source is a valid path
-        WFUtility::checkPath($source);
 
         // trim source to path variable
         $path = trim($source, '/');
@@ -2092,6 +2095,14 @@ class WFFileBrowser extends CMSObject
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('delete', 'file') === false) {
                     throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                }
+
+                // check extension is allowed
+                $ext     = WFUtility::getExtension($item, true);
+                $allowed = (array) $this->getFileTypes('array');
+
+                if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
+                    throw new InvalidArgumentException('Delete Failed: Invalid file extension.');
                 }
 
                 $path = $item;
