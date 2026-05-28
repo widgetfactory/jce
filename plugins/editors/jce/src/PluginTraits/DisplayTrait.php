@@ -38,7 +38,6 @@ trait DisplayTrait
 
         // pass config to WFEditor
         $config = array(
-            'profile_id' => $this->params->get('profile_id', 0),
             'plugin' => $this->params->get('plugin', ''),
         );
 

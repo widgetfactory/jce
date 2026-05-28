@@ -127,12 +127,6 @@ class Application
                     $settings['option'] = $component->option;
                 }
             }
-
-            $profile_id = $app->getInput()->getInt('profile_id');
-
-            if ($profile_id) {
-                $settings['profile_id'] = $profile_id;
-            }
         }
 
         // get the Joomla! area, default to "site"
@@ -263,22 +257,12 @@ class Application
         // add plugin to vars array
         $vars['plugin'] = $plugin;
 
-        // assign profile_id to simple variable
-        if (isset($vars['profile_id'])) {
-            $id = (int) $vars['profile_id'];
-        }
-
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         $app = Factory::getApplication();
         $user = $app->getIdentity();
 
         $query = $db->getQuery(true);
         $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
-
-        if ($id) {
-            $query->where('id = ' . (int) $id);
-        }
-
         $db->setQuery($query);
         $items = $db->loadObjectList();
 
@@ -286,12 +270,7 @@ class Application
         if (empty($items)) {
             return null;
         }
-
-        // select and return a specific profile by id
-        if ($id) {
-            return $items[0];
-        }
-
+        
         $event = new Event('onWfEditorProfileOptions', array(
             'subject' => $this,
             'options' => $items,
