@@ -145,10 +145,6 @@ class WFEditor
             $config['plugin'] = '';
         }
 
-        if (!isset($config['profile_id'])) {
-            $config['profile_id'] = 0;
-        }
-
         // trigger event
         $app->triggerEvent('onBeforeWfEditorLoad', array(&$config));
 
@@ -406,8 +402,6 @@ class WFEditor
 
         // if a profile is set
         if (is_object($this->profile)) {
-            $settings['query']['profile_id'] = $this->profile->id;
-
             $settings = array_merge($settings, array('theme' => 'advanced'), $this->getToolbar());
 
             // add plugins
