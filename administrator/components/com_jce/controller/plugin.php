@@ -69,10 +69,14 @@ class JceControllerPlugin extends BaseController
         }
 
         // check this is a valid plugin
-        $wf->isValidPlugin($plugin) or jexit('Invalid Plugin');
+        if (!$wf->isValidPlugin($plugin)) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
         // check a valid profile exists
-        $wf->checkProfile($plugin) or jexit('Invalid Profile');
+        if (!$wf->checkProfile($plugin)) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
         // load language files
         $language->load('com_jce', JPATH_ADMINISTRATOR);
