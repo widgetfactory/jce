@@ -134,11 +134,15 @@ class PluginController extends BaseController
             $plugin = $mapped;
         }
 
-        // Check this is a valid plugin
-        $wf->isValidPlugin($plugin) or jexit('Invalid Plugin');
+        // check this is a valid plugin
+        if (!$wf->isValidPlugin($plugin)) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
-        // Check a valid profile exists
-        $wf->checkProfile($plugin) or jexit('Invalid Profile');
+        // check a valid profile exists
+        if (!$wf->checkProfile($plugin)) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
         // Load language files
         $language->load('com_jce', JPATH_ADMINISTRATOR);
