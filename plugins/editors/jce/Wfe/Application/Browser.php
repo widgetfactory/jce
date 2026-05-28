@@ -22,8 +22,7 @@ use Joomla\CMS\User\UserHelper;
 use Joomla\Event\Event;
 use Joomla\Database\DatabaseInterface;
 
-use Wfe\Document\Document;
-use Wfe\Adapter\Plugin\FileSystem\FilesystemResult;
+use Wfe\Adapter\Plugin\Filesystem\FilesystemResult;
 use Wfe\Utility\Utility;
 use Wfe\Utility\MimeType;
 use Wfe\Helper\StringHelper;
@@ -1020,6 +1019,9 @@ class Browser
 
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
+        // check path for traversal sequences before any other processing
+        Utility::checkPath($path);
+    
         $result = array(
             'folders' => array(),
             'files' => array(),
@@ -1203,18 +1205,18 @@ class Browser
      */
     public function getItems($source, $limit = 25, $start = 0, $filter = '', $sort = '')
     {
+        // decode path
+        $source = rawurldecode($source);
+
+        // check if source is a valid path
+        Utility::checkPath($source);
+    
         $filesystem = $this->getFileSystem();
 
         $files = array();
         $folders = array();
 
         clearstatcache();
-
-        // decode path
-        $source = rawurldecode($source);
-
-        // check if source is a valid path
-        Utility::checkPath($source);
 
         // trim source to path variable
         $path = trim($source, '/');
@@ -2125,6 +2127,14 @@ class Browser
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('delete', 'file') === false) {
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                }
+
+                // check extension is allowed
+                $ext     = Utility::getExtension($item, true);
+                $allowed = (array) $this->getFileTypes('array');
+
+                if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
+                    throw new \InvalidArgumentException('Delete Failed: Invalid file extension.');
                 }
 
                 $path = $item;
