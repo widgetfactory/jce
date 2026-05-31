@@ -989,11 +989,24 @@ class ProfileModel extends AdminModel
             return false;
         }
 
+        // 512 KB is far more than any legitimate profile export
+        if ($file['size'] > 1024 * 512) {
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            return false;
+        }
+
         // sanitize the file name
         $name = File::makeSafe($file['name']);
 
         if (empty($name)) {
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            return false;
+        }
+
+        $extension = PATHINFO($name, PATHINFO_EXTENSION);
+
+        if (strtolower($extension) !== 'xml') {
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
             return false;
         }
 
@@ -1003,7 +1016,7 @@ class ProfileModel extends AdminModel
         $source = $file['tmp_name'];
 
         // Move uploaded file.
-        File::upload($source, $destination, false, true);
+        File::upload($source, $destination, false);
 
         if (!is_file($destination)) {
             $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
@@ -1043,7 +1056,6 @@ class ProfileModel extends AdminModel
         // format params data as CDATA
         $data = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
 
-        // load processed string
         $xml = simplexml_load_string($data);
 
         if (!$xml) {
@@ -1056,11 +1068,18 @@ class ProfileModel extends AdminModel
         $language = $app->getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
 
+        $allowedKeys = ['name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params'];
+
         foreach ($xml->profiles->children() as $profile) {
             $table = $this->getTable();
 
             foreach ($profile->children() as $item) {
                 $key = $item->getName();
+
+                if (!in_array($key, $allowedKeys, true)) {
+                    continue;
+                }
+
                 $value = (string) $item;
 
                 switch ($key) {
@@ -1094,6 +1113,8 @@ class ProfileModel extends AdminModel
                             $value = '0';
                         }
 
+                        $value = (int) $value;
+
                         break;
                     case 'components':
                         break;
@@ -1123,7 +1144,6 @@ class ProfileModel extends AdminModel
                         break;
                     case 'plugins':
                         break;
-                    case 'area':
                     case 'published':
                     case 'ordering':
                         $value = (int) $value;
