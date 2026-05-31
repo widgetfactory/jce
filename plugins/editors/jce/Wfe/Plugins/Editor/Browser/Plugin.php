@@ -224,40 +224,34 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 
         $folder = rawurldecode($folder);
 
-        // shouldn't be an absoute URL so return empty string
+        // must not be an absolute URL
         if (strpos($folder, '://') !== false) {
             return '';
         }
 
-        // default scheme and path
-        $scheme = 'local-images';
-        $path = $folder;
-
         $pos = strpos($folder, ':');
 
-        if ($pos !== false) {
-            $scheme = substr($folder, 0, $pos);
-            $path = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
+        if ($pos === false) {
+            return '';
         }
 
-        $map = array(
-            'local-images' => 'images',
-            'local-files' => 'files',
-        );
+        $scheme = substr($folder, 0, $pos);
+        $path   = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
 
-        // map the scheme to a root folder
-        $root = isset($map[$scheme]) ? $map[$scheme] : 'images';
+        // must be a Joomla local adapter (local-images, local-files, local-media, etc.)
+        if (strpos($scheme, 'local-') !== 0) {
+            return '';
+        }
 
-        // trim to remove slashes
-        $path = trim($path, '/');
+        // strip 'local-' prefix to get the root folder name
+        $root = substr($scheme, strlen('local-'));
 
-        // concatenate the path with the mapped folder
-        $folder = $root . '/' . $path;
+        if (empty($root)) {
+            return '';
+        }
 
-        // trim to remove slashes
-        $folder = trim($folder, '/');
-
-        return $folder;
+        // build normalized path: root alone, or root/path
+        return $path !== '' ? $root . '/' . $path : $root;
     }
 
     /**
@@ -297,7 +291,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
                     if (!empty($folder)) {
                         $tmpPath = $folder . '/';
 
-                        foreach ($config['dir'] as $key => $store) {
+                        foreach ($config['dir'] as $store) {
                             $base = trim($store['path'], '/');
 
                             // strip any variable segments (eg: $usergroup) to get the comparable literal prefix
@@ -332,25 +326,25 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
                 // get the path from a converted media field
                 $folder = $app->input->getString('path', $app->input->getString('folder', '')); // include "folder" for Joomla 3
 
-                // normalize the folder path of Joomla Media Field, creating a local path, eg: local-images:/folder/subfolder => images/folder/subfolder
+                // normalize the Joomla Media Field path, eg: local-images:/folder/subfolder => images/folder/subfolder, local-media:/cache => media/cache
                 $folder = $this->normalizeLocalJoomlaFolder($folder);
 
                 if ($folder) {
                     $tmpPath = $folder . '/';
 
-                    foreach ($config['dir'] as $key => $store) {
+                    foreach ($config['dir'] as $store) {
                         $base = trim($store['path'], '/');
 
-                        // check if the folder is within any directory store path
-                        if ($tmpPath === $base || strpos($tmpPath, $base . '/') === 0) {
-                            $root['path'] = $tmpPath;
+                        // check if the normalized path is within any profile-allowed directory store
+                        if ($tmpPath === $base . '/' || strpos($tmpPath, $base . '/') === 0) {
+                            $root['path'] = $folder;
                             break;
                         }
                     }
-
-                    // reset folder
-                    $folder = '';
                 }
+
+                // reset folder so it is not appended again below
+                $folder = '';
             }
 
             $path = Utility::makePath($root['path'], $folder);
