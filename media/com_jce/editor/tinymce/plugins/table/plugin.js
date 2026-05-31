@@ -1210,7 +1210,7 @@
 
                         // Ensure empty cells have a <br> to avoid empty cell issues
                         each(ed.dom.select('td,th', table), function (cell) {
-                            if (ed.dom.isEmpty(cell) || /^[\s\u00a0]+$/.test(cell.textContent)) {
+                            if (ed.dom.isEmpty(cell) || (!cell.firstElementChild && /^[\s\u00a0]+$/.test(cell.textContent))) {
                                 cell.innerHTML = '<br data-mce-bogus="1" />';
                             }
                         });
@@ -1352,8 +1352,15 @@
 
             if (!ed.getParam('table_pad_empty_cells', true)) {
                 var elements = ed.schema.elements;
-                elements.th.paddEmpty = false;
-                elements.td.paddEmpty = false;
+
+                // check for element
+                if (elements.th) {
+                    elements.th.paddEmpty = false;
+                }
+
+                if (elements.td) {
+                    elements.td.paddEmpty = false;
+                }
             }
         });
 
