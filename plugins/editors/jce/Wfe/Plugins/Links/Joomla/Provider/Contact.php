@@ -52,7 +52,7 @@ class Contact extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $db   = Factory::getContainer()->get(DatabaseInterface::class);
         $user = $app->getIdentity();
 
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
         $router = new RouteHelper();
 
         if (is_array($areas) && !array_intersect($areas, array_keys($this->getSearchAreas()))) {
@@ -247,7 +247,7 @@ class Contact extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
             ->where(['catid=' . (int) $id, 'published = 1']);
 
         if (!$user->authorise('core.admin')) {
-            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         $db->setQuery($query);

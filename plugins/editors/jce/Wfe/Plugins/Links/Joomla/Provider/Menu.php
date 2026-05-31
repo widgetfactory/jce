@@ -234,7 +234,7 @@ class Menu extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item')));
 
         if (!$user->authorise('core.admin')) {
-            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         $query->order('name');
@@ -254,7 +254,7 @@ class Menu extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->select('COUNT(id)')->from('#__menu')->where(array('published = 1', 'client_id = 0'));
 
         if (!$user->authorise('core.admin')) {
-            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         if ($id) {
@@ -287,7 +287,7 @@ class Menu extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->where(array('m.published = 1', 'm.parent_id = ' . (int) $parent));
 
         if (!$user->authorise('core.admin')) {
-            $query->where('m.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('m.access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         // only site menu items

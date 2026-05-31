@@ -79,7 +79,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $db   = Factory::getContainer()->get(DatabaseInterface::class);
         $user = $app->getIdentity();
 
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
 
         if (is_array($areas) && !array_intersect($areas, array_keys($this->getSearchAreas()))) {
             return [];
@@ -390,7 +390,7 @@ class Content extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $user = Factory::getApplication()->getIdentity();
 
         $query  = $db->getQuery(true);
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
 
         $case = '';
 

@@ -51,7 +51,7 @@ class Weblinks extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $db   = Factory::getContainer()->get(DatabaseInterface::class);
         $user = $app->getIdentity();
 
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
 
         if (is_array($areas) && !array_intersect($areas, array_keys($this->getSearchAreas()))) {
             return [];
@@ -309,7 +309,7 @@ class Weblinks extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->where('a.state = 1');
 
         if (!$user->authorise('core.admin')) {
-            $query->where('b.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('b.access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         $query->where('b.published = 1');

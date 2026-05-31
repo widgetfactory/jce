@@ -57,7 +57,7 @@ class Categories extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $db   = Factory::getContainer()->get(DatabaseInterface::class);
         $user = $app->getIdentity();
 
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
 
         if (is_array($areas) && !array_intersect($areas, array_keys($this->getSearchAreas()))) {
             return [];
@@ -96,7 +96,7 @@ class Categories extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->from('#__categories AS a');
         $query->where(
             '(a.title LIKE ' . $text . ' OR a.description LIKE ' . $text . ') AND a.published = 1 AND a.extension = '
-                . $db->quote('com_content') . 'AND a.access IN (' . $groups . ')'
+                . $db->quote('com_content') . ' AND a.access IN (' . $groups . ')'
         );
 
         $query->group('a.id, a.title, a.description, a.alias, a.created_time');

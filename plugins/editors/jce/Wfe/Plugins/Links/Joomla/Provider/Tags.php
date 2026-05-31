@@ -116,7 +116,7 @@ class Tags extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->where($db->qn('a.published') . ' = 1');
 
         if (!$user->authorise('core.admin')) {
-            $groups = implode(',', $user->getAuthorisedViewLevels());
+            $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
             $query->where('a.access IN (' . $groups . ')');
         }
 
@@ -217,7 +217,7 @@ class Tags extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $query->where($db->qn('a.published') . ' = 1');
 
         if (!$user->authorise('core.admin')) {
-            $groups = implode(',', $user->getAuthorisedViewLevels());
+            $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
             $query->where('a.access IN (' . $groups . ')');
         }
 
