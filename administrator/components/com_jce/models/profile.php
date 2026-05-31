@@ -938,12 +938,8 @@ class JceModelProfile extends AdminModel
         // Check for request forgeries
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
-        jimport('joomla.filesystem.file');
-
         $app = Factory::getApplication();
         $tmp = $app->getCfg('tmp_path');
-
-        jimport('joomla.filesystem.file');
 
         $file = $app->input->files->get('profile_file', null, 'raw');
 
@@ -958,11 +954,24 @@ class JceModelProfile extends AdminModel
             return false;
         }
 
+        // 512 KB is far more than any legitimate profile export
+        if ($file['size'] > 1024 * 512) {
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            return false;
+        }
+
         // sanitize the file name
         $name = File::makeSafe($file['name']);
 
         if (empty($name)) {
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            return false;
+        }
+
+        $extension = PATHINFO($name, PATHINFO_EXTENSION);
+
+        if (strtolower($extension) !== 'xml') {
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
             return false;
         }
 
@@ -972,7 +981,7 @@ class JceModelProfile extends AdminModel
         $source = $file['tmp_name'];
 
         // Move uploaded file.
-        File::upload($source, $destination, false, true);
+        File::upload($source, $destination, false);
 
         if (!is_file($destination)) {
             $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');

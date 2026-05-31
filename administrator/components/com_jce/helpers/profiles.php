@@ -285,10 +285,20 @@ abstract class JceProfilesHelper
 
         // load data from file
         $data = file_get_contents($file);
+
+        $data = trim($data);
+
         // format params data as CDATA
         $data = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
-        // load processed string
+
+        // external entities are disabled by default in PHP 8+; guard PHP 7.x explicitly
+        if (PHP_MAJOR_VERSION < 8) {
+            $prev = libxml_disable_entity_loader(true);
+        }
         $xml = simplexml_load_string($data);
+        if (PHP_MAJOR_VERSION < 8) {
+            libxml_disable_entity_loader($prev);
+        }
 
         $user = Factory::getUser();
         $date = Factory::getDate();
@@ -302,8 +312,15 @@ abstract class JceProfilesHelper
             foreach ($xml->profiles->children() as $profile) {
                 $table = Table::getInstance('Profiles', 'JceTable');
 
+                $allowedKeys = ['name', 'description', 'users', 'types', 'components', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params'];
+
                 foreach ($profile->children() as $item) {
                     $key = $item->getName();
+
+                    if (!in_array($key, $allowedKeys, true)) {
+                        continue;
+                    }
+
                     $value = (string) $item;
 
                     switch ($key) {
