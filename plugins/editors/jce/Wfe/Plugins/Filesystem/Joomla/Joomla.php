@@ -281,6 +281,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $path = $this->getBaseDir();
         }
 
+        $this->checkRestrictedDirectory($path);
+
         $list = Folder::folders($path, $filter, $depth, true);
 
         $folders = array();
@@ -357,6 +359,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $relative = '/';
             $path = $this->getBaseDir();
         }
+
+        $this->checkRestrictedDirectory($path);
 
         // excluded files
         $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html');
