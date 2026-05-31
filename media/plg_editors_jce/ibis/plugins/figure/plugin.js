@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/*global ibis:true */
+/*global tinymce:true */
 
 (function () {
   var VK = ibis.VK,
@@ -18,6 +18,7 @@
 
   ibis.PluginManager.add('figure', function (ed, url) {
     ed.onPreInit.add(function (ed) {
+
       ed.parser.addNodeFilter('figure', function (nodes, name) {
         var i = nodes.length,
           node;
@@ -33,12 +34,20 @@
             node.append(figcaption);
           }
 
+          var isBlockquoteFigure = node.getAll('blockquote').length > 0;
+
+          //if (!isBlockquoteFigure) {
           node.attr('data-mce-image', '1');
           node.attr('contenteditable', 'false');
 
           each(node.getAll('img'), function (img) {
             img.attr('data-mce-contenteditable', 'true');
           });
+
+          each(node.getAll('blockquote'), function (elm) {
+            elm.attr('contenteditable', 'true');
+          });
+          //}
 
           if (ed.settings.figure_data_attribute !== false) {
             node.attr('data-wf-figure', '1');
@@ -71,6 +80,10 @@
 
           each(node.getAll('img'), function (img) {
             img.attr('data-mce-contenteditable', null);
+          });
+
+          each(node.getAll('blockquote'), function (elm) {
+            elm.attr('contenteditable', null);
           });
         }
       });
@@ -116,7 +129,7 @@
         onformat: function (elm, fmt, vars, node) {
           vars = vars || {};
 
-          if (ed.dom.select('img,video,iframe', elm)) {
+          if (ed.dom.select('img,video,iframe', elm).length > 0) {
             ed.dom.setAttribs(elm, {
               'data-mce-image': 1,
               'contenteditable': false
@@ -143,9 +156,58 @@
         }
       });
 
+      ed.formatter.register('figure_blockquote', {
+        selector: 'blockquote',
+        onformat: function (elm, fmt, vars, node) {
+          vars = vars || {};
+
+          // already a figure element
+          if (ed.dom.getParent(elm, 'figure')) {
+            return;
+          }
+
+          var figure = ed.dom.create('figure', {
+            'contenteditable': false
+          });
+
+          elm.parentNode.insertBefore(figure, elm);
+          figure.appendChild(elm);
+
+          elm.setAttribute('contenteditable', true);
+
+          ed.dom.add(figure, 'figcaption', {
+            'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
+            'contenteditable': true
+          }, vars.caption || '');
+
+          if (ed.settings.figure_data_attribute !== false) {
+            ed.dom.setAttrib(figure, 'data-wf-figure', '1');
+          }
+        },
+        onremove: function (elm) {
+          var figure = ed.dom.getParent(elm, 'figure');
+          if (!figure) {
+            return;
+          }
+          ed.dom.remove(ed.dom.select('figcaption', figure));
+          ed.dom.remove(figure, true);
+        }
+      });
+
       ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
         var se = ed.selection,
           n = se.getNode();
+
+        // special treatment for blockquote
+        if (cmd === 'FormatBlock' && v === 'figure') {
+          var blockquote = ed.dom.getParent(n, 'blockquote');
+
+          if (blockquote) {
+            ed.formatter.apply('figure_blockquote', {}, blockquote);
+            o.terminate = true;
+            return;
+          }
+        }
 
         switch (cmd) {
           case 'JustifyRight':
@@ -231,6 +293,10 @@
           collapsed = rng.collapsed;
 
           container = ed.dom.getParent(container, 'FIGURE');
+
+          if (container && ed.dom.select('blockquote', container).length > 0) {
+            return;
+          }
 
           // remove figure and children if the img is selected
           if (container) {
