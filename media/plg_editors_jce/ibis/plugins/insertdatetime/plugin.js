@@ -19,6 +19,8 @@
 
         var defaultFormat = null;
 
+        var params = ed.getParam('insertdatetime', {});
+
         // Pads a numeric value with leading zeros to a minimum length
         function addZeros(value, len) {
             value = '' + value;
@@ -52,17 +54,17 @@
 
         // Returns the configured date format, with fallback to the legacy param and then the default
         function getDateFormat() {
-            return ed.getParam('insertdatetime_dateformat', ed.getParam('plugin_insertdate_dateFormat', '%Y-%m-%d'));
+            return ed.getParam('insertdatetime.dateformat', ed.getParam('plugin_insertdate_dateFormat', '%Y-%m-%d'));
         }
 
         // Returns the configured time format, with fallback to the legacy param and then the default
         function getTimeFormat() {
-            return ed.getParam('insertdatetime_timeformat', ed.getParam('plugin_insertdate_timeFormat', '%H:%M:%S'));
+            return ed.getParam('insertdatetime.timeformat', ed.getParam('plugin_insertdate_timeFormat', '%H:%M:%S'));
         }
 
         // Returns the list of format strings shown in the split button dropdown
         function getFormats() {
-            return ed.getParam('insertdatetime_formats', ['%H:%M:%S', '%Y-%m-%d', '%I:%M:%S %p', '%D']);
+            return ed.getParam('insertdatetime.formats', ['%H:%M:%S', '%Y-%m-%d', '%I:%M:%S %p', '%D']);
         }
 
         // Returns the format used by the split button main action; defaults to the first in the formats list
@@ -84,7 +86,7 @@
 
         // Inserts the formatted date/time string, optionally wrapped in a <time> element when insertdatetime_element is enabled
         function insertDateTime(format) {
-            if (ed.getParam('insertdatetime_element', false)) {
+            if (ed.getParam('insertdatetime.element', false)) {
                 var userTime = getDateTime(format);
                 var computerTime = /%[HMSIp]/.test(format) ? getDateTime('%Y-%m-%dT%H:%M') : getDateTime('%Y-%m-%d');
                 var timeElm = ed.dom.getParent(ed.selection.getStart(), 'time');

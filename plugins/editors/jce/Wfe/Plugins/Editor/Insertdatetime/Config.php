@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -6,6 +7,7 @@
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 namespace Wfe\Plugins\Editor\Insertdatetime;
 
 \defined('_JEXEC') or die;
@@ -18,26 +20,31 @@ class Config
 
         $dateformat = $wf->getParam('insertdatetime.dateformat', '%Y-%m-%d');
 
+        $config = array();
+
         if ($dateformat) {
-            $settings['insertdatetime_dateformat'] = (string) $dateformat;
+            $config['dateformat'] = (string) $dateformat;
         }
-        
+
         $timeformat = $wf->getParam('insertdatetime.timeformat', '%H:%M:%S');
 
         if ($timeformat) {
-            $settings['insertdatetime_timeformat'] = (string) $timeformat;
+            $config['timeformat'] = (string) $timeformat;
         }
 
         $formats = $wf->getParam('insertdatetime.formats', '');
+
 
         if ($formats) {
             if (is_string($formats)) {
                 $formats = explode(',', $formats);
             }
-        
-            $settings['insertdatetime_formats'] = array_map('trim', $formats);
+
+            $config['formats'] = array_map('trim', $formats);
         }
 
-        $settings['insertdatetime_element'] = (bool) $wf->getParam('insertdatetime.element', 0);
+        $config['element'] = (bool) $wf->getParam('insertdatetime.element', 0);
+
+        $settings['insertdatetime'] = $config;
     }
 }
