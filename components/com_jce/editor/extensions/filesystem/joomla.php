@@ -257,6 +257,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->toAbsolute($relative);
         }
 
+        $this->checkRestrictedDirectory($path);
+
         $list = Folder::folders($path, $filter, $depth, true);
 
         $folders = array();
@@ -332,6 +334,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             $relative = '';
             $path = $this->toAbsolute($relative);
         }
+
+        $this->checkRestrictedDirectory($path);
 
         // excluded files
         $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html');
