@@ -11187,6 +11187,7 @@
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
 
+
   /**
    * Copyright (c) 2025 Ryan Demmer
    * Licensed under the GNU General Public License v2.0 or later
@@ -17773,9 +17774,6 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-        if (predicate && predicate(node)) {
-          break;
-        }
 
         parents.push(node);
       }
@@ -20787,6 +20785,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20826,10 +20825,10 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    hasData: hasData,
+    clearData: clearData,
     getData: getData$1,
-    setData: setData,
-    clearData: clearData
+    hasData: hasData,
+    setData: setData
   });
 
   /**
@@ -20841,6 +20840,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var noop = function () { };
 
@@ -21061,7 +21061,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {}, css = '';
+    var div = DOM.create('div', {}, content), styles = {};
 
     styles = ibis.extend(styles, parseCSS(content));
 
@@ -21081,16 +21081,10 @@
         return true;
       }
       
-      if (!embed_stylesheet) {
+      {
         DOM.setStyles(DOM.select(selector, div), value.styles);
-      } else {
-        css += value.text;
       }
     });
-
-    if (css) {
-      div.prepend(DOM.create('style', { type: 'text/css' }, css));
-    }
 
     content = div.innerHTML;
 
@@ -21274,6 +21268,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$5 = ibis.each;
 
@@ -21646,6 +21641,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$4 = ibis.each,
       Schema = ibis.html.Schema,
@@ -22584,6 +22580,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var each$3 = ibis.each;
   var isIE$1 = ibis.isIE || ibis.isIE12;
 
@@ -23006,6 +23003,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$2 = ibis.each,
       VK = ibis.VK,
@@ -23688,6 +23686,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var RangeUtils = ibis.dom.RangeUtils, Delay = ibis.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -24068,6 +24067,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var Dispatcher = ibis.util.Dispatcher;
 
@@ -24718,7 +24718,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, time || 0);
+        }, 0);
       };
 
       func.stop = function () {
@@ -36937,8 +36937,16 @@
        */
       getParam: function (n, dv, ty) {
         var tr = ibis.trim,
-          v = is(this.settings[n]) ? this.settings[n] : dv,
-          o;
+          v, o;
+
+        if (n.indexOf('.') > 0) {
+          v = n.split('.').reduce(function (obj, key) {
+            return is(obj) && is(obj[key]) ? obj[key] : undefined;
+          }, this.settings);
+          v = is(v) ? v : dv;
+        } else {
+          v = is(this.settings[n]) ? this.settings[n] : dv;
+        }
 
         if (ty === 'hash') {
           o = {};
@@ -44286,7 +44294,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if (split && (!format.mixed || !isBlock(formatRoot))) {
+            if ((!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -44301,7 +44309,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container, true);
+          return wrapAndSplit(findFormatRoot(container), container, container);
         }
 
         function unwrap(start) {
@@ -48730,7 +48738,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(delim || ',');
+      return (str || '').split(',');
   }
 
   // list of HTML tags
@@ -52792,7 +52800,7 @@
    * other free or open source software licenses.
    */
 
-  /*global ibis:true */
+  /*global tinymce:true */
 
   (function () {
     var VK = ibis.VK,
@@ -52802,6 +52810,7 @@
 
     ibis.PluginManager.add('figure', function (ed, url) {
       ed.onPreInit.add(function (ed) {
+
         ed.parser.addNodeFilter('figure', function (nodes, name) {
           var i = nodes.length,
             node;
@@ -52817,12 +52826,20 @@
               node.append(figcaption);
             }
 
+            node.getAll('blockquote').length > 0;
+
+            //if (!isBlockquoteFigure) {
             node.attr('data-mce-image', '1');
             node.attr('contenteditable', 'false');
 
             each(node.getAll('img'), function (img) {
               img.attr('data-mce-contenteditable', 'true');
             });
+
+            each(node.getAll('blockquote'), function (elm) {
+              elm.attr('contenteditable', 'true');
+            });
+            //}
 
             if (ed.settings.figure_data_attribute !== false) {
               node.attr('data-wf-figure', '1');
@@ -52855,6 +52872,10 @@
 
             each(node.getAll('img'), function (img) {
               img.attr('data-mce-contenteditable', null);
+            });
+
+            each(node.getAll('blockquote'), function (elm) {
+              elm.attr('contenteditable', null);
             });
           }
         });
@@ -52900,7 +52921,7 @@
           onformat: function (elm, fmt, vars, node) {
             vars = vars || {};
 
-            if (ed.dom.select('img,video,iframe', elm)) {
+            if (ed.dom.select('img,video,iframe', elm).length > 0) {
               ed.dom.setAttribs(elm, {
                 'data-mce-image': 1,
                 'contenteditable': false
@@ -52927,9 +52948,58 @@
           }
         });
 
+        ed.formatter.register('figure_blockquote', {
+          selector: 'blockquote',
+          onformat: function (elm, fmt, vars, node) {
+            vars = vars || {};
+
+            // already a figure element
+            if (ed.dom.getParent(elm, 'figure')) {
+              return;
+            }
+
+            var figure = ed.dom.create('figure', {
+              'contenteditable': false
+            });
+
+            elm.parentNode.insertBefore(figure, elm);
+            figure.appendChild(elm);
+
+            elm.setAttribute('contenteditable', true);
+
+            ed.dom.add(figure, 'figcaption', {
+              'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
+              'contenteditable': true
+            }, vars.caption || '');
+
+            if (ed.settings.figure_data_attribute !== false) {
+              ed.dom.setAttrib(figure, 'data-wf-figure', '1');
+            }
+          },
+          onremove: function (elm) {
+            var figure = ed.dom.getParent(elm, 'figure');
+            if (!figure) {
+              return;
+            }
+            ed.dom.remove(ed.dom.select('figcaption', figure));
+            ed.dom.remove(figure, true);
+          }
+        });
+
         ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
           var se = ed.selection,
             n = se.getNode();
+
+          // special treatment for blockquote
+          if (cmd === 'FormatBlock' && v === 'figure') {
+            var blockquote = ed.dom.getParent(n, 'blockquote');
+
+            if (blockquote) {
+              ed.formatter.apply('figure_blockquote', {}, blockquote);
+              o.terminate = true;
+              return;
+            }
+          }
 
           switch (cmd) {
             case 'JustifyRight':
@@ -53015,6 +53085,10 @@
             collapsed = rng.collapsed;
 
             container = ed.dom.getParent(container, 'FIGURE');
+
+            if (container && ed.dom.select('blockquote', container).length > 0) {
+              return;
+            }
 
             // remove figure and children if the img is selected
             if (container) {
@@ -53277,7 +53351,7 @@
       var count = 0;
 
       var uniqueId = function (prefix) {
-          return (prefix || 'blobid') + (count++);
+          return ('blobid') + (count++);
       };
 
       function isSupportedImage(value) {
