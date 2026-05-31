@@ -273,7 +273,7 @@ class JoomlalinksContent extends CMSObject
             $case = ',' . $case_when1 . ',' . $case_when2;
         }
 
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
 
         $query->select('a.id AS slug, b.id AS catslug, a.alias, a.state, a.title AS title, a.access, ' . $query->concatenate(array('a.introtext', 'a.fulltext')) . ' AS content, a.language' . $case);
         $query->from('#__content AS a');

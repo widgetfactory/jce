@@ -221,7 +221,7 @@ class JoomlalinksWeblinks extends CMSObject
         $query->where('a.state = 1');
 
         if (!$user->authorise('core.admin')) {
-            $query->where('b.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('b.access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         $query->where('b.published = 1');

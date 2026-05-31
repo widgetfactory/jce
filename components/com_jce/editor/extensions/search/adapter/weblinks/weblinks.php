@@ -63,7 +63,7 @@ class PlgWfSearchWeblinks extends CMSPlugin
     public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
     {
         $db = Factory::getDbo();
-        $groups = implode(',', Factory::getUser()->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', Factory::getUser()->getAuthorisedViewLevels()));
 
         $searchText = $text;
 

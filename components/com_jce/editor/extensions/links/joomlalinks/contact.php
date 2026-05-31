@@ -159,7 +159,7 @@ class JoomlalinksContact extends CMSObject
         $query->select('id, name, alias, language')->from('#__contact_details')->where(array('catid=' . (int) $id, 'published = 1'));
 
         if (!$user->authorise('core.admin')) {
-            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            $query->where('access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
         }
 
         $db->setQuery($query);

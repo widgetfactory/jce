@@ -66,7 +66,7 @@ class PlgWfSearchCategories extends CMSPlugin
         $db = Factory::getDbo();
         $user = Factory::getUser();
         $app = Factory::getApplication();
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
         $searchText = $text;
 
         if (is_array($areas) && !array_intersect($areas, array_keys($this->onContentSearchAreas()))) {
@@ -116,7 +116,7 @@ class PlgWfSearchCategories extends CMSPlugin
         $query->from('#__categories AS a');
         $query->where(
             '(a.title LIKE ' . $text . ' OR a.description LIKE ' . $text . ') AND a.published = 1 AND a.extension = '
-            . $db->quote('com_content') . 'AND a.access IN (' . $groups . ')'
+            . $db->quote('com_content') . ' AND a.access IN (' . $groups . ')'
         );
 
         $query->group('a.id, a.title, a.description, a.alias, a.created_time');

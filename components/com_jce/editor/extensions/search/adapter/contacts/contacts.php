@@ -59,7 +59,7 @@ class PlgWfSearchContacts extends CMSPlugin
         $db = Factory::getDbo();
         $app = Factory::getApplication();
         $user = Factory::getUser();
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
 
         // create a new RouteHelper instance
         $router = new RouteHelper();

@@ -55,7 +55,7 @@ class PlgWfSearchContent extends CMSPlugin
         $serverType = $db->getServerType();
         $app = Factory::getApplication();
         $user = Factory::getUser();
-        $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
         $tag = Factory::getLanguage()->getTag();
 
         $searchText = $text;

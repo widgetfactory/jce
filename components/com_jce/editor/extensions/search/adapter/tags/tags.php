@@ -129,7 +129,7 @@ class PlgWfSearchTags extends CMSPlugin
         $query->where($db->qn('a.published') . ' = 1');
 
         if (!$user->authorise('core.admin')) {
-            $groups = implode(',', $user->getAuthorisedViewLevels());
+            $groups = implode(',', array_map('intval', $user->getAuthorisedViewLevels()));
             $query->where('a.access IN (' . $groups . ')');
         }
 
