@@ -6525,7 +6525,7 @@
         add("source", "src srcset type media sizes");
         add("track", "kind src srclang label default");
         add("datalist", "", phrasingContent.concat(['option']).join(' '));
-        add("article section nav aside header footer", "", flowContent);
+        add("article section nav aside main header footer", "", flowContent);
         add("hgroup", "", "h1 h2 h3 h4 h5 h6");
         add("figure", "", flowContent.concat(['figcaption']).join(' '));
         add("time", "datetime", phrasingContent);
