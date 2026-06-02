@@ -250,6 +250,18 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
             return '';
         }
 
+        // root must be a plain folder name — no path separators (checkPath allows / by design)
+        if (strpos($root, '/') !== false || strpos($root, '\\') !== false) {
+            return '';
+        }
+
+        // validate the path component: traversal, null bytes, character whitelist
+        try {
+            Utility::checkPath($path);
+        } catch (\InvalidArgumentException) {
+            return '';
+        }
+
         // build normalized path: root alone, or root/path
         return $path !== '' ? $root . '/' . $path : $root;
     }
