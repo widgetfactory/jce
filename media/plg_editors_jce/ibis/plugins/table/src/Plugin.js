@@ -75,7 +75,7 @@ ibis.PluginManager.add('table', function (ed, url) {
 
                 // Ensure empty cells have a <br> to avoid empty cell issues
                 each(ed.dom.select('td,th', table), function (cell) {
-                    if (ed.dom.isEmpty(cell) || (!cell.firstElementChild && /^[\s\u00a0]+$/.test(cell.textContent))) {
+                    if (ed.dom.isEmpty(cell) || (!cell.firstElementChild && /^[\s\u00a0\u200b]+$/.test(cell.textContent))) {
                         cell.innerHTML = '<br data-mce-bogus="1" />';
                     }
                 });
