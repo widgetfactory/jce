@@ -16,7 +16,6 @@
             <fieldset name="defaults">
                 <field name="width" type="text" size="6" default="" label="WF_TABLES_PARAM_WIDTH" description="WF_TABLES_PARAM_WIDTH_DESC" />
                 <field name="height" type="text" size="6" default="" label="WF_TABLES_PARAM_HEIGHT" description="WF_TABLES_PARAM_HEIGHT_DESC" />
-                <field name="border" type="text" size="5" default="0" label="WF_TABLES_PARAM_BORDER" description="WF_TABLES_PARAM_BORDER_DESC" />
                 <field name="cols" type="number" size="5" class="input-small" step="1" default="2" label="WF_TABLES_PARAM_COLS" description="WF_TABLES_PARAM_COLS_DESC" />
                 <field name="rows" type="number" size="5" class="input-small" step="1" default="2" label="WF_TABLES_PARAM_ROWS" description="WF_TABLES_PARAM_ROWS_DESC" />
                 <field name="cellpadding" type="number" class="input-small" step="1" size="5" default="" label="WF_TABLES_PARAM_CELLPADDING" description="WF_TABLES_PARAM_CELLPADDING_DESC" />

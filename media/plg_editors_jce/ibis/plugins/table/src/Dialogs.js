@@ -192,7 +192,10 @@ export function showTableDialog(ed, isBasicDialog) {
 
                 var data = {
                     classes: classes,
-                    border: ''
+                    cellspacing: ed.getParam('table_default_cellspacing', ''),
+                    cellpadding: ed.getParam('table_default_cellpadding', ''),
+                    width: ed.getParam('table_default_width', ''),
+                    height: ed.getParam('table_default_height', '')
                 };
 
                 if (elm) {
