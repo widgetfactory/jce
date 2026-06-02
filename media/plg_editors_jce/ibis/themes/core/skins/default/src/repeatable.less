@@ -1,0 +1,50 @@
+.mceRepeatable {
+    overflow-y: auto;
+    max-height: 20em;
+    
+    .mceRepeatableItem {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        padding: 0.5em;
+        min-height: inherit;
+
+        >button {
+            .mceIcon {
+                font-size: 12px;
+            }
+
+            .mce_plus {
+                display: none !important;
+            }
+
+            .mce_trash {
+                display: inherit !important;
+            }
+        }
+
+        &:first-child {
+            >button {
+                .mce_plus {
+                    display: inherit !important;
+                }
+
+                .mce_trash {
+                    display: none !important;
+                }
+            }
+        }
+
+        /* zebra stripe */
+        &:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    }
+
+    .mceFormRow {
+        flex-wrap: nowrap;
+
+        label {
+            min-width: inherit;
+        }
+    }
+}

@@ -1,0 +1,35 @@
+.mceRepeatable {
+  overflow-y: auto;
+  max-height: 20em;
+}
+.mceRepeatable .mceRepeatableItem {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 0.5em;
+  min-height: inherit;
+  /* zebra stripe */
+}
+.mceRepeatable .mceRepeatableItem > button .mceIcon {
+  font-size: 12px;
+}
+.mceRepeatable .mceRepeatableItem > button .mce_plus {
+  display: none !important;
+}
+.mceRepeatable .mceRepeatableItem > button .mce_trash {
+  display: inherit !important;
+}
+.mceRepeatable .mceRepeatableItem:first-child > button .mce_plus {
+  display: inherit !important;
+}
+.mceRepeatable .mceRepeatableItem:first-child > button .mce_trash {
+  display: none !important;
+}
+.mceRepeatable .mceRepeatableItem:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.mceRepeatable .mceFormRow {
+  flex-wrap: nowrap;
+}
+.mceRepeatable .mceFormRow label {
+  min-width: inherit;
+}
