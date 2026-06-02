@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Table Tests</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.14.0.css" type="text/css" />
+<script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
+<script src="../../../../../../../../ibis/tests/qunit/connector.js"></script>
+<script type="text/javascript" src="../../../../../../../../ibis/tests/qunit/runner.js"></script>
+<script type="text/javascript" src="../../../../../../../../ibis/tests/js/utils.js"></script>
+<script type="text/javascript" src="../../../ibis.js"></script>
+<script type="text/javascript" src="../plugin.js"></script>
+<script>
+QUnit.config.reorder = false;
+QUnit.config.autostart = false;
+
+var editor;
+
+function setTable(cellHtml) {
+    editor.setContent('<table><tbody><tr>' + cellHtml + '</tr></tbody></table>');
+    return editor.dom.select('td,th');
+}
+
+function hasBogus(cell) {
+    return !!cell.querySelector('[data-mce-bogus]');
+}
+
+module('Table - General');
+
+test('Insert table and remove caret placeholder', function() {
+    editor.setContent('<table><tbody><tr><td>x</td></tr></tbody></table>');
+    equal(editor.getBody().firstChild.nodeName, 'TABLE');
+    equal(editor.getContent(), '<table><tbody><tr><td>x</td></tr></tbody></table>');
+});
+
+module('Table - Empty Cells');
+
+test('Truly empty <td> gets bogus BR', function() {
+    var cells = setTable('<td></td>');
+    ok(hasBogus(cells[0]), '<td></td> should receive bogus BR');
+});
+
+test('NBSP-only <td> gets bogus BR', function() {
+    var cells = setTable('<td>&nbsp;</td>');
+    ok(hasBogus(cells[0]), '<td>&nbsp;</td> should receive bogus BR');
+});
+
+test('Zero-width space <td> gets bogus BR', function() {
+    var cells = setTable('<td>&#8203;</td>');
+    ok(hasBogus(cells[0]), '<td>\\u200b</td> should receive bogus BR');
+});
+
+test('Whitespace-only <td> gets bogus BR', function() {
+    var cells = setTable('<td>   </td>');
+    ok(hasBogus(cells[0]), 'whitespace-only cell should receive bogus BR');
+});
+
+test('<td> with text is unchanged', function() {
+    var cells = setTable('<td>Some text</td>');
+    ok(!hasBogus(cells[0]), '<td>Some text</td> should not receive bogus BR');
+});
+
+test('<td> with NBSP + text is unchanged', function() {
+    var cells = setTable('<td>&nbsp;Some text</td>');
+    ok(!hasBogus(cells[0]), '<td>&nbsp;Some text</td> should not receive bogus BR');
+});
+
+test('<td> with NBSP + inline element is unchanged', function() {
+    var cells = setTable('<td>&nbsp;<strong>text</strong></td>');
+    ok(!hasBogus(cells[0]), '<td>&nbsp;<strong>text</strong></td> should not receive bogus BR');
+});
+
+test('<td> with NBSP + img is unchanged', function() {
+    var cells = setTable('<td>&nbsp;<img src="about:blank" /></td>');
+    ok(!hasBogus(cells[0]), '<td>&nbsp;<img /></td> should not receive bogus BR');
+});
+
+test('<td> with img only is unchanged', function() {
+    var cells = setTable('<td><img src="about:blank" /></td>');
+    ok(!hasBogus(cells[0]), '<td><img /></td> should not receive bogus BR');
+});
+
+test('Mixed row - only empty cells get bogus BR', function() {
+    var cells = setTable(
+        '<td></td>' +
+        '<td>text</td>' +
+        '<td>&nbsp;</td>' +
+        '<td><img src="about:blank" /></td>' +
+        '<td>&#8203;</td>' +
+        '<td>&nbsp;<strong>text</strong></td>'
+    );
+    ok(hasBogus(cells[0]), 'cell[0] empty should get BR');
+    ok(!hasBogus(cells[1]), 'cell[1] text should not get BR');
+    ok(hasBogus(cells[2]), 'cell[2] NBSP-only should get BR');
+    ok(!hasBogus(cells[3]), 'cell[3] img should not get BR');
+    ok(hasBogus(cells[4]), 'cell[4] ZWS-only should get BR');
+    ok(!hasBogus(cells[5]), 'cell[5] NBSP+strong should not get BR');
+});
+
+var initTinyFunction = function() {
+    tinymce.init({
+        mode: 'exact',
+        elements: 'elm1',
+        theme: 'advanced',
+        add_unload_trigger: false,
+        apply_source_formatting: false,
+        plugins: 'table',
+        init_instance_callback: function(ed) {
+            editor = ed;
+            QUnit.start();
+        }
+    });
+};
+</script>
+</head>
+<body>
+    <h1 id="qunit-header">Table Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="content">
+        <textarea id="elm1" name="elm1"></textarea>
+    </div>
+    <script>
+    initTinyFunction();
+    </script>
+</body>
+</html>
