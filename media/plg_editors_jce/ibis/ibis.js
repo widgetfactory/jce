@@ -6525,7 +6525,7 @@
         add("source", "src srcset type media sizes");
         add("track", "kind src srclang label default");
         add("datalist", "", phrasingContent.concat(['option']).join(' '));
-        add("article section nav aside header footer", "", flowContent);
+        add("article section nav aside main header footer", "", flowContent);
         add("hgroup", "", "h1 h2 h3 h4 h5 h6");
         add("figure", "", flowContent.concat(['figcaption']).join(' '));
         add("time", "datetime", phrasingContent);
@@ -28887,6 +28887,15 @@
         }, html);
       },
 
+      value: function (data) {
+        if (arguments.length) {
+          this.update(data);
+          return this;
+        }
+
+        return this.submit();
+      },
+
       submit: function () {
         var i, data = {};
 
@@ -31775,8 +31784,7 @@
 
         if (s.picker) {
           DOM.addClass(this.id, 'mceUrlBoxPicker');
-
-          Event.add(this.id + '_picker', 'click', function (e) {          
+          Event.add(this.id + '_picker', 'click', function (e) {      
             
             e.preventDefault();
             s.onpick.call(self);
@@ -33970,12 +33978,16 @@
         var html = '';
 
         html += this.controls[0].renderHTML();
-        html += '<button class="mceButton"><span role="presentation" class="mceIcon mce_plus"></span><span role="presentation" class="mceIcon mce_trash"></span></button>';
+        html += '<button class="mceButton"><span role="presentation" class="mceIcon mceIcon-small mce_plus"></span><span role="presentation" class="mceIcon mceIcon-small mce_trash"></span></button>';
 
         return DOM.createHTML('div', {
           id: this.id,
           class: 'mceRepeatableItem mceForm mceFormRow'
         }, html);
+      },
+
+      postRender: function () {
+        this.controls[0].postRender();
       },
 
       value: function (value) {
@@ -34093,16 +34105,24 @@
       postRender: function () {
         var self = this, elm = dom.get(this.id);
 
-        dom.bind(elm, 'click', function (e) {
-          e.preventDefault();
+        this._super();
 
+        dom.bind(elm, 'click', function (e) {
           var btn = dom.getParent(e.target, 'button');
 
           if (!btn) {
             return;
           }
 
-          var ctrlElm = btn.parentNode, index = dom.nodeIndex(ctrlElm);
+          var ctrlElm = btn.parentNode;
+
+          if (!dom.hasClass(ctrlElm, 'mceRepeatableItem')) {
+            return;
+          }
+
+          e.preventDefault();
+
+          var index = dom.nodeIndex(ctrlElm);
 
           if (index == 0) {
             self.addItem();
