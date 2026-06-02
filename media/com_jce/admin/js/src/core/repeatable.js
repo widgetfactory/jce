@@ -18,10 +18,12 @@ const createElementMedia = (wrapper) => {
     }
 
     const buttonClear = wrapper.querySelector('.button-clear');
+
     if (buttonClear) {
         buttonClear.addEventListener('click', (e) => {
             e.preventDefault();
             const input = wrapper.querySelector('.wf-media-input');
+
             if (input) {
                 input.value = '';
                 input.dispatchEvent(new Event('change'));
@@ -99,6 +101,7 @@ const removeRepeatable = (e) => {
     if (repeatables.length === 1) {
         repeatables[0].querySelectorAll('input, select, textarea').forEach((input) => {
             input.value = '';
+            input.setAttribute('value', '');
             input.removeAttribute('disabled');
         });
     } else {
@@ -107,6 +110,8 @@ const removeRepeatable = (e) => {
 
     parent.querySelectorAll('input, select, textarea').forEach((input) => {
         input.dispatchEvent(new Event('change'));
+
+        input.classList.add('isdirty');
     });
 
     parent.dispatchEvent(new Event('repeatable:delete'));
