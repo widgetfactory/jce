@@ -40,7 +40,15 @@ class Config
                 $formats = explode(',', $formats);
             }
 
-            $config['formats'] = array_map('trim', $formats);
+            // trim
+            $formats = array_map('trim', $formats);
+
+            // remove empty
+            $formats = array_filter($formats);
+
+            if (!empty($formats)) {
+                $config['formats'] = $formats;
+            }
         }
 
         $config['element'] = (bool) $wf->getParam('insertdatetime.element', 0);

@@ -33,22 +33,22 @@
         // Formats a date using strftime-style tokens
         function getDateTime(fmt, date) {
             date = date || new Date();
-            fmt = fmt.replace('%D', '%m/%d/%Y');
-            fmt = fmt.replace('%r', '%I:%M:%S %p');
-            fmt = fmt.replace('%Y', '' + date.getFullYear());
-            fmt = fmt.replace('%y', '' + date.getYear());
-            fmt = fmt.replace('%m', addZeros(date.getMonth() + 1, 2));
-            fmt = fmt.replace('%d', addZeros(date.getDate(), 2));
-            fmt = fmt.replace('%H', '' + addZeros(date.getHours(), 2));
-            fmt = fmt.replace('%M', '' + addZeros(date.getMinutes(), 2));
-            fmt = fmt.replace('%S', '' + addZeros(date.getSeconds(), 2));
-            fmt = fmt.replace('%I', '' + ((date.getHours() + 11) % 12 + 1));
-            fmt = fmt.replace('%p', '' + (date.getHours() < 12 ? 'AM' : 'PM'));
-            fmt = fmt.replace('%B', '' + monthsLong[date.getMonth()]);
-            fmt = fmt.replace('%b', '' + monthsShort[date.getMonth()]);
-            fmt = fmt.replace('%A', '' + daysLong[date.getDay()]);
-            fmt = fmt.replace('%a', '' + daysShort[date.getDay()]);
-            fmt = fmt.replace('%%', '%');
+            fmt = fmt.replace(/%D/g, '%m/%d/%Y');
+            fmt = fmt.replace(/%r/g, '%I:%M:%S %p');
+            fmt = fmt.replace(/%Y/g, '' + date.getFullYear());
+            fmt = fmt.replace(/%y/g, '' + date.getYear());
+            fmt = fmt.replace(/%m/g, addZeros(date.getMonth() + 1, 2));
+            fmt = fmt.replace(/%d/g, addZeros(date.getDate(), 2));
+            fmt = fmt.replace(/%H/g, '' + addZeros(date.getHours(), 2));
+            fmt = fmt.replace(/%M/g, '' + addZeros(date.getMinutes(), 2));
+            fmt = fmt.replace(/%S/g, '' + addZeros(date.getSeconds(), 2));
+            fmt = fmt.replace(/%I/g, '' + ((date.getHours() + 11) % 12 + 1));
+            fmt = fmt.replace(/%p/g, '' + (date.getHours() < 12 ? 'AM' : 'PM'));
+            fmt = fmt.replace(/%B/g, '' + monthsLong[date.getMonth()]);
+            fmt = fmt.replace(/%b/g, '' + monthsShort[date.getMonth()]);
+            fmt = fmt.replace(/%A/g, '' + daysLong[date.getDay()]);
+            fmt = fmt.replace(/%a/g, '' + daysShort[date.getDay()]);
+            fmt = fmt.replace(/%%/g, '%');
             return fmt;
         }
 
