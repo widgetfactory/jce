@@ -118,7 +118,7 @@ class WFBrowserPlugin extends WFMediaManager
 
                 // strtolower the value
                 $mediatype = strtolower($mediatype);
-
+                
                 // mediaypes contains a mapped type
                 if (array_key_exists($mediatype, $map)) {
                     // process the map to filter permitted extensions
@@ -170,7 +170,7 @@ class WFBrowserPlugin extends WFMediaManager
 
             // trim the path of leading and trailing /
             $folder = trim($folder, '/');
-
+        
             // clean
             $folder = WFUtility::cleanPath($folder);
 
@@ -244,6 +244,18 @@ class WFBrowserPlugin extends WFMediaManager
         $root = substr($scheme, strlen('local-'));
 
         if (empty($root)) {
+            return '';
+        }
+
+        // root must be a plain folder name — no path separators
+        if (strpos($root, '/') !== false || strpos($root, '\\') !== false) {
+            return '';
+        }
+
+        // validate the path component
+        try {
+            WFUtility::checkPath($path);
+        } catch (\InvalidArgumentException $e) {
             return '';
         }
 
