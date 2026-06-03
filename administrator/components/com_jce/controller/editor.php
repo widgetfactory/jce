@@ -15,6 +15,7 @@ require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/applicat
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Factory;
 
 class JceControllerEditor extends BaseController
 {
@@ -23,14 +24,22 @@ class JceControllerEditor extends BaseController
         // check for session token
         Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
 
+        $wf = WFApplication::getInstance();
+
+        if (!$wf->checkProfile('')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         $editor = new WFEditor();
 
         if (strpos($task, '.') !== false) {
             list($name, $task) = explode('.', $task);
         }
 
-        if (method_exists($editor, $task)) {
-            $editor->$task();
+        if (in_array($task, array('loadlanguages', 'pack'))) {
+            if (method_exists($editor, $task)) {
+                $editor->$task();
+            }
         }
 
         jexit();

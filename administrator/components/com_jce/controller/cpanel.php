@@ -11,12 +11,22 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Session\Session;
 
 class JceControllerCpanel extends BaseController
 {
     public function feed()
     {
+        Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
+
+        $user = Factory::getUser();
+
+        if (!$user->authorise('core.manage', 'com_jce')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         $model = $this->getModel('cpanel');
 
         echo json_encode(array(

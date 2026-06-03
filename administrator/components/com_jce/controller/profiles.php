@@ -27,7 +27,13 @@ class JceControllerProfiles extends AdminController
     public function import()
     {
         // Check for request forgeries
-        Session::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+
+        $user = Factory::getUser();
+
+        if (!$user->authorise('core.manage', 'com_jce')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
         $app = Factory::getApplication();
 
@@ -54,6 +60,12 @@ class JceControllerProfiles extends AdminController
         // Check for request forgeries
         Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
 
+        $user = Factory::getUser();
+
+        if (!$user->authorise('core.manage', 'com_jce')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         $model = $this->getModel('profiles');
 
         try {
@@ -71,6 +83,11 @@ class JceControllerProfiles extends AdminController
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
         $user = Factory::getUser();
+
+        if (!$user->authorise('core.manage', 'com_jce')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         $cid = (array) $this->input->get('cid', array(), 'int');
 
         // Access checks.
@@ -101,6 +118,11 @@ class JceControllerProfiles extends AdminController
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
         $user = Factory::getUser();
+
+        if (!$user->authorise('core.manage', 'com_jce')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+        
         $ids = (array) $this->input->get('cid', array(), 'int');
 
         // Access checks.
