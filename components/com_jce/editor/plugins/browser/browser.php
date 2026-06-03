@@ -118,7 +118,7 @@ class WFBrowserPlugin extends WFMediaManager
 
                 // strtolower the value
                 $mediatype = strtolower($mediatype);
-                
+
                 // mediaypes contains a mapped type
                 if (array_key_exists($mediatype, $map)) {
                     // process the map to filter permitted extensions
@@ -170,7 +170,7 @@ class WFBrowserPlugin extends WFMediaManager
 
             // trim the path of leading and trailing /
             $folder = trim($folder, '/');
-        
+
             // clean
             $folder = WFUtility::cleanPath($folder);
 
@@ -229,11 +229,13 @@ class WFBrowserPlugin extends WFMediaManager
         $pos = strpos($folder, ':');
 
         if ($pos === false) {
-            return '';
+            // Joomla 3: plain folder value with no local-* scheme, eg: "images/foo" — treat as local-images
+            $scheme = 'local-images';
+            $path   = trim($folder, " \t\n\r\0\x0B/");
+        } else {
+            $scheme = substr($folder, 0, $pos);
+            $path   = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
         }
-
-        $scheme = substr($folder, 0, $pos);
-        $path   = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
 
         // must be a Joomla local adapter (local-images, local-files, local-media, etc.)
         if (strpos($scheme, 'local-') !== 0) {
@@ -247,13 +249,14 @@ class WFBrowserPlugin extends WFMediaManager
             return '';
         }
 
-        // root must be a plain folder name — no path separators
+        // root must be a plain folder name — no path separators (checkPath allows / by design)
         if (strpos($root, '/') !== false || strpos($root, '\\') !== false) {
             return '';
         }
 
-        // validate the path component
+        // validate root and path: traversal, null bytes, character whitelist
         try {
+            WFUtility::checkPath($root);
             WFUtility::checkPath($path);
         } catch (\InvalidArgumentException $e) {
             return '';
