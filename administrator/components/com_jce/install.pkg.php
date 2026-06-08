@@ -330,10 +330,9 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $extension = new ExtensionTable($db);
         $parent = $installer->getParent();
 
-        // remove legacy jcefilebrowser quickicon and jce content plugins
+        // remove legacy jcefilebrowser quickicon plugin
         $plugins = [
-            'jcefilebrowser' => 'quickicon',
-            'jce' => 'content'
+            'jcefilebrowser' => 'quickicon'
         ];
 
         foreach ($plugins as $element => $folder) {
