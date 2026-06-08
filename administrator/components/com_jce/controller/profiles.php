@@ -31,7 +31,7 @@ class JceControllerProfiles extends AdminController
 
         $user = Factory::getUser();
 
-        if (!$user->authorise('core.manage', 'com_jce')) {
+        if (!$user->authorise('jce.profiles', 'com_jce')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
@@ -62,7 +62,7 @@ class JceControllerProfiles extends AdminController
 
         $user = Factory::getUser();
 
-        if (!$user->authorise('core.manage', 'com_jce')) {
+        if (!$user->authorise('jce.profiles', 'com_jce')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
@@ -84,16 +84,11 @@ class JceControllerProfiles extends AdminController
 
         $user = Factory::getUser();
 
-        if (!$user->authorise('core.manage', 'com_jce')) {
+        if (!$user->authorise('jce.profiles', 'com_jce')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $cid = (array) $this->input->get('cid', array(), 'int');
-
-        // Access checks.
-        if (!$user->authorise('core.create', 'com_jce')) {
-            throw new Exception(Text::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
-        }
 
         if (empty($cid)) {
             throw new Exception(Text::_('No Item Selected'));
@@ -119,16 +114,11 @@ class JceControllerProfiles extends AdminController
 
         $user = Factory::getUser();
 
-        if (!$user->authorise('core.manage', 'com_jce')) {
+        if (!$user->authorise('jce.profiles', 'com_jce')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
         
         $ids = (array) $this->input->get('cid', array(), 'int');
-
-        // Access checks.
-        if (!$user->authorise('core.create', 'com_jce')) {
-            throw new Exception(Text::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
-        }
 
         if (empty($ids)) {
             throw new Exception(Text::_('No Item Selected'));

@@ -23286,7 +23286,8 @@
               each$2(rules, function (s) {
                   // if it is already in Regular Expression format...
                   if (/^\/.*\/(g|i|m)*$/.test(s)) {
-                      re = (new Function('return ' + s))();
+                      var m = s.match(/^\/(.*)\/([gim]*)$/);
+                      re = new RegExp(m[1], m[2] || '');
                       // ...else create expression
                   } else {
                       re = new RegExp(s);
@@ -31558,7 +31559,7 @@
         var self = this,
           s = self.settings,
           co, vp = DOM.getViewPort(),
-          w, h, mx, my, ot = 0, cp = self.classPrefix;
+          w, h, mx, my, ot = 0, cp = self.classPrefix, trigger = s.trigger;
 
         self.collapse(1);
 
@@ -31592,6 +31593,16 @@
         x += s.offset_x || 0;
         y += s.offset_y || 0;
 
+        // If a trigger element is set, use getBoundingClientRect for pixel-accurate
+        // document-relative coordinates. The offsetParent loop in DOM.getPos stops at
+        // fixed-position ancestors without adding page scroll, so any page scroll causes
+        // pos.x/pos.y to be short by that amount.
+        if (trigger) {
+          var trigRect = trigger.getBoundingClientRect();
+          x = trigRect.left + vp.x;
+          y = trigRect.bottom + vp.y;
+        }
+
         // Move inside viewport if not submenu
         if (s.constrain) {
           w = co.clientWidth - ot;
@@ -31606,6 +31617,24 @@
           if ((y + s.vp_offset_y + h) > my) {
             y = py ? py - h - 8 : Math.max(0, (my - s.vp_offset_y) - h);
           }
+        }
+
+        // use fixed positioning if the trigger is inside a modal
+        var modal = document.querySelector('.mceModal');
+
+        if (modal && trigger && modal.contains(trigger)) {
+          var rect = trigger.getBoundingClientRect();
+          x = rect.left;
+          y = rect.bottom;
+
+          if (x + co.clientWidth > vp.w) {
+            x = Math.max(0, rect.right - co.clientWidth);
+          }
+          if (y + co.clientHeight > vp.h) {
+            y = rect.top - co.clientHeight;
+          }
+
+          DOM.setStyle(co, 'position', 'fixed');
         }
 
         DOM.setStyles(co, {
@@ -32796,6 +32825,7 @@
         menu = this.menu;
         menu.settings.offset_x = pos.x;
         menu.settings.offset_y = pos.y;
+        menu.settings.trigger = elm;
 
         if (!this.settings.max_width) {
           menu.settings.max_width = elm.offsetWidth;
@@ -34140,6 +34170,7 @@
         m.settings.vp_offset_x = pos.x;
         m.settings.vp_offset_y = pos.y;
         m.settings.keyboard_focus = self._focused;
+        m.settings.trigger = e;
         m.showMenu(0, e.offsetHeight);
 
         Event.add(DOM.doc, 'mousedown', self.hideMenu, self);
@@ -34501,7 +34532,7 @@
   		 */
       showMenu: function () {
         var self = this,
-          elm, pos;
+          elm, rect, vp;
 
         if (this.isDisabled()) {
           return;
@@ -34520,11 +34551,12 @@
 
         DOM.show(this.id + '_menu');
         DOM.addClass(elm, 'mceSplitButtonSelected');
-        pos = DOM.getPos(elm);
+        rect = elm.getBoundingClientRect();
+        vp = DOM.getViewPort();
 
         DOM.setStyles(this.id + '_menu', {
-          left: pos.x,
-          top: pos.y + elm.firstChild.clientHeight
+          left: vp.x + rect.left,
+          top: vp.y + rect.bottom
         });
 
         elm = 0;

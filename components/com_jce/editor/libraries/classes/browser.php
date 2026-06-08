@@ -987,7 +987,7 @@ class WFFileBrowser extends CMSObject
 
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
-        // check path for traversal sequences before any other processing
+        $path = rawurldecode($path);
         WFUtility::checkPath($path);
 
         $result = array(
@@ -1133,7 +1133,7 @@ class WFFileBrowser extends CMSObject
                     }
                 }
 
-                $item['id'] = $prefix . ':' . $item['id'];
+                $item['id'] = $prefix . ':' . htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8');
 
                 $item['name'] = WFUtility::mb_basename($item['name']);
                 $item['name'] = htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8');
@@ -1845,17 +1845,30 @@ class WFFileBrowser extends CMSObject
 
         $upload = $this->get('upload');
 
-        // check file for various issues
-        if (WFUtility::isSafeFile($file) !== true) {
+        // reject null bytes in the filename before any further processing
+        if (strpos($file['name'], "\x00") !== false) {
+            @unlink($file['tmp_name']);
+            throw new InvalidArgumentException('Upload Failed: The file name contains a null byte.');
+        }
+
+        // fetch profile-allowed extensions first so they can inform filename validation
+        $allowed = (array) $this->getFileTypes('array');
+
+        // validate the full filename, passing profile-allowed extensions so explicitly permitted
+        // types (e.g. svg) are not blocked on the final extension
+        if (WFUtility::validateFileName($file['name'], $allowed) === false) {
+            @unlink($file['tmp_name']);
+            throw new InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
+        }
+
+        // now safe to extract the extension from the validated filename
+        $ext = WFUtility::getExtension($file['name'], true);
+
+        // check file content for PHP tags, phar stubs, invalid images, etc.
+        if (WFUtility::isSafeFile($file, $allowed) !== true) {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException('Upload Failed: Invalid file');
         }
-
-        // get extension
-        $ext = WFUtility::getExtension($file['name'], true);
-
-        // check extension is allowed
-        $allowed = (array) $this->getFileTypes('array');
 
         if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
             @unlink($file['tmp_name']);
@@ -1914,6 +1927,9 @@ class WFFileBrowser extends CMSObject
         // validate file
         $this->validateUploadedFile($file);
 
+        // fetch profile-allowed extensions for subsequent filename validation
+        $allowed = (array) $this->getFileTypes('array');
+
         // get file name
         $name = (string) $app->input->get('name', $file['name'], 'STRING');
 
@@ -1921,7 +1937,7 @@ class WFFileBrowser extends CMSObject
         $name = rawurldecode($name);
 
         // check name
-        if (WFUtility::validateFileName($name) === false) {
+        if (WFUtility::validateFileName($name, $allowed) === false) {
             throw new InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
@@ -1949,7 +1965,7 @@ class WFFileBrowser extends CMSObject
         $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
         // check name
-        if (WFUtility::validateFileName($name) === false) {
+        if (WFUtility::validateFileName($name, $allowed) === false) {
             throw new InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
@@ -2015,7 +2031,7 @@ class WFFileBrowser extends CMSObject
             }
         }
 
-        $contentType = $_SERVER['CONTENT_TYPE'];
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
         // Only multipart uploading is supported for now
         if ($contentType && strpos($contentType, 'multipart') !== false) {
@@ -2112,6 +2128,8 @@ class WFFileBrowser extends CMSObject
                 }
 
                 $path = dirname($item);
+            } else {
+                throw new InvalidArgumentException('Delete Failed: Item does not exist.');
             }
 
             // check access
@@ -2167,8 +2185,10 @@ class WFFileBrowser extends CMSObject
         WFUtility::checkPath($source);
         WFUtility::checkPath($destination);
 
+        $allowed = (array) $this->getFileTypes('array');
+
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination, $allowed) === false) {
             throw new InvalidArgumentException('Rename Failed: The file name is invalid.');
         }
 
@@ -2189,6 +2209,8 @@ class WFFileBrowser extends CMSObject
             }
 
             $path = $source;
+        } else {
+            throw new InvalidArgumentException('Rename Failed: Item does not exist.');
         }
 
         // check access
@@ -2256,8 +2278,10 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Copy Failed:Invalid destination path.');
         }
 
+        $allowed = (array) $this->getFileTypes('array');
+
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination, $allowed) === false) {
             throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
         }
 
@@ -2278,7 +2302,7 @@ class WFFileBrowser extends CMSObject
             // check source path
             WFUtility::checkPath($item);
 
-            if (WFUtility::validateFileName($item) === false) {
+            if (WFUtility::validateFileName($item, $allowed) === false) {
                 throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
             }
 
@@ -2296,6 +2320,8 @@ class WFFileBrowser extends CMSObject
                 }
 
                 $path = $item;
+            } else {
+                throw new InvalidArgumentException('Copy Failed: Item does not exist.');
             }
 
             $target = WFUtility::makePath($destination, WFUtility::mb_basename($item));
@@ -2378,8 +2404,10 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Move Failed: The destination path is invalid.');
         }
 
+        $allowed = (array) $this->getFileTypes('array');
+
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination) === false) {
+        if (WFUtility::validateFileName($destination, $allowed) === false) {
             throw new InvalidArgumentException('Move Failed: The file name is invalid.');
         }
 
@@ -2403,7 +2431,7 @@ class WFFileBrowser extends CMSObject
             // extract the path from the complex path, removing the prefix
             $item = $this->resolvePath($item);
 
-            if (WFUtility::validateFileName($item) === false) {
+            if (WFUtility::validateFileName($item, $allowed) === false) {
                 throw new InvalidArgumentException('Move Failed: The file name is invalid.');
             }
 

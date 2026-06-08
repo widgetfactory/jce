@@ -282,6 +282,11 @@ class WFPacker extends CMSObject
                     // get full path
                     $path = realpath($this->get('_cssbase') . '/' . $match);
 
+                    // reject paths that escape the site root
+                    if (!$path || strpos($path, realpath(JPATH_SITE)) !== 0) {
+                        continue;
+                    }
+
                     // already import, don't repeat!
                     if (in_array($path, self::$imports)) {
                         continue;
@@ -383,7 +388,14 @@ class WFPacker extends CMSObject
                     $query = "?" . $query;
                 }
 
-                $path = str_replace(JPATH_SITE, '', realpath($this->get('_imgbase') . '/' . $path));
+                $resolved = realpath($this->get('_imgbase') . '/' . $path);
+
+                // reject paths that escape the site root
+                if (!$resolved || strpos($resolved, realpath(JPATH_SITE)) !== 0) {
+                    return "url('" . $data[1] . "')";
+                }
+
+                $path = str_replace(JPATH_SITE, '', $resolved);
 
                 if ($path) {
                     return "url('" . Uri::root(true) . str_replace('\\', '/', $path) . $query . "')";

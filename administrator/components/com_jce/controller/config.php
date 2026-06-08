@@ -10,6 +10,7 @@
  */
 \defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\FormController;
 
 class JceControllerConfig extends FormController
@@ -22,8 +23,13 @@ class JceControllerConfig extends FormController
         $this->view_list = 'cpanel';
 
         // only for Joomla 3.x
-        if (version_compare(JVERSION, '4', 'lt')) {      
+        if (version_compare(JVERSION, '4', 'lt')) {
             require_once JPATH_COMPONENT_ADMINISTRATOR . '/includes/classmap.php';
         }
+    }
+
+    protected function allowEdit($data = [], $key = 'id')
+    {
+        return Factory::getUser()->authorise('jce.config', 'com_jce');
     }
 }

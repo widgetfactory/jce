@@ -421,7 +421,8 @@ class WFEditorPlugin extends CMSObject
 
                 // json associative array
                 if (is_array($attribute) && array_key_exists('name', $attribute)) {
-                    extract($attribute);
+                    $name = $attribute['name'];
+                    $value = $attribute['value'] ?? '';
                 }
 
                 if ($name && $value !== '') {

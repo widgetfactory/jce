@@ -18,7 +18,6 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
-use Joomla\CMS\Session\Session;
 use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
@@ -191,7 +190,7 @@ class JceModelProfile extends AdminModel
             $this->setDispatcher(Factory::getApplication()->getDispatcher());
         }
 
-        FormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
+        FormHelper::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jce/models/fields');
 
         // Get the setup form.
         return $this->loadForm('com_jce.profile', 'profile', array('control' => 'jform', 'load_data' => true));
@@ -548,8 +547,6 @@ class JceModelProfile extends AdminModel
                         }
                     }
 
-                    $value = $value;
-
                     break;
                 case 'components':
                     $value = $filter->clean($value, 'STRING');
@@ -576,8 +573,6 @@ class JceModelProfile extends AdminModel
                     break;
                 case 'rows':
                     $value = preg_replace('#[^\w,;]+#', '', $value);
-                    break;
-                case 'params':
                     break;
             }
 
@@ -825,13 +820,12 @@ class JceModelProfile extends AdminModel
 
     public function copy($ids)
     {
-        // Check for request forgeries
-        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
         $table = $this->getTable();
 
         foreach ($ids as $id) {
             if (!$table->load($id)) {
                 $this->setError($table->getError());
+                return false;
             } else {
                 $name = Text::sprintf('WF_PROFILES_COPY_OF', $table->name);
                 $table->name = $name;
@@ -881,7 +875,7 @@ class JceModelProfile extends AdminModel
 
             foreach ($fields as $key => $value) {
                 // only allow a subset of fields
-                if (false == in_array($key, $validFields)) {
+                if (!in_array($key, $validFields)) {
                     continue;
                 }
 
@@ -935,11 +929,7 @@ class JceModelProfile extends AdminModel
      */
     public function import()
     {
-        // Check for request forgeries
-        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
-
         $app = Factory::getApplication();
-        $tmp = $app->getCfg('tmp_path');
 
         $file = $app->input->files->get('profile_file', null, 'raw');
 

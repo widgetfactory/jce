@@ -116,26 +116,41 @@ class WFEditor
         $this->styles[] = $text;
     }
 
+    /**
+     * @return array
+     */
     public function getScripts()
     {
         return $this->scripts;
     }
 
+    /**
+     * @return array
+     */
     public function getStyleSheets()
     {
         return $this->stylesheets;
     }
 
+    /**
+     * @return array
+     */
     public function getScriptDeclaration()
     {
         return $this->javascript;
     }
 
+    /**
+     * @return array
+     */
     public function getScriptOptions()
     {
         return $this->scriptOptions;
     }
 
+    /**
+     * @param array $config Optional configuration array (e.g. 'plugin' key)
+     */
     public function __construct($config = array())
     {
         $app = Factory::getApplication();
@@ -156,12 +171,10 @@ class WFEditor
     }
 
     /**
-     * Returns a reference to a editor object.
+     * Returns a reference to an editor object.
      *
-     * This method must be invoked as:
-     *         <pre>  $editor =WFEditor::getInstance();</pre>
-     *
-     * @return JCE The editor object
+     * @param array $config Optional configuration array
+     * @return static
      */
     public static function getInstance($config = array())
     {
@@ -212,9 +225,9 @@ class WFEditor
     }
 
     /**
-     * Legacy function to build the editor
+     * Legacy function to build the editor.
      *
-     * @return String
+     * @return void
      */
     public function buildEditor()
     {
@@ -283,9 +296,9 @@ class WFEditor
     }
 
     /**
-     * Porcess and assign custom configuration variables
+     * Process and assign custom configuration variables.
      *
-     * @param [Array] $settings
+     * @param array $settings Settings array passed by reference
      * @return void
      */
     private function getCustomConfig(&$settings)
@@ -319,20 +332,32 @@ class WFEditor
 
                 // legacy string
                 if (is_string($userParam)) {
-                    list($name, $value) = explode(':', $userParam);
+                    list($name, $value) = explode(':', $userParam, 2);
                 }
 
                 // json associative array
                 if (is_array($userParam) && array_key_exists('name', $userParam)) {
-                    extract($userParam);
+                    $name = $userParam['name'];
+                    $value = $userParam['value'] ?? '';
                 }
 
                 if ($name && $value !== '') {
-                    $value = trim($value, " \t\n\r\0\x0B'\"");
+                    // key must be a plain identifier — no path chars, no dots, no spaces
+                    if (!preg_match('#^[a-z_][a-z0-9_]*$#i', $name)) {
+                        continue;
+                    }
 
-                    // convert to boolean
+                    // value must be a simple scalar (bool, int, float, string) — no arrays or objects
+                    if (!is_scalar($value)) {
+                        continue;
+                    }
+
+                    // convert to boolean before trimming, while type is still intact
                     if (is_bool($value)) {
                         $value = (bool) $value;
+                    } else {
+                        $value = trim($value, " \t\n\r\0\x0B'\"");
+                        $value = (string) preg_replace('#[^A-Z0-9_\.-]#i', '', $value);
                     }
 
                     $settings[$name] = $value;
@@ -373,6 +398,11 @@ class WFEditor
         return WFLanguage::getTag();
     }
 
+    /**
+     * Build and return the full editor settings array.
+     *
+     * @return array
+     */
     public function getSettings()
     {
         $app = Factory::getApplication();
@@ -531,34 +561,26 @@ class WFEditor
 
         $this->getCustomConfig($settings);
 
-        // process settings
-        array_walk($settings, function (&$value, $key) {
-            // remove 'rows' key from $settings
-            if ($key == "rows") {
-                $value = '';
-            }
+        // remove rows key - only used internally to pass row data to plugin config
+        unset($settings['rows']);
 
+        // process settings
+        array_walk($settings, function (&$value) {
             // implode standard arrays
             if (is_array($value) && $value === array_values($value)) {
                 $value = implode(',', $value);
             }
 
-            // convert json strings to objects to prevent encoding
+            // convert json strings to objects to prevent double-encoding
             if (is_string($value)) {
-                // decode string
                 $val = json_decode($value);
 
-                // valid json
-                if ($val) {
+                if (json_last_error() === JSON_ERROR_NONE) {
                     $value = $val;
                 }
             }
 
             // convert stringified booleans to booleans
-            if (is_string($value) && $value == 'true') {
-                $value = true;
-            }
-
             if (is_string($value) && $value == 'false') {
                 $value = false;
             }
@@ -572,11 +594,15 @@ class WFEditor
         return $settings;
     }
 
+    /**
+     * Enqueue editor scripts and inline init call.
+     *
+     * @param array $settings  Editor settings
+     * @param bool  $autoInit  Whether to emit an inline WfEditor.init() call
+     * @return void
+     */
     public function render($settings, $autoInit = true)
     {
-        // get an editor instance
-        $wf = WFApplication::getInstance();
-
         if ($autoInit) {
             // encode as json string
             $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
@@ -587,9 +613,6 @@ class WFEditor
         }
 
         if (is_object($this->profile)) {
-            if ($wf->getParam('editor.callback_file')) {
-                $this->addScript(Uri::root(true) . '/' . $wf->getParam('editor.callback_file'));
-            }
             // add callback file if exists
             if (is_file(JPATH_SITE . '/media/jce/js/editor.js')) {
                 $this->addScript(Uri::root(true) . '/media/jce/js/editor.js');
@@ -658,7 +681,7 @@ class WFEditor
     /**
      * Get the current version from the editor manifest.
      *
-     * @return Version
+     * @return string
      */
     private static function getVersion()
     {
@@ -666,11 +689,11 @@ class WFEditor
     }
 
     /**
-     * Check if an icon already exists in a toolbar row
+     * Check if an icon already exists in a toolbar row.
      *
-     * @param [Array] $rows
-     * @param [Mixed] $icon
-     * @return Boolean
+     * @param array $rows
+     * @param mixed $icon
+     * @return bool
      */
     private function rowHasIcon($rows, $icon)
     {
@@ -687,11 +710,9 @@ class WFEditor
     }
 
     /**
-     * Return a list of icons for each JCE editor row.
+     * Return a list of icons for each JCE editor toolbar row.
      *
-     * @param string  The number of rows
-     *
-     * @return The row array
+     * @return array
      */
     private function getToolbar()
     {
@@ -814,7 +835,7 @@ class WFEditor
     /**
      * Determine whether a plugin is loaded
      *
-     * @param [string] $name
+     * @param string $name
      * @return boolean
      */
     public function hasPlugin($name)
@@ -837,7 +858,7 @@ class WFEditor
     /**
      * Return a list of published JCE plugins.
      *
-     * @return string list
+     * @return array Associative array with 'core' and 'external' plugin lists
      */
     public function getPlugins()
     {
@@ -927,7 +948,8 @@ class WFEditor
     /**
      * Get all loaded plugins config options.
      *
-     * @param array $settings passed by reference
+     * @param array $settings Settings array passed by reference
+     * @return void
      */
     private function getPluginConfig(&$settings)
     {
@@ -994,6 +1016,10 @@ class WFEditor
 
     /**
      * Remove keys from an array.
+     *
+     * @param array        $array Array passed by reference
+     * @param array|string $keys  Keys to remove
+     * @return void
      */
     public function removeKeys(&$array, $keys)
     {
@@ -1007,10 +1033,9 @@ class WFEditor
     /**
      * Add keys to an array.
      *
-     * @return The string list with added key or the key
-     *
-     * @param string  The array
-     * @param string  The keys to add
+     * @param array        $array Array passed by reference
+     * @param array|string $keys  Keys to add
+     * @return void
      */
     public function addKeys(&$array, $keys)
     {
@@ -1021,22 +1046,9 @@ class WFEditor
     }
 
     /**
-     * Get a list of editor font families.
+     * Return the active and default site template style objects.
      *
-     * @return string font family list
-     *
-     * @param string $add    Font family to add
-     * @param string $remove Font family to remove
-     *
-     * Deprecated in 2.3.4
-     */
-    public function getEditorFonts()
-    {
-        return '';
-    }
-
-    /**
-     * Return the current site template name.
+     * @return array
      */
     private static function getSiteTemplates()
     {
@@ -1079,6 +1091,12 @@ class WFEditor
         return $assigned;
     }
 
+    /**
+     * Check whether the named template provides a non-empty editor.css file.
+     *
+     * @param string $name Template name
+     * @return string|false Relative path to editor.css, or false if not found
+     */
     private static function hasEditorStylesheet($name)
     {
         // editor.css file is not suitable
@@ -1105,14 +1123,16 @@ class WFEditor
         return false;
     }
 
+    /**
+     * Build the list of template stylesheets based on global and profile settings.
+     *
+     * @param bool $absolute Return absolute filesystem paths instead of relative URLs
+     * @return array
+     */
     private static function getTemplateStyleSheetsList($absolute = false)
     {
-        // set default url as empty value
-        $url = '';
         // set default template as empty value
         $template = (object) array('name' => '');
-        // use editor default styles
-        $styles = '';
         // stylesheets
         $stylesheets = array();
         // files
@@ -1155,9 +1175,8 @@ class WFEditor
                         continue;
                     }
 
-                    // external url
-                    if (strpos($tmp, '://') !== false) {
-                        $files[] = $tmp;
+                    // external url (including protocol-relative)
+                    if (strpos($tmp, '://') !== false || strpos($tmp, '//') === 0) {
                         continue;
                     }
 
@@ -1170,7 +1189,11 @@ class WFEditor
                     $file = JPATH_SITE . '/' . $tmp;
                     $list = array();
 
-                    $file = Path::clean($file);
+                    try {
+                        $file = Path::check($file);
+                    } catch (\RuntimeException $_) {
+                        continue;
+                    }
 
                     // check if path is a file
                     if (is_file($file)) {
@@ -1228,9 +1251,8 @@ class WFEditor
                         continue;
                     }
 
-                    // external url
-                    if (strpos($tmp, '://') !== false) {
-                        $custom[] = $tmp;
+                    // external url (including protocol-relative)
+                    if (strpos($tmp, '://') !== false || strpos($tmp, '//') === 0) {
                         continue;
                     }
 
@@ -1243,6 +1265,12 @@ class WFEditor
                     $list = array();
 
                     $file = JPATH_SITE . '/' . $tmp;
+
+                    try {
+                        $file = Path::check($file);
+                    } catch (\RuntimeException $_) {
+                        continue;
+                    }
 
                     // check if path is a file
                     if (is_file($file)) {
@@ -1286,16 +1314,12 @@ class WFEditor
                 continue;
             }
 
-            // full path
-            if (strpos($file, '://') !== false) {
-                $stylesheets[] = $file;
-                continue;
-            }
-
             // remove leading slash
             $file = ltrim($file, '/');
 
             $fullpath = JPATH_SITE . '/' . $file;
+
+            $fullpath = Path::check($fullpath);
 
             if (is_file($fullpath)) {
                 // less
@@ -1315,11 +1339,10 @@ class WFEditor
     }
 
     /**
-     * Get an array of stylesheets used by the editor.
-     * References the WFEditor class.
-     * If the list contains any LESS stylesheets, the list is returned as a URL to compile.
+     * Get the stylesheets for the editor content area.
+     * If the list contains any LESS files, returns a single compile URL instead.
      *
-     * @return string
+     * @return array|string Array of stylesheet URLs, or a compile endpoint URL when LESS files are present
      */
     public static function getTemplateStyleSheets()
     {
@@ -1332,8 +1355,6 @@ class WFEditor
         if (!empty($less)) {
             // create token
             $token = Session::getFormToken();
-            $version = self::getVersion();
-
             return Uri::base(true) . '/index.php?option=com_jce&task=editor.compileless&' . $token . '=1';
         }
 
@@ -1357,7 +1378,9 @@ class WFEditor
     }
 
     /**
-     * Pack / compress editor files.
+     * Pack and compress editor files (JavaScript, CSS, or language).
+     *
+     * @return void
      */
     public function pack()
     {
@@ -1384,13 +1407,17 @@ class WFEditor
         $toolbar = explode('.', $wf->getParam('editor.toolbar_theme', 'default'));
 
         // base skin value
-        $skin = $toolbar[0];
+        $skin = preg_replace('/[^a-zA-Z0-9_-]/', '', $toolbar[0]);
+
+        if (empty($skin)) {
+            $skin = 'default';
+        }
 
         switch ($type) {
             case 'language':
                 $files = array();
 
-                $data = $this->loadLanguages(array(), array(), '(^dlg$|_dlg$)', true);
+                $data = $this->loadLanguages();
                 $packer->setText($data);
 
                 break;
@@ -1450,7 +1477,7 @@ class WFEditor
 
                     foreach ($styles as $style) {
                         $style = Path::clean($style);
-                        
+
                         if (is_file($style)) {
                             $files[] = $style;
                         }
@@ -1492,7 +1519,7 @@ class WFEditor
 
                     foreach ($styles as $style) {
                         $style = Path::clean($style);
-                        
+
                         if (is_file($style)) {
                             $files[] = $style;
                         }
@@ -1505,7 +1532,7 @@ class WFEditor
                     $variant = '';
 
                     if (count($toolbar) > 1) {
-                        $variant = $toolbar[1];
+                        $variant = preg_replace('/[^a-zA-Z0-9_-]/', '', $toolbar[1]);
                     }
 
                     // load 'default'
@@ -1529,6 +1556,11 @@ class WFEditor
         $packer->pack(true, $cache_validation);
     }
 
+    /**
+     * Load and output editor language strings as JavaScript.
+     *
+     * @return void
+     */
     public function loadlanguages()
     {
         $parser = new WFLanguageParser(array('language' => $this->getLanguageTag(), 'plugins' => $this->getPlugins()));
@@ -1536,6 +1568,11 @@ class WFEditor
         $parser->output($data);
     }
 
+    /**
+     * Compile and output LESS/CSS template stylesheets as a single CSS response.
+     *
+     * @return void
+     */
     public function compileless()
     {
         $files = self::getTemplateStyleSheetsList(true);
@@ -1546,20 +1583,26 @@ class WFEditor
         }
     }
 
+    /**
+     * Generate a hidden CSRF token input field.
+     *
+     * @param string $id Unused; retained for legacy compatibility
+     * @return string
+     */
     public function getToken($id)
     {
         return '<input type="hidden" name="' . Session::getFormToken() . '" value="1" />';
     }
 
     /**
-     * Proxy function for legacy compatablity with 3rd party extensions that access the API directly
+     * Proxy function for legacy compatibility with 3rd party extensions that access the API directly.
      *
      * @param string $key
      * @param string $fallback
      * @param string $default
      * @param string $type
-     * @param boolean $allowempty
-     * @return void
+     * @param bool   $allowempty
+     * @return mixed
      */
     public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true)
     {

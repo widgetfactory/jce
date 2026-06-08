@@ -11,8 +11,9 @@
     <description>COM_JCE_XML_DESCRIPTION</description>
 
     <files folder="components/com_jce">
+        <folder>controller</folder>
         <folder>editor</folder>
-        <folder>views</folder>
+        <file>controller.php</file>
         <file>jce.php</file>
     </files>
 

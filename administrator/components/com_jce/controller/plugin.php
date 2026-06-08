@@ -49,7 +49,8 @@ class JceControllerPlugin extends BaseController
         $app = Factory::getApplication();
         $language = Factory::getLanguage();
 
-        $plugin = $this->input->get('plugin');
+        $plugin = $this->input->get('plugin', '', 'cmd');
+        $caller = '';
 
         // get plugin name
         if (strpos($plugin, '.') !== false) {
@@ -119,7 +120,7 @@ class JceControllerPlugin extends BaseController
         }
 
         if (false === $filepath) {
-            jexit('Invalid Plugin');
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         include_once $filepath;

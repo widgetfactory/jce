@@ -174,6 +174,14 @@ class WFApplication extends CMSObject
         return $settings;
     }
 
+    private function getEditorParams()
+    {
+        $editor = PluginHelper::getPlugin('editors', 'jce');
+        $params = json_decode($editor->params ?: '{}', true);
+
+        return is_array($params) ? $params : array();
+    }
+
     private function isCorePlugin($plugin)
     {
         return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
@@ -255,13 +263,8 @@ class WFApplication extends CMSObject
             $options['plugin'] = '';
         }
 
-        if (!isset($options['id'])) {
-            $options['id'] = 0;
-        }
+        $plugin = $options['plugin'];
 
-        // get the passed in options as variables
-        extract ($options);
-        
         // reset the value if it is a core plugin
         if ($this->isCorePlugin($plugin)) {
             $plugin = '';
@@ -269,6 +272,15 @@ class WFApplication extends CMSObject
 
         // get the profile variables for the current context
         $vars = $this->getProfileVars();
+
+        // block guests unless explicitly enabled in global config
+        $user = Factory::getUser();
+
+        if ($user->guest) {
+            if (!ComponentHelper::getParams('com_jce')->get('allow_profile_guests', 0)) {
+                return null;
+            }
+        }
 
         // installed plugins will have a name prefixed with "editor-", so remove to validate
         if (preg_match('/^editor[-_]/', $plugin)) {
@@ -279,7 +291,6 @@ class WFApplication extends CMSObject
         $vars['plugin'] = $plugin;
 
         $db = Factory::getDBO();
-        $user = Factory::getUser();
         $app = Factory::getApplication();
 
         $query = $db->getQuery(true);
@@ -304,6 +315,11 @@ class WFApplication extends CMSObject
                 // at least one user group or user must be set
                 if (empty($item->types) && empty($item->users)) {
                     continue;
+                }
+
+                // decrypt params
+                if (!empty($item->params)) {
+                    $item->params = JceEncryptHelper::decrypt($item->params);
                 }
 
                 $app->triggerEvent('onWfBeforeEditorProfileItem', array(&$item));
@@ -354,11 +370,6 @@ class WFApplication extends CMSObject
                 // check against passed in plugin value
                 if ($plugin && in_array($plugin, explode(',', $item->plugins)) === false) {
                     continue;
-                }
-
-                // decrypt params
-                if (!empty($item->params)) {
-                    $item->params = JceEncryptHelper::decrypt($item->params);
                 }
 
                 $app->triggerEvent('onWfAfterEditorProfileItem', array(&$item));
@@ -432,20 +443,7 @@ class WFApplication extends CMSObject
         $signature = serialize($options);
 
         if (empty(self::$params[$signature])) {
-            // get plugin
-            $editor = PluginHelper::getPlugin('editors', 'jce');
-
-            if (empty($editor->params)) {
-                $editor->params = '{}';
-            }
-
-            // get editor params as an associative array
-            $data1 = json_decode($editor->params, true);
-
-            // if null or false, revert to array
-            if (empty($data1)) {
-                $data1 = array();
-            }
+            $data1 = $this->getEditorParams();
 
             // assign params to "editor" key
             $data1 = array('editor' => $data1);

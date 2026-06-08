@@ -36,7 +36,7 @@ class JceControllerEditor extends BaseController
             list($name, $task) = explode('.', $task);
         }
 
-        if (in_array($task, array('loadlanguages', 'pack'))) {
+        if (in_array($task, array('loadlanguages', 'pack', 'compileless'))) {
             if (method_exists($editor, $task)) {
                 $editor->$task();
             }

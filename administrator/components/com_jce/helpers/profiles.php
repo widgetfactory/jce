@@ -354,6 +354,8 @@ abstract class JceProfilesHelper
                                 $value = '0';
                             }
 
+                            $value = (int) $value;
+
                             break;
                         case 'components':
                             break;
@@ -381,8 +383,10 @@ abstract class JceProfilesHelper
                             break;
                         case 'plugins':
                             break;
-                        case 'area':
                         case 'published':
+                            // always import as unpublished; only users with permission may enable it
+                            $value = 0;
+                            break;
                         case 'ordering':
                             $value = (int) $value;
                             break;

@@ -92,7 +92,7 @@ final class WFRequest extends CMSObject
      */
     private function isRequest()
     {
-        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'multipart') !== false);
+        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart') !== false);
     }
 
     public function setRequest($request)
@@ -122,12 +122,12 @@ final class WFRequest extends CMSObject
             }
 
             // Check if $key or $value is null before using strpos
-            if ($key !== null && strpos($key, '\u0000') !== false) {
-                throw new InvalidArgumentException('Invalid Data', 403);
+            if ($key !== null && strpos((string) $key, "\x00") !== false) {
+                throw new InvalidArgumentException("Invalid Data", 403);
             }
 
-            if ($value !== null && strpos($value, '\u0000') !== false) {
-                throw new InvalidArgumentException('Invalid Data', 403);
+            if ($value !== null && strpos((string) $value, "\x00") !== false) {
+                throw new InvalidArgumentException("Invalid Data", 403);
             }
         }
     }

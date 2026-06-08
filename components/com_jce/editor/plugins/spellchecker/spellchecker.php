@@ -3,7 +3,7 @@
  * @package     JCE
  * @subpackage  Editor
  *
- * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -26,12 +26,8 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
 
         $request = WFRequest::getInstance();
 
-        // Setup plugin XHR callback functions
         $request->setRequest(array($engine, 'checkWords'));
         $request->setRequest(array($engine, 'getSuggestions'));
-        $request->setRequest(array($engine, 'ignoreWord'));
-        $request->setRequest(array($engine, 'ignoreWords'));
-        $request->setRequest(array($engine, 'learnWord'));
     }
 
     private function getConfig()
@@ -39,14 +35,24 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
         static $config;
 
         if (empty($config)) {
+            $dictionary = trim($this->getParam('spellchecker.pspell_dictionary', ''));
+
+            if (!empty($dictionary)) {
+                $dictionary = JPATH_BASE . '/' . $dictionary;
+                $dictDir = realpath(dirname($dictionary));
+                $realBase = realpath(JPATH_BASE);
+
+                if ($dictDir === false || strpos($dictDir, $realBase) !== 0) {
+                    $dictionary = '';
+                }
+            }
 
             $config = array(
-                // PSpell settings
-                'PSpell.mode' => $this->getParam('spellchecker.pspell_mode', 'PSPELL_FAST'),
-                'PSpell.spelling' => $this->getParam('spellchecker.pspell_spelling', ''),
-                'PSpell.jargon' => $this->getParam('spellchecker.pspell_jargon', ''),
-                'PSpell.encoding' => $this->getParam('spellchecker.pspell_encoding', ''),
-                'PSpell.dictionary' => JPATH_BASE . '/' . $this->getParam('spellchecker.pspell_dictionary', ''),
+                'PSpell.mode'       => $this->getParam('spellchecker.pspell_mode', 'PSPELL_FAST'),
+                'PSpell.spelling'   => $this->getParam('spellchecker.pspell_spelling', ''),
+                'PSpell.jargon'     => $this->getParam('spellchecker.pspell_jargon', ''),
+                'PSpell.encoding'   => $this->getParam('spellchecker.pspell_encoding', ''),
+                'PSpell.dictionary' => $dictionary,
             );
         }
 
@@ -65,7 +71,6 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
 
             if (($engine === 'pspell' || $engine === 'pspellshell') && function_exists('pspell_new')) {
                 $classname = 'PSpell';
-
                 $config = $this->getConfig();
             }
 
@@ -86,7 +91,7 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
         return $instance;
     }
 
-    private static function error($str)
+    private static function error(string $str)
     {
         die('{"result":null,"id":null,"error":{"errstr":"' . addslashes($str) . '","errfile":"","errline":null,"errcontext":"","level":"FATAL"}}');
     }

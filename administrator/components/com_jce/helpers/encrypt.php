@@ -1,12 +1,11 @@
 <?php
 
 /**
- * @copyright Copyright (c)2018 Ryan Demmer
+ * @copyright Copyright (c)2018 - 2026 Ryan Demmer
  * @license GNU General Public License version 3, or later
  *
  * @since 2.7
  */
-// Protection against direct access
 \defined('_JEXEC') or die;
 
 use Defuse\Crypto\Key;
@@ -14,30 +13,15 @@ use Defuse\Crypto\Encoding;
 use Defuse\Crypto\Crypto;
 
 /**
- * Implements encrypted settings handling features.
+ * Implements decryption of legacy encrypted profile params.
  */
 class JceEncryptHelper
 {
-    protected static function generateKey()
-    {        
-        $keyObject = Key::createNewRandomKey();
-        $keyAscii = $keyObject->saveToAsciiSafeString();
-
-        $keyData = Encoding::binToHex($keyAscii);
-
-        $filecontents = "<?php defined('WF_EDITOR') or die(); define('WF_SERVERKEY', '$keyData'); ?>";
-        $filename     = JPATH_ADMINISTRATOR . '/components/com_jce/serverkey.php';
-
-        file_put_contents($filename, $filecontents);
-
-        return Key::loadFromAsciiSafeString($keyAscii);
-    }
-
     /**
-     * Gets the configured server key, automatically loading the server key storage file
-     * if required.
+     * Gets the configured server key from the key file.
      *
-     * @return string
+     * @param bool $legacy Return raw bytes for legacy AES decryption
+     * @return Key|string|'' Empty string if key file is missing or invalid
      */
     public static function getKey($legacy = false)
     {
@@ -50,70 +34,38 @@ class JceEncryptHelper
         }
 
         if (defined('WF_SERVERKEY')) {
-            // return key as string
             if ($legacy) {
-                $key = base64_decode(WF_SERVERKEY);
-                return $key;
+                return base64_decode(WF_SERVERKEY);
             }
 
             try {
                 $keyAscii = Encoding::hexToBin(WF_SERVERKEY);
                 $key = Key::loadFromAsciiSafeString($keyAscii);
-            } catch(Defuse\Crypto\Exception\BadFormatException $ex) {
+            } catch (Defuse\Crypto\Exception\BadFormatException $ex) {
                 return "";
             }
 
             return $key;
         }
 
-        return self::generateKey();
+        return "";
     }
 
     /**
-     * Encrypts the settings using the automatically detected preferred algorithm.
+     * Decrypts legacy-encrypted profile params. Returns plaintext as-is if
+     * no recognised encryption marker is present.
      *
-     * @param $settingsINI string The raw settings INI string
-     *
-     * @return string The encrypted data to store in the database
+     * @param string $encrypted The stored params string
+     * @return string Decrypted params, or empty string on decryption failure
      */
-    public static function encrypt($data, $key = null)
-    {
-        // Do we have a non-empty key to begin with?
-        if (empty($key)) {
-            $key = self::getKey();
-        }
-
-        if (empty($key)) {
-            return $data;
-        }
-
-        $encrypted = Crypto::encrypt($data, $key);
-
-        // base64encode
-        $encoded = base64_encode($encrypted);
-
-        // add marker
-        $data = '###DEFUSE###' . $encoded;
-
-        return $data;
-    }
-
-    /**
-     * Decrypts the encrypted settings and returns the plaintext INI string.
-     *
-     * @param $encrypted string The encrypted data
-     *
-     * @return string The decrypted data
-     */
-    public static function decrypt($encrypted, $key = null)
+    public static function decrypt($encrypted)
     {
         $mode = substr($encrypted, 0, 12);
 
         if ($mode == '###AES128###' || $mode == '###CTR128###') {
             require_once(__DIR__ . '/encrypt/aes.php');
-            
-            $encrypted = substr($encrypted, 12);
 
+            $encrypted = substr($encrypted, 12);
             $key = self::getKey(true);
 
             switch ($mode) {
@@ -121,32 +73,28 @@ class JceEncryptHelper
                     $encrypted = base64_decode($encrypted);
                     $decrypted = @WFUtilEncrypt::AESDecryptCBC($encrypted, $key, 128);
                     break;
-    
+
                 case '###CTR128###':
                     $decrypted = @WFUtilEncrypt::AESDecryptCtr($encrypted, $key, 128);
                     break;
             }
 
-            return rtrim($decrypted, "\0");
+            return rtrim($decrypted ?? '', "\0");
         }
 
         if ($mode == '###DEFUSE###') {
             $key = self::getKey();
 
             if (empty($key)) {
-                return $encrypted;
+                return '';
             }
 
-            //get encrypted string without marker
-            $encrypted = substr($encrypted, 12);
-            
-            // base64decode
-            $decoded = base64_decode($encrypted);
+            $decoded = base64_decode(substr($encrypted, 12));
 
             try {
                 $decrypted = Crypto::decrypt($decoded, $key);
             } catch (Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $ex) {
-                return $encrypted;
+                return '';
             }
 
             return rtrim($decrypted, "\0");

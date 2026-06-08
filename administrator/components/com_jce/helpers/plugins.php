@@ -347,7 +347,7 @@ abstract class JcePluginsHelper
             $plugins = explode(',', $profile->plugins);
             $key = array_search($plugin->name, $plugins);
 
-            if ($key) {
+            if ($key !== false) {
                 unset($plugins[$key]);
                 $profile->plugins = implode(',', array_values($plugins));
             }
@@ -367,10 +367,10 @@ abstract class JcePluginsHelper
                     }
                     $profile->rows = implode(';', $lists);
                 }
+            }
 
-                if (!$profile->store()) {
-                    throw new Exception(Text::sprintf('WF_INSTALLER_REMOVE_FROM_GROUP_ERROR', $plugin->name));
-                }
+            if (!$profile->store()) {
+                throw new Exception(Text::sprintf('WF_INSTALLER_REMOVE_FROM_GROUP_ERROR', $plugin->name));
             }
         }
 
@@ -397,7 +397,7 @@ abstract class JcePluginsHelper
         }
     }
 
-    public static function postInstall($route, $plugin, $installer)
+    public static function postInstall($route, $plugin, $_installer)
     {
         $db = Factory::getDBO();
 

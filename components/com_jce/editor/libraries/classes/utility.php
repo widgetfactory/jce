@@ -20,6 +20,14 @@ use Joomla\CMS\Uri\Uri;
 
 abstract class WFUtility
 {
+    /**
+     * Multi-byte-safe strpos replacement.
+     *
+     * @param string  $string The input string.
+     * @param string  $needle The substring to search for.
+     * @param integer $offset The search offset.
+     * @return int|false The position of the first occurrence of the substring, or false if not found.
+     */
     public static function safe_strpos($string, $needle, $offset = 0)
     {
         if (function_exists('mb_strpos')) {
@@ -29,6 +37,14 @@ abstract class WFUtility
         }
     }
 
+    /**
+     * Multi-byte-safe substr replacement.
+     *
+     * @param string  $string The input string.
+     * @param int     $start  The starting position.
+     * @param int|null $length The length of the substring.
+     * @return string The extracted substring.
+     */
     public static function safe_substr($string, $start, $length = null)
     {
         if (function_exists('mb_substr')) {
@@ -38,6 +54,12 @@ abstract class WFUtility
         }
     }
 
+    /**
+     * Multi-byte-safe strlen replacement.
+     *
+     * @param string $string The input string.
+     * @return int The length of the string.
+     */
     public static function safe_strlen($string)
     {
         if (function_exists('mb_strlen')) {
@@ -1029,8 +1051,12 @@ abstract class WFUtility
 
     /**
      * Checks an upload for suspicious naming, potential PHP contents, valid image and HTML tags.
+     *
+     * @param array $file The file array to check.
+     * @return bool True if the file is safe, false otherwise.
+     * @throws InvalidArgumentException If the file is not safe.
      */
-    public static function isSafeFile($file)
+    public static function isSafeFile($file, $allowedExtensions = [])
     {
         // null byte check
         if (strstr($file['name'], "\x00")) {
@@ -1039,7 +1065,7 @@ abstract class WFUtility
         }
 
         // check name for invalid extensions
-        if (self::validateFileName($file['name']) === false) {
+        if (self::validateFileName($file['name'], $allowedExtensions) === false) {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException('Invalid file: The file name contains an invalid extension.');
         }
@@ -1052,19 +1078,21 @@ abstract class WFUtility
 
             while (!feof($fp)) {
                 $data .= @fread($fp, 131072);
-                // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
-                if (stripos($data, '<?php') !== false) {
+
+                // <?php and <?= are unambiguous PHP openers; short <? is skipped as it conflicts with valid EXIF/XML data
+                if (stripos($data, '<?php') !== false || strpos($data, '<?=') !== false) {
                     @unlink($file['tmp_name']);
                     throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
-                // check for `__HALT_COMPILER()` phar stub
+                // check for `__HALT_COMPILER()` phar stub (17 chars — carryover must cover it)
                 if (stripos($data, '__HALT_COMPILER()') !== false) {
                     @unlink($file['tmp_name']);
                     throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
-                $data = substr($data, -10);
+                // carry over enough bytes to catch strings that span a chunk boundary
+                $data = substr($data, -32);
             }
 
             fclose($fp);
@@ -1088,11 +1116,12 @@ abstract class WFUtility
     /**
      * Check file name for extensions.
      *
-     * @param type $name
+     * @param string $name               The file name to validate.
+     * @param array  $allowedExtensions  Extensions explicitly allowed by the profile (may lift the SVG block on the final extension).
      *
-     * @return bool
+     * @return bool True if the file name is valid, false otherwise.
      */
-    public static function validateFileName($name)
+    public static function validateFileName($name, $allowedExtensions = [])
     {
         if (empty($name) && (string) $name !== "0") {
             return false;
@@ -1117,6 +1146,7 @@ abstract class WFUtility
             'php5',
             'php6',
             'php7',
+            'php8',
             'phar',
             'js',
             'exe',
@@ -1161,8 +1191,16 @@ abstract class WFUtility
         // get file parts, eg: ['image', 'php', 'jpg']
         $parts = explode('.', $name);
 
-        // remove extension
-        array_pop($parts);
+        // check and remove the final extension
+        $finalExt = array_pop($parts);
+
+        // svg is the only extension in the blocked list that has a legitimate CMS use;
+        // allow it as the final extension if the profile has explicitly permitted it
+        $profileAllowed = $finalExt === 'svg' && !empty($allowedExtensions) && in_array('svg', $allowedExtensions, true);
+
+        if ((!$profileAllowed && in_array($finalExt, $executable)) || preg_match('/^php\d+$/i', $finalExt)) {
+            return false;
+        }
 
         // remove name
         array_shift($parts);
@@ -1170,14 +1208,21 @@ abstract class WFUtility
         // trim each $parts
         $parts = array_map('trim', $parts);
 
-        // no extensions in file name
+        // no intermediate extensions in file name
         if (empty($parts)) {
             return true;
         }
 
-        // check for extension in file name, eg: image.php.jpg
+        // check for executable extension embedded in file name, eg: image.php.jpg
         foreach ($executable as $extension) {
             if (in_array($extension, $parts)) {
+                return false;
+            }
+        }
+
+        // catch any phpN variant not in the explicit list (php9, php10, etc.)
+        foreach ($parts as $part) {
+            if (preg_match('/^php\d+$/i', $part)) {
                 return false;
             }
         }
@@ -1188,7 +1233,7 @@ abstract class WFUtility
     /**
      * Method to determine if an array is an associative array.
      *
-     * @param    array        An array to test
+     * @param array $array An array to test
      *
      * @return bool True if the array is an associative array
      *

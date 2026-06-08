@@ -638,6 +638,10 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/classes/vendor/MobileDetect'
         );
 
+        $folders['2.9.99'] = array(
+            $site . '/views'
+        );
+
         // remove pro source plugin
         $files['2.9.70'] = array(
             $site . '/editor/plugins/source/config.php',

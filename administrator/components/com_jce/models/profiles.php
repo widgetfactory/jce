@@ -229,6 +229,7 @@ class JceModelProfiles extends ListModel
                 switch ((string) $item->getName()) {
                     case 'description':
                         $table->description = Text::_((string) $item);
+                        break;
                     case 'types':
                         $table->types = implode(',', $groups);
                         break;
