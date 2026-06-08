@@ -108,7 +108,7 @@ class ProfilesTable extends Table
 			}
 			
 			// Params can be an empty json string
-			if (!empty($this->params))
+			if (empty($this->params))
 			{
 				$this->params = '{}';
 			}

@@ -11,9 +11,10 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\Language\Text;
+
 /**
  * Releases Main Controller
  *
@@ -26,14 +27,22 @@ class EditorController extends BaseController
         // check for session token
         Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
 
+        $wf = \Wfe\Factory::getApplication();
+
+        if (!$wf->checkProfile('')) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         $editor = new \Wfe\Editor\Editor();
 
         if (strpos($task, '.') !== false) {
-            list($name, $task) = explode('.', $task);
+            [, $task] = explode('.', $task);
         }
 
-        if (method_exists($editor, $task)) {
-            $editor->$task();
+        if (in_array($task, ['loadlanguages', 'pack', 'compileless'])) {
+            if (method_exists($editor, $task)) {
+                $editor->$task();
+            }
         }
 
         jexit();

@@ -368,7 +368,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
                 $query = $db->getQuery(true);
 
                 $query->select('update_site_id')->from('#__update_sites');
-                $query->where($db->qn('location') . ' = ' . $db->q('https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce.xml'));
+                $query->where($db->quoteName('location') . ' = ' . $db->quote('https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce.xml'));
                 $db->setQuery($query);
                 $id = $db->loadResult();
 
@@ -467,12 +467,12 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             // check for "unsigend" in "checked_out" and default value in "checked_out_time" fields and update if necessary
             if (false == $this->checkTableUpdate()) {
                 // fix checked_out table
-                $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out') . " " . $db->qn('checked_out') . " INT UNSIGNED NULL";
+                $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->quoteName('checked_out') . " " . $db->quoteName('checked_out') . " INT UNSIGNED NULL";
                 $db->setQuery($query);
                 $db->execute();
 
                 // fix checked_out_time default value
-                $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out_time') . " " . $db->qn('checked_out_time') . " DATETIME NULL DEFAULT NULL";
+                $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->quoteName('checked_out_time') . " " . $db->quoteName('checked_out_time') . " DATETIME NULL DEFAULT NULL";
                 $db->setQuery($query);
                 $db->execute();
             }
@@ -520,8 +520,9 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
             $admin . '/layouts/joomla',
 
+            $site . '/controller',
             $site . '/editor',
-            $site . '/tmpl',
+            $site . '/views',
 
             $media . '/editor',
             $media . '/css',
@@ -534,7 +535,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $admin . '/controller.php',
             $admin . '/jce.php',
             $admin . '/includes/classmap.php',
-            $site  . '/jce.php'
+            $site  . '/controller.php',
+            $site  . '/jce.php',
         );
 
         foreach ($folders as $version => $list) {

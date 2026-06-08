@@ -90,7 +90,7 @@ abstract class Utility
      * From libraries/vendor/joomla/filesystem/src/File.php
      * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
      *
-     * @param  string $path The file path
+     * @param  string $file The file path
      * @param  bool   $lowercase Convert the extension to lowercase
      * @return string The file extension
      */
@@ -151,6 +151,14 @@ abstract class Utility
         return self::stripExtension($path);
     }
 
+    /**
+     * Clean a file path by normalizing directory separators and adding a prefix if needed.
+     *
+     * @param string $path The file path
+     * @param string $ds The directory separator
+     * @param string $prefix The prefix to add to the path
+     * @return string The cleaned path
+     */
     public static function cleanPath($path, $ds = '/', $prefix = '')
     {
         $path = trim(rawurldecode($path));
@@ -168,7 +176,13 @@ abstract class Utility
         // return path with prefix if any
         return $prefix . $path;
     }
-
+    
+    /**
+     * Convert a URI to an absolute file path.
+     *
+     * @param string $url The URI to convert.
+     * @return string The absolute file path.
+     */
     public static function uriToAbsolutePath($url)
     {
         // Get the relative root URL
@@ -193,8 +207,7 @@ abstract class Utility
     /**
      * Append a DIRECTORY_SEPARATOR to the path if required.
      *
-     * @param string $path the path
-     * @param string $ds   optional directory seperator
+     * @param string $path The file path
      *
      * @return string path with trailing DIRECTORY_SEPARATOR
      */
@@ -296,7 +309,7 @@ abstract class Utility
      *
      * @return bool True if the path is valid.
      *
-     * @throws InvalidArgumentException If the path contains invalid characters or traversal attempts.
+     * @throws \InvalidArgumentException If the path contains invalid characters or traversal attempts.
      */
 
     public static function checkPath($path)
@@ -667,7 +680,10 @@ abstract class Utility
     /**
      * Makes file name safe to use.
      *
-     * @param mixed The name of the file (not full path)
+     * @param mixed $subject name of the file (not full path)
+     * @param string $mode The mode to use: 'utf-8' or 'ascii'
+     * @param string $spaces The character to replace spaces with
+     * @param string $case The case to apply: 'lowercase' or 'uppercase'
      *
      * @return mixed The sanitised string or array
      */
@@ -775,7 +791,6 @@ abstract class Utility
      * Convert strftime format to DateTime format.
      *
      * @param string $format The strftime format string.
-     *
      * @return string The DateTime format string.
      */
     private static function convertStrftimeToDateTimeFormat($format)
@@ -820,9 +835,8 @@ abstract class Utility
     /**
      * Get the modified date of a file.
      *
-     * @return Formatted modified date
-     *
      * @param string $file Absolute path to file
+     * @return string Formatted modified date
      */
     public static function getDate($file)
     {
@@ -832,7 +846,8 @@ abstract class Utility
     /**
      * Get the size of a file.
      *
-     * @return Formatted filesize value
+     * @param string $file Absolute path to file
+     * @return string Formatted filesize value
      *
      * @param string $file Absolute path to file
      */
@@ -846,7 +861,6 @@ abstract class Utility
      * https://gist.github.com/tcyrus/257a1ed93c5e115b7b33426d029b5c5f
      *
      * @param string $path A Path
-     * @param int $levels The number of parent directories to go up.
      * @return string The path of a parent directory.
      */
     public static function mb_dirname($path)
@@ -872,7 +886,13 @@ abstract class Utility
 
         return $dir;
     }
-
+    /**
+     * Get the basename of a file path, optionally stripping a given extension.
+     *
+     * @param string $path The file path
+     * @param string $ext The extension to strip (optional)
+     * @return string The basename of the file
+     */
     public static function mb_basename($path, $ext = '')
     {
         // clean
@@ -1007,7 +1027,7 @@ abstract class Utility
     /**
      * Checks an upload for suspicious naming, potential PHP contents, valid image and HTML tags.
      */
-    public static function isSafeFile($file)
+    public static function isSafeFile($file, $allowedExtensions = [])
     {
         // null byte check
         if (strstr($file['name'], "\x00")) {
@@ -1016,7 +1036,7 @@ abstract class Utility
         }
 
         // check name for invalid extensions
-        if (self::validateFileName($file['name']) === false) {
+        if (self::validateFileName($file['name'], $allowedExtensions) === false) {
             @unlink($file['tmp_name']);
             throw new \InvalidArgumentException('Invalid file: The file name contains an invalid extension.');
         }
@@ -1030,7 +1050,7 @@ abstract class Utility
             while (!feof($fp)) {
                 $data .= @fread($fp, 131072);
                 // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
-                if (stripos($data, '<?php') !== false) {
+                if (stripos($data, '<?php') !== false || strpos($data, '<?=') !== false) {
                     @unlink($file['tmp_name']);
                     throw new \InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
@@ -1041,7 +1061,7 @@ abstract class Utility
                     throw new \InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
-                $data = substr($data, -10);
+                $data = substr($data, -32);
             }
 
             fclose($fp);
@@ -1065,11 +1085,12 @@ abstract class Utility
     /**
      * Check file name for extensions.
      *
-     * @param string $name
+     * @param string $name               The file name to validate.
+     * @param array  $allowedExtensions  Extensions explicitly allowed by the profile (may lift the SVG block on the final extension).
      *
      * @return bool
      */
-    public static function validateFileName($name)
+    public static function validateFileName($name, $allowedExtensions = [])
     {
         if (empty($name) && (string) $name !== "0") {
             return false;
@@ -1094,6 +1115,7 @@ abstract class Utility
             'php5',
             'php6',
             'php7',
+            'php8',
             'phar',
             'js',
             'exe',
@@ -1138,8 +1160,16 @@ abstract class Utility
         // get file parts, eg: ['image', 'php', 'jpg']
         $parts = explode('.', $name);
 
-        // remove extension
-        array_pop($parts);
+        // check and remove the final extension — it must never be executable
+        $finalExt = array_pop($parts);
+
+        // svg is the only extension in the blocked list that has a legitimate CMS use;
+        // allow it as the final extension if the profile has explicitly permitted it
+        $profileAllowed = $finalExt === 'svg' && !empty($allowedExtensions) && in_array('svg', $allowedExtensions, true);
+
+        if ((!$profileAllowed && in_array($finalExt, $executable)) || preg_match('/^php\d+$/i', $finalExt)) {
+            return false;
+        }
 
         // remove name
         array_shift($parts);
@@ -1147,14 +1177,21 @@ abstract class Utility
         // trim each $parts
         $parts = array_map('trim', $parts);
 
-        // no extensions in file name
+        // no intermediate extensions in file name
         if (empty($parts)) {
             return true;
         }
 
-        // check for extension in file name, eg: image.php.jpg
+        // check for executable extension in file name, eg: image.php.jpg
         foreach ($executable as $extension) {
             if (in_array($extension, $parts)) {
+                return false;
+            }
+        }
+
+        // catch any phpN variant not in the explicit list (php9, php10, etc.)
+        foreach ($parts as $part) {
+            if (preg_match('/^php\d+$/i', $part)) {
                 return false;
             }
         }

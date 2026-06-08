@@ -968,8 +968,6 @@ class ProfileModel extends AdminModel
     /**
      * Process XML restore file.
      *
-     * @param object $xml
-     *
      * @return bool
      */
     public function import()
@@ -1145,6 +1143,9 @@ class ProfileModel extends AdminModel
                     case 'plugins':
                         break;
                     case 'published':
+                        // always import as unpublished; only users with publish permission may enable it
+                        $value = 0;
+                        break;
                     case 'ordering':
                         $value = (int) $value;
                         break;

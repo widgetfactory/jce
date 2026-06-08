@@ -36,7 +36,7 @@ class MediaboxModel extends FormModel
      *
      * @since   1.6
      */
-    public function getTable($type = 'Extension', $prefix = 'JTable', $config = array())
+    public function getTable($type = 'Extension', $prefix = 'Joomla\\CMS\\Table\\', $config = [])
     {
         return Table::getInstance($type, $prefix, $config);
     }

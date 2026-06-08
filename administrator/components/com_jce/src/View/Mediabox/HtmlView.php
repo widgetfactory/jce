@@ -47,7 +47,7 @@ class HtmlView extends BaseHtmlView
         $this->form = $this->get('Form');
 
         $this->name = Text::_('WF_MEDIABOX');
-        $this->fieldsname = 'config';
+        $this->fieldsname = 'options';
         $this->formclass = 'options-form';
 
         $params = ComponentHelper::getParams('com_jce');
@@ -73,14 +73,14 @@ class HtmlView extends BaseHtmlView
         ToolbarHelper::title('JCE - ' . Text::_('WF_MEDIABOX'), 'pictures');
 
 		// If not checked out, can save the item.
-        if (Factory::getUser()->authorise('jce.config', 'com_jce')) {
-        	ToolbarHelper::apply('config.apply');
+        if (Factory::getApplication()->getIdentity()->authorise('jce.config', 'com_jce')) {
+        	ToolbarHelper::apply('mediabox.apply');
         	ToolbarHelper::divider();
-        	ToolbarHelper::save('config.save');
+        	ToolbarHelper::save('mediabox.save');
         	ToolbarHelper::divider();
 		}
 
-        ToolbarHelper::cancel('config.cancel', 'JTOOLBAR_CLOSE');
+        ToolbarHelper::cancel('mediabox.cancel', 'JTOOLBAR_CLOSE');
         ToolbarHelper::divider();
 		ToolbarHelper::help('WF_MEDIABOX_EDIT');
     }

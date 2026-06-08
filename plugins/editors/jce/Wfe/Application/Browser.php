@@ -1019,7 +1019,7 @@ class Browser
 
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
-        // check path for traversal sequences before any other processing
+        $path = rawurldecode($path);
         Utility::checkPath($path);
     
         $result = array(
@@ -1165,7 +1165,7 @@ class Browser
                     }
                 }
 
-                $item['id'] = $prefix . ':' . $item['id'];
+                $item['id'] = $prefix . ':' . htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8');
 
                 $item['name'] = Utility::mb_basename($item['name']);
                 $item['name'] = htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8');
@@ -1877,17 +1877,29 @@ class Browser
 
         $upload = $this->getConfig('upload');
 
-        // check file for various issues
-        if (Utility::isSafeFile($file) !== true) {
+        // reject null bytes in the filename before any further processing
+        if (strpos($file['name'], "\x00") !== false) {
+            @unlink($file['tmp_name']);
+            throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
+        }
+
+        // fetch profile-allowed extensions first so they can inform filename validation
+        $allowed = (array) $this->getFileTypes('array');
+
+        // validate the full filename, passing profile-allowed extensions
+        if (Utility::validateFileName($file['name'], $allowed) === false) {
+            @unlink($file['tmp_name']);
+            throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
+        }
+
+        // now safe to extract the extension from the validated filename
+        $ext = Utility::getExtension($file['name'], true);
+
+        // check file content for PHP tags, phar stubs, invalid images, etc.
+        if (Utility::isSafeFile($file, $allowed) !== true) {
             @unlink($file['tmp_name']);
             throw new \InvalidArgumentException('Upload Failed: Invalid file');
         }
-
-        // get extension
-        $ext = Utility::getExtension($file['name'], true);
-
-        // check extension is allowed
-        $allowed = (array) $this->getFileTypes('array');
 
         if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
             @unlink($file['tmp_name']);
@@ -1946,6 +1958,9 @@ class Browser
         // validate file
         $this->validateUploadedFile($file);
 
+        // fetch profile-allowed extensions for subsequent filename validation
+        $allowed = (array) $this->getFileTypes('array');
+
         // get file name
         $name = (string) $app->input->get('name', $file['name'], 'STRING');
 
@@ -1953,7 +1968,7 @@ class Browser
         $name = rawurldecode($name);
 
         // check name
-        if (Utility::validateFileName($name) === false) {
+        if (Utility::validateFileName($name, $allowed) === false) {
             throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
@@ -1981,7 +1996,7 @@ class Browser
         $name = Utility::makeSafe($name, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
         // check name
-        if (Utility::validateFileName($name) === false) {
+        if (Utility::validateFileName($name, $allowed) === false) {
             throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
@@ -2047,7 +2062,7 @@ class Browser
             }
         }
 
-        $contentType = $_SERVER['CONTENT_TYPE'];
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
         // Only multipart uploading is supported for now
         if ($contentType && strpos($contentType, 'multipart') !== false) {
@@ -2144,6 +2159,8 @@ class Browser
                 }
 
                 $path = dirname($item);
+            } else {
+                throw new \InvalidArgumentException('Delete Failed: Item does not exist.');
             }
 
             // check access
@@ -2199,8 +2216,10 @@ class Browser
         Utility::checkPath($source);
         Utility::checkPath($destination);
 
+        $allowed = (array) $this->getFileTypes('array');
+
         // check for extension in destination name
-        if (Utility::validateFileName($destination) === false) {
+        if (Utility::validateFileName($destination, $allowed) === false) {
             throw new \InvalidArgumentException('Rename Failed: The file name is invalid.');
         }
 
@@ -2221,6 +2240,8 @@ class Browser
             }
 
             $path = $source;
+        } else {
+            throw new \InvalidArgumentException('Rename Failed: Item does not exist.');
         }
 
         // check access
@@ -2288,8 +2309,10 @@ class Browser
             throw new \InvalidArgumentException('Copy Failed:Invalid destination path.');
         }
 
+        $allowed = (array) $this->getFileTypes('array');
+
         // check for extension in destination name
-        if (Utility::validateFileName($destination) === false) {
+        if (Utility::validateFileName($destination, $allowed) === false) {
             throw new \InvalidArgumentException('Copy Failed: The file name is invalid.');
         }
 
@@ -2310,7 +2333,7 @@ class Browser
             // check source path
             Utility::checkPath($item);
 
-            if (Utility::validateFileName($item) === false) {
+            if (Utility::validateFileName($item, $allowed) === false) {
                 throw new \InvalidArgumentException('Copy Failed: The file name is invalid.');
             }
 
@@ -2328,6 +2351,8 @@ class Browser
                 }
 
                 $path = $item;
+            } else {
+                throw new \InvalidArgumentException('Copy Failed: Item does not exist.');
             }
 
             $target = Utility::makePath($destination, Utility::mb_basename($item));
@@ -2410,8 +2435,10 @@ class Browser
             throw new \InvalidArgumentException('Move Failed: The destination path is invalid.');
         }
 
+        $allowed = (array) $this->getFileTypes('array');
+
         // check for extension in destination name
-        if (Utility::validateFileName($destination) === false) {
+        if (Utility::validateFileName($destination, $allowed) === false) {
             throw new \InvalidArgumentException('Move Failed: The file name is invalid.');
         }
 
@@ -2435,7 +2462,7 @@ class Browser
             // extract the path from the complex path, removing the prefix
             $item = $this->resolvePath($item);
 
-            if (Utility::validateFileName($item) === false) {
+            if (Utility::validateFileName($item, $allowed) === false) {
                 throw new \InvalidArgumentException('Move Failed: The file name is invalid.');
             }
 

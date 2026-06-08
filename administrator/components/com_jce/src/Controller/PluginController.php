@@ -113,7 +113,8 @@ class PluginController extends BaseController
         $app = Factory::getApplication();
 
         $language = $app->getLanguage();
-        $plugin = $this->input->get('plugin');
+        $plugin = $this->input->get('plugin', '', 'cmd');
+        $caller = '';
 
         // Get plugin name
         if (strpos($plugin, '.') !== false) {
@@ -126,7 +127,7 @@ class PluginController extends BaseController
         if ($mapped !== $plugin) {
             // If the plugin name was mapped, update the input
             if (!empty($caller)) {
-                $mapped = $plugin . '.' . $caller;
+                $mapped = $mapped . '.' . $caller;
             }
 
             $this->input->set('plugin', $mapped);
@@ -194,7 +195,7 @@ class PluginController extends BaseController
         }
 
         if ($filepath === false) {
-            jexit('Invalid Plugin');
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // Dynamically load and instantiate class
@@ -205,7 +206,7 @@ class PluginController extends BaseController
         ]);
 
         if (!$instance) {
-            jexit('Could not load plugin class');
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // Load plugin-specific language

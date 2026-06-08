@@ -118,7 +118,15 @@
                                     title: plg.options.confirmText || ed.getLang('insert', 'Insert'),
                                     classes: 'primary',
                                     onsubmit: function (e) {
-                                        new Function(plg.options.confirmCallback).apply();
+                                        var cb = plg.options.confirmCallback;
+                                        var fn = typeof cb === 'function' ? cb : (function () {
+                                            var parts = String(cb).trim().split('.'), obj = window;
+                                            for (var i = 0; i < parts.length && obj; i++) {
+                                                obj = obj[parts[i]];
+                                            }
+                                            return typeof obj === 'function' ? obj : null;
+                                        }());
+                                        if (fn) { fn.call(window); }
                                     }
                                 });
                             }

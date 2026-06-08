@@ -39,4 +39,13 @@
         </field>
 
     </fieldset>
+
+    <fieldset name="security" label="WF_PREFERENCES_SECURITY">
+
+        <field name="allow_profile_guests" type="radio" default="0" label="WF_PARAM_ALLOW_GUESTS" description="WF_PARAM_ALLOW_GUESTS_DESC" class="btn-group btn-group-yesno" filter="integer">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+    </fieldset>
 </config>

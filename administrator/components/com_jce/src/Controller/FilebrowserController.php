@@ -11,6 +11,7 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
 
@@ -28,6 +29,15 @@ class FilebrowserController extends BaseController
 	 * @since  1.6
 	 */
 	protected $default_view = 'filebrowser';
+
+	public function display($cachable = false, $urlparams = [])
+	{
+		if (!$this->app->getIdentity()->authorise('jce.browser', 'com_jce')) {
+			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+		}
+
+		parent::display($cachable, $urlparams);
+	}
 
 	public function cancel()
 	{

@@ -285,7 +285,10 @@
                     u += '/langs/' + ed.settings.language + '_dlg.js';
 
                     if (!ibis.ScriptLoader.isDone(u)) {
-                        document.write('<script type="text/javascript" src="' + ibis._addVer(u) + '"></script>');
+                        var s = document.createElement('script');
+                        s.type = 'text/javascript';
+                        s.src = ibis._addVer(u);
+                        document.head.appendChild(s);
                         ibis.ScriptLoader.markDone(u);
                     }
                 }

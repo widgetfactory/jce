@@ -12,10 +12,9 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 defined('_JEXEC') or die;
 
 use Joomla\CMS\MVC\Controller\FormController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Versioning\VersionableControllerTrait;
-use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 /**
  * Profile controller class.
@@ -70,9 +69,18 @@ class ProfileController extends FormController
 	{
 		$task = $this->getTask();
 
-		if ($task == 'save')
-		{
+		if ($task == 'save') {
 			$this->setRedirect(Route::_('index.php?option=com_jce&view=profiles', false));
 		}
 	}
+
+    protected function allowAdd($data = [])
+    {
+        return $this->app->getIdentity()->authorise('jce.profiles', 'com_jce');
+    }
+
+    protected function allowEdit($data = [], $key = 'id')
+    {
+        return $this->app->getIdentity()->authorise('jce.profiles', 'com_jce');
+    }
 }

@@ -148,6 +148,14 @@ class Application
         return $settings;
     }
 
+    private function getEditorParams()
+    {
+        $editor = PluginHelper::getPlugin('editors', 'jce');
+        $params = json_decode($editor->params ?: '{}', true);
+
+        return is_array($params) ? $params : [];
+    }
+
     private function isCorePlugin($plugin)
     {
         return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
@@ -234,12 +242,7 @@ class Application
             $options['plugin'] = '';
         }
 
-        if (!isset($options['id'])) {
-            $options['id'] = 0;
-        }
-
-        // get the passed in options as variables
-        extract($options);
+        $plugin = $options['plugin'];
 
         // reset the value if it is a core plugin
         if ($this->isCorePlugin($plugin)) {
@@ -248,6 +251,16 @@ class Application
 
         // get the profile variables for the current context
         $vars = $this->getProfileVars();
+
+        // block guests unless explicitly enabled in global config
+        $app = Factory::getApplication();
+        $user = $app->getIdentity();
+
+        if ($user->guest) {
+            if (!ComponentHelper::getParams('com_jce')->get('allow_profile_guests', 0)) {
+                return null;
+            }
+        }
 
         // installed plugins will have a name prefixed with "editor-", so remove to validate
         if (preg_match('/^editor[-_]/', $plugin)) {
@@ -258,8 +271,6 @@ class Application
         $vars['plugin'] = $plugin;
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $app = Factory::getApplication();
-        $user = $app->getIdentity();
 
         $query = $db->getQuery(true);
         $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
@@ -289,6 +300,11 @@ class Application
                 // at least one user group or user must be set
                 if (empty($item->types) && empty($item->users)) {
                     continue;
+                }
+
+                // decrypt params before firing events so handlers can read them
+                if (!empty($item->params)) {
+                    $item->params = EncryptHelper::decrypt($item->params);
                 }
 
                 $event = new Event('onWfEditorBeforeProfileItem', array(
@@ -341,11 +357,6 @@ class Application
                 // check area
                 if (!empty($item->area) && (int) $item->area != $vars['area']) {
                     continue;
-                }
-
-                // decrypt params
-                if (!empty($item->params)) {
-                    $item->params = EncryptHelper::decrypt($item->params);
                 }
 
                 $event = new Event('onWfEditorProfileItem', array(
@@ -431,17 +442,8 @@ class Application
         $signature = serialize($options);
 
         if (empty(self::$params[$signature])) {
-            // get plugin
-            $editor = PluginHelper::getPlugin('editors', 'jce');
+            $data1 = $this->getEditorParams();
 
-            if (empty($editor->params)) {
-                $editor->params = '{}';
-            }
-
-            // get editor params as an associative array
-            $data1 = json_decode($editor->params, true);
-
-            // if null or false, revert to array
             if (empty($data1)) {
                 $data1 = array();
             }

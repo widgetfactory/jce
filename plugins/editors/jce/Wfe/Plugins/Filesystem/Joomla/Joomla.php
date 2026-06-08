@@ -16,6 +16,7 @@ use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Event\Event;
@@ -28,7 +29,7 @@ use Wfe\Adapter\Plugin\Filesystem\FilesystemResult;
 class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 {
     /**
-     * A list of restricted directories if allowroot is set to true.
+     * Directories that are never accessible as a root or browseable path.
      *
      * @var array
      */
@@ -52,53 +53,14 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         'xmlrpc',
     );
 
-    /**
-     * Allow root access to the filesystem.
-     *
-     * @var boolean
-     */
-    protected $allowroot = false;
-
     public function __construct($config = array(), $container = null)
     {
         parent::__construct($config, $container);
 
-        $safe_mode = false;
-
-        // check for safe mode
-        if (function_exists('ini_get')) {
-            $safe_mode = ini_get('safe_mode');
-            // assume safe mode if can't check ini
-        } else {
-            $safe_mode = true;
-        }
-
-        // Get default restricted directories and root access setting
-        $restricted = $this->getParam('restricted', $this->restricted);
-        $allowroot = (bool) $this->getParam('allow_root', 0);
-
-        // Normalize $restricted to array
-        if (is_string($restricted)) {
-            $restricted = array_map('trim', explode(',', $restricted));
-        }
-
-        // Clean empty values
-        $restricted = array_filter($restricted);
-
-        // Cast to bool
-        $allowroot = (bool) $allowroot;
-
-        // remove root folder restrictions
-        if (!$allowroot) {
-            $restricted = [];
-        }
-
         $this->setProperties(
             array(
                 'local' => true,
-                'list_limit' => 0, // "all",
-                'allowroot' => (bool) $allowroot,
-                'restricted' => $restricted,
+                'list_limit' => 0, // "all"
             )
         );
     }
@@ -131,10 +93,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      */
     public function getRootDir()
     {
-        if ($this->getConfig('allowroot')) {
-            return ''; // return a blank value for allowroot
-        }
-
         return 'images';
     }
 
@@ -287,10 +245,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
         $folders = array();
 
-        $restrictedPaths = array_map(function ($val) use ($path) {
-            return Utility::makePath($path, $val);
-        }, $this->restricted);
-
         if (!empty($list)) {
             // Sort alphabetically by default
             natcasesort($list);
@@ -303,10 +257,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
                 $name = Utility::mb_basename($item);
                 $name = Utility::convertEncoding($name);
-
-                if (in_array($item, $restrictedPaths, true)) {
-                    continue;
-                }
 
                 $id = Utility::makePath($relative, $name, '/');
 
@@ -607,23 +557,21 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      * @return void
      * @throws \Exception If access to the directory is restricted
      */
-    private function checkRestrictedDirectory($path)
+    protected function checkRestrictedDirectory($path)
     {
-        if ($this->getConfig('allowroot')) {
-            foreach ($this->restricted as $name) {
-                $restricted = $this->toAbsolute($name);
+        Path::check($path, $this->getBaseDir());
 
-                $match = false;
+        foreach ($this->restricted as $name) {
+            $restricted = $this->toAbsolute($name);
 
-                if (function_exists('mb_substr')) {
-                    $match = (mb_substr($path, 0, mb_strlen($restricted)) === $restricted);
-                } else {
-                    $match = (substr($path, 0, strlen($restricted)) === $restricted);
-                }
+            if (function_exists('mb_substr')) {
+                $match = (mb_substr($path, 0, mb_strlen($restricted)) === $restricted);
+            } else {
+                $match = (substr($path, 0, strlen($restricted)) === $restricted);
+            }
 
-                if ($match === true) {
-                    throw new \Exception('Access to the target directory is restricted');
-                }
+            if ($match === true) {
+                throw new \Exception('Access to the target directory is restricted');
             }
         }
 
@@ -695,6 +643,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         $src = $this->toAbsolute(rawurldecode($src));
         $dir = Utility::mb_dirname($src);
 
+        $this->checkRestrictedDirectory($src);
+
         $event = new Event('onWfFileSystemBeforeRename', array(
             'source' => $src,
             'destination' => $dest,
@@ -713,7 +663,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $file = $dest . '.' . $ext;
             $path = Utility::makePath($dir, $file);
 
-            // check path does not fall within a restricted folder
             $this->checkRestrictedDirectory($path);
 
             $result->type = 'files';
@@ -723,6 +672,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $result->source = $src;
         } elseif (is_dir($src)) {
             $path = Utility::makePath($dir, $dest);
+
+            $this->checkRestrictedDirectory($path);
 
             $result->type = 'folders';
             $result->state = Folder::move($src, $path);
@@ -765,7 +716,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         // destination full path
         $dest = $this->toAbsolute($dest);
 
-        // check destination path does not fall within a restricted folder
+        $this->checkRestrictedDirectory($src);
         $this->checkRestrictedDirectory($dest);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
@@ -841,7 +792,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         // destination full path
         $dest = $this->toAbsolute($dest);
 
-        // check destination path does not fall within a restricted folder
+        $this->checkRestrictedDirectory($src);
         $this->checkRestrictedDirectory($dest);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
@@ -960,7 +911,9 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      */
     public function getDimensions($file)
     {
-        $path = $this->toAbsolute(utf8_decode(rawurldecode($file)));
+        $path = $this->toAbsolute(rawurldecode($file));
+
+        $this->checkRestrictedDirectory($path);
 
         $data = array(
             'width' => '',
@@ -1046,15 +999,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         // check destination path does not fall within a restricted folder
         $this->checkRestrictedDirectory($dest);
 
-        // check for safe mode
-        $safe_mode = false;
-
-        if (function_exists('ini_get')) {
-            $safe_mode = ini_get('safe_mode');
-        } else {
-            $safe_mode = true;
-        }
-
         $result = new FilesystemResult();
 
         // resolve filename conflict by creating a copy if required
@@ -1137,6 +1081,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
         $path = $this->toAbsolute($file);
 
+        $this->checkRestrictedDirectory($path);
+
         return file_get_contents($path);
     }
 
@@ -1193,6 +1139,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     public function is_file($path)
     {
         $path = $this->toAbsolute($path);
+        $this->checkRestrictedDirectory($path);
         return is_file($path);
     }
 
@@ -1205,6 +1152,7 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     public function is_dir($path)
     {
         $path = $this->toAbsolute($path);
+        $this->checkRestrictedDirectory($path);
         return is_dir($path);
     }
 }

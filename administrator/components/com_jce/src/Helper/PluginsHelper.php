@@ -51,7 +51,7 @@ abstract class PluginsHelper
     {
         $installed = PluginHelper::getPlugin('jce');
 
-        array_filter($installed, function ($p) {
+        $installed = array_filter($installed, function ($p) {
             // check for delimiter to remove legacy extensions
             return preg_match('/[-_]/', $p->name);
         });
@@ -421,7 +421,7 @@ abstract class PluginsHelper
             $plugins = explode(',', $profile->plugins);
             $key = array_search($plugin->name, $plugins);
 
-            if ($key) {
+            if ($key !== false) {
                 unset($plugins[$key]);
                 $profile->plugins = implode(',', array_values($plugins));
             }
@@ -441,20 +441,20 @@ abstract class PluginsHelper
                     }
                     $profile->rows = implode(';', $lists);
                 }
+            }
 
-                // store changes
-                $query = $db->getQuery(true);
-                $query->update('#__wf_profiles')
-                    ->set('plugins = ' . $db->quote($profile->plugins))
-                    ->set('rows = ' . $db->quote($profile->rows))
-                    ->where('id = ' . (int) $profile->id);
+            // store changes
+            $query = $db->getQuery(true);
+            $query->update('#__wf_profiles')
+                ->set('plugins = ' . $db->quote($profile->plugins))
+                ->set('rows = ' . $db->quote($profile->rows))
+                ->where('id = ' . (int) $profile->id);
 
-                $db->setQuery($query);
+            $db->setQuery($query);
 
-                // execute the query
-                if (!$db->execute()) {
-                    throw new \Exception(Text::sprintf('WF_INSTALLER_REMOVE_FROM_GROUP_ERROR', $plugin->name));
-                }
+            // execute the query
+            if (!$db->execute()) {
+                throw new \Exception(Text::sprintf('WF_INSTALLER_REMOVE_FROM_GROUP_ERROR', $plugin->name));
             }
         }
 

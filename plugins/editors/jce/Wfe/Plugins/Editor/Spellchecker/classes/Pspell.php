@@ -5,25 +5,29 @@ require_once __DIR__ . '/spellchecker.php';
 /**
  * @author Moxiecode
  * @copyright Copyright (c) 2004-2007, Moxiecode Systems AB, All rights reserved
+ * @copyright Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
+ * @license GNU General Public License version 2 or later; see LICENSE.txt
  */
 class Pspell extends SpellChecker
 {
     /**
      * Spellchecks an array of words.
      *
-     * @param {String} $lang  Language code like sv or en
-     * @param {Array}  $words Array of words to spellcheck
+     * @param string $lang  Language code like sv or en
+     * @param array  $words Array of words to spellcheck
      *
-     * @return {Array} Array of misspelled words
+     * @return array Array of misspelled words
      */
     public function checkWords($lang, $words)
     {
+        $this->validateLang($lang);
+
         $plink = $this->getPLink($lang);
 
         $outWords = array();
         foreach ($words as $word) {
             if (!pspell_check($plink, trim($word))) {
-                $outWords[] = utf8_encode($word);
+                $outWords[] = mb_convert_encoding($word, 'UTF-8', 'ISO-8859-1');
             }
         }
 
@@ -31,32 +35,37 @@ class Pspell extends SpellChecker
     }
 
     /**
-     * Returns suggestions of for a specific word.
+     * Returns suggestions for a specific word.
      *
-     * @param {String} $lang Language code like sv or en
-     * @param {String} $word Specific word to get suggestions for
+     * @param string $lang Language code like sv or en
+     * @param string $word Specific word to get suggestions for
      *
-     * @return {Array} Array of suggestions for the specified word
+     * @return array Array of suggestions for the specified word
      */
     public function getSuggestions($lang, $word)
     {
+        $this->validateLang($lang);
+
         $words = pspell_suggest($this->getPLink($lang), $word);
 
         for ($i = 0; $i < count($words); ++$i) {
-            $words[$i] = utf8_encode($words[$i]);
+            $words[$i] = mb_convert_encoding($words[$i], 'UTF-8', 'ISO-8859-1');
         }
 
         return $words;
     }
 
     /**
-     * Opens a link for pspell.
+     * Opens a pspell link for the given language.
+     *
+     * @param string $lang Language code
+     *
+     * @return resource|\PSpell\Dictionary
      */
     private function getPLink($lang)
     {
-        // Check for native PSpell support
         if (!function_exists('pspell_new')) {
-            $this->throwError('PSpell support not found in PHP installation.');
+            throw new \RuntimeException('PSpell support not found in PHP installation.');
         }
 
         $pspell_config = pspell_config_create(
@@ -66,30 +75,25 @@ class Pspell extends SpellChecker
             $this->_config['PSpell.encoding']
         );
 
-        pspell_config_personal($pspell_config, $this->_config['PSpell.dictionary']);
+        $dictionary = $this->_config['PSpell.dictionary'];
+
+        if (!empty($dictionary)) {
+            $dictDir = realpath(dirname($dictionary));
+            $realBase = realpath(JPATH_BASE);
+
+            if ($dictDir === false || strpos($dictDir, $realBase) !== 0) {
+                throw new \RuntimeException('Invalid PSpell dictionary path.');
+            }
+
+            pspell_config_personal($pspell_config, $dictionary);
+        }
+
         $plink = pspell_new_config($pspell_config);
 
         if (!$plink) {
-            $this->throwError('No PSpell link found opened.');
+            throw new \RuntimeException('No PSpell link could be opened.');
         }
 
         return $plink;
-    }
-    /**
-     * Add a word to the PSPell personal dictionary
-     * From http://slack5.com/blog/2008/12/tinymce-add-to-dictionary/.
-     *
-     * @param object $lang
-     * @param object $word
-     *
-     * @return
-     */
-    public function addToDictionary($lang, $word)
-    {
-        $plink = $this->getPLink($lang);
-        pspell_add_to_personal($plink, $word);
-        pspell_save_wordlist($plink);
-
-        return true;
     }
 }

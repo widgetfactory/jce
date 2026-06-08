@@ -1,12 +1,8 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 require_once __DIR__ . '/spellchecker.php';
@@ -16,55 +12,60 @@ class Enchantspell extends SpellChecker
     /**
      * Spellchecks an array of words.
      *
-     * @param string $lang  Selected language code (like en_US or de_DE). Shortcodes like "en" and "de" work with enchant >= 1.4.1
+     * @param string $lang  Language code (like en_US or de_DE)
      * @param array  $words Array of words to check
      *
-     * @return array of misspelled words
+     * @return array Array of misspelled words
      */
     public function checkWords($lang, $words)
     {
+        $this->validateLang($lang);
+
         $r = enchant_broker_init();
 
-        if (enchant_broker_dict_exists($r, $lang)) {
-            $d = enchant_broker_request_dict($r, $lang);
-
-            $returnData = array();
-            foreach ($words as $key => $value) {
-                $correct = enchant_dict_check($d, $value);
-                if (!$correct) {
-                    $returnData[] = trim($value);
-                }
-            }
-
-            return $returnData;
-            enchant_broker_free_dict($d);
-        } else {
-            $this->throwError('Language not installed');
+        if (!enchant_broker_dict_exists($r, $lang)) {
+            enchant_broker_free($r);
+            throw new \RuntimeException('Language not installed');
         }
+
+        $d = enchant_broker_request_dict($r, $lang);
+
+        $returnData = array();
+        foreach ($words as $value) {
+            if (!enchant_dict_check($d, $value)) {
+                $returnData[] = trim($value);
+            }
+        }
+
+        enchant_broker_free_dict($d);
         enchant_broker_free($r);
+
+        return $returnData;
     }
 
     /**
      * Returns suggestions for a specific word.
      *
-     * @param string $lang Selected language code (like en_US or de_DE). Shortcodes like "en" and "de" work with enchant >= 1.4.1
+     * @param string $lang Language code (like en_US or de_DE)
      * @param string $word Specific word to get suggestions for
      *
-     * @return array of suggestions for the specified word
+     * @return array Array of suggestions for the specified word
      */
     public function getSuggestions($lang, $word)
     {
+        $this->validateLang($lang);
+
         $r = enchant_broker_init();
-        $suggs = array();
 
-        if (enchant_broker_dict_exists($r, $lang)) {
-            $d = enchant_broker_request_dict($r, $lang);
-            $suggs = enchant_dict_suggest($d, $word);
-
-            enchant_broker_free_dict($d);
-        } else {
-            $this->throwError('Language not installed');
+        if (!enchant_broker_dict_exists($r, $lang)) {
+            enchant_broker_free($r);
+            throw new \RuntimeException('Language not installed');
         }
+
+        $d = enchant_broker_request_dict($r, $lang);
+        $suggs = enchant_dict_suggest($d, $word);
+
+        enchant_broker_free_dict($d);
         enchant_broker_free($r);
 
         return $suggs;

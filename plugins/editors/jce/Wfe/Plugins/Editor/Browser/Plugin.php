@@ -234,7 +234,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
         if ($pos === false) {
             return '';
         }
-
+        
         $scheme = substr($folder, 0, $pos);
         $path   = trim(substr($folder, $pos + 1), " \t\n\r\0\x0B/");
 
@@ -255,10 +255,11 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
             return '';
         }
 
-        // validate the path component: traversal, null bytes, character whitelist
+        // validate root and path: traversal, null bytes, character whitelist
         try {
+            Utility::checkPath($root);
             Utility::checkPath($path);
-        } catch (\InvalidArgumentException) {
+        } catch (\InvalidArgumentException $e) {
             return '';
         }
 

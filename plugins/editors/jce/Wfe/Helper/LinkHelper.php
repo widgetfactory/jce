@@ -79,13 +79,12 @@ abstract class LinkHelper
             return $url;
         }
 
-        // only remove the Itemid if it is not the only query value
-        if (count($vars) === 1) {
-            return $url;
-        }
-
         // remove the itemid
         unset($vars['Itemid']);
+
+        if (empty($vars)) {
+            return 'index.php';
+        }
 
         // rebuild the query string, preserving colons (valid in query values)
         $query = str_replace('%3A', ':', http_build_query($vars));

@@ -49,6 +49,10 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
+        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
         $model = $this->getModel();
 
         $result = $model->import();
@@ -76,7 +80,11 @@ class ProfilesController extends AdminController
     {
         $this->checkToken();
 
-        $model = $this->getModel();
+        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
+        $model = $this->getModel('Profiles');
 
         try {
             $model->repair();
@@ -98,16 +106,14 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        $user = $this->app->getIdentity();
-        $cid = $this->input->get('cid', [], 'array');
-
-        // Access checks.
-        if (!$user->authorise('core.create', 'com_jce')) {
-            throw new \Exception(Text::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
+        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
+        $cid = $this->input->get('cid', [], 'array');
+
         if (empty($cid)) {
-            throw new \Exception(Text::_('No Item Selected'));
+            throw new \Exception(Text::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST'));
         } else {
             $model = $this->getModel();
             // Copy the items.
@@ -134,16 +140,14 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        $user = $this->app->getIdentity();
-        $ids = $this->input->get('cid', [], 'array');
-
-        // Access checks.
-        if (!$user->authorise('core.create', 'com_jce')) {
-            throw new \Exception(Text::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
+        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
+        $ids = $this->input->get('cid', [], 'array');
+
         if (empty($ids)) {
-            throw new \Exception(Text::_('No Item Selected'));
+            throw new \Exception(Text::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST'));
         } else {
             $model = $this->getModel();
 

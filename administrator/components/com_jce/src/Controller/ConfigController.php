@@ -11,6 +11,7 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Router\Route;
 
@@ -37,10 +38,15 @@ class ConfigController extends FormController
 	 */
 	protected $view_list = 'cpanel';
 
+	protected function allowEdit($data = [], $key = 'id')
+	{
+		return $this->app->getIdentity()->authorise('jce.config', 'com_jce');
+	}
+
 	public function cancel($id = null)
 	{
 		$this->checkToken();
-		
+
 		// Redirect to the list screen.
         $this->setRedirect(Route::_('index.php?option=com_jce', false));
 
