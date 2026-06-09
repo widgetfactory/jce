@@ -1080,7 +1080,8 @@ abstract class WFUtility
                 $data .= @fread($fp, 131072);
 
                 // <?php and <?= are unambiguous PHP openers; short <? is skipped as it conflicts with valid EXIF/XML data
-                if (stripos($data, '<?php') !== false || strpos($data, '<?=') !== false) {
+                // <?= must be followed by a valid PHP token character to avoid false positives from binary image data
+                if (stripos($data, '<?php') !== false || preg_match('/<\?=[\s\$a-zA-Z_(\'"]/', $data)) {
                     @unlink($file['tmp_name']);
                     throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
