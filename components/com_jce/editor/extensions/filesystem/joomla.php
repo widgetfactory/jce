@@ -37,7 +37,6 @@ class WFJoomlaFileSystem extends WFFileSystem
         'layouts',
         'libraries',
         'logs',
-        'media',
         'modules',
         'plugins',
         'templates',
