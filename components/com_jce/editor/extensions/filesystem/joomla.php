@@ -15,7 +15,6 @@ use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
-use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 
@@ -564,18 +563,12 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     protected function checkRestrictedDirectory($path)
     {
-        Path::check($path, $this->getBaseDir());
+        WFUtility::checkPath($path);
 
         foreach ($this->restricted as $name) {
-            $restricted = $this->toAbsolute($name);
+            $restricted = rtrim($this->toAbsolute($name), '/') . '/';
 
-            if (function_exists('mb_substr')) {
-                $match = (mb_substr($path, 0, mb_strlen($restricted)) === $restricted);
-            } else {
-                $match = (substr($path, 0, strlen($restricted)) === $restricted);
-            }
-
-            if ($match === true) {
+            if (strpos(rtrim($path, '/') . '/', $restricted) === 0) {
                 throw new Exception('Access to the target directory is restricted');
             }
         }
