@@ -10,6 +10,16 @@
 	<license>@@licence@@</license>
 	<description>WF_STYLE_DESC</description>
 	<icon>style</icon>
+	 <fields name="style">
+        <fieldset name="config">
+
+            <field name="file_browser" type="yesno" default="1" label="WF_URL_FILE_BROWSER" description="WF_URL_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+			
+        </fieldset>
+    </fields>
 	<help>
 		<topic key="style.about" title="WF_STYLE_HELP_ABOUT" />
 	</help>

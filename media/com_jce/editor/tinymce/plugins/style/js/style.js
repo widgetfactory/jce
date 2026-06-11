@@ -120,6 +120,8 @@
                 ed = tinyMCEPopup.editor,
                 ce = document.getElementById('container');
 
+            this.settings.file_browser = ed.getParam('style_file_browser', true);
+
             if (!this.settings.file_browser) {
                 $('.browser').removeClass('browser');
             }

@@ -45,5 +45,6 @@ class WFTablePluginConfig
         $settings['table_buttons'] = $wf->getParam('table.show_buttons', 1, 1);
 
         $settings['table_basic_dialog'] = $wf->getParam('table.basic_dialog', 0, 0);
+        $settings['table_file_browser'] = $wf->getParam('table.file_browser', 1, 1);
     }
 }

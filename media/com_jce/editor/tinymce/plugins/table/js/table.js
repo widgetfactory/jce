@@ -201,6 +201,8 @@
         init: function () {
             var ed = tinyMCEPopup.editor, layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
+            this.settings.file_browser = ed.getParam('table_file_browser', true);
+
             if (!this.settings.file_browser) {
                 $('input.browser').removeClass('browser');
             }
