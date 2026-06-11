@@ -1364,11 +1364,11 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Get a tree node.
+     * Get a tree item.
      *
-     * @param string $dir The relative path of the folder to search
+     * @param string $path The relative path of the folder to search
      *
-     * @return Tree node array
+     * @return array The tree item array
      */
     public function getTreeItem($path = "")
     {
@@ -1458,9 +1458,9 @@ class WFFileBrowser extends CMSObject
     /**
      * Build a tree list.
      *
-     * @param string $dir The relative path of the folder to search
+     * @param string $path The relative path of the folder to search
      *
-     * @return Tree html string
+     * @return string Tree html string
      */
     public function getTree($path = '')
     {
@@ -1477,7 +1477,7 @@ class WFFileBrowser extends CMSObject
     /**
      * Get Tree list items as html list.
      *
-     * @return Tree list html string
+     * @return string Tree list html string
      *
      * @param string $path            Current directory
      * @param bool   $root[optional] Is root directory
@@ -2113,6 +2113,11 @@ class WFFileBrowser extends CMSObject
                     throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
 
+                // check file name is not blocked (executable extensions etc.)
+                if (WFUtility::validateFileName(WFUtility::mb_basename($item)) === false) {
+                    throw new InvalidArgumentException('Delete Failed: The file name is invalid.');
+                }
+
                 // check extension is allowed
                 $ext     = WFUtility::getExtension($item, true);
                 $allowed = (array) $this->getFileTypes('array');
@@ -2186,6 +2191,11 @@ class WFFileBrowser extends CMSObject
         WFUtility::checkPath($destination);
 
         $allowed = (array) $this->getFileTypes('array');
+
+        // check source file name is not blocked (executable extensions etc.)
+        if (WFUtility::validateFileName(WFUtility::mb_basename($source)) === false) {
+            throw new InvalidArgumentException('Rename Failed: The source file name is invalid.');
+        }
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination, $allowed) === false) {

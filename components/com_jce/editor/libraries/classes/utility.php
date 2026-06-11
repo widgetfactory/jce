@@ -1050,11 +1050,13 @@ abstract class WFUtility
     }
 
     /**
-     * Checks an upload for suspicious naming, potential PHP contents, valid image and HTML tags.
+     * Defence-in-depth upload guard. The primary control is the extension allow-list;
+     * this function adds secondary checks for known-dangerous content patterns and image validity.
      *
-     * @param array $file The file array to check.
-     * @return bool True if the file is safe, false otherwise.
-     * @throws InvalidArgumentException If the file is not safe.
+     * @param array $file              The uploaded file array ($_FILES entry).
+     * @param array $allowedExtensions Extensions explicitly permitted by the profile.
+     * @return bool True if the file passes all checks.
+     * @throws InvalidArgumentException If the file is unsafe or cannot be read for inspection.
      */
     public static function isSafeFile($file, $allowedExtensions = [])
     {
@@ -1070,42 +1072,52 @@ abstract class WFUtility
             throw new InvalidArgumentException('Invalid file: The file name contains an invalid extension.');
         }
 
-        // check file for <?php tags
-        $fp = @fopen($file['tmp_name'], 'r');
+        // Get the file extension
+        $extension = self::getExtension($file['name'], true);
 
-        if ($fp !== false) {
+        // PHP content scan applies to text-based formats only. Binary formats (images, pdf, office
+        // documents etc.) can contain <?php or __HALT_COMPILER() as coincidental byte sequences.
+        $textExtensions = ['svg', 'html', 'htm', 'xml', 'xhtml', 'txt'];
+
+        if (in_array($extension, $textExtensions, true)) {
+            $fp = @fopen($file['tmp_name'], 'r');
+
+            if ($fp === false) {
+                @unlink($file['tmp_name']);
+                throw new InvalidArgumentException('Invalid file: The file could not be read for inspection.');
+            }
+
             $data = '';
 
             while (!feof($fp)) {
                 $data .= @fread($fp, 131072);
 
-                // <?php and <?= are unambiguous PHP openers; short <? is skipped as it conflicts with valid EXIF/XML data
-                // <?= must be followed by a valid PHP token character to avoid false positives from binary image data
-                if (stripos($data, '<?php') !== false || preg_match('/<\?=[\s\$a-zA-Z_(\'"]/', $data)) {
+                // <?php requires a whitespace token to open; <?= is the short echo tag.
+                // short <? alone is skipped: it conflicts with <?xml and <?xpacket processing instructions.
+                if (preg_match('#<\?php(?:\s|$)|<\?=#i', $data)) {
                     @unlink($file['tmp_name']);
+                    fclose($fp);
                     throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
-                // check for `__HALT_COMPILER()` phar stub (17 chars — carryover must cover it)
+                // __HALT_COMPILER() is the phar stub header (17 chars; carryover covers it)
                 if (stripos($data, '__HALT_COMPILER()') !== false) {
                     @unlink($file['tmp_name']);
+                    fclose($fp);
                     throw new InvalidArgumentException('Invalid file: The file contains PHP code.');
                 }
 
-                // carry over enough bytes to catch strings that span a chunk boundary
+                // carry over enough bytes to catch tokens that span a chunk boundary
                 $data = substr($data, -32);
             }
 
             fclose($fp);
         }
 
-        // Get the file extension
-        $extension = self::getExtension($file['name'], true);
+        // getimagesize validates raster images structurally. xcf and odg are not supported
+        // by getimagesize and rely on the extension allow-list alone.
+        $isImage = in_array($extension, ['jpeg', 'jpg', 'jpe', 'png', 'apng', 'gif', 'bmp', 'tiff', 'tif', 'webp', 'psd', 'ico'], true);
 
-        // Check if the file extension is a common image
-        $isImage = in_array($extension, ['jpeg', 'jpg', 'jpe', 'png', 'apng', 'gif', 'bmp', 'tiff', 'tif', 'webp', 'psd', 'ico', 'xcf', 'odg'], true);
-
-        // validate image
         if ($isImage && @getimagesize($file['tmp_name']) === false) {
             @unlink($file['tmp_name']);
             throw new InvalidArgumentException('Invalid file: The file is not a valid image.');
