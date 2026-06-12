@@ -214,8 +214,8 @@ class pkg_jceInstallerScript
         }
 
         // joomla version check
-        if (version_compare(JVERSION, '3.10', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 3.10 or later - ' . $requirements);
+        if (version_compare(JVERSION, '3.9', 'lt')) {
+            throw new RuntimeException('JCE requires Joomla 3.9 or later - ' . $requirements);
         }
 
         // joomla 4 version check, must be 4.2 or later
@@ -245,7 +245,7 @@ class pkg_jceInstallerScript
         $extension = Table::getInstance('extension');
 
         // disable content, system and quickicon plugins. This is to prevent errors if the install fails and some core files are missing
-        foreach (array('system', 'quickicon') as $folder) {
+        foreach (array('system', 'quickicon', 'content') as $folder) {
             $plugin = $extension->find(array(
                 'type' => 'plugin',
                 'element' => 'jce',
