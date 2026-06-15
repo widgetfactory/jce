@@ -11,6 +11,7 @@
 namespace Joomla\Component\Jce\Administrator\Model;
 
 use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Form\Form;
@@ -22,6 +23,7 @@ use Joomla\Registry\Registry;
 
 use Wfe\Helper\ArrayHelper;
 use Wfe\Helper\StringHelper;
+use Wfe\Utility\Utility as WfeUtility;
 
 use Joomla\Component\Jce\Administrator\Helper\PluginsHelper;
 use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
@@ -672,12 +674,36 @@ class ProfileModel extends AdminModel
 
                     break;
                 case 'types':
-                case 'users':
-
                     $value = $filter->clean($value, 'INT');
 
                     if (is_array($value)) {
+                        $whitelist = array_filter(array_map('intval', (array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', [])));
+
+                        if (!empty($whitelist)) {
+                            $value = array_intersect($value, $whitelist);
+                        }
+
                         $value = implode(',', $value);
+                    }
+
+                    break;
+                case 'users':
+                    $value = $filter->clean($value, 'INT');
+
+                    if (is_array($value)) {
+                        $ids = array_filter(array_map('intval', $value));
+
+                        if (!empty($ids)) {
+                            $db = $this->getDatabase();
+                            $query = $db->getQuery(true)
+                                ->select($db->quoteName('id'))
+                                ->from($db->quoteName('#__users'))
+                                ->whereIn($db->quoteName('id'), $ids);
+                            $db->setQuery($query);
+                            $value = implode(',', array_map('intval', $db->loadColumn()));
+                        } else {
+                            $value = '';
+                        }
                     }
 
                     break;
@@ -966,6 +992,25 @@ class ProfileModel extends AdminModel
     }
 
     /**
+     * Validate that a file is a well-formed JCE profile export document.
+     *
+     * @param string $path Path to the XML file
+     *
+     * @return bool
+     */
+    private static function validateProfileImport($path)
+    {
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_file($path);
+        libxml_clear_errors();
+
+        return $xml
+            && $xml->getName() === 'export'
+            && (string) $xml['type'] === 'profiles'
+            && isset($xml->profiles);
+    }
+
+    /**
      * Process XML restore file.
      *
      * @return bool
@@ -983,27 +1028,40 @@ class ProfileModel extends AdminModel
         }
 
         if ($file['error'] || $file['size'] < 1) {
+            if (!empty($file['tmp_name'])) {
+                @unlink($file['tmp_name']);
+            }
             $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
             return false;
         }
 
         // 512 KB is far more than any legitimate profile export
         if ($file['size'] > 1024 * 512) {
+            @unlink($file['tmp_name']);
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
-        // sanitize the file name
+        try {
+            WfeUtility::isSafeFile($file, ['xml']);
+        } catch (\InvalidArgumentException) {
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
+            return false;
+        }
+
+        // sanitize the file name for use as destination path
         $name = File::makeSafe($file['name']);
 
         if (empty($name)) {
+            @unlink($file['tmp_name']);
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
-        $extension = PATHINFO($name, PATHINFO_EXTENSION);
+        $source = $file['tmp_name'];
 
-        if (strtolower($extension) !== 'xml') {
+        if (!self::validateProfileImport($source)) {
+            @unlink($source);
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
             return false;
         }
@@ -1011,17 +1069,19 @@ class ProfileModel extends AdminModel
         // Build the appropriate paths.
         $config = $app->getConfig();
         $destination = $config->get('tmp_path') . '/' . $name;
-        $source = $file['tmp_name'];
 
         // Move uploaded file.
         File::upload($source, $destination, false);
 
         if (!is_file($destination)) {
+            @unlink($source);
             $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
             return false;
         }
 
         $result = $this->processImport($destination);
+
+        File::delete($destination);
 
         if ($result === false) {
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
@@ -1054,7 +1114,9 @@ class ProfileModel extends AdminModel
         // format params data as CDATA
         $data = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
 
+        libxml_use_internal_errors(true);
         $xml = simplexml_load_string($data);
+        libxml_clear_errors();
 
         if (!$xml) {
             return false;
@@ -1068,6 +1130,9 @@ class ProfileModel extends AdminModel
 
         $allowedKeys = ['name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params'];
 
+        $whitelist = (array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', []);
+        $whitelist = array_filter(array_map('intval', $whitelist));
+
         foreach ($xml->profiles->children() as $profile) {
             $table = $this->getTable();
 
@@ -1080,11 +1145,13 @@ class ProfileModel extends AdminModel
 
                 $value = (string) $item;
 
+                $filter = InputFilter::getInstance();
+
                 switch ($key) {
                     case 'name':
-                        // only if name set and table name not set
+                        $value = $filter->clean($value, 'STRING');
+                        // create name copy if exists
                         if ($value) {
-                            // create name copy if exists
                             while ($table->load(['name' => $value])) {
                                 if ($value === $table->name) {
                                     $value = \Joomla\String\StringHelper::increment($value);
@@ -1094,43 +1161,76 @@ class ProfileModel extends AdminModel
                         break;
 
                     case 'description':
-                        $value = Text::_($value);
+                        $value = $filter->clean(Text::_($value), 'STRING');
                         break;
-                    case 'types':
 
-                        if ($value === "") {
+                    case 'types':
+                        if ($value === '') {
                             $area = (string) $profile->area[0] || 0;
                             $groups = ProfilesHelper::getUserGroups($area);
                             $value = implode(',', array_unique($groups));
+                        } else {
+                            $value = implode(',', array_filter(array_map('intval', explode(',', $value))));
                         }
+
+                        if (!empty($whitelist)) {
+                            $filtered = !empty($value) ? array_intersect(explode(',', $value), $whitelist) : [];
+
+                            if (!empty($filtered)) {
+                                $value = implode(',', $filtered);
+                            } elseif (empty((string) $profile->users)) {
+                                // no group overlap and no individual users — default to full whitelist
+                                $value = implode(',', $whitelist);
+                            } else {
+                                // individual users are set, so empty types is valid
+                                $value = '';
+                            }
+                        }
+
                         break;
+
                     case 'users':
-                        break;
-                    case 'area':
-                        if ($value === "") {
-                            $value = '0';
+                        if ($value !== '') {
+                            $ids = array_filter(array_map('intval', explode(',', $value)));
+
+                            if (!empty($ids)) {
+                                $db = $this->getDatabase();
+                                $query = $db->getQuery(true)
+                                    ->select($db->quoteName('id'))
+                                    ->from($db->quoteName('#__users'))
+                                    ->whereIn($db->quoteName('id'), $ids);
+                                $db->setQuery($query);
+                                $value = implode(',', array_map('intval', $db->loadColumn()));
+                            } else {
+                                $value = '';
+                            }
                         }
-
-                        $value = (int) $value;
-
                         break;
+
+                    case 'area':
+                        $value = $value === '' ? 0 : (int) $value;
+                        break;
+
                     case 'components':
+                        $value = $filter->clean($value, 'STRING');
                         break;
+
                     case 'custom':
                         break;
+
                     case 'params':
                         if (!empty($value)) {
-                            $data = json_decode($value, true);
+                            $decoded = json_decode($value, true);
 
-                            if (is_array($data)) {
-                                array_walk($data, function (&$param, $key) {
+                            if (is_array($decoded)) {
+                                array_walk($decoded, function (&$param, $key) {
                                     if (is_string($param) && StringHelper::isJson($param)) {
                                         $param = json_decode($param, true);
                                     }
                                 });
                             }
 
-                            $value = json_encode($data);
+                            $value = json_encode($decoded);
                         }
 
                         if (empty($value)) {
@@ -1138,9 +1238,13 @@ class ProfileModel extends AdminModel
                         }
 
                         break;
+
                     case 'rows':
+                        $value = preg_replace('#[^\w,;]+#', '', $value);
                         break;
+
                     case 'plugins':
+                        $value = preg_replace('#[^\w_,]+#', '', $value);
                         break;
                     case 'published':
                         // always import as unpublished; only users with publish permission may enable it

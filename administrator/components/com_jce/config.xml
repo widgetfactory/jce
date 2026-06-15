@@ -40,12 +40,14 @@
 
     </fieldset>
 
-    <fieldset name="security" label="WF_PREFERENCES_SECURITY">
+     <fieldset name="security" label="WF_PREFERENCES_SECURITY">
 
-        <field name="allow_profile_guests" type="radio" default="0" label="WF_PARAM_ALLOW_GUESTS" description="WF_PARAM_ALLOW_GUESTS_DESC" class="btn-group btn-group-yesno" filter="integer">
+        <field name="allow_profile_guests" type="radio" default="0" label="WF_PREFERENCES_ALLOW_GUESTS" description="WF_PREFERENCES_ALLOW_GUESTS_DESC" class="btn-group btn-group-yesno" filter="integer">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>
+
+        <field name="profile_groups_whitelist" type="usergrouplist" multiple="true" label="WF_PREFERENCES_PROFILE_GROUPS_WHITELIST" description="WF_PREFERENCES_PROFILE_GROUPS_WHITELIST_DESC" layout="joomla.form.field.list-fancy-select" />
 
     </fieldset>
 </config>

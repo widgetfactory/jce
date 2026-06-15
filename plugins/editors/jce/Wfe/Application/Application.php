@@ -296,6 +296,10 @@ class Application
 
         if (!isset($cache[$signature])) {
 
+            // apply global group whitelist if configured; otherwise all user groups are eligible
+            $whitelist = array_filter((array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', []));
+            $effectiveGroups = !empty($whitelist) ? array_intersect($vars['groups'], $whitelist) : $vars['groups'];
+
             foreach ($items as $item) {
                 // at least one user group or user must be set
                 if (empty($item->types) && empty($item->users)) {
@@ -322,12 +326,12 @@ class Application
                 }
 
                 // check user groups - a value should always be set
-                $groups = array_intersect($vars['groups'], explode(',', $item->types));
+                $groups = array_intersect($effectiveGroups, explode(',', $item->types));
 
                 // user not in the current group...
                 if (empty($groups)) {
                     // no additional users set or no user match
-                    if (empty($item->users) || in_array($user->id, explode(',', $item->users)) === false) {
+                    if (empty($item->users) || in_array($user->id, array_map('intval', explode(',', $item->users)), true) === false) {
                         continue;
                     }
                 }
