@@ -282,7 +282,7 @@ class WFFileSystem extends WFExtension
         );
     }
 
-    public function upload($method, $src, $dir, $name, $chunks = 0, $chunk = 0)
+    public function upload($method, $src, $dir, $name)
     {
         return true;
     }

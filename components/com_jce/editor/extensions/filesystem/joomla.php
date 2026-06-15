@@ -903,11 +903,9 @@ class WFJoomlaFileSystem extends WFFileSystem
      * @param string $src Temporary source file path
      * @param string $dir Destination directory (relative)
      * @param string $name Destination filename
-     * @param integer $chunks Total number of chunks
-     * @param integer $chunk Current chunk number
      * @return WFFileSystemResult
      */
-    public function upload($method, $src, $dir, $name, $chunks = 1, $chunk = 0)
+    public function upload($method, $src, $dir, $name)
     {
         $app = Factory::getApplication();
 
@@ -938,7 +936,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         // trigger Joomla event before upload
         $app->triggerEvent('onContentBeforeSave', $vars);
 
-        if (File::upload($src, $dest, false, true)) {
+        if (File::upload($src, $dest)) {
             $result->state = true;
             $result->path = $dest;
         }
