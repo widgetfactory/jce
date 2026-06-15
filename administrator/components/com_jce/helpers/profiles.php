@@ -11,7 +11,9 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Access\Access;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
@@ -292,10 +294,16 @@ abstract class JceProfilesHelper
         $data = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
 
         // external entities are disabled by default in PHP 8+; guard PHP 7.x explicitly
+        $prev = false;
+
         if (PHP_MAJOR_VERSION < 8) {
             $prev = libxml_disable_entity_loader(true);
         }
+
+        libxml_use_internal_errors(true);
         $xml = simplexml_load_string($data);
+        libxml_clear_errors();
+
         if (PHP_MAJOR_VERSION < 8) {
             libxml_disable_entity_loader($prev);
         }
@@ -309,6 +317,9 @@ abstract class JceProfilesHelper
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
 
         if ($xml) {
+            $whitelist = (array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', []);
+            $whitelist = array_filter(array_map('intval', $whitelist));
+
             foreach ($xml->profiles->children() as $profile) {
                 $table = Table::getInstance('Profiles', 'JceTable');
 
@@ -323,11 +334,13 @@ abstract class JceProfilesHelper
 
                     $value = (string) $item;
 
+                    $filter = InputFilter::getInstance();
+
                     switch ($key) {
                         case 'name':
-                            // only if name set and table name not set
+                            $value = $filter->clean($value, 'STRING');
+                            // create name copy if exists
                             if ($value) {
-                                // create name copy if exists
                                 while ($table->load(array('name' => $value))) {
                                     if ($value === $table->name) {
                                         $value = StringHelper::increment($value);
@@ -337,41 +350,73 @@ abstract class JceProfilesHelper
                             break;
 
                         case 'description':
-                            $value = Text::_($value);
+                            $value = $filter->clean(Text::_($value), 'STRING');
                             break;
-                        case 'types':
 
-                            if ($value === "") {
+                        case 'types':
+                            if ($value === '') {
                                 $area = (string) $profile->area[0] || 0;
                                 $groups = self::getUserGroups($area);
                                 $value = implode(',', array_unique($groups));
+                            } else {
+                                $value = implode(',', array_filter(array_map('intval', explode(',', $value))));
                             }
+
+                            if (!empty($whitelist)) {
+                                $filtered = !empty($value) ? array_intersect(explode(',', $value), $whitelist) : [];
+
+                                if (!empty($filtered)) {
+                                    $value = implode(',', $filtered);
+                                } elseif (empty((string) $profile->users)) {
+                                    // no group overlap and no individual users — default to full whitelist
+                                    $value = implode(',', $whitelist);
+                                } else {
+                                    // individual users are set, so empty types is valid
+                                    $value = '';
+                                }
+                            }
+
                             break;
+
                         case 'users':
-                            break;
-                        case 'area':
-                            if ($value === "") {
-                                $value = '0';
+                            if ($value !== '') {
+                                $ids = array_filter(array_map('intval', explode(',', $value)));
+
+                                if (!empty($ids)) {
+                                    $db = Factory::getDBO();
+                                    $query = $db->getQuery(true)
+                                        ->select($db->quoteName('id'))
+                                        ->from($db->quoteName('#__users'))
+                                        ->where($db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
+                                    $db->setQuery($query);
+                                    $value = implode(',', array_map('intval', $db->loadColumn()));
+                                } else {
+                                    $value = '';
+                                }
                             }
-
-                            $value = (int) $value;
-
                             break;
+
+                        case 'area':
+                            $value = $value === '' ? 0 : (int) $value;
+                            break;
+
                         case 'components':
+                            $value = $filter->clean($value, 'STRING');
                             break;
+
                         case 'params':
                             if (!empty($value)) {
-                                $data = json_decode($value, true);
+                                $decoded = json_decode($value, true);
 
-                                if (is_array($data)) {
-                                    array_walk($data, function (&$param, $key) {
+                                if (is_array($decoded)) {
+                                    array_walk($decoded, function (&$param, $key) {
                                         if (is_string($param) && WFUtility::isJson($param)) {
                                             $param = json_decode($param, true);
                                         }
                                     });
                                 }
 
-                                $value = json_encode($data);
+                                $value = json_encode($decoded);
                             }
 
                             if (empty($value)) {
@@ -379,14 +424,20 @@ abstract class JceProfilesHelper
                             }
 
                             break;
+
                         case 'rows':
+                            $value = preg_replace('#[^\w,;]+#', '', $value);
                             break;
+
                         case 'plugins':
+                            $value = preg_replace('#[^\w_,]+#', '', $value);
                             break;
+
                         case 'published':
                             // always import as unpublished; only users with permission may enable it
                             $value = 0;
                             break;
+
                         case 'ordering':
                             $value = (int) $value;
                             break;

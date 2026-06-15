@@ -35,7 +35,7 @@
 
             <field name="components" type="componentslist" multiple="multiple" label="" layout="joomla.form.field.list-fancy-select" />
  
-            <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" layout="joomla.form.field.list-fancy-select" />
+            <field name="types" type="usergroups" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" layout="joomla.form.field.list-fancy-select" />
             <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC" />
 
         </fieldset>

@@ -11,6 +11,7 @@
 
 \defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Filter\InputFilter;
@@ -559,12 +560,36 @@ class JceModelProfile extends AdminModel
                 case 'params':
                     break;
                 case 'types':
-                case 'users':
-
                     $value = $filter->clean($value, 'INT');
 
                     if (is_array($value)) {
+                        $whitelist = array_filter(array_map('intval', (array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', [])));
+
+                        if (!empty($whitelist)) {
+                            $value = array_intersect($value, $whitelist);
+                        }
+
                         $value = implode(',', $value);
+                    }
+
+                    break;
+                case 'users':
+                    $value = $filter->clean($value, 'INT');
+
+                    if (is_array($value)) {
+                        $ids = array_filter(array_map('intval', $value));
+
+                        if (!empty($ids)) {
+                            $db = $this->getDbo();
+                            $query = $db->getQuery(true)
+                                ->select($db->quoteName('id'))
+                                ->from($db->quoteName('#__users'))
+                                ->where($db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
+                            $db->setQuery($query);
+                            $value = implode(',', array_map('intval', $db->loadColumn()));
+                        } else {
+                            $value = '';
+                        }
                     }
 
                     break;
@@ -921,9 +946,36 @@ class JceModelProfile extends AdminModel
     }
 
     /**
-     * Process XML restore file.
+     * Validate that a file is a well-formed JCE profile export document.
      *
-     * @param object $xml
+     * @param string $path Path to the XML file
+     *
+     * @return bool
+     */
+    private static function validateProfileImport($path)
+    {
+        $prev = false;
+
+        if (PHP_MAJOR_VERSION < 8) {
+            $prev = libxml_disable_entity_loader(true);
+        }
+
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_file($path);
+        libxml_clear_errors();
+
+        if (PHP_MAJOR_VERSION < 8) {
+            libxml_disable_entity_loader($prev);
+        }
+
+        return $xml
+            && $xml->getName() === 'export'
+            && (string) $xml['type'] === 'profiles'
+            && isset($xml->profiles);
+    }
+
+    /**
+     * Process XML restore file.
      *
      * @return bool
      */
@@ -940,27 +992,40 @@ class JceModelProfile extends AdminModel
         }
 
         if ($file['error'] || $file['size'] < 1) {
+            if (!empty($file['tmp_name'])) {
+                @unlink($file['tmp_name']);
+            }
             $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
             return false;
         }
 
         // 512 KB is far more than any legitimate profile export
         if ($file['size'] > 1024 * 512) {
+            @unlink($file['tmp_name']);
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
-        // sanitize the file name
+        try {
+            WFUtility::isSafeFile($file, ['xml']);
+        } catch (\InvalidArgumentException $e) {
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
+            return false;
+        }
+
+        // sanitize the file name for use as destination path
         $name = File::makeSafe($file['name']);
 
         if (empty($name)) {
+            @unlink($file['tmp_name']);
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
-        $extension = PATHINFO($name, PATHINFO_EXTENSION);
+        $source = $file['tmp_name'];
 
-        if (strtolower($extension) !== 'xml') {
+        if (!self::validateProfileImport($source)) {
+            @unlink($source);
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
             return false;
         }
@@ -968,17 +1033,19 @@ class JceModelProfile extends AdminModel
         // Build the appropriate paths.
         $config = Factory::getConfig();
         $destination = $config->get('tmp_path') . '/' . $name;
-        $source = $file['tmp_name'];
 
         // Move uploaded file.
         File::upload($source, $destination, false);
 
         if (!is_file($destination)) {
+            @unlink($source);
             $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
             return false;
         }
 
         $result = JceProfilesHelper::processImport($destination);
+
+        File::delete($destination);
 
         if ($result === false) {
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
