@@ -16,7 +16,6 @@ use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
-use Joomla\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Event\Event;
@@ -45,7 +44,6 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         'layouts',
         'libraries',
         'logs',
-        'media',
         'modules',
         'plugins',
         'templates',
@@ -559,18 +557,12 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      */
     protected function checkRestrictedDirectory($path)
     {
-        Path::check($path, $this->getBaseDir());
+        Utility::checkPath($path);
 
         foreach ($this->restricted as $name) {
-            $restricted = $this->toAbsolute($name);
+            $restricted = rtrim($this->toAbsolute($name), '/') . '/';
 
-            if (function_exists('mb_substr')) {
-                $match = (mb_substr($path, 0, mb_strlen($restricted)) === $restricted);
-            } else {
-                $match = (substr($path, 0, strlen($restricted)) === $restricted);
-            }
-
-            if ($match === true) {
+            if (strpos(rtrim($path, '/') . '/', $restricted) === 0) {
                 throw new \Exception('Access to the target directory is restricted');
             }
         }
@@ -981,11 +973,9 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
      * @param string $src The source file path
      * @param string $dir The destination directory
      * @param string $name The name of the file
-     * @param integer $chunks The total number of chunks
-     * @param integer $chunk The current chunk number
      * @return FilesystemResult The result of the upload
      */
-    public function upload($method, $src, $dir, $name, $chunks = 1, $chunk = 0)
+    public function upload($method, $src, $dir, $name)
     {
         $app = Factory::getApplication();
         $dispatcher = $app->getDispatcher();
