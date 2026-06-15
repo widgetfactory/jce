@@ -8,7 +8,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_PLATFORM') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\FormHelper;
 
@@ -78,4 +78,4 @@ if (!class_exists('\\Joomla\\CMS\\HTML\\Helpers\\Sidebar')) {
     class_alias('JHtmlSidebar', '\\Joomla\\CMS\\HTML\\Helpers\\Sidebar');
 }
 
-JLoader::register('JceHelperAdmin', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/admin.php');
+JLoader::register('JceHelperAdmin', JPATH_ADMINISTRATOR . '/components/com_jce/helpers/admin.php');
