@@ -24,7 +24,6 @@ use Joomla\Database\DatabaseInterface;
 
 use Wfe\Adapter\Plugin\Filesystem\FilesystemResult;
 use Wfe\Utility\Utility;
-use Wfe\Utility\MimeType;
 use Wfe\Helper\StringHelper;
 use Wfe\Document\View;
 use Wfe\Registry\ConfigurationTrait;
@@ -35,25 +34,30 @@ class Browser
 {
     use ConfigurationTrait;
     use ContainerTrait;
+    use UploadValidationTrait;
 
-    // The Editor Plugin Container
+    /** @var object The editor plugin container. */
     protected $container = null;
 
-    /* @var array */
+    /** @var array */
     private $_buttons = array();
 
-    /* @var array */
+    /** @var array */
     private $_actions = array();
 
-    /* @var array */
+    /** @var array */
     private $_events = array();
 
-    /* @var array */
+    /** @var array */
     private $_result = array('error' => array(), 'files' => array(), 'folders' => array());
 
-    /* @var WFFileSystem */
+    /** @var object */
     public $filesystem = null;
 
+    /**
+     * @param object $container The editor plugin container.
+     * @param array  $config    Configuration array from the manager.
+     */
     public function __construct($container, $config = array())
     {
         // store the Editor Plugin Container object
@@ -168,11 +172,9 @@ class Browser
     }
 
     /**
-     * Upload form action url.
+     * Build the form action URL for XHR plugin requests.
      *
-     * @return string URL
-     *
-     * @since    1.5
+     * @return string The absolute action URL.
      */
     protected function getFormAction()
     {
@@ -192,11 +194,17 @@ class Browser
         return Uri::base(true) . '/index.php?option=com_jce&task=plugin.rpc' . $query;
     }
 
+    /**
+     * @return object The active filesystem instance.
+     */
     public function getFileSystem()
     {
-        return $this->filesystem; // filesystem is now passed in from the "manager" class
+        return $this->filesystem;
     }
 
+    /**
+     * @return string Comma-separated list of extensions that the browser can preview inline.
+     */
     private function getViewable()
     {
         return 'jpeg,jpg,gif,png,webp,apng,svg,avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mp3,mp4,m4v,mpeg,ogg,ogv,webm,swf,flv,f4v,xml,dcr,rm,ra,ram,divx,html,htm,txt,rtf,pdf,doc,docx,xls,xlsx,ppt,pptx';
@@ -233,7 +241,10 @@ class Browser
     }
 
     /**
-     * Set filetypes and update upload properties
+     * Set allowed file types and sync the upload config.
+     *
+     * @param  string $list Comma-separated extension list, e.g. "jpg,png,gif".
+     * @return void
      */
     public function setFileTypes($list = 'jpg,jpeg,png,gif')
     {
@@ -256,15 +267,20 @@ class Browser
     }
 
     /**
-     * Returns the result variable.
-     *
-     * @return var $_result
+     * @return array The current result array with 'error', 'files', and 'folders' keys.
      */
     public function getResult()
     {
         return $this->_result;
     }
 
+    /**
+     * Store a value in the result array.
+     *
+     * @param  mixed       $value The value to store.
+     * @param  string|null $key   Result key ('files', 'folders', or 'error'); null replaces the entire result.
+     * @return void
+     */
     public function setResult($value, $key = null)
     {
         if ($key) {
@@ -274,6 +290,13 @@ class Browser
         }
     }
 
+    /**
+     * Check whether a feature is enabled in the current profile.
+     *
+     * @param  string      $action The feature name (e.g. 'upload', 'delete', 'rename', 'move', 'create').
+     * @param  string|null $type   Optional sub-type ('file' or 'folder').
+     * @return bool True if the feature is enabled, false otherwise.
+     */
     public function checkFeature($action, $type = null)
     {
         $features = $this->config->getArray('features');
@@ -296,7 +319,11 @@ class Browser
     }
 
     /**
-     * Get the source directory of a file path.
+     * Resolve the containing directory of a file or directory path.
+     * Returns an empty string for absolute URLs or paths that cannot be resolved.
+     *
+     * @param  string $path A relative file or directory path, or a URL.
+     * @return string The resolved directory path, or an empty string.
      */
     public function getSourceDir($path)
     {
@@ -499,6 +526,11 @@ class Browser
         return $path;
     }
 
+    /**
+     * Return the default upload/browse path (first store entry, in "prefix:" form).
+     *
+     * @return string Path prefix with trailing colon.
+     */
     public function getDefaultPath()
     {
         $store = $this->getDirectoryStore();
@@ -507,6 +539,12 @@ class Browser
         return $values['prefix'] . ':';
     }
 
+    /**
+     * Build the canonical directory store from configured paths.
+     * Missing directories are created on the fly; invalid entries are skipped.
+     *
+     * @return array Keyed by MD5 hash of each path; each entry has 'path', 'label', and 'prefix'.
+     */
     private function getDirectoryStore()
     {
         $filesystem = $this->getFileSystem();
@@ -608,6 +646,13 @@ class Browser
         return $newDir;
     }
 
+    /**
+     * Return the store entry that corresponds to a given path.
+     *
+     * @param  string $path    The path to look up (may be in "prefix:relative" form).
+     * @param  bool   $withKey If true, return the full store array instead of just the matching entry.
+     * @return array  The matching store entry, the full store if $withKey is true, or an empty array.
+     */
     public function getDirectoryStoreFromPath($path, $withKey = false)
     {
         $prefix = $this->parsePath($path); // get the prefix and remove it from the path value
@@ -638,6 +683,12 @@ class Browser
         return array();
     }
 
+    /**
+     * Resolve a path to its store entry without modifying the path variable.
+     *
+     * @param  string       $path The path to resolve (may contain a prefix).
+     * @return array|string The store entry array, an array of all entries for an empty path, or the original path if unresolved.
+     */
     private function getPathFromDirectoryStore($path)
     {
         $path = trim($path, '/');
@@ -667,6 +718,13 @@ class Browser
         return $path;
     }
 
+    /**
+     * Build the path variable substitution tables (patterns and replacements).
+     * Results are statically cached per request; the onWfFileSystemGetPathVariables event
+     * fires on every call to allow plugins to inject dynamic values.
+     *
+     * @return array Keys: path_pattern, path_replacement, websafe_textcase, websafe_mode, websafe_allow_spaces.
+     */
     private function getPathVariables()
     {
         static $variables;
@@ -790,6 +848,12 @@ class Browser
         return $variables;
     }
 
+    /**
+     * Apply path variable substitution and websafe normalisation to a path in place.
+     *
+     * @param  string &$path The path to transform.
+     * @return string        The normalised path (also updated via the reference).
+     */
     public function processPath(&$path)
     {
         $path = preg_replace($this->getConfig('path_pattern', array()), $this->getConfig('path_replacement', array()), $path);
@@ -937,6 +1001,9 @@ class Browser
         return $access;
     }
 
+    /**
+     * @return string The filesystem base directory.
+     */
     public function getBaseDir()
     {
         $filesystem = $this->getFileSystem();
@@ -945,12 +1012,14 @@ class Browser
     }
 
     /**
-     * Get the list of files in a given folder.
+     * Get the list of files in a folder, filtered by path access rules.
      *
-     * @param string $relative The relative path of the folder
-     * @param string $filter   A regex filter option
-     *
-     * @return array list array
+     * @param  string $relative The relative path of the folder.
+     * @param  string $filter   A regex filter applied to file names.
+     * @param  string $sort     Sort order string passed to the filesystem.
+     * @param  int    $limit    Maximum results to return (0 = unlimited).
+     * @param  int    $start    Result offset for pagination.
+     * @return array  List of file items that pass the access check.
      */
     private function getFiles($relative, $filter = '.', $sort = '', $limit = 0, $start = 0)
     {
@@ -972,11 +1041,14 @@ class Browser
     }
 
     /**
-     * Get the list of folder in a given folder.
+     * Get the list of folders in a folder, filtered by path access rules.
      *
-     * @param string $relative The relative path of the folder
-     *
-     * @return array list array
+     * @param  string $relative The relative path of the folder.
+     * @param  string $filter   A regex filter applied to folder names.
+     * @param  string $sort     Sort order string passed to the filesystem.
+     * @param  int    $limit    Maximum results to return (0 = unlimited).
+     * @param  int    $start    Result offset for pagination.
+     * @return array  List of folder items that pass the access check.
      */
     private function getFolders($relative, $filter = '', $sort = '', $limit = 0, $start = 0)
     {
@@ -994,6 +1066,14 @@ class Browser
         return $list;
     }
 
+    /**
+     * Sanitize a search term for safe use in a regex pattern.
+     * Strips characters outside a known-safe set, preg_quote's the result,
+     * then restores wildcard '*' as the regex '.*'.
+     *
+     * @param  string $term The raw search term.
+     * @return string The sanitized, regex-safe search term.
+     */
     private static function sanitizeSearchTerm($term)
     {
         try {
@@ -1017,6 +1097,16 @@ class Browser
         return $query;
     }
 
+    /**
+     * Search files and folders by keyword or extension query.
+     *
+     * @param  string $path  Directory path to search within (empty = all configured roots).
+     * @param  int    $limit Maximum results per type; 0 = unlimited.
+     * @param  int    $start Result offset for pagination.
+     * @param  string $query Search query — keywords and/or extension filters (e.g. "cat *.jpg").
+     * @param  string $sort  Sort order passed to the filesystem.
+     * @return array  Result array with 'files', 'folders', 'total', 'path', and 'search' keys.
+     */
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
         $path = rawurldecode($path);
@@ -1189,19 +1279,24 @@ class Browser
         return $result;
     }
 
+    /**
+     * @param  string $source A source path.
+     * @return string         The source path unchanged (hook for subclasses).
+     */
     public function getRootDir($source)
     {
         return $source;
     }
 
     /**
-     * Get file and folder lists.
+     * Get file and folder listings for a directory.
      *
-     * @return array Array of file and folder list objects
-     *
-     * @param string $source   Relative or absolute path based either on source url or current directory
-     * @param int    $limit    List limit
-     * @param int    $start    list start point
+     * @param  string $source The current directory path (relative, or "prefix:relative" form).
+     * @param  int    $limit  Maximum items to return per type (0 = unlimited).
+     * @param  int    $start  Result offset for pagination.
+     * @param  string $filter Optional name filter; prefix with '.' to filter by extension.
+     * @param  string $sort   Sort order passed to the filesystem.
+     * @return array  Result array with 'folders', 'files', 'total', and 'path' keys.
      */
     public function getItems($source, $limit = 25, $start = 0, $filter = '', $sort = '')
     {
@@ -1396,11 +1491,10 @@ class Browser
     }
 
     /**
-     * Get a tree node.
+     * Get the immediate child folders for a tree node.
      *
-     * @param string $dir The relative path of the folder to search
-     *
-     * @return Tree node array
+     * @param  string $path The directory path (empty = root).
+     * @return array  Array with 'label' and 'folders' keys.
      */
     public function getTreeItem($path = "")
     {
@@ -1488,11 +1582,10 @@ class Browser
     }
 
     /**
-     * Build a tree list.
+     * Build a full folder tree as an HTML string.
      *
-     * @param string $dir The relative path of the folder to search
-     *
-     * @return Tree html string
+     * @param  string $path The starting directory path (empty = root).
+     * @return string The rendered HTML tree.
      */
     public function getTree($path = '')
     {
@@ -1507,13 +1600,12 @@ class Browser
     }
 
     /**
-     * Get Tree list items as html list.
+     * Recursively render folder tree nodes as an HTML list.
      *
-     * @return Tree list html string
-     *
-     * @param string $path            Current directory
-     * @param bool   $root[optional] Is root directory
-     * @param bool   $init[optional] Is tree initialisation
+     * @param  string $path The current directory path.
+     * @param  bool   $root Whether this is the outermost call (wraps output in a root list item).
+     * @param  bool   $init Whether this is the initial call (loads root node data).
+     * @return string The rendered HTML fragment.
      */
     public function getTreeItems($path, $root = true, $init = true)
     {
@@ -1595,11 +1687,10 @@ class Browser
     }
 
     /**
-     * Get a folders properties.
+     * Get a folder's properties (date, file count, etc.).
      *
-     * @return array Array of properties
-     *
-     * @param string $dir Folder relative path
+     * @param  string $dir Relative folder path.
+     * @return array  Folder properties array.
      */
     public function getFolderDetails($dir)
     {
@@ -1612,11 +1703,10 @@ class Browser
     }
 
     /**
-     * Get a files properties.
+     * Get a file's properties (size, date, dimensions, etc.).
      *
-     * @return array Array of properties
-     *
-     * @param string $file File relative path
+     * @param  string $file Relative file path.
+     * @return array  File properties array.
      */
     public function getFileDetails($file)
     {
@@ -1747,15 +1837,12 @@ class Browser
     }
 
     /**
-     * Add a button.
+     * Add a button to the button bar.
      *
-     * @param string $type[optional]     Button type (file or folder)
-     * @param string $name               Button name
-     * @param string $icon[optional]     Button icon
-     * @param string $action[optional]   Button action / function
-     * @param string $title              Button title
-     * @param bool   $multiple[optional] Supports multiple file selection
-     * @param bool   $trigger[optional]
+     * @param  string $type    Button type: 'file' or 'folder'.
+     * @param  string $name    Button name (used to derive the default title and icon).
+     * @param  array  $options Optional overrides: icon, action, title, multiple, trigger, restrict.
+     * @return void
      */
     public function addButton($type, $name, $options = array())
     {
@@ -1840,12 +1927,11 @@ class Browser
     }
 
     /**
-     * Execute an event.
+     * Execute a registered event handler.
      *
-     * @return array result
-     *
-     * @param object $name           Event name
-     * @param array  $args[optional] Optional arguments
+     * @param  string     $name Event name.
+     * @param  array|null $args Arguments to pass to the handler.
+     * @return mixed      The handler's return value, or an empty array if no handler is registered.
      */
     protected function fireEvent($name, $args = null)
     {
@@ -1862,78 +1948,12 @@ class Browser
         return array();
     }
 
-    private function validateUploadedFile($file)
-    {
-        // check the POST data array
-        if (empty($file) || empty($file['tmp_name'])) {
-            throw new \InvalidArgumentException('Upload Failed: No data');
-        }
-
-        // check for tmp_name and is valid uploaded file
-        if (!is_uploaded_file($file['tmp_name'])) {
-            @unlink($file['tmp_name']);
-            throw new \InvalidArgumentException('Upload Failed: Not an uploaded file');
-        }
-
-        $upload = $this->getConfig('upload');
-
-        // reject null bytes in the filename before any further processing
-        if (strpos($file['name'], "\x00") !== false) {
-            @unlink($file['tmp_name']);
-            throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
-        }
-
-        // fetch profile-allowed extensions first so they can inform filename validation
-        $allowed = (array) $this->getFileTypes('array');
-
-        // validate the full filename, passing profile-allowed extensions
-        if (Utility::validateFileName($file['name'], $allowed) === false) {
-            @unlink($file['tmp_name']);
-            throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
-        }
-
-        // now safe to extract the extension from the validated filename
-        $ext = Utility::getExtension($file['name'], true);
-
-        // check file content for PHP tags, phar stubs, invalid images, etc.
-        if (Utility::isSafeFile($file, $allowed) !== true) {
-            @unlink($file['tmp_name']);
-            throw new \InvalidArgumentException('Upload Failed: Invalid file');
-        }
-
-        if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
-            @unlink($file['tmp_name']);
-            throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
-        }
-
-        $size = round(filesize($file['tmp_name']) / 1024);
-
-        if (empty($upload['max_size'])) {
-            $upload['max_size'] = 10240;
-        }
-
-        // validate size
-        if ($size > (int) $upload['max_size']) {
-            @unlink($file['tmp_name']);
-
-            throw new \InvalidArgumentException(Text::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
-        }
-
-        // validate mimetype
-        if ($upload['validate_mimetype']) {
-            if (MimeType::check($file['name'], $file['tmp_name']) === false) {
-                @unlink($file['tmp_name']);
-                throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
-            }
-        }
-
-        return true;
-    }
-
     /**
-     * Upload a file.
+     * Handle a file upload request.
      *
-     * @return array $error on failure or uploaded file name on success
+     * @return array Result array with 'files' on success or 'error' on failure.
+     * @throws \Exception              If the upload feature is not permitted.
+     * @throws \InvalidArgumentException On validation or filesystem failure.
      */
     public function upload()
     {
@@ -1949,126 +1969,87 @@ class Browser
 
         $filesystem = $this->getFileSystem();
 
-        // create a filesystem result object
-        $result = new FilesystemResult();
-
         // get uploaded file
         $file = $app->input->files->get('file', array(), 'raw');
 
         // validate file
         $this->validateUploadedFile($file);
 
-        // fetch profile-allowed extensions for subsequent filename validation
         $allowed = (array) $this->getFileTypes('array');
 
-        // get file name
-        $name = (string) $app->input->get('name', $file['name'], 'STRING');
-
-        // decode
-        $name = rawurldecode($name);
-
-        // check name
-        if (Utility::validateFileName($name, $allowed) === false) {
-            throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
-        }
-
-        // check file name
-        Utility::checkPath($name);
-
-        // get extension from file name
-        $ext = Utility::getExtension($file['name']);
-
-        // trim extension
+        // derive and normalise the extension from the actual uploaded file
+        $ext = Utility::getExtension($file['name'], true);
         $ext = trim($ext);
-
-        // make extension websafe
         $ext = Utility::makeSafe($ext, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
-        // check extension exists
         if (empty($ext) || $ext === $file['name']) {
+            @unlink($file['tmp_name']);
             throw new \InvalidArgumentException('Upload Failed: The file name does not contain a valid extension.');
         }
 
-        // strip extension
-        $name = Utility::stripExtension($name);
+        // validate and process the user-supplied destination name
+        $name = (string) $app->input->get('name', $file['name'], 'STRING');
+        $name = rawurldecode($name);
 
-        // make file name 'web safe'
-        $name = Utility::makeSafe($name, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
-
-        // check name
         if (Utility::validateFileName($name, $allowed) === false) {
+            @unlink($file['tmp_name']);
             throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
-        // target directory
-        $dir = (string) $app->input->get('upload-dir', '', 'STRING');
+        try {
+            Utility::checkPath($name);
+        } catch (\InvalidArgumentException $e) {
+            @unlink($file['tmp_name']);
+            throw $e;
+        }
 
-        // decode and cast as string
-        $dir = rawurldecode($dir);
+        $name = Utility::stripExtension($name);
+        $name = Utility::makeSafe($name, $this->getConfig('websafe_mode', 'utf-8'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
-        // get upload settings from the config
+        if (Utility::validateFileName($name, $allowed) === false) {
+            @unlink($file['tmp_name']);
+            throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
+        }
+
         $upload = $this->getConfig('upload');
 
-        // add random string
         if ($upload['add_random']) {
             $name = $name . '_' . substr(md5(uniqid(rand(), 1)), 0, 5);
         }
 
-        // rebuild file name - name + extension
         $name = $name . '.' . $ext;
 
-        // pass to onBeforeUpload
+        $dir = (string) $app->input->get('upload-dir', '', 'STRING');
+        $dir = rawurldecode($dir);
+
         $this->fireEvent('onBeforeUpload', array(&$file, &$dir, &$name));
 
-        // check destination path
-        Utility::checkPath($dir);
-
-        // if directory is empty, use the default complex path
-        if (empty($dir)) {
-            $dir = $this->getDefaultPath();
+        // re-validate name in case an event handler modified it
+        if (Utility::validateFileName($name, $allowed) === false) {
+            @unlink($file['tmp_name']);
+            throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
-        // extract the path from the complex path, remove prefix
-        $dir = $this->resolvePath($dir);
-
-        // an upload cannot be made into the primary directory tree
-        if (empty($dir)) {
-            throw new \InvalidArgumentException('Upload Failed: Invalid target directory');
+        try {
+            Utility::checkPath($name);
+        } catch (\InvalidArgumentException $e) {
+            @unlink($file['tmp_name']);
+            throw $e;
         }
 
-        // check path exists
-        if (!$filesystem->is_dir($dir)) {
-            throw new \InvalidArgumentException('Upload Failed: The target directory does not exist');
+        try {
+            $dir = $this->validateUploadDirectory($dir, $upload);
+        } catch (\InvalidArgumentException $e) {
+            @unlink($file['tmp_name']);
+            throw $e;
         }
 
-        // check access
-        if (!$this->checkPathAccess($dir)) {
-            throw new \InvalidArgumentException('Upload Failed: Access to the target directory is restricted');
-        }
+        $result = $filesystem->upload('multipart', trim($file['tmp_name']), $dir, $name);
 
-        // Check file number limits
-        if (!empty($upload['total_files'])) {
-            if ($filesystem->countFiles($dir, true) > $upload['total_files']) {
-                throw new \InvalidArgumentException(Text::_('WF_MANAGER_FILE_LIMIT_ERROR'));
-            }
-        }
+        @unlink($file['tmp_name']);
 
-        // Check total file size limit
-        if (!empty($upload['total_size'])) {
-            $size = $filesystem->getTotalSize($dir);
-
-            if (($size / 1024 / 1024) > $upload['total_size']) {
-                throw new \InvalidArgumentException(Text::_('WF_MANAGER_FILE_SIZE_LIMIT_ERROR'));
-            }
-        }
-
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-
-        // Only multipart uploading is supported for now
-        if ($contentType && strpos($contentType, 'multipart') !== false) {
-            // upload file with filesystem
-            $result = $filesystem->upload('multipart', trim($file['tmp_name']), $dir, $name);
-
+        // upload finished
+        if ($result instanceof FilesystemResult) {
             if (!$result->state) {
                 if (empty($result->message)) {
                     $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
@@ -2077,15 +2058,6 @@ class Browser
                 $result->code = 103;
             }
 
-            @unlink($file['tmp_name']);
-        } else {
-            $result->state = false;
-            $result->code = 103;
-            $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
-        }
-
-        // upload finished
-        if ($result instanceof FilesystemResult) {
             if ($result->state === true) {
                 $name = Utility::mb_basename($result->path);
 
@@ -2114,11 +2086,12 @@ class Browser
     }
 
     /**
-     * Delete the relative file(s).
+     * Delete one or more files or folders.
      *
-     * @param $files the relative path to the file name or comma seperated list of multiple paths
-     *
-     * @return string $error on failure
+     * @param  string $items Comma-separated list of relative paths to delete.
+     * @return array  Result array with deleted items or error messages.
+     * @throws \Exception              If the delete feature is not permitted.
+     * @throws \InvalidArgumentException On path or access validation failure.
      */
     public function deleteItem($items)
     {
@@ -2142,6 +2115,11 @@ class Browser
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('delete', 'file') === false) {
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                }
+
+                // check file name is not blocked (executable extensions etc.)
+                if (Utility::validateFileName(Utility::mb_basename($item)) === false) {
+                    throw new \InvalidArgumentException('Delete Failed: The file name is invalid.');
                 }
 
                 // check extension is allowed
@@ -2188,12 +2166,12 @@ class Browser
     }
 
     /**
-     * Rename a file.
+     * Rename a file or folder.
+     * Source and destination are read via func_get_args() for legacy compatibility.
      *
-     * @param string $src  The relative path of the source file
-     * @param string $dest The name of the new file
-     *
-     * @return string $error
+     * @return array Result array with renamed item data or error messages.
+     * @throws \Exception              If the rename feature is not permitted.
+     * @throws \InvalidArgumentException On path or access validation failure.
      */
     public function renameItem()
     {
@@ -2217,6 +2195,11 @@ class Browser
         Utility::checkPath($destination);
 
         $allowed = (array) $this->getFileTypes('array');
+
+        // check source file name is not blocked (executable extensions etc.)
+        if (Utility::validateFileName(Utility::mb_basename($source)) === false) {
+            throw new \InvalidArgumentException('Rename Failed: The source file name is invalid.');
+        }
 
         // check for extension in destination name
         if (Utility::validateFileName($destination, $allowed) === false) {
@@ -2277,13 +2260,14 @@ class Browser
     }
 
     /**
-     * Copy a file.
+     * Copy one or more files or folders to a destination directory.
      *
-     * @param string $files The relative file or comma seperated list of files
-     * @param string $dest  The relative path of the destination dir
-     * @param string $conflict The conflict action copy|replace or blank to confirm
-     *
-     * @return string $error on failure
+     * @param  string $items       Comma-separated list of relative paths to copy.
+     * @param  string $destination Relative path of the destination directory.
+     * @param  string $conflict    Conflict resolution: 'copy', 'replace', or empty to prompt.
+     * @return array  Result array with copied item data or error messages.
+     * @throws \Exception              If the move feature is not permitted.
+     * @throws \InvalidArgumentException On path or access validation failure.
      */
     public function copyItem($items, $destination, $conflict = '')
     {
@@ -2404,12 +2388,14 @@ class Browser
     }
 
     /**
-     * Copy a file.
+     * Move one or more files or folders to a destination directory.
      *
-     * @param string $files The relative file or comma seperated list of files
-     * @param string $dest  The relative path of the destination dir
-     *
-     * @return string $error on failure
+     * @param  string $items       Comma-separated list of relative paths to move.
+     * @param  string $destination Relative path of the destination directory.
+     * @param  bool   $overwrite   Whether to overwrite existing items at the destination.
+     * @return array  Result array with moved item data or error messages.
+     * @throws \Exception              If the move feature is not permitted.
+     * @throws \InvalidArgumentException On path or access validation failure.
      */
     public function moveItem($items, $destination, $overwrite = false)
     {
@@ -2510,8 +2496,12 @@ class Browser
     }
 
     /**
-     * Create a new folder
-     * @return string $error on failure
+     * Create a new folder in a target directory.
+     * Target path and folder name are read via func_get_args() for legacy compatibility.
+     *
+     * @return array Result array with new folder data or error messages.
+     * @throws \Exception              If the folder create feature is not permitted.
+     * @throws \InvalidArgumentException On path or access validation failure.
      */
     public function folderNew()
     {
@@ -2630,6 +2620,13 @@ class Browser
         return $this->getFileSystem()->read($path);
     }
 
+    /**
+     * Write data to a file via the filesystem proxy.
+     *
+     * @param  string $file The relative file path.
+     * @param  string $data The data to write.
+     * @return mixed        Result from the filesystem write method.
+     */
     public function writeFile($file, $data)
     {
         $path = $this->resolvePath($file);
@@ -2662,6 +2659,11 @@ class Browser
         return $this->getFileSystem()->is_dir($path);
     }
 
+    /**
+     * Get the effective PHP upload size limit in bytes (lower of upload_max_filesize and post_max_size).
+     *
+     * @return int The upload size limit in bytes.
+     */
     private function getUploadValue()
     {
         $upload = trim(ini_get('upload_max_filesize'));
@@ -2677,6 +2679,11 @@ class Browser
         return $post;
     }
 
+    /**
+     * Build the default upload config array, capping max_size against PHP ini limits.
+     *
+     * @return array Upload settings including max_size, filetypes, and any filesystem overrides.
+     */
     private function getUploadDefaults()
     {
         $filesystem = $this->getFileSystem();
