@@ -29,6 +29,7 @@ use Wfe\Document\View;
 use Wfe\Registry\ConfigurationTrait;
 use Wfe\Http\Request;
 use Wfe\Container\ContainerTrait;
+use Wfe\Application\UploadValidationTrait;
 
 class Browser
 {
@@ -130,7 +131,7 @@ class Browser
 
         $this->setProperties(array(
             'actions' => $this->getActions(),
-            'buttons' => $this->getButtons(),
+            'buttons' => $this->getButtons()
         ));
 
         // Get the Document instance
@@ -950,10 +951,12 @@ class Browser
 
             // Allow if path is empty (root ancestor), exact match, an ancestor of the
             // filter (so the user can navigate into it), or a descendant of the filter.
-            if (empty($path) ||
+            if (
+                empty($path) ||
                 $path === $filter ||
                 strpos($filter, $path . '/') === 0 ||
-                strpos($path, $filter . '/') === 0) {
+                strpos($path, $filter . '/') === 0
+            ) {
                 $access = true;
                 break;
             }
@@ -1111,7 +1114,7 @@ class Browser
     {
         $path = rawurldecode($path);
         Utility::checkPath($path);
-    
+
         $result = array(
             'folders' => array(),
             'files' => array(),
@@ -1191,6 +1194,8 @@ class Browser
 
         // trim the passed in path if any
         $path = trim($path, '/');
+
+        $storeArray = [];
 
         // no path value or root folder so get the default directories
         if (empty($path)) {
@@ -1305,7 +1310,7 @@ class Browser
 
         // check if source is a valid path
         Utility::checkPath($source);
-    
+
         $filesystem = $this->getFileSystem();
 
         $files = array();
@@ -1315,6 +1320,9 @@ class Browser
 
         // trim source to path variable
         $path = trim($source, '/');
+
+        // set an empty prefix
+        $prefix = '';
 
         // if a value is set process as possible return file, ie: check for prefix
         if ($path) {
