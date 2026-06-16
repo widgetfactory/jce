@@ -11,13 +11,13 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Form\Field\UserGroupListField;
+use Joomla\CMS\Form\Field\UsergrouplistField;
 
 /**
  * User group list filtered by the global profile_groups_whitelist setting.
  * When no whitelist is configured all groups are shown (default behaviour).
  */
-class JFormFieldUsergroups extends UserGroupListField
+class JFormFieldUsergroups extends UsergrouplistField
 {
     public $type = 'Usergroups';
 

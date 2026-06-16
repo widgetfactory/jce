@@ -42,6 +42,12 @@ if (!class_exists('\\Joomla\\CMS\\Form\\Field\\ListField')) {
     class_alias('JFormFieldList', '\\Joomla\\CMS\\Form\\Field\\ListField');
 }
 
+// For UsergroupList
+if (!class_exists('\\Joomla\\CMS\\Form\\Field\\UsergrouplistField')) {
+    FormHelper::loadFieldClass('usergroups');
+    class_alias('JFormFieldUsergroups', '\\Joomla\\CMS\\Form\\Field\\UsergrouplistField');
+}
+
 // For Number
 if (!class_exists('\\Joomla\\CMS\\Form\\Field\\NumberField')) {
     FormHelper::loadFieldClass('number');
