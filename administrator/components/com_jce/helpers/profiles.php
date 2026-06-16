@@ -276,8 +276,8 @@ abstract class JceProfilesHelper
     /**
      * Process import data from XML file.
      *
-     * @param object $file    XML file
-     * @param bool   $install Can be used by the package installer
+     * @param  string $file XML file path
+     * @return int 
      */
     public static function processImport($file)
     {

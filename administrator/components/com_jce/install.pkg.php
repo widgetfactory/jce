@@ -57,7 +57,21 @@ class pkg_jceInstallerScript
     private function installProfiles()
     {
         include_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/profiles.php';
-        return JceProfilesHelper::installProfiles();
+
+        // publish the "Default" profile if successful
+        if (JceProfilesHelper::installProfiles()) {
+            $db = Factory::getDBO();
+
+            $query = $db->getQuery(true);
+            $query->update('#__wf_profiles')->set('published = 1')->where('name = ' . $db->quote('Default'));
+            $db->setQuery($query);
+
+            $db->execute();
+
+            return true;
+        }
+
+        return false;
     }
 
     public function install($installer)
