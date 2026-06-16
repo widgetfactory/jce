@@ -59,8 +59,22 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
     private function installProfiles()
     {
-        require_once JPATH_ADMINISTRATOR . '/components/com_jce/src/Helper/ProfilesHelper.php';
-        return \Joomla\Component\Jce\Administrator\Helper\ProfilesHelper::installProfiles();
+        include_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/profiles.php';
+
+        // publish the "Default" profile if successful
+        if (\Joomla\Component\Jce\Administrator\Helper\ProfilesHelper::installProfiles()) {
+            $db = $this->getDatabase();
+
+            $query = $db->getQuery(true);
+            $query->update('#__wf_profiles')->set('published = 1')->where('name = ' . $db->quote('Default'));
+            $db->setQuery($query);
+
+            $db->execute();
+
+            return true;
+        }
+
+        return false;
     }
 
     public function install($installer)

@@ -224,6 +224,13 @@ class ProfilesModel extends ListModel
             return false;
         }
 
+        // publish the "Default" profile as per its manifest setting
+        $db = $this->getDatabase();
+        $query = $db->getQuery(true);
+        $query->update('#__wf_profiles')->set('published = 1')->where('name = ' . $db->quote('Default'));
+        $db->setQuery($query);
+        $db->execute();
+
         return true;
     }
 }
