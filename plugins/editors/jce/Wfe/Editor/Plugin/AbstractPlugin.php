@@ -478,6 +478,10 @@ class AbstractPlugin
                 }
 
                 if ($name && $value !== '') {
+                    if (!preg_match('#^[a-zA-Z][a-zA-Z0-9_-]*$#', $name)) {
+                        continue;
+                    }
+
                     $value = trim($value, " \t\n\r\0\x0B'\"");
                     $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
                     $defaults[$name] = $value;
