@@ -1054,19 +1054,19 @@ class JceModelProfile extends AdminModel
      */
     private static function validateProfileImport($path)
     {
-        $prev = false;
+        $content = @file_get_contents($path);
 
-        if (PHP_MAJOR_VERSION < 8) {
-            $prev = libxml_disable_entity_loader(true);
+        if ($content === false) {
+            return false;
         }
+
+        // Strip DOCTYPE to prevent entity-based XXE (local file:// and network) on all PHP versions
+        $content = preg_replace('/<!DOCTYPE[^[>]*(\[[^\]]*\])?>/is', '', $content);
 
         libxml_use_internal_errors(true);
-        $xml = simplexml_load_file($path);
+        $xml = simplexml_load_string($content, 'SimpleXMLElement', LIBXML_NONET);
         libxml_clear_errors();
-
-        if (PHP_MAJOR_VERSION < 8) {
-            libxml_disable_entity_loader($prev);
-        }
+        libxml_use_internal_errors(false);
 
         return $xml
             && $xml->getName() === 'export'
