@@ -15,6 +15,10 @@ CREATE TABLE [#__wf_profiles](
 	[ordering] [int] NOT NULL,
 	[checked_out] [int] NOT NULL,
 	[checked_out_time] [datetime] NOT NULL,
+	[created] [datetime] NULL,
+	[created_by] [int] NOT NULL DEFAULT 0,
+	[modified] [datetime] NULL,
+	[modified_by] [int] NOT NULL DEFAULT 0,
 	[params] [nvarchar](max) NOT NULL,
  CONSTRAINT [PK_#__wf_profiles_id] PRIMARY KEY CLUSTERED 
 (

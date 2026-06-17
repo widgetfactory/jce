@@ -73,9 +73,24 @@ class ProfileModel extends AdminModel
         return parent::getTable($type, $prefix, $config);
     }
 
-    /* Override to prevent plugins from processing form data */
+    /**
+     * Override to prevent Joomla plugins from mutating profile form data.
+     *
+     * @param   string  $context  The context for the data
+     * @param   object  &$data    The data object (unused)
+     * @param   string  $group    The plugin group (unused)
+     *
+     * @return  void
+     */
     protected function preprocessData($context, &$data, $group = 'content') {}
 
+    /**
+     * Decode and normalise profile params for display, including legacy key migrations.
+     *
+     * @param   object  $data  The raw item data from the database
+     *
+     * @return  object  The mutated data object with a populated `config` property
+     */
     protected function processData($data)
     {
         if (!isset($data->params)) {
@@ -181,16 +196,18 @@ class ProfileModel extends AdminModel
     }
 
     /**
-     * Method to allow derived classes to preprocess the form.
+     * Preprocess the profile form: clears default attribute values where saved data
+     * already exists, then injects the editor manifest fieldset.
      *
-     * @param Form  $form  A Joomla\CMS\Form\Form object
-     * @param mixed  $data  The data expected for the form
-     * @param string $group The name of the plugin group to import (defaults to "content")
+     * @param   Form    $form   The form object
+     * @param   mixed   $data   The data to bind
+     * @param   string  $group  The plugin group (defaults to "content")
      *
-     * @see     FormField
+     * @return  void
+     *
      * @since   1.6
      *
-     * @throws Exception if there is an error in the form event
+     * @throws  Exception
      */
     protected function preprocessForm(Form $form, $data, $group = 'content')
     {
@@ -247,6 +264,14 @@ class ProfileModel extends AdminModel
         $form->bind($data);
     }
 
+    /**
+     * Get the profile edit form.
+     *
+     * @param   array  $data      Pre-populate data (unused; form always loads from the model state)
+     * @param   bool   $loadData  Whether to load data into the form
+     *
+     * @return  Form|bool  The form, or false on failure
+     */
     public function getForm($data = [], $loadData = true)
     {
         Form::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jce/src/Field');
@@ -257,9 +282,9 @@ class ProfileModel extends AdminModel
     }
 
     /**
-     * Method to get the data that should be injected in the form.
+     * Get the data to inject into the profile form.
      *
-     * @return mixed The data for the form
+     * @return  object  The profile item with config, device, components, and types prepared for display
      *
      * @since   1.6
      */
@@ -290,6 +315,11 @@ class ProfileModel extends AdminModel
         return $data;
     }
 
+    /**
+     * Return the profile toolbar layout as a nested array of button groups indexed by row number.
+     *
+     * @return  array  [ rowIndex => [ groupIndex => [ button, ... ], ... ], ... ]
+     */
     public function getRows()
     {
         $data = $this->getItem();
@@ -348,9 +378,9 @@ class ProfileModel extends AdminModel
     }
 
     /**
-     * An array of buttons not in the current editor layout.
+     * Return plugins/commands that are not currently placed in the toolbar layout.
      *
-     * @return array
+     * @return  array  Keyed by plugin name
      */
     public function getAvailableButtons()
     {
@@ -363,6 +393,11 @@ class ProfileModel extends AdminModel
         return $available;
     }
 
+    /**
+     * Return editor plugins that are editable but not yet placed in any toolbar row.
+     *
+     * @return  array  Keyed by plugin name
+     */
     public function getAdditionalPlugins()
     {
         $plugins = $this->getButtons();
@@ -374,6 +409,11 @@ class ProfileModel extends AdminModel
         return $additional;
     }
 
+    /**
+     * Return the merged set of toolbar commands and editor plugins for this profile.
+     *
+     * @return  array  Keyed by item name
+     */
     public function getButtons()
     {
         $commands = $this->getCommands();
@@ -382,6 +422,12 @@ class ProfileModel extends AdminModel
         return array_merge($commands, $plugins);
     }
 
+    /**
+     * Return all registered toolbar commands (bold, italic, undo, etc.) decorated with
+     * active state and translated labels for the current profile.
+     *
+     * @return  array  Keyed by command name
+     */
     public function getCommands()
     {
         static $commands;
@@ -427,6 +473,12 @@ class ProfileModel extends AdminModel
         return $commands;
     }
 
+    /**
+     * Return all registered editor plugins decorated with active state, translated labels,
+     * and loaded parameter forms (including adapter-plugin sub-forms) for the current profile.
+     *
+     * @return  array  Keyed by plugin name
+     */
     public function getPlugins()
     {
         static $plugins;
@@ -629,8 +681,11 @@ class ProfileModel extends AdminModel
 
     /**
      * Prepare and sanitise the table data prior to saving.
+     * Sets created/created_by on insert and modified/modified_by on every save.
      *
      * @param   \Joomla\CMS\Table\Table  $table  A reference to a Table object
+     *
+     * @return  void
      *
      * @since   1.6
      */
@@ -720,6 +775,9 @@ class ProfileModel extends AdminModel
             $table->$key = $value;
         }
 
+        $user = Factory::getApplication()->getIdentity();
+        $date = Factory::getDate();
+
         if (empty($table->id)) {
             // Set ordering to the last item if not set
             if (empty($table->ordering)) {
@@ -734,9 +792,25 @@ class ProfileModel extends AdminModel
 
                 $table->ordering = $max + 1;
             }
+
+            $table->created    = $date->toSQL();
+            $table->created_by = $user->id;
         }
+
+        $table->modified    = $date->toSQL();
+        $table->modified_by = $user->id;
     }
 
+    /**
+     * Validate and normalise raw form submission data before it reaches the model.
+     * Moves the 'config' key to 'params' and clears empty multi-select fields.
+     *
+     * @param   Form        $form   The form
+     * @param   array       $data   Raw POST data
+     * @param   string|null $group  Validation group (unused)
+     *
+     * @return  array  Cleaned data array ready for save()
+     */
     public function validate($form, $data, $group = null)
     {
         $filter = InputFilter::getInstance();
@@ -773,6 +847,14 @@ class ProfileModel extends AdminModel
         return $data;
     }
 
+    /**
+     * Normalise plugin parameter arrays before saving: renames legacy keys and
+     * decodes JSON-encoded sub-values so the stored params stay clean.
+     *
+     * @param   array  $data  Plugin params keyed by plugin name
+     *
+     * @return  array
+     */
     private function cleanParamData($data)
     {
         // clean up link plugin parameters
@@ -803,11 +885,11 @@ class ProfileModel extends AdminModel
     /**
      * Method to save the form data.
      *
-     * @param   array  The form data
+     * @param   array  $data  The form data
      *
-     * @return bool True on success
+     * @return  bool  True on success
      *
-     * @since    2.7
+     * @since   2.7
      */
     public function save($data)
     {
@@ -896,6 +978,16 @@ class ProfileModel extends AdminModel
         return false;
     }
 
+    /**
+     * Duplicate one or more profiles. The copy is unpublished and stamped with
+     * the current user's created/modified tracking fields.
+     *
+     * @param   array  $ids  Primary keys of the profiles to copy
+     *
+     * @return  bool
+     *
+     * @throws  \Exception
+     */
     public function copy($ids)
     {
         $table = $this->getTable();
@@ -908,6 +1000,13 @@ class ProfileModel extends AdminModel
                 $table->name = $name;
                 $table->id = 0;
                 $table->published = 0;
+
+                $user = Factory::getApplication()->getIdentity();
+                $date = Factory::getDate();
+                $table->created    = $date->toSQL();
+                $table->created_by = $user->id;
+                $table->modified    = $date->toSQL();
+                $table->modified_by = $user->id;
             }
 
             // Check the row.
@@ -924,6 +1023,13 @@ class ProfileModel extends AdminModel
         return true;
     }
 
+    /**
+     * Stream one or more profiles as a downloadable XML file and terminate the request.
+     *
+     * @param   array  $ids  Primary keys of the profiles to export
+     *
+     * @return  void  Does not return — exits after sending the response body
+     */
     public function export($ids)
     {
         $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
@@ -1095,9 +1201,11 @@ class ProfileModel extends AdminModel
 
     /**
      * Process import data from XML file.
+     * Stamps each imported profile with created/modified tracking fields.
      *
-     * @param string $file    XML file
-     * @param bool   $install Can be used by the package installer
+     * @param   string  $file  Path to the XML file to import
+     *
+     * @return  int|false  Number of profiles imported, or false on failure
      */
     public function processImport($file)
     {
@@ -1271,6 +1379,11 @@ class ProfileModel extends AdminModel
 
             // set checked_out_time
             $table->checked_out_time = $date->toSQL();
+
+            $table->created    = $date->toSQL();
+            $table->created_by = $user->id;
+            $table->modified    = $date->toSQL();
+            $table->modified_by = $user->id;
 
             if (!$table->store()) {
                 $app->enqueueMessage($table->getError(), 'error');

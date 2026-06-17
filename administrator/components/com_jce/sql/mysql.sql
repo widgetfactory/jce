@@ -13,6 +13,10 @@ CREATE TABLE IF NOT EXISTS `#__wf_profiles` (
     `ordering` int(11) NOT NULL,
     `checked_out` int unsigned,
     `checked_out_time` datetime NULL DEFAULT NULL,
+    `created` datetime NULL DEFAULT NULL,
+    `created_by` int unsigned NOT NULL DEFAULT 0,
+    `modified` datetime NULL DEFAULT NULL,
+    `modified_by` int unsigned NOT NULL DEFAULT 0,
     `params` text NOT NULL,
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;
