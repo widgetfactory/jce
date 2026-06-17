@@ -1089,6 +1089,10 @@ abstract class Utility
             fclose($fp);
         }
 
+        if ($extension === 'svg') {
+            self::validateSvg($file['tmp_name']);
+        }
+
         // getimagesize validates raster images structurally. xcf and odg are not supported
         // by getimagesize and rely on the extension allow-list alone.
         $isImage = in_array($extension, ['jpeg', 'jpg', 'jpe', 'png', 'apng', 'gif', 'bmp', 'tiff', 'tif', 'webp', 'psd', 'ico'], true);
@@ -1099,6 +1103,98 @@ abstract class Utility
         }
 
         return true;
+    }
+
+    /**
+     * Check an SVG file for XSS vectors. Uses enshrined\svgSanitize\Sanitizer when available,
+     * falls back to a DOMDocument-based check. Deletes the temp file and throws on failure.
+     *
+     * @param  string $tmpPath Absolute path to the uploaded temp file.
+     * @return void
+     * @throws \InvalidArgumentException If the SVG contains unsafe content.
+     */
+    private static function validateSvg($tmpPath)
+    {
+        $svgContent = @file_get_contents($tmpPath);
+
+        if ($svgContent === false) {
+            @unlink($tmpPath);
+            throw new \InvalidArgumentException('Invalid file: The SVG file could not be read for inspection.');
+        }
+
+        if (class_exists('enshrined\\svgSanitize\\Sanitizer')) {
+            $sanitizer = new \enshrined\svgSanitize\Sanitizer();
+            $result    = $sanitizer->sanitize($svgContent);
+            $errors    = $sanitizer->getXmlIssues();
+
+            // Filter known false positives (mirrors Joomla's MediaHelper::isValidSvg)
+            foreach ($errors as $i => $error) {
+                if (
+                    ($error['message'] === 'Suspicious node \'#comment\'')
+                    || ($error['message'] === 'Suspicious attribute \'space\'')
+                    || ($error['message'] === 'Suspicious attribute \'enable-background\'')
+                    || ($error['message'] === 'Suspicious node \'svg\'')
+                ) {
+                    unset($errors[$i]);
+                }
+            }
+
+            if ($result === false || !empty($errors)) {
+                @unlink($tmpPath);
+                throw new \InvalidArgumentException('Invalid file: The SVG file contains unsafe content.');
+            }
+        } else {
+            // DOMDocument fallback for environments without enshrined/svg-sanitize
+            $dom = new \DOMDocument();
+            libxml_use_internal_errors(true);
+            $loaded = $dom->loadXML($svgContent, LIBXML_NONET);
+            libxml_clear_errors();
+            libxml_use_internal_errors(false);
+
+            if (!$loaded) {
+                @unlink($tmpPath);
+                throw new \InvalidArgumentException('Invalid file: The SVG file could not be parsed.');
+            }
+
+            $dangerousTags  = ['script', 'foreignobject'];
+            $dangerousAttrs = ['href', 'src', 'action', 'formaction', 'data', 'to', 'from'];
+
+            foreach ($dom->getElementsByTagName('*') as $element) {
+                $tag = strtolower($element->localName);
+
+                if (in_array($tag, $dangerousTags, true)) {
+                    @unlink($tmpPath);
+                    throw new \InvalidArgumentException('Invalid file: The SVG file contains an unsafe element.');
+                }
+
+                if ($tag === 'style') {
+                    $text = strtolower($element->textContent);
+                    if (strpos($text, 'javascript:') !== false || strpos($text, '@import') !== false) {
+                        @unlink($tmpPath);
+                        throw new \InvalidArgumentException('Invalid file: The SVG file contains unsafe CSS.');
+                    }
+                }
+
+                if ($element->hasAttributes()) {
+                    foreach ($element->attributes as $attr) {
+                        $attrName = strtolower($attr->localName);
+
+                        if (strncmp($attrName, 'on', 2) === 0) {
+                            @unlink($tmpPath);
+                            throw new \InvalidArgumentException('Invalid file: The SVG file contains event handler attributes.');
+                        }
+
+                        if (in_array($attrName, $dangerousAttrs, true)) {
+                            $value = strtolower(trim($attr->value));
+                            if (strpos($value, 'javascript:') === 0 || strpos($value, 'data:') === 0) {
+                                @unlink($tmpPath);
+                                throw new \InvalidArgumentException('Invalid file: The SVG file contains unsafe URL references.');
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -1174,6 +1270,8 @@ abstract class Utility
             'wsf',
             'wsh',
             'svg',
+            'html',
+            'htm',
         );
 
         // get file parts, eg: ['image', 'php', 'jpg']
@@ -1182,9 +1280,10 @@ abstract class Utility
         // check and remove the final extension — it must never be executable
         $finalExt = array_pop($parts);
 
-        // svg is the only extension in the blocked list that has a legitimate CMS use;
-        // allow it as the final extension if the profile has explicitly permitted it
-        $profileAllowed = $finalExt === 'svg' && !empty($allowedExtensions) && in_array('svg', $allowedExtensions, true);
+        // svg, html, and htm are blocked by default but have legitimate CMS uses;
+        // allow them as the final extension only if the profile has explicitly permitted them
+        $profileBlockedButAllowable = ['svg', 'html', 'htm'];
+        $profileAllowed = in_array($finalExt, $profileBlockedButAllowable, true) && !empty($allowedExtensions) && in_array($finalExt, $allowedExtensions, true);
 
         if ((!$profileAllowed && in_array($finalExt, $executable)) || preg_match('/^php\d+$/i', $finalExt)) {
             return false;
