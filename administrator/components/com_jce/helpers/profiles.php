@@ -455,6 +455,11 @@ abstract class JceProfilesHelper
                 // set checked_out_time
                 $table->checked_out_time = $date->toSQL();
 
+                $table->created    = $date->toSQL();
+                $table->created_by = $user->get('id');
+                $table->modified    = $date->toSQL();
+                $table->modified_by = $user->get('id');
+
                 if (!$table->store()) {
                     $app->enqueueMessage($table->getError(), 'error');
                     return false;

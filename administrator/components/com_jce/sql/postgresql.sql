@@ -13,5 +13,9 @@ CREATE TABLE IF NOT EXISTS "#__wf_profiles" (
     "ordering" integer NOT NULL,
     "checked_out" integer,
     "checked_out_time" timestamp without time zone,
+    "created" timestamp without time zone,
+    "created_by" integer NOT NULL DEFAULT 0,
+    "modified" timestamp without time zone,
+    "modified_by" integer NOT NULL DEFAULT 0,
     "params" text NOT NULL
 );

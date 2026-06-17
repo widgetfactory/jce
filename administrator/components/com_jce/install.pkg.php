@@ -491,6 +491,26 @@ class pkg_jceInstallerScript
                 $db->execute();
             }
 
+            // add created/modified tracking columns for existing installations
+            if (strpos($db->getName(), 'mysql') !== false) {
+                $db->setQuery("DESCRIBE #__wf_profiles");
+                $existing = array_column($db->loadObjectList(), 'Field');
+
+                $cols = [
+                    'created'     => 'DATETIME NULL DEFAULT NULL',
+                    'created_by'  => 'INT UNSIGNED NOT NULL DEFAULT 0',
+                    'modified'    => 'DATETIME NULL DEFAULT NULL',
+                    'modified_by' => 'INT UNSIGNED NOT NULL DEFAULT 0',
+                ];
+
+                foreach ($cols as $col => $def) {
+                    if (!in_array($col, $existing, true)) {
+                        $db->setQuery("ALTER TABLE #__wf_profiles ADD COLUMN " . $db->qn($col) . " " . $def);
+                        $db->execute();
+                    }
+                }
+            }
+
             $this->cleanupInstall($installer);
         }
 

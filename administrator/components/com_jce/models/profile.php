@@ -54,6 +54,11 @@ class JceModelProfile extends AdminModel
      */
     protected $text_prefix = 'COM_JCE';
 
+    /**
+     * Constructor. Wires up the event dispatcher when running on Joomla 4+.
+     *
+     * @param   array  $config  Configuration array for the model
+     */
     public function __construct($config = array())
     {
         if ($this instanceof DispatcherAwareInterface) {
@@ -79,7 +84,16 @@ class JceModelProfile extends AdminModel
         return Table::getInstance($type, $prefix, $config);
     }
 
-    /* Override to prevent plugins from processing form data */
+    /**
+     * Override to prevent Joomla plugins from mutating profile form data.
+     * Decodes and normalises the config array for display instead.
+     *
+     * @param   string  $context  The context for the data
+     * @param   object  &$data    The data object to normalise in place
+     * @param   string  $group    The plugin group (unused)
+     *
+     * @return  void
+     */
     protected function preprocessData($context, &$data, $group = 'system')
     {
         if (!isset($data->config)) {
@@ -185,6 +199,14 @@ class JceModelProfile extends AdminModel
         $form->bind($data);
     }
 
+    /**
+     * Get the profile edit form.
+     *
+     * @param   array  $data      Pre-populate data (unused; form always loads from the model state)
+     * @param   bool   $loadData  Whether to load data into the form
+     *
+     * @return  Form|bool  The form, or false on failure
+     */
     public function getForm($data = array(), $loadData = true)
     {
         if ($this instanceof DispatcherAwareInterface) {
@@ -234,6 +256,11 @@ class JceModelProfile extends AdminModel
         return $data;
     }
 
+    /**
+     * Return the profile toolbar layout as a nested array of button groups indexed by row number.
+     *
+     * @return  array  [ rowIndex => [ groupIndex => [ button, ... ], ... ], ... ]
+     */
     public function getRows()
     {
         $data = $this->getItem();
@@ -295,9 +322,9 @@ class JceModelProfile extends AdminModel
     }
 
     /**
-     * An array of buttons not in the current editor layout.
+     * Return plugins/commands that are not currently placed in the toolbar layout.
      *
-     * @return array
+     * @return  array  Keyed by plugin name
      */
     public function getAvailableButtons()
     {
@@ -310,6 +337,11 @@ class JceModelProfile extends AdminModel
         return $available;
     }
 
+    /**
+     * Return editor plugins that are not placed in any toolbar row.
+     *
+     * @return  array  Keyed by plugin name
+     */
     public function getAdditionalPlugins()
     {
         $plugins = $this->getButtons();
@@ -321,6 +353,11 @@ class JceModelProfile extends AdminModel
         return $additional;
     }
 
+    /**
+     * Return the merged set of toolbar commands and editor plugins for this profile.
+     *
+     * @return  array  Keyed by item name
+     */
     public function getButtons()
     {
         $commands = $this->getCommands();
@@ -329,6 +366,12 @@ class JceModelProfile extends AdminModel
         return array_merge($commands, $plugins);
     }
 
+    /**
+     * Return all registered toolbar commands (bold, italic, undo, etc.) decorated with
+     * active state and translated labels for the current profile.
+     *
+     * @return  array  Keyed by command name
+     */
     public function getCommands()
     {
         static $commands;
@@ -374,6 +417,12 @@ class JceModelProfile extends AdminModel
         return $commands;
     }
 
+    /**
+     * Return all registered editor plugins decorated with active state, translated labels,
+     * and loaded parameter forms (including extension sub-forms) for the current profile.
+     *
+     * @return  array  Keyed by plugin name
+     */
     public function getPlugins()
     {
         static $plugins;
@@ -514,9 +563,7 @@ class JceModelProfile extends AdminModel
     /**
      * Prepare and sanitise the table data prior to saving.
      *
-     * @param JTable $table A reference to a JTable object
-     *
-     * @since   1.6
+     * @param   JTable $table A reference to a JTable object
      */
     protected function prepareTable($table)
     {
@@ -604,6 +651,9 @@ class JceModelProfile extends AdminModel
             $table->$key = $value;
         }
 
+        $user = Factory::getUser();
+        $date = Factory::getDate();
+
         if (empty($table->id)) {
             // Set ordering to the last item if not set
             if (empty($table->ordering)) {
@@ -617,9 +667,25 @@ class JceModelProfile extends AdminModel
 
                 $table->ordering = $max + 1;
             }
+
+            $table->created    = $date->toSQL();
+            $table->created_by = $user->get('id');
         }
+
+        $table->modified    = $date->toSQL();
+        $table->modified_by = $user->get('id');
     }
 
+    /**
+     * Validate and normalise raw form submission data before it reaches the model.
+     * Moves the 'config' key to 'params' (JSON-encoded) and clears empty multi-select fields.
+     *
+     * @param   Form        $form   The form
+     * @param   array       $data   Raw POST data
+     * @param   string|null $group  Validation group (unused)
+     *
+     * @return  array  Cleaned data array ready for save()
+     */
     public function validate($form, $data, $group = null)
     {
         $filter = InputFilter::getInstance();
@@ -653,6 +719,14 @@ class JceModelProfile extends AdminModel
         return $data;
     }
 
+    /**
+     * Normalise plugin parameter arrays before saving: renames legacy keys and
+     * decodes JSON-encoded sub-values so the stored params stay clean.
+     *
+     * @param   array  $data  Plugin params keyed by plugin name
+     *
+     * @return  array
+     */
     private static function cleanParamData($data)
     {
         // clean up link plugin parameters
@@ -681,10 +755,14 @@ class JceModelProfile extends AdminModel
     }
 
     /**
-     * Recursively normalizes parameter structures:
-     * - If a string looks like JSON ({...} or [...]) and decodes cleanly, decode it.
-     * - If an array entry is a key/value pair and both are empty, drop it.
-     * - Recurse into arrays and keep original scalar types.
+     * Recursively normalise a parameter node before it is stored:
+     * - Strings that look like JSON ({...} or [...]) are decoded when safe.
+     * - Arrays that represent an empty key/value pair are dropped (return null).
+     * - All other scalars and objects are returned as-is.
+     *
+     * @param   mixed  $node  A scalar, array, or object to normalise
+     *
+     * @return  mixed  The normalised value, or null to signal removal
      */
     private static function normalizeParams($node)
     {
@@ -742,13 +820,13 @@ class JceModelProfile extends AdminModel
     }
 
     /**
-     * Method to save the form data.
+     * Save the profile form data, merging plugin params with the existing stored params.
      *
-     * @param   array  The form data
+     * @param   array  $data  The validated form data
      *
-     * @return bool True on success
+     * @return  bool  True on success
      *
-     * @since    2.7
+     * @since   2.7
      */
     public function save($data)
     {
@@ -843,9 +921,20 @@ class JceModelProfile extends AdminModel
         return false;
     }
 
+    /**
+     * Duplicate one or more profiles. The copy is unpublished and stamped with
+     * the current user's created/modified tracking fields.
+     *
+     * @param   array  $ids  Primary keys of the profiles to copy
+     *
+     * @return  bool
+     */
     public function copy($ids)
     {
         $table = $this->getTable();
+
+        $user = Factory::getUser();
+        $date = Factory::getDate();
 
         foreach ($ids as $id) {
             if (!$table->load($id)) {
@@ -856,6 +945,10 @@ class JceModelProfile extends AdminModel
                 $table->name = $name;
                 $table->id = 0;
                 $table->published = 0;
+                $table->created    = $date->toSQL();
+                $table->created_by = $user->get('id');
+                $table->modified    = $date->toSQL();
+                $table->modified_by = $user->get('id');
             }
 
             // Check the row.
@@ -876,6 +969,13 @@ class JceModelProfile extends AdminModel
         return true;
     }
 
+    /**
+     * Stream one or more profiles as a downloadable XML file and terminate the request.
+     *
+     * @param   array  $ids  Primary keys of the profiles to export
+     *
+     * @return  void  Does not return — exits after sending the response body
+     */
     public function export($ids)
     {
         $db = Factory::getDBO();
