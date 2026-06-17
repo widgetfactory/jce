@@ -282,6 +282,10 @@ class WFEditor
 
         if (strpos($settings['skin'], '.') !== false) {
             list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
+
+            if (!preg_match('#^[a-z0-9_-]+$#i', $settings['skin_variant'])) {
+                unset($settings['skin_variant']);
+            }
         }
 
         // classic has been removed
@@ -649,7 +653,7 @@ class WFEditor
                 }
             }
 
-            $output .= $tab . '<link rel="stylesheet" href="' . $stylesheet . '" type="text/css" />' . $end;
+            $output .= $tab . '<link rel="stylesheet" href="' . htmlspecialchars($stylesheet, ENT_QUOTES, 'UTF-8') . '" type="text/css" />' . $end;
         }
 
         foreach ($this->scripts as $script) {
@@ -664,7 +668,7 @@ class WFEditor
                     $script .= '&' . $version;
                 }
             }
-            $output .= $tab . '<script data-cfasync="false" type="text/javascript" src="' . $script . '" defer></script>' . $end;
+            $output .= $tab . '<script data-cfasync="false" type="text/javascript" src="' . htmlspecialchars($script, ENT_QUOTES, 'UTF-8') . '" defer></script>' . $end;
         }
 
         foreach ($this->javascript as $script) {
