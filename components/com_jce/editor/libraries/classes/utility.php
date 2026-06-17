@@ -1182,7 +1182,7 @@ abstract class WFUtility
             }
 
             $dangerousTags  = ['script', 'foreignobject'];
-            $dangerousAttrs = ['href', 'src', 'action', 'formaction', 'data'];
+            $dangerousAttrs = ['href', 'src', 'action', 'formaction', 'data', 'to', 'from'];
 
             foreach ($dom->getElementsByTagName('*') as $element) {
                 $tag = strtolower($element->localName);
@@ -1190,6 +1190,14 @@ abstract class WFUtility
                 if (in_array($tag, $dangerousTags, true)) {
                     @unlink($tmpPath);
                     throw new InvalidArgumentException('Invalid file: The SVG file contains an unsafe element.');
+                }
+
+                if ($tag === 'style') {
+                    $text = strtolower($element->textContent);
+                    if (strpos($text, 'javascript:') !== false || strpos($text, '@import') !== false) {
+                        @unlink($tmpPath);
+                        throw new InvalidArgumentException('Invalid file: The SVG file contains unsafe CSS.');
+                    }
                 }
 
                 if ($element->hasAttributes()) {
