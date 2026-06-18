@@ -544,6 +544,9 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $media . '/tinymce'
         );
 
+        // remove profile manifiests
+        $files['2.9.99.7'] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: [];
+
         $files['3.0.0'] = array(
             $admin . '/controller.php',
             $admin . '/jce.php',
