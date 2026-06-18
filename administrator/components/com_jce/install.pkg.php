@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Admin
@@ -34,7 +35,7 @@ class pkg_jceInstallerScript
      * @var string
      */
     private static $current_variant = 'core';
-    
+
     private function addIndexfiles($paths)
     {
         // get the base file
@@ -212,7 +213,7 @@ class pkg_jceInstallerScript
     }
 
     public function preflight($route, $installer)
-    {        
+    {
         // skip on uninstall etc.
         if ($route == 'remove' || $route == 'uninstall') {
             return true;
@@ -336,11 +337,10 @@ class pkg_jceInstallerScript
     public function postflight($route, $installer)
     {
         // Do not run on uninstallation.
-		if ($route === 'uninstall')
-		{
-			return true;
-		}
-        
+        if ($route === 'uninstall') {
+            return true;
+        }
+
         $app = Factory::getApplication();
         $extension = Table::getInstance('extension');
         $parent = $installer->getParent();
@@ -515,50 +515,43 @@ class pkg_jceInstallerScript
         }
 
         // Borrowed from the script.ats.php file from Akeeba Ticket System
-		// Forcibly create the autoload_psr4.php file afresh.
-		if (class_exists(JNamespacePsr4Map::class))
-		{
-			try
-			{
-				$nsMap = new JNamespacePsr4Map();
+        // Forcibly create the autoload_psr4.php file afresh.
+        if (class_exists(JNamespacePsr4Map::class)) {
+            try {
+                $nsMap = new JNamespacePsr4Map();
 
-				@clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
+                @clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
 
-				if (function_exists('opcache_invalidate'))
-				{
-					@opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
-				}
+                if (function_exists('opcache_invalidate')) {
+                    @opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
+                }
 
-				@clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
-				$nsMap->create();
+                @clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
+                $nsMap->create();
 
-				if (function_exists('opcache_invalidate'))
-				{
-					@opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
-				}
+                if (function_exists('opcache_invalidate')) {
+                    @opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
+                }
 
-				$nsMap->load();
-			}
-			catch (\Throwable $e)
-			{
-				// In case of failure, just try to delete the old autoload_psr4.php file
-				if (function_exists('opcache_invalidate'))
-				{
-					@opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
-				}
+                $nsMap->load();
+            } catch (\Throwable $e) {
+                // In case of failure, just try to delete the old autoload_psr4.php file
+                if (function_exists('opcache_invalidate')) {
+                    @opcache_invalidate(JPATH_CACHE . '/autoload_psr4.php');
+                }
 
-				@unlink(JPATH_CACHE . '/autoload_psr4.php');
-				@clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
+                @unlink(JPATH_CACHE . '/autoload_psr4.php');
+                @clearstatcache(JPATH_CACHE . '/autoload_psr4.php');
 
                 Factory::getApplication()->createExtensionNamespaceMap();
-			}
-		}
+            }
+        }
     }
 
     protected static function cleanupInstall($installer)
     {
         $app = Factory::getApplication();
-        
+
         $parent = $installer->getParent();
         $current_version = self::$current_version; //$parent->get('current_version');
 
@@ -675,6 +668,9 @@ class pkg_jceInstallerScript
             $site . '/views'
         );
 
+        // remove profile manifiests
+        $files['2.9.99.7'] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: [];
+
         // remove pro source plugin
         $files['2.9.70'] = array(
             $site . '/editor/plugins/source/config.php',
@@ -753,7 +749,8 @@ class pkg_jceInstallerScript
                     if (!@unlink($file)) {
                         try {
                             File::delete($file);
-                        } catch (Exception $e) {}
+                        } catch (Exception $e) {
+                        }
                     }
                 }
 
@@ -763,14 +760,16 @@ class pkg_jceInstallerScript
                     if (!@rmdir($dir)) {
                         try {
                             Folder::delete($dir);
-                        } catch (Exception $e) {}
+                        } catch (Exception $e) {
+                        }
                     }
                 }
 
                 if (!@rmdir($folder)) {
                     try {
                         Folder::delete($folder);
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                    }
                 }
             }
         }
@@ -792,7 +791,8 @@ class pkg_jceInstallerScript
 
                 try {
                     File::delete($file);
-                } catch (Exception $e) {}
+                } catch (Exception $e) {
+                }
             }
         }
     }
