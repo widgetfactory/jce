@@ -13,7 +13,6 @@
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
-use Joomla\Filesystem\File;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
@@ -1113,15 +1112,6 @@ class JceModelProfile extends AdminModel
             return false;
         }
 
-        // sanitize the file name for use as destination path
-        $name = File::makeSafe($file['name']);
-
-        if (empty($name)) {
-            @unlink($file['tmp_name']);
-            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
-            return false;
-        }
-
         $source = $file['tmp_name'];
 
         if (!self::validateProfileImport($source)) {
@@ -1130,22 +1120,9 @@ class JceModelProfile extends AdminModel
             return false;
         }
 
-        // Build the appropriate paths.
-        $config = Factory::getConfig();
-        $destination = $config->get('tmp_path') . '/' . $name;
+        $result = JceProfilesHelper::processImport($source);
 
-        // Move uploaded file.
-        File::upload($source, $destination, false);
-
-        if (!is_file($destination)) {
-            @unlink($source);
-            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
-            return false;
-        }
-
-        $result = JceProfilesHelper::processImport($destination);
-
-        File::delete($destination);
+        @unlink($source);
 
         if ($result === false) {
             $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
