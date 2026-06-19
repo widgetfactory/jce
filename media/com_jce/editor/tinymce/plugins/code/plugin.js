@@ -1183,10 +1183,8 @@
                     return content;
                 });
 
-                // decode protected code
-                o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
-                    return unescape(content);
-                });
+                // strip any mce:protected comments
+                o.content = o.content.replace(/<!--mce:protected [\s\S]+?-->/gi, '');
             }
         });
     });
