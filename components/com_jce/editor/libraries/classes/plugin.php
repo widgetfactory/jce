@@ -204,6 +204,7 @@ class WFEditorPlugin extends CMSObject
             'version' => $version,
             'title' => Text::_('WF_' . strtoupper($this->getName() . '_TITLE')),
             'name' => $name,
+            'caller' => $this->get('caller'),
             'language' => WFLanguage::getTag(),
             'direction' => $this->isRtl() ? 'rtl' : 'ltr',
             'compress_javascript' => $this->getParam('editor.compress_javascript', 0),

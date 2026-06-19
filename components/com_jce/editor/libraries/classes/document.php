@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -466,13 +467,19 @@ class WFDocument extends CMSObject
         $app = Factory::getApplication();
 
         // get plugin name and assign to query
-        $name = $this->get('name');
+        $name   = $this->get('name');
+
+        $caller = $this->get('caller');
 
         // re-map plugin name
         if (array_key_exists($name, self::$queryMap)) {
             $name = self::$queryMap[$name];
         }
 
+        if ($caller) {
+            $name .= '.' . $caller;
+        }
+        
         $query['plugin'] = $name;
 
         // set slot
@@ -498,7 +505,7 @@ class WFDocument extends CMSObject
             return !empty($value);
         });
 
-       return http_build_query($query);
+        return http_build_query($query);
     }
 
     private function getHash($files)
