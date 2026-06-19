@@ -1035,6 +1035,13 @@ class Browser
                 return true;
             }
 
+            // skip files with invalid characters in their name
+            try {
+                Utility::checkPath($item['name']);
+            } catch (\InvalidArgumentException $e) {
+                return false;
+            }
+
             $path = dirname($item['id']);
 
             return $this->checkPathAccess($path);
@@ -1061,6 +1068,13 @@ class Browser
         $list = array_filter($list, function ($item) {
             if (empty($item['id'])) {
                 return true;
+            }
+
+            // skip folders with invalid characters in their name
+            try {
+                Utility::checkPath($item['name']);
+            } catch (\InvalidArgumentException $e) {
+                return false;
             }
 
             return $this->checkPathAccess($item['id']);
