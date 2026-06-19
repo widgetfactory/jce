@@ -525,7 +525,14 @@ class Document
 
         // get plugin name and assign to query
         if (!isset($query['plugin'])) {
-            $query['plugin'] = $this->getConfig('name');
+            $name = $this->getConfig('name');
+            $caller = $this->getConfig('caller');
+
+            if ($caller) {
+                $name .= '.' . $caller;
+            }
+
+            $query['plugin'] = $name;
         }
 
         // set slot

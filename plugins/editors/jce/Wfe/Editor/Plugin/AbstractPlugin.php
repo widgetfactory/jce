@@ -229,6 +229,7 @@ class AbstractPlugin
             'version' => $version,
             'title' => Text::_('WF_' . strtoupper($this->getName() . '_TITLE')),
             'name' => $name,
+            'caller' => $this->getConfig('caller'),
             'language' => Language::getTag(),
             'direction' => $this->isRtl() ? 'rtl' : 'ltr',
             'compress_javascript' => $wf->getParam('editor.compress_javascript', 0),
