@@ -1004,6 +1004,13 @@ class WFFileBrowser extends CMSObject
                 return true;
             }
 
+            // skip files with invalid characters in their name
+            try {
+                WFUtility::checkPath($item['name']);
+            } catch (\InvalidArgumentException $e) {
+                return false;
+            }
+
             $path = dirname($item['id']);
 
             return $this->checkPathAccess($path);
@@ -1030,6 +1037,13 @@ class WFFileBrowser extends CMSObject
         $list = array_filter($list, function ($item) {
             if (empty($item['id'])) {
                 return true;
+            }
+
+            // skip folders with invalid characters in their name
+            try {
+                WFUtility::checkPath($item['name']);
+            } catch (\InvalidArgumentException $e) {
+                return false;
             }
 
             return $this->checkPathAccess($item['id']);
@@ -1275,7 +1289,7 @@ class WFFileBrowser extends CMSObject
         // decode path
         $source = rawurldecode($source);
 
-        // check if source is a valid path
+        // check if source is a valid path;
         WFUtility::checkPath($source);
 
         $filesystem = $this->getFileSystem();
@@ -1287,6 +1301,8 @@ class WFFileBrowser extends CMSObject
 
         // trim source to path variable
         $path = trim($source, '/');
+
+        $prefix = '';
 
         // if a value is set process as possible return file, ie: check for prefix
         if ($path) {

@@ -283,7 +283,7 @@ abstract class WFUtility
                 for ($i = 0; $i < $length; $i++) {
                     $char = mb_substr($string, $i, 1, 'UTF-8');
 
-                    if (!preg_match('#^[\p{L}\p{N}\p{M}\.\-_\:/\(\)\[\] ]$#u', $char)) {
+                    if (!preg_match('#^[\p{L}\p{N}\p{M}\p{So}\.\-_\:/\(\)\[\] ]$#u', $char)) {
                         return false;
                     }
                 }
@@ -294,7 +294,7 @@ abstract class WFUtility
                 }
 
                 foreach ($matches[0] as $char) {
-                    if (!preg_match('#^[\p{L}\p{N}\p{M}\.\-_\:/\(\)\[\] ]$#u', $char)) {
+                    if (!preg_match('#^[\p{L}\p{N}\p{M}\p{So}\.\-_\:/\(\)\[\] ]$#u', $char)) {
                         return false;
                     }
                 }
