@@ -11458,10 +11458,10 @@
                       }
 
                       node.removeAttribute(name);
-                  }
-
-                  if (isBooleanAttribute(name)) {
-                      node.setAttribute(name, name);
+                  } else {
+                      if (isBooleanAttribute(name)) {
+                          node.setAttribute(name, name);
+                      }
                   }
               }
           }
@@ -50279,6 +50279,20 @@
 
     var padding = createPadding(Node);
 
+    var eventAttrs = [
+      'onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onmouseenter', 'onmouseleave',
+      'onkeydown', 'onkeypress', 'onkeyup',
+      'onload', 'onunload', 'onabort', 'onerror', 'onresize', 'onscroll', 'onselect',
+      'onchange', 'onsubmit', 'onreset', 'onfocus', 'onblur', 'oninput', 'oninvalid',
+      'ondragstart', 'ondragenter', 'ondragend', 'ondragleave', 'ondragover', 'ondrop',
+      'oncontextmenu', 'onwheel', 'oncopy', 'oncut', 'onpaste',
+      'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onseeked', 'onseeking',
+      'onstalled', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting',
+      'oncanplay', 'oncanplaythrough', 'ondurationchange', 'onemptied', 'onended',
+      'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousewheel',
+      'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange'
+    ];
+
     ed.onPreInit.add(function () {
       ed.serializer.addAttributeFilter('data-mce-caret', function (nodes) {
         var i = nodes.length;
@@ -50324,6 +50338,21 @@
           nodes[i].attr('data-mce-tmp', null);
         }
       });
+
+      if (ed.settings.allow_event_attributes) {
+        var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
+          return 'data-mce-' + name;
+        });
+
+        ed.serializer.addAttributeFilter(dataEventAttrs, function (nodes, name) {
+          var i = nodes.length;
+
+          while (i--) {
+            nodes[i].attr(name.slice(9), nodes[i].attr(name));
+            nodes[i].attr(name, null);    
+          }
+        });
+      }
 
       function removeEventAttributes() {
         each(ed.schema.elements, function (elm) {
@@ -50378,6 +50407,7 @@
       ed.serializer.addAttributeFilter('data-mce-empty', function (nodes) {
         padding.cleanupEmptyInlineNodes(nodes);
       });
+
     });
 
     if (ed.settings.verify_html === false) {
@@ -50411,6 +50441,27 @@
       o.content = padding.paddEmptyTags(o.content);
 
       o.content = processAttributes(ed, o.content);
+
+      if (ed.settings.allow_event_attributes) {
+        var doc = document.implementation.createHTMLDocument('');
+        var div = doc.createElement('div');
+        div.innerHTML = o.content;
+
+        tinymce.each(div.querySelectorAll('*'), function (node) {
+          var attrs = node.attributes;
+          for (var i = attrs.length - 1; i >= 0; i--) {
+            var name = attrs[i].name;
+
+            if (name.indexOf('on') === 0) {
+              node.setAttribute('data-mce-' + name, attrs[i].value);
+              node.removeAttribute(name);
+            }
+
+          }
+        });
+
+        o.content = div.innerHTML;
+      }
     });
 
     ed.onPostProcess.add(function (ed, o) {
