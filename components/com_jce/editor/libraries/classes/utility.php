@@ -196,6 +196,14 @@ abstract class WFUtility
         return self::stripExtension($path);
     }
 
+    /**
+     * Clean a file path by normalizing directory separators and adding a prefix if needed.
+     *
+     * @param string $path   The file path to clean.
+     * @param string $ds     The directory separator to normalize to (default '/').
+     * @param string $prefix Optional prefix to prepend to the result.
+     * @return string The cleaned path.
+     */
     public static function cleanPath($path, $ds = '/', $prefix = '')
     {
         $path = trim(rawurldecode($path));
@@ -214,6 +222,12 @@ abstract class WFUtility
         return $prefix . $path;
     }
 
+    /**
+     * Convert a site-root-relative URI to an absolute filesystem path.
+     *
+     * @param string $url The site-root-relative URL to convert.
+     * @return string The absolute filesystem path, or the original URL if it does not start with the site root.
+     */
     public static function uriToAbsolutePath($url)
     {
         // Get the relative root URL
@@ -679,9 +693,9 @@ abstract class WFUtility
      * Cleans a UTF-8 string by removing disallowed characters.
      *
      * - Strips common punctuation, symbols, brackets, and currency characters.
-     * - Preserves only Unicode letters (\p{L}), numbers (\p{N}), space, dot (.), dash (-), and underscore (_).
-     * - Returns a cleaned string consisting of readable alphanumeric and structural characters.
-     * - Intended for safe output in filenames, slugs, or sanitized text fields.
+     * - Preserves Unicode letters (\p{L}), numbers (\p{N}), Unicode other-symbols (\p{So} — ©, ®, ™),
+     *   space, dot (.), dash (-), and underscore (_).
+     * - Returns a cleaned string suitable for filenames or sanitized text fields.
      *
      * @param string $string The UTF-8 encoded input string to clean.
      * @return string The sanitized UTF-8 string with disallowed characters removed.
@@ -698,8 +712,8 @@ abstract class WFUtility
         for ($i = 0; $i < $length; $i++) {
             $char = mb_substr($string, $i, 1, 'UTF-8');
 
-            // Keep: Unicode letters, numbers, space, dash, underscore, dot
-            if (preg_match('#[\p{L}\p{N}\s\.\-_]#u', $char)) {
+            // Keep: Unicode letters, numbers, other-symbols (©, ®, ™), space, dash, underscore, dot
+            if (preg_match('#[\p{L}\p{N}\p{So}\s\.\-_]#u', $char)) {
                 $result .= $char;
             }
 
@@ -712,7 +726,10 @@ abstract class WFUtility
     /**
      * Makes file name safe to use.
      *
-     * @param mixed The name of the file (not full path)
+     * @param mixed $subject The name of the file (not full path)
+     * @param string $mode The encoding mode: 'utf-8' or 'ascii'
+     * @param string $spaces The character to replace spaces with
+     * @param string $case The case transformation: 'lowercase' or 'uppercase'
      *
      * @return mixed The sanitised string or array
      */
@@ -865,9 +882,10 @@ abstract class WFUtility
     /**
      * Get the modified date of a file.
      *
-     * @return Formatted modified date
+     * @return string Formatted modified date
      *
      * @param string $file Absolute path to file
+     * @return string Formatted modified date
      */
     public static function getDate($file)
     {
@@ -877,7 +895,7 @@ abstract class WFUtility
     /**
      * Get the size of a file.
      *
-     * @return Formatted filesize value
+     * @return string Formatted filesize value
      *
      * @param string $file Absolute path to file
      */
@@ -891,7 +909,6 @@ abstract class WFUtility
      * https://gist.github.com/tcyrus/257a1ed93c5e115b7b33426d029b5c5f
      *
      * @param string $path A Path
-     * @param int $levels The number of parent directories to go up.
      * @return string The path of a parent directory.
      */
     public static function mb_dirname($path)
@@ -917,7 +934,14 @@ abstract class WFUtility
 
         return $dir;
     }
-
+    
+    /**
+     * Get the basename of a file path, optionally stripping a given extension.
+     *
+     * @param string $path The file path.
+     * @param string $ext  The extension to strip, including leading dot (e.g. '.jpg').
+     * @return string The basename of the file.
+     */
     public static function mb_basename($path, $ext = '')
     {
         // clean
