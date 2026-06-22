@@ -647,9 +647,9 @@ abstract class Utility
      * Cleans a UTF-8 string by removing disallowed characters.
      *
      * - Strips common punctuation, symbols, brackets, and currency characters.
-     * - Preserves only Unicode letters (\p{L}), numbers (\p{N}), space, dot (.), dash (-), and underscore (_).
-     * - Returns a cleaned string consisting of readable alphanumeric and structural characters.
-     * - Intended for safe output in filenames, slugs, or sanitized text fields.
+     * - Preserves Unicode letters (\p{L}), numbers (\p{N}), Unicode other-symbols (\p{So} — ©, ®, ™),
+     *   space, dot (.), dash (-), and underscore (_).
+     * - Returns a cleaned string suitable for filenames or sanitized text fields.
      *
      * @param string $string The UTF-8 encoded input string to clean.
      * @return string The sanitized UTF-8 string with disallowed characters removed.
@@ -666,8 +666,8 @@ abstract class Utility
         for ($i = 0; $i < $length; $i++) {
             $char = mb_substr($string, $i, 1, 'UTF-8');
 
-            // Keep: Unicode letters, numbers, space, dash, underscore, dot
-            if (preg_match('#[\p{L}\p{N}\s\.\-_]#u', $char)) {
+            // Keep: Unicode letters, numbers, other-symbols (©, ®, ™), space, dash, underscore, dot
+            if (preg_match('#[\p{L}\p{N}\p{So}\s\.\-_]#u', $char)) {
                 $result .= $char;
             }
 
