@@ -32,8 +32,9 @@ class WFImgmanagerPluginConfig
         if ($plugin->getParam('basic_dialog', 0) == 1) {
             $config['basic_dialog'] = true;
 
-            if ($plugin->getParam('basic_dialog_filebrowser', 1) == 1) {
-                $config['basic_dialog_filebrowser'] = true;
+            if ((int) $plugin->getParam('basic_dialog_filebrowser', 1) == 0) {
+                $config['basic_dialog_filebrowser'] = false;
+            } else {
                 $config['filetypes'] = $filetypes;
             }
 
