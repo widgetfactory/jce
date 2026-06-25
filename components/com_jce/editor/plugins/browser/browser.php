@@ -75,12 +75,13 @@ class WFBrowserPlugin extends WFMediaManager
         }
 
         $map = array(
-            'imgmanager'    => 'basic_dialog_filebrowser',
-            'mediamanager'  => 'basic_dialog_filebrowser',
-            'link'          => 'file_browser',
-            'iframe'        => 'file_browser',
-            'table'         => 'file_browser',
-            'style'         => 'file_browser'
+            'imgmanager'        => 'basic_dialog_filebrowser',
+            'imgmanager_ext'    => 'basic_dialog_filebrowser',
+            'mediamanager'      => 'basic_dialog_filebrowser',
+            'link'              => 'file_browser',
+            'iframe'            => 'file_browser',
+            'table'             => 'file_browser',
+            'style'             => 'file_browser',
         );
 
         $caller = $this->get('caller');
