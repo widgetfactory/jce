@@ -155,11 +155,7 @@
             var isMobile = window.matchMedia("(max-width: 600px)").matches;
 
             function hasFileBrowser() {
-                if (params.basic_dialog_filebrowser === false) {
-                    return false;
-                }
-
-                return params.basic_dialog_filebrowser || isMobile;
+                return params.basic_dialog_filebrowser !== false;
             }
 
             // use basic dialog if set in param or device screen size < 768px
