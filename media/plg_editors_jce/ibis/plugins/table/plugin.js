@@ -1546,6 +1546,10 @@
 
         tableForm.add(heightCtrl);
 
+        var alignCtrl = createAlignCtrl(cm, 'table', ed);
+
+        tableForm.add(alignCtrl);
+
         var stylesList = createClassesCtrl(cm, 'table', ed);
 
         tableForm.add(stylesList);
@@ -1648,7 +1652,10 @@
 
                     var data = {
                         classes: classes,
-                        border: ''
+                        cellspacing: ed.getParam('table_default_cellspacing', ''),
+                        cellpadding: ed.getParam('table_default_cellpadding', ''),
+                        width: ed.getParam('table_default_width', ''),
+                        height: ed.getParam('table_default_height', '')
                     };
 
                     if (elm) {
@@ -1688,8 +1695,20 @@
                         // remove url() from backgroundImage
                         backgroundImage = backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
 
+                        var marginLeft = styles['margin-left'] || '';
+                        var marginRight = styles['margin-right'] || '';
+                        var align = '';
+
+                        if (marginLeft === 'auto' && marginRight === 'auto') {
+                            align = 'center';
+                        } else if (marginLeft === 'auto') {
+                            align = 'right';
+                        } else if (marginRight === 'auto') {
+                            align = 'left';
+                        }
+
                         // remove managed properties before passing remainder to style field
-                        each$1(['background-color', 'background-image', 'width', 'height', 'border'], function (key) {
+                        each$1(['background-color', 'background-image', 'width', 'height', 'border', 'margin-left', 'margin-right'], function (key) {
                             delete styles[key];
                         });
 
@@ -1702,6 +1721,7 @@
                             height: height,
                             classes: classes,
                             caption: caption,
+                            align: align,
                             style: styles,
                             background_color: backgroundColor,
                             background_image: backgroundImage,
@@ -1739,32 +1759,48 @@
                                 data.height += 'px';
                             }
 
-                            var args = {
-                                cellspacing: data.cellspacing,
-                                cellpadding: data.cellpadding,
-                                style: {
-                                    width: data.width,
-                                    height: data.height
-                                },
-                                class: data.classes
+                            var styleObj = {
+                                width: data.width,
+                                height: data.height
                             };
 
                             if (data.background_color) {
-                                args.style.backgroundColor = data.background_color;
+                                styleObj['background-color'] = data.background_color;
                             }
 
                             if (data.background_image) {
-                                args.style.backgroundImage = 'url(' + data.background_image + ')';
+                                styleObj['background-image'] = 'url(' + data.background_image + ')';
                             }
 
                             if (data.border) {
-                                args.style.border = data.border;
+                                styleObj.border = data.border;
                             }
+
+                            if (data.align === 'center') {
+                                styleObj['margin-left'] = 'auto';
+                                styleObj['margin-right'] = 'auto';
+                            } else if (data.align === 'right') {
+                                styleObj['margin-left'] = 'auto';
+                                styleObj['margin-right'] = '0';
+                            } else if (data.align === 'left') {
+                                styleObj['margin-left'] = '0';
+                                styleObj['margin-right'] = 'auto';
+                            }
+
+                            var args = {
+                                cellspacing: data.cellspacing,
+                                cellpadding: data.cellpadding,
+                                style: styleObj,
+                                class: data.classes
+                            };
 
                             var elm = ed.dom.getParent(ed.selection.getNode(), "table");
 
                             if (elm) {
                                 var styles = ed.dom.parseStyle(ed.dom.getAttrib(elm, 'style'));
+
+                                delete styles['margin-left'];
+                                delete styles['margin-right'];
 
                                 extend(styles, args.style);
 
