@@ -28,13 +28,18 @@ class Config
             );
         }
 
+        if ((int) $plugin->getParam('basic_dialog_filebrowser', 1) == 0) {
+            $config['basic_dialog_filebrowser'] = false;
+        }
+
         if ($plugin->getParam('basic_dialog', 0) == 1) {
             $config['basic_dialog'] = true;
 
-            if ($plugin->getParam('basic_dialog_filebrowser', 1) == 1) {
-                $config['basic_dialog_filebrowser'] = true;
+            if (!isset($config['basic_dialog_filebrowser'])) {
                 $config['filetypes'] = $filetypes;
             }
+
+            $config['basic_dialog_classes'] = (bool) $plugin->getParam('attributes_classes', 1);
 
             $config['always_include_dimensions'] = (bool) $plugin->getParam('always_include_dimensions', 1);
         }
