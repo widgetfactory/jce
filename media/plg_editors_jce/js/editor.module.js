@@ -2,9 +2,9 @@ import { JoomlaEditor, JoomlaEditorDecorator, JoomlaEditorButton } from 'editor-
 
 /* global ibis, WfEditor */
 
-// core Joomla ibis 7, bail due to conflict
+// core Joomla Tinymce 7+, bail due to conflict
 if (tinymce.Annotator) {
-    var msg = "Another extension or plugin has initialized the Joomla ibis Editor on this page. JCE cannot be loaded on the same page as the core Joomla ibis Editor.";
+    var msg = "Another extension or plugin has initialized the Joomla Tinymce Editor on this page. JCE cannot be loaded on the same page as the core Joomla Tinymce Editor.";
     alert(msg);
     throw new Error(msg);
 }
