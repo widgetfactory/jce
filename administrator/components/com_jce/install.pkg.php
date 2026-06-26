@@ -21,8 +21,6 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
 
-use function PHPUnit\Framework\isFalse;
-
 class pkg_jceInstallerScript
 {
     /**
@@ -158,7 +156,6 @@ class pkg_jceInstallerScript
         $tables = $db->getTableList();
 
         if (!empty($tables)) {
-            // swap array values with keys, convert to lowercase and return array keys as values
             $tables = array_keys(array_change_key_case(array_flip($tables)));
             $app = Factory::getApplication();
             $match = str_replace('#__', strtolower($app->getCfg('dbprefix', '')), '#__wf_profiles');
@@ -166,13 +163,16 @@ class pkg_jceInstallerScript
             return in_array($match, $tables);
         }
 
-        // try with query
-        $query = $db->getQuery(true);
+        try {
+            $query = $db->getQuery(true);
+            $query->select('COUNT(id)')->from('#__wf_profiles');
+            $db->setQuery($query);
+            $db->execute();
 
-        $query->select('COUNT(id)')->from('#__wf_profiles');
-        $db->setQuery($query);
-
-        return $db->execute();
+            return true;
+        } catch (\RuntimeException $e) {
+            return false;
+        }
     }
 
     public function uninstall()
