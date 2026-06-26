@@ -59,7 +59,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
     private function installProfiles()
     {
-        include_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/profiles.php';
+        include_once JPATH_ADMINISTRATOR . '/components/com_jce/src/Helper/ProfilesHelper.php';
 
         // publish the "Default" profile if successful
         if (\Joomla\Component\Jce\Administrator\Helper\ProfilesHelper::installProfiles()) {
@@ -77,7 +77,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         return false;
     }
 
-    public function install($installer)
+    public function install($installer, $update = false)
     {
         $db = $this->getDatabase();
 
@@ -108,8 +108,10 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
-        // install profiles
-        $this->installProfiles();
+        if (!$update) {
+            // install profiles
+            $this->installProfiles();
+        }
 
         // set layout base path
         LayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/com_jce/layouts';
@@ -158,20 +160,22 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $tables = $db->getTableList();
 
         if (!empty($tables)) {
-            // swap array values with keys, convert to lowercase and return array keys as values
             $tables = array_keys(array_change_key_case(array_flip($tables)));
             $match = str_replace('#__', strtolower(Factory::getApplication()->get('dbprefix', '')), '#__wf_profiles');
 
             return in_array($match, $tables);
         }
 
-        // try with query
-        $query = $db->getQuery(true);
+        try {
+            $query = $db->getQuery(true);
+            $query->select('COUNT(id)')->from('#__wf_profiles');
+            $db->setQuery($query);
+            $db->execute();
 
-        $query->select('COUNT(id)')->from('#__wf_profiles');
-        $db->setQuery($query);
-
-        return $db->execute();
+            return true;
+        } catch (\RuntimeException $e) {
+            return false;
+        }
     }
 
     public function uninstall()
@@ -195,7 +199,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
     public function update($installer)
     {
-        return $this->install($installer);
+        return $this->install($installer, true);
     }
 
     protected function getCurrentVersion()

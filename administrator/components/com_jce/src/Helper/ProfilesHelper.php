@@ -25,9 +25,9 @@ abstract class ProfilesHelper
     private const PROFILES_XML = JPATH_ADMINISTRATOR . '/components/com_jce/data/profiles.xml';
 
     /**
-     * Create the Profiles table.
+     * Create the Profiles database table from the SQL schema file.
      *
-     * @return bool
+     * @return bool True if the table was created successfully.
      */
     public static function createProfilesTable()
     {
@@ -51,60 +51,59 @@ abstract class ProfilesHelper
                 break;
         }
 
-        $file  = JPATH_ADMINISTRATOR . '/components/com_jce/sql/' . $driver . '.sql';
-        $error = null;
+        $file = JPATH_ADMINISTRATOR . '/components/com_jce/sql/' . $driver . '.sql';
 
-        if (is_file($file)) {
-            $query = file_get_contents($file);
-
-            if ($query) {
-                $query = $db->replacePrefix((string) $query);
-                $db->setQuery(trim($query));
-
-                if (!$db->execute()) {
-                    $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . $db->stdErr(), 'error');
-                    return false;
-                }
-
-                return true;
-            }
-
-            $error = 'NO SQL QUERY';
-        } else {
-            $error = 'SQL FILE MISSING';
+        if (!is_file($file)) {
+            $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . ' - SQL FILE MISSING', 'error');
+            return false;
         }
 
-        $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . ($error ? ' - ' . $error : ''), 'error');
+        $query = file_get_contents($file);
 
-        return false;
+        if (!$query) {
+            $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . ' - NO SQL QUERY', 'error');
+            return false;
+        }
+
+        $query = $db->replacePrefix((string) $query);
+        $db->setQuery(trim($query));
+
+        try {
+            $db->execute();
+        } catch (\RuntimeException $e) {
+            $app->enqueueMessage(Text::_('WF_INSTALL_TABLE_PROFILES_ERROR') . ' - ' . $e->getMessage(), 'error');
+            return false;
+        }
+
+        return true;
     }
 
     /**
-     * Install default Profiles.
+     * Install default profiles for a new installation.
+     * Returns false if the profiles table already exists or on failure.
      *
-     * @return bool
+     * @return bool True on success, false if profiles already exist or on error.
      */
     public static function installProfiles()
     {
-        $app = Factory::getApplication();
-        $db  = Factory::getContainer()->get(DatabaseInterface::class);
+        if (self::checkTable()) {
+            return false;
+        }
 
         if (!self::createProfilesTable()) {
             return false;
         }
 
-        self::buildCountQuery();
+        $app = Factory::getApplication();
 
-        if (!$db->loadResult()) {
-            if (!is_file(self::PROFILES_XML)) {
-                $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_NOFILE_ERROR'), 'error');
-                return false;
-            }
+        if (!is_file(self::PROFILES_XML)) {
+            $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_NOFILE_ERROR'), 'error');
+            return false;
+        }
 
-            if (!self::processImport(self::PROFILES_XML)) {
-                $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_ERROR'), 'error');
-                return false;
-            }
+        if (!self::processImport(self::PROFILES_XML)) {
+            $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_ERROR'), 'error');
+            return false;
         }
 
         return true;
@@ -184,41 +183,6 @@ abstract class ProfilesHelper
     }
 
     /**
-     * Return a ProfilesTable pre-populated with the default profile from the manifest.
-     *
-     * @return  ProfilesTable|null
-     */
-    public static function getDefaultProfile()
-    {
-        $db  = Factory::getContainer()->get(DatabaseInterface::class);
-        $xml = simplexml_load_file(self::PROFILES_XML);
-
-        if (!$xml) {
-            return null;
-        }
-
-        foreach ($xml->profiles->children() as $profile) {
-            if (!$profile->attributes()->default) {
-                continue;
-            }
-
-            $table = new ProfilesTable($db);
-
-            foreach ($profile->children() as $item) {
-                $key         = $item->getName();
-                $table->$key = (string) $item;
-            }
-
-            $table->name        = '';
-            $table->description = '';
-
-            return $table;
-        }
-
-        return null;
-    }
-
-    /**
      * Check whether the profiles table exists.
      *
      * @return bool
@@ -235,39 +199,22 @@ abstract class ProfilesHelper
             return in_array($match, $tables);
         }
 
-        // Fallback: try a direct query.
-        self::buildCountQuery();
+        try {
+            $query = $db->getQuery(true);
+            $query->select('COUNT(id)')->from('#__wf_profiles');
+            $db->setQuery($query);
+            $db->execute();
 
-        return $db->execute();
+            return true;
+        } catch (\RuntimeException $e) {
+            return false;
+        }
     }
 
     /**
-     * Return the number of rows in the profiles table.
+     * Get user groups with content creation permissions for the given area.
      *
-     * @return int
-     */
-    public static function checkTableContents()
-    {
-        self::buildCountQuery();
-
-        return Factory::getContainer()->get(DatabaseInterface::class)->loadResult();
-    }
-
-    /**
-     * Build and set a COUNT query on the profiles table.
-     */
-    private static function buildCountQuery()
-    {
-        $db    = Factory::getContainer()->get(DatabaseInterface::class);
-        $query = $db->getQuery(true);
-        $query->select('COUNT(id)')->from('#__wf_profiles');
-        $db->setQuery($query);
-    }
-
-    /**
-     * Return user group IDs for the given area.
-     *
-     * @param   int  $area  0 = all, 1 = front-end, 2 = back-end
+     * @param   int  $area  0 = all, 1 = frontend only, 2 = backend only.
      *
      * @return  int[]
      */
@@ -277,20 +224,17 @@ abstract class ProfilesHelper
         $query = $db->getQuery(true);
         $query->select('id')->from('#__usergroups');
         $db->setQuery($query);
+
         $groups = $db->loadColumn();
 
         $front = [];
         $back  = [];
 
         foreach ($groups as $group) {
-            $super  = Access::checkGroup($group, 'core.admin');
-            $create = Access::checkGroup($group, 'core.create');
-            $admin  = Access::checkGroup($group, 'core.login.admin');
-
-            if ($super) {
+            if (Access::checkGroup($group, 'core.admin')) {
                 $back[] = $group;
-            } elseif ($create) {
-                if ($admin) {
+            } elseif (Access::checkGroup($group, 'core.create')) {
+                if (Access::checkGroup($group, 'core.login.admin')) {
                     $back[] = $group;
                 } else {
                     $front[] = $group;
@@ -318,7 +262,7 @@ abstract class ProfilesHelper
     public static function encodeData($data)
     {
         if (preg_match('/[<>&]/', $data)) {
-            $data = '<![CDATA[' . $data . ']]>';
+            $data = '<![CDATA[' . str_replace(']]>', ']]]]><![CDATA[>', $data) . ']]>';
         }
 
         $data = preg_replace('/"/', '\"', $data);
