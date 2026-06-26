@@ -40,6 +40,14 @@ class EditorController extends BaseController
         }
 
         if (in_array($task, ['loadlanguages', 'pack', 'compileless'])) {
+            if ($task === 'pack') {
+                $type = $this->input->getWord('type', 'javascript');
+
+                if (!in_array($type, ['javascript', 'css', 'language'], true)) {
+                    jexit();
+                }
+            }
+
             if (method_exists($editor, $task)) {
                 $editor->$task();
             }
