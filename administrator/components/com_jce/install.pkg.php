@@ -21,6 +21,8 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
 
+use function PHPUnit\Framework\isFalse;
+
 class pkg_jceInstallerScript
 {
     /**
@@ -75,7 +77,7 @@ class pkg_jceInstallerScript
         return false;
     }
 
-    public function install($installer)
+    public function install($installer, $update = false)
     {
         // enable plugins
         $plugin = Table::getInstance('extension');
@@ -100,8 +102,10 @@ class pkg_jceInstallerScript
             }
         }
 
-        // install profiles
-        $this->installProfiles();
+        if (!$update) {
+            // install profiles
+            $this->installProfiles();
+        }
 
         $language = Factory::getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
@@ -192,7 +196,7 @@ class pkg_jceInstallerScript
 
     public function update($installer)
     {
-        return $this->install($installer);
+        return $this->install($installer, true);
     }
 
     protected function getCurrentVersion()
