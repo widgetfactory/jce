@@ -87,7 +87,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
             'style'         => 'file_browser'
         );
 
-        $caller = $this->get('caller');
+        $caller = $this->getConfig('caller');
 
         if (!$caller) {
             return false;
@@ -118,7 +118,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
         parent::__construct($config);
 
         if (!$this->hasFileBrowser()) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $standalone = $app->input->getInt('standalone');
