@@ -29,12 +29,14 @@ class WFImgmanagerPluginConfig
             );
         }
 
+        if ((int) $plugin->getParam('basic_dialog_filebrowser', 1) == 0) {
+            $config['basic_dialog_filebrowser'] = false;
+        }
+
         if ($plugin->getParam('basic_dialog', 0) == 1) {
             $config['basic_dialog'] = true;
 
-            if ((int) $plugin->getParam('basic_dialog_filebrowser', 1) == 0) {
-                $config['basic_dialog_filebrowser'] = false;
-            } else {
+            if (!isset($config['basic_dialog_filebrowser'])) {
                 $config['filetypes'] = $filetypes;
             }
 
