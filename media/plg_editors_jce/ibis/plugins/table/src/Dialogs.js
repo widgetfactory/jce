@@ -303,21 +303,27 @@ export function showTableDialog(ed, isBasicDialog) {
                             data.height += 'px';
                         }
 
-                        var styleObj = {
-                            width: data.width,
-                            height: data.height
-                        };
+                        var styleObj = ed.dom.parseStyle(data.style || '');
+
+                        styleObj.width = data.width || '';
+                        styleObj.height = data.height || '';
 
                         if (data.background_color) {
                             styleObj['background-color'] = data.background_color;
+                        } else {
+                            delete styleObj['background-color'];
                         }
 
                         if (data.background_image) {
                             styleObj['background-image'] = 'url(' + data.background_image + ')';
+                        } else {
+                            delete styleObj['background-image'];
                         }
 
                         if (data.border) {
                             styleObj.border = data.border;
+                        } else {
+                            delete styleObj.border;
                         }
 
                         if (data.align === 'center') {
