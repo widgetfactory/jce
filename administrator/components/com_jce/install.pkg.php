@@ -5,7 +5,7 @@
  * @subpackage  Admin
  *
  * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 \defined('_JEXEC') or die;
@@ -188,9 +188,8 @@ class pkg_jceInstallerScript
         $db->setQuery($query);
 
         // profiles table is empty, remove...
-        if ($db->loadResult() === 0) {
+        if ((int) $db->loadResult() === 0) {
             $db->dropTable('#__wf_profiles', true);
-            $db->execute();
         }
     }
 
