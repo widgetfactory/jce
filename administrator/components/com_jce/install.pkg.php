@@ -191,9 +191,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $db->setQuery($query);
 
         // profiles table is empty, remove...
-        if ($db->loadResult() === 0) {
+        if ((int) $db->loadResult() === 0) {
             $db->dropTable('#__wf_profiles', true);
-            $db->execute();
         }
     }
 

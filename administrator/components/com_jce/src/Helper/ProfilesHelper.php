@@ -80,18 +80,23 @@ abstract class ProfilesHelper
 
     /**
      * Install default profiles for a new installation.
-     * Returns false if the profiles table already exists or on failure.
+     * Creates the table if needed and imports profiles only if the table is empty.
      *
-     * @return bool True on success, false if profiles already exist or on error.
+     * @return bool True on success or if profiles already exist, false on error.
      */
     public static function installProfiles()
     {
-        if (self::checkTable()) {
+        if (!self::createProfilesTable()) {
             return false;
         }
 
-        if (!self::createProfilesTable()) {
-            return false;
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $query = $db->getQuery(true);
+        $query->select('COUNT(id)')->from('#__wf_profiles');
+        $db->setQuery($query);
+
+        if ((int) $db->loadResult() > 0) {
+            return true;
         }
 
         $app = Factory::getApplication();
