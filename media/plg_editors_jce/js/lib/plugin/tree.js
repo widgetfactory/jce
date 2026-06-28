@@ -321,7 +321,7 @@
                             html += '<span class="uk-tree-toggle" role="presentation">' + ' <i class="uk-icon uk-icon-caret-right"></i>' + ' <i class="uk-icon uk-icon-caret-down"></i>' + '</span>';
                         }
 
-                        html += '<a href="' + url + '" title="' + title + '"><span class="uk-tree-icon">';
+                        html += '<a href="' + Wf.String.encode(url) + '" title="' + title + '"><span class="uk-tree-icon">';
 
                         if (node['class'].indexOf('folder') >= 0) {
                             html += '<i role="presentation" class="uk-icon uk-icon-folder"></i><i role="presentation" class="uk-icon uk-icon-folder-open"></i>';
@@ -331,7 +331,7 @@
 
                         html += '</span>';
 
-                        html += '<span class="uk-tree-text uk-margin-small-left uk-text-truncate" title="' + title + '">' + name + '</span>';
+                        html += '<span class="uk-tree-text uk-margin-small-left uk-text-truncate" title="' + title + '">' + Wf.String.encode(name) + '</span>';
                         html += '</a></div>';
                         html += '</li>';
 

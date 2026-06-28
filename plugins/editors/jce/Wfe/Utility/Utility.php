@@ -328,6 +328,52 @@ abstract class Utility
     }
 
     /**
+     * Validates a file or folder name for safe listing/display.
+     *
+     * Unlike checkPath(), this does NOT restrict the character set, so that legitimate
+     * files containing characters such as &, +, ',' or non-Latin scripts remain visible
+     * in the file browser (matching Joomla's own media listing behaviour). Output safety
+     * (XSS) is handled by HTML-encoding names at the point of rendering on the client.
+     *
+     * It still rejects the genuinely dangerous constructs:
+     * - Null bytes.
+     * - Directory traversal sequences (../).
+     * - Backslashes (Windows path separator / escape character).
+     *
+     * Intended for filtering items returned by the filesystem during listing, where the
+     * name is only used as data and never to build a filesystem path without a further
+     * checkPath()/checkPathAccess() guard at the point of use.
+     *
+     * @param string $name The file or folder name to validate.
+     *
+     * @return bool True if the name is safe to list.
+     *
+     * @throws \InvalidArgumentException If the name contains a null byte, traversal or backslash.
+     */
+
+    public static function checkName($name)
+    {
+        $name = urldecode($name);
+
+        // Disallow null byte
+        if (strpos($name, "\x00") !== false) {
+            throw new \InvalidArgumentException('Invalid name');
+        }
+
+        // Reject directory traversal
+        if (preg_match('#(^|/)\.\.(/|$)#', $name)) {
+            throw new \InvalidArgumentException('Invalid path traversal');
+        }
+
+        // Reject backslashes (Windows path separator / escape character)
+        if (strpos($name, '\\') !== false) {
+            throw new \InvalidArgumentException('Invalid name');
+        }
+
+        return true;
+    }
+
+    /**
      * Concat two paths together. Basically $a + $b.
      *
      * @param string $a  path one
