@@ -119,11 +119,21 @@ class JFormFieldMediaJce extends MediaField
 
         $converted = (bool) $this->element['converted'];
 
+        $mediafolder = isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : '';
+
+        // Apply a configured "Directory" as a root restriction only when the field has no value (Joomla itself drops
+        // the directory once a value is set, so an existing selection elsewhere stays reachable - the Banners case).
+        // Joomla 3 modals bind the browse URL at initialisation, so it must be encoded in the server-rendered link
+        // itself (a JS rewrite would be too late). Pass it as a ":"-prefixed root "mediafolder".
+        if ($mediafolder === '' && !empty($this->directory) && empty($this->value)) {
+            $mediafolder = ':' . trim($this->directory, '/');
+        }
+
         $config = array(
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
             'converted' => $converted,
-            'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : '',
+            'mediafolder' => $mediafolder,
         );
 
         // get individual field link
@@ -151,8 +161,10 @@ class JFormFieldMediaJce extends MediaField
 
         $extraData['class'] .= ' wf-media-input-core';
 
-        // Joomla 3: reset the folder value if no default directory is set in parameters
-        if (empty($this->directory)) {
+        // when the "Directory" is encoded as mediafolder (or there is no directory), don't emit Joomla's "folder"
+        // param - the file browser would treat it as a value folder and use it to override the restriction.
+        // otherwise (a field with a value) leave the value's folder so the browser opens there but stays navigable.
+        if ($mediafolder !== '' || empty($this->directory)) {
             $extraData['folder'] = '';
         }
 

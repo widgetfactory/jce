@@ -388,10 +388,12 @@ class WFBrowserPlugin extends WFMediaManager
                             break;
                         }
                     }
-                }
 
-                // reset folder so it is not appended again below
-                $folder = '';
+                    // a value folder has been handled as the root above, so don't append it again below.
+                    // NB: only reset when a value was actually present - a relative "mediafolder" directory that fell
+                    // through the root-folder match above still needs $folder to be appended to the store root here.
+                    $folder = '';
+                }
             }
 
             $path = WFUtility::makePath($root['path'], $folder);
