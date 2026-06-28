@@ -1004,9 +1004,11 @@ class WFFileBrowser extends CMSObject
                 return true;
             }
 
-            // skip files with invalid characters in their name
+            // skip files with unsafe names (traversal/null/backslash); charset is not
+            // restricted here so legitimately-named files remain visible (output is
+            // HTML-encoded on the client)
             try {
-                WFUtility::checkPath($item['name']);
+                WFUtility::checkName($item['name']);
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
@@ -1039,9 +1041,11 @@ class WFFileBrowser extends CMSObject
                 return true;
             }
 
-            // skip folders with invalid characters in their name
+            // skip folders with unsafe names (traversal/null/backslash); charset is not
+            // restricted here so legitimately-named folders remain visible (output is
+            // HTML-encoded on the client)
             try {
-                WFUtility::checkPath($item['name']);
+                WFUtility::checkName($item['name']);
             } catch (\InvalidArgumentException $e) {
                 return false;
             }

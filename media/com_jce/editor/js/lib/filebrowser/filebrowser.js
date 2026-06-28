@@ -1001,6 +1001,9 @@
             var self = this,
                 h = '';
 
+            // HTML-encode server-supplied values before interpolating into markup (XSS-safe)
+            var encode = Wf.String.encode;
+
             // empty list
             $('#item-list').empty();
 
@@ -1026,15 +1029,15 @@
 
                     $.each(e.properties, function (k, v) {
                         if (v !== '') {
-                            data.push('data-' + k + '="' + v + '"');
+                            data.push('data-' + k + '="' + encode(v) + '"');
                         }
                     });
 
                     // add url data
-                    data.push('data-url="' + (e.url || e.path) + '"');
+                    data.push('data-url="' + encode(e.url || e.path) + '"');
 
                     // add id to data
-                    data.push('id="' + e.id + '"');
+                    data.push('id="' + encode(e.id) + '"');
 
                     // add websafe class
                     classes.push(self._isWebSafe(e.name) ? 'safe' : 'notsafe');
@@ -1063,12 +1066,15 @@
                         name = name.replace(/^\//, '').replace(/\/$/, '');
                     }
 
+                    // encode before injecting our own <strong> markup below
+                    name = encode(name);
+
                     // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
                     name = name.replace(/([^\s\/]+)(\/)/g, function (m) {
                         return '<strong>' + m + '</strong>';
                     });
 
-                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + encode(e.name) + '"' + data.join(' ') + '>';
                     if (isRoot) {
                         h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" disabled /></label>';
                     } else {
@@ -1112,17 +1118,17 @@
                                 v = val.join('|');
                             }
                             
-                            data.push('data-' + k + '="' + v + '"');
+                            data.push('data-' + k + '="' + encode(v) + '"');
                         }
                     });
 
                     // add url data
                     if (e.url) {
-                        data.push('data-url="' + e.url + '"');
+                        data.push('data-url="' + encode(e.url) + '"');
                     }
 
                     // add id (legacy support)
-                    data.push('id="' + e.id + '"');
+                    data.push('id="' + encode(e.id) + '"');
 
                     // add websafe class
                     classes.push(self._isWebSafe(e.name) ? 'safe' : 'notsafe');
@@ -1152,7 +1158,7 @@
                     var download = '';
 
                     if (self.options.allow_download && e.properties.preview) {
-                        download = ' download="' + filename + '"';
+                        download = ' download="' + encode(filename) + '"';
                     }
 
                     // is a search result
@@ -1177,17 +1183,20 @@
                         name = name.replace(/^\//, '').replace(/\/$/, '');
                     }
 
+                    // encode before injecting our own <strong> markup below
+                    name = encode(name);
+
                     // if e.name contains / characters, split and wrap these parts and the / in a <strong> to make them bold
                     name = name.replace(/([^\s\/]+)(\/)/g, function (m) {
                         return '<strong>' + m + '</strong>';
                     });
 
-                    h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + encode(ext.toLowerCase()) + ' ' + classes.join(' ') + '" title="' + encode(e.name) + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
-                    h += '  <i class="uk-width-1-10 uk-icon uk-icon-file uk-icon-file-' + getMimeType(icon) + ' file ' + icon + '"></i>';
-                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto" href="' + (e.properties.preview || '#') + '"' + download + '>';
+                    h += '  <i class="uk-width-1-10 uk-icon uk-icon-file uk-icon-file-' + getMimeType(icon) + ' file ' + encode(icon) + '"></i>';
+                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto" href="' + encode(e.properties.preview || '#') + '"' + download + '>';
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
-                    h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
+                    h += '      <span class="uk-item-extension uk-display-inline-block">.' + encode(ext) + '</span>';
                     h += '  </a>';
                     h += '  <span class="uk-width-2-10 uk-item-date uk-hidden-mini">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
                     h += '  <span class="uk-width-4-10 uk-item-size uk-hidden-mini">' + Wf.String.formatSize(e.properties.size) + '</span>';
@@ -1407,10 +1416,10 @@
 
                     crumbPath = Wf.String.path(crumbPath, name);
 
-                    var $item = $('<li title="' + name + '"></li>').on('click', 'a', function (e) {
+                    var $item = $('<li title="' + Wf.String.encode(name) + '"></li>').on('click', 'a', function (e) {
                         var path = $(e.target).data('path');
                         self._changeDir(path);
-                    }).append('<a data-path="' + prefix + ':' + crumbPath + '">' + name + '</a>').insertBefore($count);
+                    }).append('<a data-path="' + Wf.String.encode(prefix + ':' + crumbPath) + '">' + Wf.String.encode(name) + '</a>').insertBefore($count);
 
                     // add item width
                     w += $item.outerWidth(true);
@@ -3224,7 +3233,7 @@
 
             // create properties list
             var info = document.createElement('div');
-            $(info).addClass('uk-comment uk-height-1-1').append('<div class="uk-comment-header"><h5 class="uk-width-1-1 uk-margin-remove uk-text-bold uk-text-truncate" title="' + name + '">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
+            $(info).addClass('uk-comment uk-height-1-1').append('<div class="uk-comment-header"><h5 class="uk-width-1-1 uk-margin-remove uk-text-bold uk-text-truncate" title="' + Wf.String.encode(name) + '">' + Wf.String.encode(name) + '</h5><div class="uk-comment-meta">' + Wf.String.encode(ext) + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
 
             // additional data for file items
             $(info).append('<div class="uk-comment-body uk-width-1-1 uk-text-center" id="info-preview"></div>');
@@ -3285,9 +3294,9 @@
 
                     // create a link if there is a URL, using the name and handle as the link text
                     if (values.length > 2 && values[2]) {
-                        value = '<a href="' + values[2] + '" target="_blank" rel="noopener noreferrer">' + values[0] + '</a>';
+                        value = '<a href="' + Wf.String.encode(values[2]) + '" target="_blank" rel="noopener noreferrer">' + Wf.String.encode(values[0]) + '</a>';
                     } else {
-                        value = values[0] || '';
+                        value = Wf.String.encode(values[0] || '');
                     }
                     
                     $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-attribution">' + tinyMCEPopup.getLang('dlg.attribution', 'Attribution') + ': ' + value + '</div>');

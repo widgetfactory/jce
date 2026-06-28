@@ -562,7 +562,11 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     protected function checkRestrictedDirectory($path)
     {
-        WFUtility::checkPath($path);
+        // Name-only safety (null/traversal/backslash). The charset whitelist is intentionally
+        // NOT applied here: this guards an already-resolved filesystem path for traversal and
+        // the restricted-folder boundary, and must not reject legitimate filenames (e.g. with
+        // "$", "&", "+") that the listing now permits. See WFUtility::checkName().
+        WFUtility::checkName($path);
 
         foreach ($this->restricted as $name) {
             $restricted = rtrim($this->toAbsolute($name), '/') . '/';
