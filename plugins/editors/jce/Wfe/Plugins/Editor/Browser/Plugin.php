@@ -191,6 +191,12 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 
         $folder = $app->input->getString('mediafolder', '');
 
+        // for a converted Joomla Media Field, use the field path (a configured "Directory" or the folder of the existing value) as the initial folder
+        if (empty($folder) && $app->input->getInt('converted', 0) === 1) {
+            $converted = $app->input->getString('path', $app->input->getString('folder', '')); // include "folder" for Joomla 3
+            $folder = $this->normalizeLocalJoomlaFolder($converted);
+        }
+
         if ($folder) {
             // trim the path of leading : if any
             $folder = trim($folder, ':');
@@ -360,21 +366,25 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
             }
 
             if ($app->input->getInt('converted', 0) === 1) {
-                // get the path from a converted media field
-                $folder = $app->input->getString('path', $app->input->getString('folder', '')); // include "folder" for Joomla 3
+                // a converted media field "path" only ever refers to the folder of an existing value;
+                // a configured "Directory" is passed as a ":"-prefixed "mediafolder" and is handled by the root-folder logic above
+                $convertedFolder = $app->input->getString('path', $app->input->getString('folder', '')); // include "folder" for Joomla 3
 
                 // normalize the Joomla Media Field path, eg: local-images:/folder/subfolder => images/folder/subfolder, local-media:/cache => media/cache
-                $folder = $this->normalizeLocalJoomlaFolder($folder);
+                $convertedFolder = $this->normalizeLocalJoomlaFolder($convertedFolder);
 
-                if ($folder) {
-                    $tmpPath = $folder . '/';
+                if ($convertedFolder) {
+                    $tmpPath = $convertedFolder . '/';
 
-                    foreach ($config['dir'] as $store) {
+                    foreach ($config['dir'] as $key => $store) {
                         $base = trim($store['path'], '/');
 
-                        // check if the normalized path is within any profile-allowed directory store
+                        // check if the value folder is within a profile-allowed directory store, and select that store as the root
+                        // (the store keeps its full path so navigation up to the store root is allowed; the value folder is set
+                        // as the initial "source" folder in the constructor)
                         if ($tmpPath === $base . '/' || strpos($tmpPath, $base . '/') === 0) {
-                            $root['path'] = $folder;
+                            $prefix = $key;
+                            $root = $store;
                             break;
                         }
                     }
