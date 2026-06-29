@@ -338,9 +338,13 @@ class WFMediaManagerBase extends WFEditorPlugin
         foreach ($nonBlank as $item) {
             $hash = md5($item['path']);
 
+            if (empty($item['label'])) {
+                $item['label'] = basename($item['path']) ?: $item['path'];
+            }
+
             $dirStore[$hash] = [
-                'path' => $item['path'],
-                'label' => $item['label'],
+                'path'  => $item['path'],
+                'label' => $item['label']
             ];
         }
 
