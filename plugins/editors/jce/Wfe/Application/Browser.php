@@ -1029,7 +1029,10 @@ class Browser
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
-        $list = array_filter($list, function ($item) {
+        // profile's allowed file types, used as a hard executable floor below
+        $allowed = (array) $this->getFileTypes('array');
+
+        $list = array_filter($list, function ($item) use ($allowed) {
             // must have an id set
             if (empty($item['id'])) {
                 return true;
@@ -1041,6 +1044,13 @@ class Browser
             try {
                 Utility::checkName($item['name']);
             } catch (\InvalidArgumentException $e) {
+                return false;
+            }
+
+            // never list files with a dangerous/executable extension, even if the profile's
+            // allowed types include it. php, js, exe, etc. are blocked unconditionally;
+            // svg/html/htm remain conditional on the profile (matches upload/rename/copy/move).
+            if (Utility::validateFileName($item['name'], $allowed) === false) {
                 return false;
             }
 
