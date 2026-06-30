@@ -82,7 +82,7 @@ abstract class ProfilesHelper
      * Install default profiles for a new installation.
      * Creates the table if needed and imports profiles only if the table is empty.
      *
-     * @return bool True on success or if profiles already exist, false on error.
+     * @return bool True on success, false if profiles already exist or on error.
      */
     public static function installProfiles()
     {
@@ -96,7 +96,7 @@ abstract class ProfilesHelper
         $db->setQuery($query);
 
         if ((int) $db->loadResult() > 0) {
-            return true;
+            return false;
         }
 
         $app = Factory::getApplication();
