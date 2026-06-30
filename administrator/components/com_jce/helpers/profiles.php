@@ -78,7 +78,7 @@ abstract class JceProfilesHelper
      * Install default profiles for a new installation.
      * Creates the table if needed and imports profiles only if the table is empty.
      *
-     * @return bool True on success or if profiles already exist, false on error.
+     * @return bool True on success, false on error or if profiles already exist.
      */
     public static function installProfiles()
     {
@@ -92,7 +92,7 @@ abstract class JceProfilesHelper
         $db->setQuery($query);
 
         if ((int) $db->loadResult() > 0) {
-            return true;
+            return false;
         }
 
         $app = Factory::getApplication();
