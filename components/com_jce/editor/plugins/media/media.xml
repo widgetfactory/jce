@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
-<extension version="3.4" type="plugin" group="jce" method="upgrade">
+<extension type="plugin" group="jce" method="upgrade">
     <name>WF_MEDIA_TITLE</name>
     <version>@@version@@</version>
     <creationDate>@@date@@</creationDate>
     <author>Ryan Demmer</author>
-    <authorEmail>info@joomlacontenteditor.net</authorEmail>
+    <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>https://www.joomlacontenteditor.net</authorUrl>
     <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
