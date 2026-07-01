@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
-<extension version="3.6" type="plugin" group="jce" method="upgrade">
+<extension type="plugin" group="jce" method="upgrade">
 	<name>JCE - Noneditable</name>
-	<version>1.0.0</version>
-	<creationDate>July 2019</creationDate>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
 	<author>Ryan Demmer</author>
-	<authorEmail>info@joomlacontenteditor.net</authorEmail>
+	<authorEmail>@@e-mail@@</authorEmail>
 	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
-	<copyright>Copyright (C) 2006 - 2020 Ryan Demmer. All rights reserved</copyright>
-	<license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
 	<description>Noneditable elements for JCE</description>
 	<icon></icon>
 	<files></files>

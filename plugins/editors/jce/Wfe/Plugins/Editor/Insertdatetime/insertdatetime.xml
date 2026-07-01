@@ -6,7 +6,7 @@
     <author>Ryan Demmer</author>
     <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
-    <copyright>Ryan Demmer</copyright>
+    <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
     <description>WF_INSERTDATETIME_DESC</description>
     <icon>insertdatetime</icon>

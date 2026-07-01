@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<extension version="3.4" type="plugin" group="jce" method="upgrade">
+<extension type="plugin" group="jce" method="upgrade">
 	<name>WF_SOURCE_TITLE</name>
 	<version>@@version@@</version>
 	<creationDate>@@date@@</creationDate>
