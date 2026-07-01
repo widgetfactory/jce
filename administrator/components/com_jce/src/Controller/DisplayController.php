@@ -3,7 +3,7 @@
  * @package     com_jce
  * @subpackage  JCE Admin
  *
- * @copyright   Copyright (C) 2026 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (c) 2026-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 

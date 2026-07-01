@@ -62,7 +62,7 @@ class Parser
      * Based on JRegistryFormatINI::stringToObject
      *
      * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved
-     * @license     GNU General Public License version 2 or later; see LICENSE
+     * @license     GNU General Public License version 2 or later; see LICENSE.txt
      */
     protected static function ini_to_array($data, $process_sections = false, $sections = array(), $filter = '')
     {

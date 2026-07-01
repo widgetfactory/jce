@@ -4,8 +4,8 @@
  * @subpackage  Component
  *
  * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2006 - 2020 Ryan Demmer. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (c) 2006-2026 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 namespace Joomla\Component\Jce\Administrator\Field;
 

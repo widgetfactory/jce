@@ -4,9 +4,9 @@
  * @package     JCE
  * @subpackage  Library.wfe
  *
- * @copyright   Copyright (C) 2025 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (c) 2025-2026 Ryan Demmer. All rights reserved
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 namespace Wfe\Registry;

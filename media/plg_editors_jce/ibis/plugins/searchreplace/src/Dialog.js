@@ -1,7 +1,7 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
+ * @license   	GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 export function openDialog(editor, DOM) {

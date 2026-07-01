@@ -3,7 +3,7 @@
  * @package     Wfx.JCE
  * @subpackage  JCE Admin
  *
- * @copyright   Copyright (C) 2023 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (c) 2023-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
