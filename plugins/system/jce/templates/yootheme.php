@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright   Copyright (C) 2021 Ryan Demmer. All rights reserved
- * @license     GNU General Public License version 2 or later
+ * @copyright   Copyright (c) 2021-2026 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
 

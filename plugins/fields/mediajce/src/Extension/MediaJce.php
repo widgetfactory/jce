@@ -5,7 +5,7 @@
  * @subpackage  Fields.mediajce
  *
  * @copyright   (C) 2017 Open Source Matters, Inc. <https://www.joomla.org>
- * @copyright   (C) 2020 - 2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (c) 2020-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 

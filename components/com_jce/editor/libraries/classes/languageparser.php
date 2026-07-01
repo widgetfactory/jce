@@ -4,7 +4,7 @@
  * @subpackage  Editor
  *
  * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (c) 2009-2024 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -63,7 +63,7 @@ class WFLanguageParser extends CMSObject
      * Based on JRegistryFormatINI::stringToObject
      *
      * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved
-     * @license     GNU General Public License version 2 or later; see LICENSE
+     * @license     GNU General Public License version 2 or later; see LICENSE.txt
      */
     protected static function ini_to_array($data, $process_sections = false, $sections = array(), $filter = '')
     {

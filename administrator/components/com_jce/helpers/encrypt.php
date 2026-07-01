@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright Copyright (c)2018 - 2026 Ryan Demmer
- * @license GNU General Public License version 3, or later
+ * @copyright Copyright (c) 2018-2026 Ryan Demmer. All rights reserved
+ * @license GNU General Public License version 2 or later; see LICENSE.txt
  *
  * @since 2.7
  */

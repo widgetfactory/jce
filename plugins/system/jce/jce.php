@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @copyright   Copyright (C) 2015 - 2023 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (c) 2015-2026 Ryan Demmer. All rights reserved
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved
- * @license     GNU General Public License version 2 or later
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
