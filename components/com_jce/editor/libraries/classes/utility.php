@@ -135,7 +135,7 @@ abstract class WFUtility
      * From libraries/vendor/joomla/filesystem/src/File.php
      * @copyright  Copyright (C) 2005 - 2021 Open Source Matters, Inc. All rights reserved.
      *
-     * @param  string $path The file path
+     * @param  string $file The file path
      * @param  bool   $lowercase Convert the extension to lowercase
      * @return string The file extension
      */
@@ -253,7 +253,6 @@ abstract class WFUtility
      * Append a DIRECTORY_SEPARATOR to the path if required.
      *
      * @param string $path the path
-     * @param string $ds   optional directory seperator
      *
      * @return string path with trailing DIRECTORY_SEPARATOR
      */
@@ -1444,7 +1443,13 @@ abstract class WFUtility
 
         return false;
     }
-
+    
+    /**
+     * Method to determine if a value is a valid JSON string.
+     *
+     * @param mixed $value The value to check
+     * @return boolean True if the value is a valid JSON string, false otherwise
+     */
     public static function isJson($value)
     {
         // value must be a string
