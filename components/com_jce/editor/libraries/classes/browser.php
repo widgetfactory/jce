@@ -1192,6 +1192,10 @@ class WFFileBrowser extends CMSObject
         // trim the passed in path if any
         $path = trim($path, '/');
 
+        // default to an empty store so the search loop below is always safe,
+        // even when no directories are configured/accessible
+        $storeArray = array();
+
         // no path value or root folder so get the default directories
         if (empty($path)) {
             $store = $this->getDirectoryStore();
