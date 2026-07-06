@@ -417,8 +417,9 @@ abstract class WFUtility
 
         // Reject characters that cannot be used as a URL value in HTML without breaking out of the
         // attribute/tag context (XSS). Names ultimately become src/href values. urldecode above also
-        // covers the encoded forms (eg. %22, %3C). Note: "&", "+", "$" are allowed - they URL-encode cleanly.
-        if (preg_match('#[<>"\']#', $name)) {
+        // covers the encoded forms (eg. %22, %3C). Note: "&", "+", "$" and "'" are allowed
+        // Only "<", ">" and '"' are blocked as a server-side backstop - these never occur in valid filenames.
+        if (preg_match('#[<>"]#', $name)) {
             throw new InvalidArgumentException('Invalid name');
         }
 
