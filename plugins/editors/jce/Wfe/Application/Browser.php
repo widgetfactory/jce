@@ -196,11 +196,121 @@ class Browser
     }
 
     /**
-     * @return object The active filesystem instance.
+     * Get the filesystem instance that owns a given path.
+     *
+     * With no path (or a path on the primary filesystem) the default instance is returned,
+     * preserving behaviour for callers that operate on a single filesystem. When the path
+     * resolves to an additional mount, that mount's filesystem instance is returned.
+     *
+     * @param  string $path Optional path, in "prefix:relative" or plain relative form.
+     * @return object       The filesystem instance.
      */
-    public function getFileSystem()
+    public function getFileSystem($path = '')
     {
-        return $this->filesystem;
+        // no path — the primary (default) filesystem
+        if ($path === '' || $path === null) {
+            return $this->filesystem;
+        }
+
+        // resolve the mount that owns this path and use its filesystem id
+        $store = $this->getDirectoryStoreFromPath($path);
+
+        $id = (is_array($store) && isset($store['filesystem'])) ? $store['filesystem'] : 'default';
+
+        return $this->getFileSystemInstance($id);
+    }
+
+    /**
+     * Resolve a filesystem instance by its definition id.
+     *
+     * The primary filesystem (id 'default') is the instance the manager already built and
+     * passed in. Additional filesystems are resolved lazily through the container so remote
+     * backends are only instantiated when actually browsed.
+     *
+     * @param  string $id The filesystem definition id.
+     * @return object     The filesystem instance.
+     */
+    private function getFileSystemInstance($id)
+    {
+        if ($id === '' || $id === 'default') {
+            return $this->filesystem;
+        }
+
+        return $this->getContainer()->getFileSystemInstance($id, $this->getConfig('filesystem_config', array()));
+    }
+
+    /**
+     * Resolve the filesystem definition id that owns a given path.
+     *
+     * Used to decide whether a copy/move stays within one filesystem (fast internal
+     * operation) or crosses filesystems (streamed transfer). Mounts on the same
+     * underlying filesystem share an id, so multiple directories on the default
+     * filesystem all return 'default'.
+     *
+     * @param  string $path Optional path, in "prefix:relative" or plain relative form.
+     * @return string       The filesystem definition id.
+     */
+    private function getFileSystemId($path = '')
+    {
+        if ($path === '' || $path === null) {
+            return 'default';
+        }
+
+        $store = $this->getDirectoryStoreFromPath($path);
+
+        return (is_array($store) && isset($store['filesystem'])) ? $store['filesystem'] : 'default';
+    }
+
+    /**
+     * Transfer a single file between two different filesystems by streaming its contents.
+     * Folders cannot be streamed across filesystems.
+     *
+     * @param  object $from     Source filesystem instance.
+     * @param  object $to       Destination filesystem instance.
+     * @param  string $source   Resolved source path on the source filesystem.
+     * @param  string $target   Resolved destination file path on the destination filesystem.
+     * @param  string $conflict Conflict resolution mode ('', 'copy', 'replace').
+     * @param  bool   $isMove   When true, the source is deleted after a successful write.
+     * @return FilesystemResult
+     */
+    private function transferItem($from, $to, $source, $target, $conflict = '', $isMove = false)
+    {
+        $result = new FilesystemResult();
+        $result->type = 'files';
+
+        // folders cannot be streamed between filesystems
+        if ($from->is_dir($source)) {
+            $result->type = 'folders';
+            $result->message = Text::_('WF_MANAGER_CROSS_FILESYSTEM_FOLDER_ERROR');
+
+            return $result;
+        }
+
+        // open a read stream on the source filesystem
+        $stream = $from->readStream($source);
+
+        if ($stream === false || !is_resource($stream)) {
+            $result->message = Text::_('WF_MANAGER_COPY_FILES_ERROR');
+
+            return $result;
+        }
+
+        try {
+            // write the stream to the destination filesystem
+            $result = $to->writeStream($target, $stream, $conflict);
+        } finally {
+            // always release the source stream
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }
+
+        // for a move, remove the source once the destination copy has succeeded
+        if ($isMove && $result instanceof FilesystemResult && $result->state) {
+            $from->delete($source);
+        }
+
+        return $result;
     }
 
     /**
@@ -326,7 +436,7 @@ class Browser
      * @param  string $path A relative file or directory path, or a URL.
      * @return string The resolved directory path, or an empty string.
      */
-    public function getSourceDir($path)
+    public function getSourceDir($path, $filesystem = null)
     {
         $path = $this->getConfig('source', $path);
 
@@ -339,7 +449,10 @@ class Browser
             return '';
         }
 
-        $filesystem = $this->getFileSystem();
+        // resolve the filesystem from the (possibly prefixed) path before the prefix is stripped
+        if ($filesystem === null) {
+            $filesystem = $this->getFileSystem($path);
+        }
 
         $path = $this->extractPath($path);
 
@@ -558,9 +671,10 @@ class Browser
 
             return array(
                 $hash => array(
-                    'path'   => '',
-                    'label'  => '',
-                    'prefix' => $hash,
+                    'path'       => '',
+                    'label'      => '',
+                    'prefix'     => $hash,
+                    'filesystem' => 'default',
                 )
             );
         }
@@ -587,9 +701,10 @@ class Browser
 
             return array(
                 $hash => array(
-                    'path'   => $path,
-                    'label'  => '',
-                    'prefix' => $hash,
+                    'path'       => $path,
+                    'label'      => '',
+                    'prefix'     => $hash,
+                    'filesystem' => 'default',
                 )
             );
         }
@@ -602,6 +717,10 @@ class Browser
             if ($item['path'] === '') {
                 $item['path'] = 'images';
             }
+
+            // the filesystem that owns this mount (default when unset)
+            $fsId = isset($item['filesystem']) && $item['filesystem'] !== '' ? $item['filesystem'] : 'default';
+            $itemFilesystem = $this->getFileSystemInstance($fsId);
 
             $processedPath = $this->processPath($item['path']);
             $label         = isset($item['label']) ? $item['label'] : '';
@@ -621,24 +740,26 @@ class Browser
             $processedPath = trim($event->getArgument('path', $processedPath));
             $label = trim($event->getArgument('label', $label));
 
-            // Ensure the folder exists (create if missing)
-            if ($filesystem->is_dir($processedPath) === false) {
+            // Ensure the folder exists (create if missing) on the mount's own filesystem
+            if ($itemFilesystem->is_dir($processedPath) === false) {
                 $name    = Utility::mb_basename($processedPath);
                 $pathDir = Utility::mb_dirname($processedPath);
 
-                if ($filesystem->createFolder($pathDir, $name) === false) {
+                if ($itemFilesystem->createFolder($pathDir, $name) === false) {
                     // Skip this entry if it can't be created
                     continue;
                 }
             }
 
-            // New associative key from the (possibly changed) path
-            $newKey = md5($processedPath);
+            // New associative key: path alone for the default filesystem (preserves existing
+            // prefixes), filesystem-qualified for additional filesystems so mounts never collide
+            $newKey = ($fsId === 'default') ? md5($processedPath) : md5($fsId . ':' . $processedPath);
 
             // Finalize fields
-            $item['path']   = $processedPath;
-            $item['label']  = htmlspecialchars((string) $label, ENT_QUOTES, 'UTF-8');
-            $item['prefix'] = $newKey;
+            $item['path']       = $processedPath;
+            $item['label']      = htmlspecialchars((string) $label, ENT_QUOTES, 'UTF-8');
+            $item['prefix']     = $newKey;
+            $item['filesystem'] = $fsId;
 
             // Write into rebuilt array (last one wins on key collision)
             $newDir[$newKey] = $item;
@@ -742,9 +863,6 @@ class Browser
 
             // get keys only
             $groups = array_keys($groups);
-
-            // get the first group
-            $group_id = array_shift($groups);
 
             // get the first group
             $group_id = array_shift($groups);
@@ -1007,9 +1125,9 @@ class Browser
     /**
      * @return string The filesystem base directory.
      */
-    public function getBaseDir()
+    public function getBaseDir($path = '')
     {
-        $filesystem = $this->getFileSystem();
+        $filesystem = $this->getFileSystem($path);
 
         return $filesystem->getBaseDir();
     }
@@ -1024,9 +1142,12 @@ class Browser
      * @param  int    $start    Result offset for pagination.
      * @return array  List of file items that pass the access check.
      */
-    private function getFiles($relative, $filter = '.', $sort = '', $limit = 0, $start = 0)
+    private function getFiles($relative, $filter = '.', $sort = '', $limit = 0, $start = 0, $filesystem = null)
     {
-        $filesystem = $this->getFileSystem();
+        if ($filesystem === null) {
+            $filesystem = $this->getFileSystem();
+        }
+
         $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
         // profile's allowed file types, used as a hard executable floor below
@@ -1072,9 +1193,12 @@ class Browser
      * @param  int    $start    Result offset for pagination.
      * @return array  List of folder items that pass the access check.
      */
-    private function getFolders($relative, $filter = '', $sort = '', $limit = 0, $start = 0)
+    private function getFolders($relative, $filter = '', $sort = '', $limit = 0, $start = 0, $filesystem = null)
     {
-        $filesystem = $this->getFileSystem();
+        if ($filesystem === null) {
+            $filesystem = $this->getFileSystem();
+        }
+
         $list = $filesystem->getFolders($relative, $filter, $sort, $limit, $start);
 
         $list = array_filter($list, function ($item) {
@@ -1248,13 +1372,20 @@ class Browser
             // define the prefix from the store array
             $prefix = $storeItem['prefix'];
 
+            // resolve the filesystem that owns this mount and skip it if search is unsupported
+            $itemFs = $this->getFileSystemInstance(isset($storeItem['filesystem']) ? $storeItem['filesystem'] : 'default');
+
+            if (method_exists($itemFs, 'searchItems') === false) {
+                continue;
+            }
+
             // make the source relative to the store path, eg: stories => images/stories
             $source = Utility::makePath($storeItem['path'], $path);
 
             // trim leading and trailing slash
             $source = trim($source, '/');
 
-            $list = $filesystem->searchItems($source, $filter, $filetypes, $sort, $depth);
+            $list = $itemFs->searchItems($source, $filter, $filetypes, $sort, $depth);
 
             $items = array_merge($list['folders'], $list['files']);
 
@@ -1276,7 +1407,7 @@ class Browser
                     $item['path'] = Utility::makePath($storeItem['path'], $item['id']);
 
                     if (empty($item['properties'])) {
-                        $item['properties'] = $filesystem->getFileDetails($item);
+                        $item['properties'] = $itemFs->getFileDetails($item);
                     }
                 }
 
@@ -1284,7 +1415,7 @@ class Browser
                     $item['path'] = Utility::makePath($storeItem['path'], $item['id']);
 
                     if (empty($item['properties'])) {
-                        $item['properties'] = $filesystem->getFolderDetails($item);
+                        $item['properties'] = $itemFs->getFolderDetails($item);
                     }
                 }
 
@@ -1338,8 +1469,6 @@ class Browser
 
         // check if source is a valid path
         Utility::checkPath($source);
-
-        $filesystem = $this->getFileSystem();
 
         $files = array();
         $folders = array();
@@ -1418,6 +1547,9 @@ class Browser
         // define the prefix from the store array
         $prefix = $store['prefix'];
 
+        // resolve the filesystem that owns this mount
+        $filesystem = $this->getFileSystemInstance(isset($store['filesystem']) ? $store['filesystem'] : 'default');
+
         // make the source relative to the store path, eg: stories => images/stories
         $fullpath = Utility::makePath($store['path'], $path);
 
@@ -1449,11 +1581,11 @@ class Browser
         }
 
         // get file list by filter
-        $files = $this->getFiles($fullpath, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $limit, $start);
+        $files = $this->getFiles($fullpath, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $limit, $start, $filesystem);
 
         if (empty($filter) || $filter[0] != '.') {
             // get folder list
-            $folders = $this->getFolders($fullpath, '^(?i).*' . Utility::makeSafe($filter) . '.*', $sort, $limit, $start);
+            $folders = $this->getFolders($fullpath, '^(?i).*' . Utility::makeSafe($filter) . '.*', $sort, $limit, $start, $filesystem);
         }
 
         $folderArray = array();
@@ -1559,7 +1691,9 @@ class Browser
                 }
             } else {
                 $store = $storeArray[0];
-                $folders = $this->getFolders($store['path']);
+
+                $storeFs = $this->getFileSystemInstance(isset($store['filesystem']) ? $store['filesystem'] : 'default');
+                $folders = $this->getFolders($store['path'], '', '', 0, 0, $storeFs);
 
                 $label = isset($store['label']) ? $store['label'] : '';
 
@@ -1583,6 +1717,9 @@ class Browser
             // get the store array from the complex source path, eg: prefix:path
             $store = $this->getDirectoryStoreFromPath($path);
 
+            // resolve the filesystem that owns this mount
+            $storeFs = $this->getFileSystemInstance(isset($store['filesystem']) ? $store['filesystem'] : 'default');
+
             // extract the path from the complex source path, eg: prefix:path
             $path = $this->extractPath($path);
 
@@ -1590,10 +1727,10 @@ class Browser
             $path = Utility::makePath($store['path'], $path);
 
             // get source dir from path eg: images/stories/fruit.jpg = images/stories
-            $source = $this->getSourceDir($path);
+            $source = $this->getSourceDir($path, $storeFs);
 
             // get folder list
-            $folders = $this->getFolders($source);
+            $folders = $this->getFolders($source, '', '', 0, 0, $storeFs);
 
             array_walk($folders, function (&$item) use ($store, $path) {
                 // remove the $store['path'] value from the beginning of the id, must be multibyte safe
@@ -1732,7 +1869,7 @@ class Browser
     {
         Utility::checkPath($dir);
 
-        $filesystem = $this->getFileSystem();
+        $filesystem = $this->getFileSystem($dir);
 
         // get array with folder date and content count eg: array('date'=>'00-00-000', 'folders'=>1, 'files'=>2);
         return $filesystem->getFolderDetails($dir);
@@ -1748,7 +1885,7 @@ class Browser
     {
         Utility::checkPath($file);
 
-        $filesystem = $this->getFileSystem();
+        $filesystem = $this->getFileSystem($file);
 
         // get array with folder date and content count eg: array('date'=>'00-00-000', 'folders'=>1, 'files'=>2);
         return $filesystem->getFileDetails($file);
@@ -2003,8 +2140,6 @@ class Browser
 
         $app = Factory::getApplication();
 
-        $filesystem = $this->getFileSystem();
-
         // get uploaded file
         $file = $app->input->files->get('file', array(), 'raw');
 
@@ -2073,6 +2208,10 @@ class Browser
             throw $e;
         }
 
+        // resolve the filesystem that owns the destination (mirrors validateUploadDirectory's
+        // empty → default rule) so the write targets the correct filesystem
+        $filesystem = $this->getFileSystem($dir !== '' ? $dir : $this->getDefaultPath());
+
         try {
             $dir = $this->validateUploadDirectory($dir, $upload);
         } catch (\InvalidArgumentException $e) {
@@ -2136,7 +2275,6 @@ class Browser
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
 
-        $filesystem = $this->getFileSystem();
         $items = explode(',', rawurldecode((string) $items));
 
         foreach ($items as $item) {
@@ -2145,6 +2283,9 @@ class Browser
 
             // check path
             Utility::checkPath($item);
+
+            // resolve the filesystem that owns this item before the prefix is stripped
+            $filesystem = $this->getFileSystem($item);
 
             $item = $this->resolvePath($item);
 
@@ -2242,10 +2383,11 @@ class Browser
             throw new \InvalidArgumentException('Rename Failed: The file name is invalid.');
         }
 
+        // resolve the filesystem that owns the source before the prefix is stripped
+        $filesystem = $this->getFileSystem($source);
+
         // extract the path from the complex path, removing the prefix
         $source = $this->resolvePath($source);
-
-        $filesystem = $this->getFileSystem();
 
         if ($filesystem->is_file($source)) {
             if ($this->checkFeature('rename', 'file') === false) {
@@ -2312,8 +2454,6 @@ class Browser
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
 
-        $filesystem = $this->getFileSystem();
-
         $items = explode(',', rawurldecode((string) $items));
 
         // decode and cast as string
@@ -2321,6 +2461,10 @@ class Browser
 
         // check destination path
         Utility::checkPath($destination);
+
+        // resolve the filesystem that owns the destination before the prefix is stripped
+        $filesystem = $this->getFileSystem($destination);
+        $destFsId = $this->getFileSystemId($destination);
 
         // extract the path from the complex path, removing the prefix
         $destination = $this->resolvePath($destination);
@@ -2357,15 +2501,19 @@ class Browser
                 throw new \InvalidArgumentException('Copy Failed: The file name is invalid.');
             }
 
+            // resolve the filesystem that owns the source before the prefix is stripped
+            $srcFilesystem = $this->getFileSystem($item);
+            $srcFsId = $this->getFileSystemId($item);
+
             $item = $this->resolvePath($item);
 
-            if ($filesystem->is_file($item)) {
+            if ($srcFilesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = dirname($item);
-            } elseif ($filesystem->is_dir($item)) {
+            } elseif ($srcFilesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
@@ -2378,8 +2526,8 @@ class Browser
             $target = Utility::makePath($destination, Utility::mb_basename($item));
 
             if ($filesystem->is_file($target)) {
-                // target is the same as the source so paste as copy
-                if ($target === $item) {
+                // same filesystem and target is the same as the source so paste as copy
+                if ($srcFsId === $destFsId && $target === $item) {
                     $conflict = 'copy';
                     // file exists and is being copied into a new folder
                 } else {
@@ -2396,7 +2544,12 @@ class Browser
                 throw new \InvalidArgumentException('Copy Failed: Access to the target directory is restricted');
             }
 
-            $result = $filesystem->copy($item, $destination, $conflict);
+            // same filesystem: fast internal copy; different filesystem: stream the file across
+            if ($srcFsId === $destFsId) {
+                $result = $filesystem->copy($item, $destination, $conflict);
+            } else {
+                $result = $this->transferItem($srcFilesystem, $filesystem, $item, $target, $conflict, false);
+            }
 
             if ($result instanceof FilesystemResult) {
                 if (!$result->state) {
@@ -2440,8 +2593,6 @@ class Browser
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
 
-        $filesystem = $this->getFileSystem();
-
         $items = explode(',', rawurldecode((string) $items));
 
         // decode and cast as string
@@ -2449,6 +2600,10 @@ class Browser
 
         // check destination path
         Utility::checkPath($destination);
+
+        // resolve the filesystem that owns the destination before the prefix is stripped
+        $filesystem = $this->getFileSystem($destination);
+        $destFsId = $this->getFileSystemId($destination);
 
         // resolve the path to the directory store, eg: files/foo.pdf => images/files/foo.pdf
         $destination = $this->resolvePath($destination);
@@ -2481,6 +2636,10 @@ class Browser
             // check source path
             Utility::checkPath($item);
 
+            // resolve the filesystem that owns the source before the prefix is stripped
+            $srcFilesystem = $this->getFileSystem($item);
+            $srcFsId = $this->getFileSystemId($item);
+
             // extract the path from the complex path, removing the prefix
             $item = $this->resolvePath($item);
 
@@ -2488,11 +2647,11 @@ class Browser
                 throw new \InvalidArgumentException('Move Failed: The file name is invalid.');
             }
 
-            if ($filesystem->is_file($item)) {
+            if ($srcFilesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
-            } elseif ($filesystem->is_dir($item)) {
+            } elseif ($srcFilesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
@@ -2504,7 +2663,13 @@ class Browser
                 return $this->getResult();
             }
 
-            $result = $filesystem->move($item, $destination);
+            // same filesystem: fast internal move; different filesystem: stream across then delete source
+            if ($srcFsId === $destFsId) {
+                $result = $filesystem->move($item, $destination);
+            } else {
+                $target = Utility::makePath($destination, Utility::mb_basename($item));
+                $result = $this->transferItem($srcFilesystem, $filesystem, $item, $target, $overwrite ? 'replace' : '', true);
+            }
 
             if ($result instanceof FilesystemResult) {
                 if (!$result->state) {
@@ -2563,14 +2728,15 @@ class Browser
         $target = (string) rawurldecode($target);
         $new = (string) rawurldecode($new);
 
+        // resolve the filesystem that owns the target before the prefix is stripped
+        $filesystem = $this->getFileSystem($target);
+
         $target = $this->resolvePath($target);
 
         // check access
         if (!$this->checkPathAccess($target)) {
             throw new \InvalidArgumentException('Action Failed: Access to the target directory is restricted');
         }
-
-        $filesystem = $this->getFileSystem();
 
         $name = Utility::makeSafe($new, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
 
@@ -2614,7 +2780,7 @@ class Browser
      */
     public function getDimensions($file)
     {
-        return $this->getFileSystem()->getDimensions($file);
+        return $this->getFileSystem($file)->getDimensions($file);
     }
 
     /**
@@ -2625,9 +2791,10 @@ class Browser
      */
     public function toAbsolute($file)
     {
+        $filesystem = $this->getFileSystem($file);
         $path = $this->resolvePath($file);
 
-        return $this->getFileSystem()->toAbsolute($path);
+        return $filesystem->toAbsolute($path);
     }
 
     /**
@@ -2638,9 +2805,10 @@ class Browser
      */
     public function toRelative($file)
     {
+        $filesystem = $this->getFileSystem($file);
         $path = $this->resolvePath($file);
 
-        return $this->getFileSystem()->toRelative($path);
+        return $filesystem->toRelative($path);
     }
 
     /**
@@ -2651,9 +2819,10 @@ class Browser
      */
     public function readFile($file)
     {
+        $filesystem = $this->getFileSystem($file);
         $path = $this->resolvePath($file);
 
-        return $this->getFileSystem()->read($path);
+        return $filesystem->read($path);
     }
 
     /**
@@ -2665,9 +2834,10 @@ class Browser
      */
     public function writeFile($file, $data)
     {
+        $filesystem = $this->getFileSystem($file);
         $path = $this->resolvePath($file);
 
-        return $this->getFileSystem()->write($path, $data);
+        return $filesystem->write($path, $data);
     }
 
     /**
@@ -2677,9 +2847,10 @@ class Browser
      */
     public function is_file($file)
     {
+        $filesystem = $this->getFileSystem($file);
         $path = $this->resolvePath($file);
 
-        return $this->getFileSystem()->is_file($path);
+        return $filesystem->is_file($path);
     }
 
     /**
@@ -2690,9 +2861,10 @@ class Browser
      */
     public function is_dir($path)
     {
-        $path = $this->resolvePath($path);
+        $filesystem = $this->getFileSystem($path);
+        $resolved = $this->resolvePath($path);
 
-        return $this->getFileSystem()->is_dir($path);
+        return $filesystem->is_dir($resolved);
     }
 
     /**

@@ -118,6 +118,8 @@
 
             <field name="filesystem" type="filesystem" default="joomla" label="WF_PARAM_FILESYSTEM" description="WF_PARAM_FILESYSTEM_DESC" />
 
+            <field name="filesystems" type="filesystems" default="" label="WF_PARAM_FILESYSTEMS" description="WF_PARAM_FILESYSTEMS_DESC" />
+
             <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" default="" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" />
 
             <field name="upload_conflict" type="list" default="overwrite" label="WF_PARAM_UPLOAD_EXISTS" description="WF_PARAM_UPLOAD_EXISTS_DESC">

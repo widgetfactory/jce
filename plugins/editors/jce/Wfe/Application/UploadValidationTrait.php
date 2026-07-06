@@ -90,13 +90,14 @@ trait UploadValidationTrait
             $dir = $this->getDefaultPath();
         }
 
+        // resolve the filesystem that owns the destination before the prefix is stripped
+        $filesystem = $this->getFileSystem($dir);
+
         $dir = $this->resolvePath($dir);
 
         if (empty($dir)) {
             throw new \InvalidArgumentException('Upload Failed: Invalid target directory');
         }
-
-        $filesystem = $this->getFileSystem();
 
         if (!$filesystem->is_dir($dir)) {
             throw new \InvalidArgumentException('Upload Failed: The target directory does not exist');

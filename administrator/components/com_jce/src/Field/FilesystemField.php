@@ -45,6 +45,26 @@ class FilesystemField extends ListField
             }
         }
 
+        return $this->renderInstance($this->name, 'plg_jce_' . $this->fieldname, $value);
+    }
+
+    /**
+     * Render a single filesystem selector together with each installed adapter's own
+     * configuration sub-form. Shared by the single filesystem field and the repeatable
+     * FilesystemsField so both present an identical per-adapter UI.
+     *
+     * @param   string  $control   Base control name for this instance,
+     *                              eg jform[params][filesystem] or ...[filesystems][0].
+     * @param   string  $formName  Unique form name prefix for the per-adapter config forms
+     *                              (must differ per instance to avoid form cache collisions).
+     * @param   array   $value     Instance value: array('name' => <plugin>, <plugin> => array(...)).
+     *
+     * @return  string  The rendered HTML.
+     */
+    protected function renderInstance($control, $formName, $value)
+    {
+        $selected = isset($value['name']) && $value['name'] !== '' ? $value['name'] : $this->default;
+
         $plugins = $this->getPlugins();
         $options = $this->getOptions();
 
@@ -52,7 +72,7 @@ class FilesystemField extends ListField
         $html .= '<div class="controls-row">';
 
         $html .= '<div class="control-group">';
-        $html .= HTMLHelper::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $value['name']);
+        $html .= HTMLHelper::_('select.genericlist', $options, $control . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $selected);
         $html .= '</div>';
 
         $html .= '<div class="filesystem-options clearfix">';
@@ -61,9 +81,9 @@ class FilesystemField extends ListField
             if (!$plugin->manifest) {
                 continue;
             }
-        
-            $form = Factory::getContainer()->get(FormFactoryInterface::class)->createForm('plg_jce_' . $this->name . '_' . $plugin->name, [
-                'control' => $this->name . '[' . $plugin->name . ']',
+
+            $form = Factory::getContainer()->get(FormFactoryInterface::class)->createForm($formName . '_' . $plugin->name, [
+                'control' => $control . '[' . $plugin->name . ']',
             ]);
 
             if ($form) {

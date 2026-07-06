@@ -221,26 +221,129 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         return $filesystem;
     }
 
-    private function getFilesystem($config = array())
+    /**
+     * Get all configured filesystem definitions keyed by id.
+     *
+     * The reserved 'default' entry is the profile's primary filesystem
+     * (from the plugin `filesystem` or global `editor.filesystem` parameter).
+     * Additional entries come from the repeatable `editor.filesystems` parameter,
+     * each contributing a single filesystem with one base folder (one mount).
+     *
+     * @return array id => (object) ['id', 'name', 'label', 'path', 'properties']
+     */
+    private function getFileSystemDefinitions()
+    {
+        static $definitions = null;
+
+        if ($definitions !== null) {
+            return $definitions;
+        }
+
+        $definitions = array();
+
+        // primary (default) filesystem — its mounts come from the dir parameter, so path is null
+        $fs = $this->getFileSystemConfig();
+
+        $definitions['default'] = (object) array(
+            'id'         => 'default',
+            'name'       => $fs->name,
+            'label'      => '',
+            'path'       => null,
+            'properties' => $fs->properties->toArray(),
+        );
+
+        // additional filesystems (repeatable parameter), each one base folder = one mount
+        $filesystems = $this->getParam('editor.filesystems', array());
+
+        if (!is_array($filesystems)) {
+            $filesystems = array();
+        }
+
+        foreach (array_values($filesystems) as $row) {
+            $row = (array) $row;
+
+            // filesystem type/name is required
+            $name = trim((string) ($row['name'] ?? $row['type'] ?? ''));
+
+            if ($name === '') {
+                continue;
+            }
+
+            // Prefer the row's own persisted id (generated in the profile UI and stable across
+            // reordering, deletion and later edits). When absent, fall back to a hash of the row
+            // content so the id is still independent of row position. 'default' is reserved.
+            $id = trim((string) ($row['id'] ?? ''));
+
+            if ($id === '' || $id === 'default') {
+                $stable = $row;
+                unset($stable['id'], $stable['label']);
+                ksort($stable);
+
+                $id = 'fs_' . substr(md5(json_encode($stable)), 0, 12);
+            }
+
+            // guard against collisions (reserved 'default', duplicate ids or duplicate rows)
+            $base = $id;
+            $suffix = 1;
+
+            while ($id === 'default' || isset($definitions[$id])) {
+                $id = $base . '_' . $suffix++;
+            }
+
+            // adapter properties are nested under the plugin name, mirroring the single
+            // editor.filesystem field shape, eg: { name: 's3', s3: { bucket, key, ... } }
+            $properties = isset($row[$name]) ? (array) $row[$name] : array();
+            $properties['name'] = $name;
+
+            $definitions[$id] = (object) array(
+                'id'         => $id,
+                'name'       => $name,
+                'label'      => trim((string) ($row['label'] ?? '')),
+                'path'       => trim((string) ($row['path'] ?? '')),
+                'properties' => $properties,
+            );
+        }
+
+        return $definitions;
+    }
+
+    /**
+     * Get a filesystem adapter instance by definition id.
+     *
+     * @param string $id     The filesystem definition id (defaults to the primary filesystem).
+     * @param array  $config Shared config merged into the instance (filetypes, upload options, ...).
+     *
+     * @return object The filesystem adapter instance.
+     */
+    public function getFileSystemInstance($id = 'default', $config = array())
     {
         static $instances = array();
 
-        $fs = $this->getFileSystemConfig();
+        $definitions = $this->getFileSystemDefinitions();
 
-        // merge config with filesystem properties
-        if (isset($fs->properties)) {
-            $config = array_merge($fs->properties->toArray(), $config);
+        // fall back to the primary filesystem if the id is unknown
+        if (!isset($definitions[$id])) {
+            $id = 'default';
         }
 
-        $config['name'] = isset($fs->name) ? $fs->name : 'joomla';
+        $definition = $definitions[$id];
 
-        $signature = md5($fs->name . serialize($config));
+        // merge definition properties with the shared config (shared config wins)
+        $instanceConfig = array_merge($definition->properties, $config);
+        $instanceConfig['name'] = $definition->name;
+
+        $signature = md5($id . serialize($instanceConfig));
 
         if (!isset($instances[$signature])) {
-            $instances[$signature] = FilesystemAdapter::getInstance($this, $config);
+            $instances[$signature] = FilesystemAdapter::getInstance($this, $instanceConfig);
         }
 
         return $instances[$signature];
+    }
+
+    private function getFilesystem($config = array())
+    {
+        return $this->getFileSystemInstance('default', $config);
     }
 
     /**
@@ -329,33 +432,65 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
                 $hash = md5($root);
 
                 $dirStore[$hash] = [
-                    'path'  => $root,
-                    'label' => '' // no label required for a single path
+                    'path'       => $root,
+                    'label'      => '', // no label required for a single path
+                    'filesystem' => 'default',
                 ];
             } else {
                 // Root allowed: a single blank/root entry
                 $hash = md5('');
 
                 $dirStore[$hash] = [
-                    'path' => '',
-                    'label' => '',
+                    'path'       => '',
+                    'label'      => '',
+                    'filesystem' => 'default',
                 ];
             }
+        } else {
+            // Otherwise, at least one non-blank path exists — ignore blank rows
+            foreach ($nonBlank as $item) {
+                $hash = md5($item['path']);
 
-            return $dirStore;
+                if (empty($item['label'])) {
+                    $item['label'] = basename($item['path']) ?: $item['path'];
+                }
+
+                $dirStore[$hash] = [
+                    'path'       => $item['path'],
+                    'label'      => $item['label'],
+                    'filesystem' => 'default',
+                ];
+            }
         }
 
-        // Otherwise, at least one non-blank path exists — ignore blank rows
-        foreach ($nonBlank as $item) {
-            $hash = md5($item['path']);
-
-            if (empty($item['label'])) {
-                $item['label'] = basename($item['path']) ?: $item['path'];
+        // Append a mount for each additional (non-default) filesystem, one base folder each
+        foreach ($this->getFileSystemDefinitions() as $id => $definition) {
+            if ($id === 'default') {
+                continue;
             }
 
+            $instance = $this->getFileSystemInstance($id);
+
+            $path = trim((string) $definition->path);
+
+            // fall back to the filesystem's own root when no base folder is set
+            if ($path === '') {
+                $path = $instance->getConfig('root', 'images') ?: 'images';
+            }
+
+            $label = $definition->label;
+
+            if ($label === '') {
+                $label = $path !== '' ? basename($path) : $definition->name;
+            }
+
+            // prefix keyed by filesystem id + path so mounts on different filesystems never collide
+            $hash = md5($id . ':' . $path);
+
             $dirStore[$hash] = [
-                'path' => $item['path'],
-                'label' => $item['label'],
+                'path'       => $path,
+                'label'      => $label,
+                'filesystem' => $id,
             ];
         }
 
@@ -402,11 +537,14 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         // flatten filetypes
         $filetypes = Utility::formatFileTypesList('list', $filetypes);
 
-        $filesystem = $this->getFilesystem(array(
+        // shared config applied to every filesystem instance (default and additional)
+        $filesystemConfig = array(
             'upload_conflict'   => $this->getParam('editor.upload_conflict', 'overwrite'),
             'upload_suffix'     => $this->getParam('editor.upload_suffix', '_copy'),
             'filetypes'         => $filetypes
-        ));
+        );
+
+        $filesystem = $this->getFilesystem($filesystemConfig);
 
         // implode textcase array to create string
         if (is_array($textcase)) {
@@ -453,6 +591,8 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         $base = array(
             'dir' => $dirStore,
             'filesystem' => $filesystem,
+            'filesystems' => $this->getFileSystemDefinitions(),
+            'filesystem_config' => $filesystemConfig,
             'filetypes' => $filetypes,
             'filter' => $filter,
             'upload' => array(

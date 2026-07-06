@@ -265,6 +265,56 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         return true;
     }
 
+    /**
+     * Open a readable stream for a file. Adapters with native stream support should override this.
+     * The default buffers the whole file into memory via read(), which is a correct but non-optimal
+     * fallback for adapters that only implement string read/write.
+     *
+     * @param  string $path Relative file path.
+     * @return resource|false A readable stream resource, or false on failure.
+     */
+    public function readStream($path)
+    {
+        $content = $this->read($path);
+
+        if ($content === false || $content === null) {
+            return false;
+        }
+
+        $stream = fopen('php://temp', 'r+b');
+
+        if ($stream === false) {
+            return false;
+        }
+
+        fwrite($stream, $content);
+        rewind($stream);
+
+        return $stream;
+    }
+
+    /**
+     * Write a stream to a file. Adapters with native stream support should override this.
+     * The default drains the stream into memory and delegates to write().
+     *
+     * @param  string   $path     Relative destination file path.
+     * @param  resource $resource A readable stream resource.
+     * @param  string   $conflict Conflict resolution mode ('', 'copy', 'replace').
+     * @return FilesystemResult
+     */
+    public function writeStream($path, $resource, $conflict = 'replace')
+    {
+        $result = new FilesystemResult();
+        $result->type = 'files';
+
+        $content = is_resource($resource) ? stream_get_contents($resource) : '';
+
+        $result->state = (bool) $this->write($path, $content);
+        $result->path = $path;
+
+        return $result;
+    }
+
     public function isLocal()
     {
         return $this->getConfig('local') === true;

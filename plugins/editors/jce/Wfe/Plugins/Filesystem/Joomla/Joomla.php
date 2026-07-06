@@ -1125,6 +1125,91 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
     }
 
     /**
+     * Open a readable stream for a file.
+     *
+     * @param  string $path Relative file path.
+     * @return resource|false A readable stream resource, or false on failure.
+     */
+    public function readStream($path)
+    {
+        $path = rawurldecode($path);
+
+        $absolute = $this->toAbsolute(trim($path, '/'));
+
+        // check path does not fall within a restricted folder
+        $this->checkRestrictedDirectory($absolute);
+
+        if (!is_file($absolute)) {
+            return false;
+        }
+
+        return @fopen($absolute, 'rb');
+    }
+
+    /**
+     * Write a stream to a file, used for transferring files between filesystems.
+     *
+     * @param  string   $path     Relative destination file path.
+     * @param  resource $resource A readable stream resource.
+     * @param  string   $conflict Conflict resolution mode ('', 'copy', 'replace').
+     * @return FilesystemResult
+     */
+    public function writeStream($path, $resource, $conflict = 'replace')
+    {
+        $result = new FilesystemResult();
+        $result->type = 'files';
+
+        $path = rawurldecode($path);
+
+        $name = Utility::mb_basename($path);
+
+        // full destination path
+        $dest = $this->toAbsolute(trim($path, '/'));
+
+        // check destination path does not fall within a restricted folder
+        $this->checkRestrictedDirectory($dest);
+
+        // resolve filename conflict by creating a copy if required
+        if ($conflict == 'copy') {
+            $dest = $this->resolveFilenameConflict($dest, $name, true);
+        }
+
+        if (!is_resource($resource)) {
+            $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
+            return $result;
+        }
+
+        // ensure the destination directory exists
+        $dir = Utility::mb_dirname($dest);
+
+        if (!is_dir($dir)) {
+            Folder::create($dir);
+        }
+
+        $out = @fopen($dest, 'wb');
+
+        if ($out === false) {
+            $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
+            return $result;
+        }
+
+        $bytes = @stream_copy_to_stream($resource, $out);
+
+        @fclose($out);
+
+        if ($bytes === false) {
+            $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
+            return $result;
+        }
+
+        $result->state = true;
+        $result->path = $dest;
+        $result->source = '';
+
+        return $result;
+    }
+
+    /**
      * Check if a path is a file.
      *
      * @param string $path The path to check

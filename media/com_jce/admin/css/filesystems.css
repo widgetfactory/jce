@@ -1,0 +1,18 @@
+/* Repeatable "filesystems" profile field */
+.wf-filesystems .wf-filesystem-row {
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.wf-filesystems .wf-filesystem-row-header {
+    gap: 0.25rem;
+}
+
+.wf-filesystems .wf-filesystem-row-header .btn-link {
+    text-decoration: none;
+}
+
+.wf-filesystems .wf-filesystem-row .filesystem-options > div:empty {
+    display: none;
+}
