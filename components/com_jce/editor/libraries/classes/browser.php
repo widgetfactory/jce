@@ -1259,10 +1259,11 @@ class WFFileBrowser extends CMSObject
                     }
                 }
 
-                $item['id'] = $prefix . ':' . htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8');
+                // Keep id and name raw: this is JSON data used for file operations and to build
+                // paths/urls. The client HTML-encodes on markup injection (see filebrowser.js).
+                $item['id'] = $prefix . ':' . $item['id'];
 
                 $item['name'] = WFUtility::mb_basename($item['name']);
-                $item['name'] = htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8');
 
                 $result[$type][] = $item;
             }
@@ -1444,16 +1445,15 @@ class WFFileBrowser extends CMSObject
                     $item['id'] = WFUtility::safe_substr($item['id'], WFUtility::safe_strlen($store['path']));
                 }
 
-                // trim $id removing leading and trailing slashes
+                // trim $id removing leading and trailing slashes. Keep the id raw: this is JSON
+                // data that round-trips back to the server for file operations and is used to build
+                // paths/urls, so HTML-encoding here would corrupt it. The client HTML-encodes every
+                // value at the point of markup injection (see filebrowser.js), so encoding here would
+                // also double-encode on display.
                 $item['id'] = trim($item['id'], '/');
-                // encode id for html
-                $item['id'] = htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8');
 
-                // ensure name is relative
+                // ensure name is relative. Keep raw for the same reasons as the id above.
                 $item['name'] = WFUtility::mb_basename($item['name']);
-
-                // encode name for html
-                $item['name'] = htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8');
 
                 // create path
                 $item['path'] = WFUtility::makePath($store['path'], $item['id']);

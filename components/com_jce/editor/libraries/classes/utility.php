@@ -264,12 +264,19 @@ abstract class WFUtility
     /**
      * Validates a string for use as a file or folder name or path, ensuring it contains only safe characters.
      *
-     * - Disallows null bytes and control characters.
-     * - Accepts valid UTF-8 strings with letters, digits, combining marks, and common safe punctuation.
-     * - Allows characters: Unicode letters (L), numbers (N), marks (M), space, dot (.), dash (-),
-     *   underscore (_), colon (:), forward slash (/), parentheses (), and square brackets [].
-     * - Provides a fallback byte-level ASCII check if the string is not valid UTF-8.
-     * - Safe for use with both multibyte and legacy ASCII inputs, even if mbstring is not available.
+     * Uses a deny-list rather than a narrow allow-list so that legitimately named files - created via
+     * FTP, migrations or other tools and containing characters such as ' $ & + , ; = @ # - can still be
+     * listed and operated on. This is safe because names/paths are always URL- and HTML-encoded on output
+     * and are never passed to a shell.
+     *
+     * Rejects:
+     * - Null bytes and control characters (0x00–0x1F, 0x7F).
+     * - Invalid UTF-8 (guards against malformed/overlong sequences that could disguise a "/" or ".." and
+     *   slip past the traversal check in checkPath()).
+     * - Characters reserved or unsafe across filesystems, URLs and markup: \ < > " | ? *
+     *
+     * Everything else - all Unicode letters, marks, numbers and the remaining printable punctuation,
+     * plus ":" and "/" - is permitted.
      *
      * @param string $string The input string to validate.
      *
@@ -283,58 +290,20 @@ abstract class WFUtility
             return false;
         }
 
-        // Try UTF-8 validation if mb_check_encoding() is available
+        // Require valid UTF-8. Malformed or overlong byte sequences are rejected so they cannot be used
+        // to disguise a "/" or ".." and bypass the traversal check that runs against this string.
         $isUtf8 = function_exists('mb_check_encoding')
-        ? mb_check_encoding($string, 'UTF-8')
-        : (bool) preg_match('//u', $string); // minimal UTF-8 validity test
+            ? mb_check_encoding($string, 'UTF-8')
+            : (bool) preg_match('//u', $string); // minimal UTF-8 validity test
 
-        if ($isUtf8) {
-            // Use mb_* if available
-            if (function_exists('mb_strlen') && function_exists('mb_substr')) {
-                $length = mb_strlen($string, 'UTF-8');
+        if (!$isUtf8) {
+            return false;
+        }
 
-                for ($i = 0; $i < $length; $i++) {
-                    $char = mb_substr($string, $i, 1, 'UTF-8');
-
-                    if (!preg_match('#^[\p{L}\p{N}\p{M}\p{So}\.\-_\:/\(\)\[\] ]$#u', $char)) {
-                        return false;
-                    }
-                }
-            } else {
-                // No mbstring: use preg_match_all to split into characters
-                if (!preg_match_all('/./u', $string, $matches)) {
-                    return false;
-                }
-
-                foreach ($matches[0] as $char) {
-                    if (!preg_match('#^[\p{L}\p{N}\p{M}\p{So}\.\-_\:/\(\)\[\] ]$#u', $char)) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            // Fallback: raw byte-level ASCII check
-            $length = strlen($string);
-
-            for ($i = 0; $i < $length; $i++) {
-                $ord = ord($string[$i]);
-
-                if (
-                    $ord < 32 || $ord > 126 ||
-                    in_array($ord, [34, 42, 60, 62, 63, 92, 124]) // " * < > ? \ |
-                ) {
-                    return false;
-                }
-
-                if (!(
-                    ($ord >= 48 && $ord <= 57) || // 0–9
-                    ($ord >= 65 && $ord <= 90) || // A–Z
-                    ($ord >= 97 && $ord <= 122) || // a–z
-                    in_array($ord, [32, 45, 46, 95, 58, 47, 40, 41, 91, 93]) // allowed symbols
-                )) {
-                    return false;
-                }
-            }
+        // Reject control characters and the reserved/unsafe set: \ < > " | ? *
+        // (byte-wise: valid UTF-8 multibyte characters are bytes >= 0x80 and never match this range).
+        if (preg_match('#[\x00-\x1F\x7F\\\\<>"|?*]#', $string)) {
+            return false;
         }
 
         return true;
