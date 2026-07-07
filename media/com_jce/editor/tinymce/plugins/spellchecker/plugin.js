@@ -552,9 +552,9 @@
             };
 
             tinymce.util.XHR.send({
-                url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.rpc&plugin=spellchecker&' + ed.settings.query,
-                data: 'json=' + JSON.stringify(args),
-                content_type: 'application/x-www-form-urlencoded',
+                url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.xhr&plugin=spellchecker&' + ed.settings.query,
+                data: JSON.stringify(args),
+                content_type: 'application/json',
                 success: function (o) {
                     var c;
 

@@ -64,12 +64,6 @@
 
             callback = callback || $.noop;
 
-            // additional POST data to add (will not be parsed by PHP json parser)
-            var args = {};
-
-            // get form input data (including token) as serialized string
-            var fields = $(':input', 'form').serialize();
-
             // if data is a string or array
             if ($.type(data) === 'string' || $.type(data) === 'array') {
                 $.extend(json, {
@@ -92,18 +86,25 @@
                     delete data.json;
                 }
 
-                $.extend(args, data);
-            }
-
-            // add passed in data to form fields
-            if (!$.isEmptyObject(args)) {
-                fields += '&' + $.param(args);
+                // merge any remaining properties into the request object
+                $.extend(json, data);
             }
 
             var url = document.location.href;
 
             // replace task
-            url = url.replace(/task=plugin.display/, 'task=plugin.rpc');
+            url = url.replace(/task=plugin.display/, 'task=plugin.xhr');
+
+            // Keep the CSRF token in the query string (checkToken reads GET) so the
+            // request body can be sent as pure JSON. Posting the JSON-RPC payload as
+            // an application/json body — instead of a "json="-encoded form field —
+            // stops WAF rulesets (e.g. OWASP CRS 942xxx) false-flagging the JSON
+            // punctuation as SQL injection.
+            var token = $(':input', 'form').serialize().match(/(?:^|&)([0-9a-f]{32})=1(?:&|$)/);
+
+            if (token && url.indexOf(token[1]) === -1) {
+                url += (url.indexOf('?') === -1 ? '?' : '&') + token[1] + '=1';
+            }
 
             function showError(e) {
                 var txt = "";
@@ -128,7 +129,8 @@
                 "url": url,
                 "dataType": "text",
                 "method": "post",
-                "data": "json=" + JSON.stringify(json) + '&' + fields
+                "contentType": "application/json",
+                "data": JSON.stringify(json)
             }).done(function (o) {
                 var r;
 
