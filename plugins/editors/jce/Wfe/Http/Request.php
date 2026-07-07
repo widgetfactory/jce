@@ -152,12 +152,17 @@ final class Request
         // Read JSON body: either application/json (raw body) or urlencoded json= field
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
 
-        if (strpos($contentType, 'application/json') !== false) {
-            $raw = file_get_contents('php://input', false, null, 0, 65536);
-            $json = ($raw !== false && $raw !== '') ? json_decode($raw) : null;
+        if (stripos($contentType, 'application/json') !== false) {
+            // Reject oversized bodies up front rather than truncating (which corrupts the JSON)
+            if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 65536) {
+                jexit(Text::_('JINVALID_TOKEN'));
+            }
+
+            $raw  = file_get_contents('php://input');
+            $json = ($raw !== '' && $raw !== false) ? json_decode($raw, false, 32) : null;
         } else {
-            $raw = $app->input->getVar('json', '', 'POST', 'STRING', 2);
-            $json = $raw ? json_decode($raw) : null;
+            $raw  = $app->input->getVar('json', '', 'POST', 'STRING', 2);
+            $json = $raw ? json_decode($raw, false, 32) : null;
         }
 
         // get current request id
