@@ -121,7 +121,6 @@ final class WFRequest extends CMSObject
             }
 
             // Recurse into nested arrays/objects.
-            // Do NOT return here - every sibling element must be checked.
             if (is_array($value) || is_object($value)) {
                 $this->checkQuery($value);
                 continue;
