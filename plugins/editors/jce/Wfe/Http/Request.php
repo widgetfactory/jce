@@ -87,7 +87,8 @@ final class Request
      */
     private function isRequest()
     {
-        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart') !== false);
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || strpos($contentType, 'multipart') !== false || strpos($contentType, 'application/json') !== false;
     }
 
     public function setRequest($request)
@@ -146,13 +147,17 @@ final class Request
         // empty arguments
         $args = array();
 
-        $json = $app->input->getVar('json', '', 'POST', 'STRING', 2);
         $method = $app->input->getWord('method');
 
-        // get and encode json data
-        if ($json) {
-            // convert to JSON object
-            $json = json_decode($json);
+        // Read JSON body: either application/json (raw body) or urlencoded json= field
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+        if (strpos($contentType, 'application/json') !== false) {
+            $raw = file_get_contents('php://input', false, null, 0, 65536);
+            $json = ($raw !== false && $raw !== '') ? json_decode($raw) : null;
+        } else {
+            $raw = $app->input->getVar('json', '', 'POST', 'STRING', 2);
+            $json = $raw ? json_decode($raw) : null;
         }
 
         // get current request id

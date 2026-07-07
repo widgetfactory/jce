@@ -192,7 +192,7 @@ class Browser
             $query .= '&' . $k . '=' . $v;
         }
 
-        return Uri::base(true) . '/index.php?option=com_jce&task=plugin.rpc' . $query;
+        return Uri::base(true) . '/index.php?option=com_jce&task=plugin.xhr' . $query;
     }
 
     /**

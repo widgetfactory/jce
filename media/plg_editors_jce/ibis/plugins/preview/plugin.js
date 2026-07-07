@@ -163,10 +163,10 @@
             // load preview data
             ibis.util.XHR.send({
                 url: s.site_url + 'index.php?option=com_jce&task=plugin.display&plugin=preview&' + ibis.query,
-                data: 'json=' + JSON.stringify({
+                data: JSON.stringify({
                     'method': 'showPreview'
-                }) + '&' + query,
-                content_type: 'application/x-www-form-urlencoded',
+                }),
+                content_type: 'application/json',
                 success: function (x) {
                     var o = {};
 
