@@ -156,8 +156,10 @@ final class WFRequest extends CMSObject
 
         // Read JSON body: either application/json (raw body) or urlencoded json= field
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        
         if (strpos($contentType, 'application/json') !== false) {
-            $json = json_decode(file_get_contents('php://input'));
+            $raw = file_get_contents('php://input', false, null, 0, 1048576);
+            $json = ($raw !== false && $raw !== '') ? json_decode($raw) : null;
         } else {
             $raw = $app->input->getVar('json', '', 'POST', 'STRING', 2);
             $json = $raw ? json_decode($raw) : null;
