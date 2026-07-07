@@ -158,7 +158,7 @@ final class WFRequest extends CMSObject
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         
         if (strpos($contentType, 'application/json') !== false) {
-            $raw = file_get_contents('php://input', false, null, 0, 1048576);
+            $raw = file_get_contents('php://input', false, null, 0, 65536);
             $json = ($raw !== false && $raw !== '') ? json_decode($raw) : null;
         } else {
             $raw = $app->input->getVar('json', '', 'POST', 'STRING', 2);
