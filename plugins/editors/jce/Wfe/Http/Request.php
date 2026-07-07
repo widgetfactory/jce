@@ -103,25 +103,25 @@ final class Request
      */
     private function checkQuery($query)
     {
-        if (is_string($query)) {
+        // Normalise scalars to an array so the loop handles every case
+        if (!is_array($query) && !is_object($query)) {
             $query = array($query);
         }
 
-        // check for null byte
         foreach ($query as $key => $value) {
-            if (is_array($value) || is_object($value)) {
-                return self::checkQuery($value);
-            }
-
-            if (is_array($key)) {
-                return self::checkQuery($key);
-            }
-
-            // Check if $key or $value is null before using strpos
-            if ($key !== null && strpos((string) $key, "\x00") !== false) {
+            // Array keys are always int or string; guard string keys for null bytes
+            if (is_string($key) && strpos($key, "\x00") !== false) {
                 throw new InvalidArgumentException("Invalid Data", 403);
             }
 
+            // Recurse into nested arrays/objects.
+            // Do NOT return here - every sibling element must be checked.
+            if (is_array($value) || is_object($value)) {
+                $this->checkQuery($value);
+                continue;
+            }
+
+            // Guard scalar values for null bytes
             if ($value !== null && strpos((string) $value, "\x00") !== false) {
                 throw new InvalidArgumentException("Invalid Data", 403);
             }
