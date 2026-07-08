@@ -219,7 +219,19 @@
                 return s;
             }
 
-            s = encodeURIComponent(decodeURIComponent(s)).replace(/%2F/g, '/');
+            // decodeURIComponent first for idempotency (so an already-encoded value isn't
+            // double-encoded). A literal "%" that isn't valid percent-encoding - eg. a stray "%"
+            // in a pasted URL or a filename like "100% off.jpg" - makes decodeURIComponent throw
+            // "URI malformed"; fall back to encoding the raw string, which turns "%" into "%25".
+            var decoded;
+
+            try {
+                decoded = decodeURIComponent(s);
+            } catch (e) {
+                decoded = s;
+            }
+
+            s = encodeURIComponent(decoded).replace(/%2F/g, '/');
 
             if (preserve_urls) {
                 s = s.replace(/%(21|2A|27|28|29|3B|3A|40|26|3D|2B|24|2C|3F|25|23|5B|5D)/g, function (a, b) {
