@@ -228,7 +228,8 @@ abstract class Utility
      * - Null bytes and control characters (0x00–0x1F, 0x7F).
      * - Invalid UTF-8 (guards against malformed/overlong sequences that could disguise a "/" or ".." and
      *   slip past the traversal check in checkPath()).
-     * - Characters reserved or unsafe across filesystems, URLs and markup: \ < > " | ? *
+     * - Characters reserved or unsafe across filesystems, URLs and markup: \ < > " | ? * %
+     *   ("%" is the percent-encoding escape - a literal one breaks URL encode/decode round-trips.)
      *
      * Everything else - all Unicode letters, marks, numbers and the remaining printable punctuation,
      * plus ":" and "/" - is permitted.
@@ -255,9 +256,12 @@ abstract class Utility
             return false;
         }
 
-        // Reject control characters and the reserved/unsafe set: \ < > " | ? *
+        // Reject control characters and the reserved/unsafe set: \ < > " | ? * %
+        // "%" is the URL percent-encoding escape; a literal one breaks client encode/decode
+        // round-trips (see checkName). This runs after checkPath() urldecodes, so legitimate
+        // "%20"-style encoding is already resolved and only a literal "%" reaches here.
         // (byte-wise: valid UTF-8 multibyte characters are bytes >= 0x80 and never match this range).
-        if (preg_match('#[\x00-\x1F\x7F\\\\<>"|?*]#', $string)) {
+        if (preg_match('#[\x00-\x1F\x7F\\\\<>"|?*%]#', $string)) {
             return false;
         }
 
@@ -322,6 +326,15 @@ abstract class Utility
 
     public static function checkName($name)
     {
+        // Reject the URL percent-encoding escape character before decoding. A literal "%" in a
+        // filename is ambiguous with an encoded sequence and breaks client-side encode/decode
+        // round-trips: decodeURIComponent() throws "URI malformed" (and the server 400s) on an
+        // invalid sequence such as "100% off.jpg". makeSafe strips "%", so JCE never creates such
+        // names - they only arrive via FTP/migration.
+        if (strpos($name, '%') !== false) {
+            throw new \InvalidArgumentException('Invalid name');
+        }
+
         $name = urldecode($name);
 
         // Disallow null byte
