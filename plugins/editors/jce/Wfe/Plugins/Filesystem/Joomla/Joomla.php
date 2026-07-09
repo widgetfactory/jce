@@ -536,7 +536,12 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
                         }
                     }
                 } else {
-                    list($image['width'], $image['height']) = @getimagesize($path);
+                    $dimensions = @getimagesize($path);
+                    
+                    if ($dimensions) {
+                        $image['width'] = $dimensions[0];
+                        $image['height'] = $dimensions[1];
+                    }
                 }
             }
 
