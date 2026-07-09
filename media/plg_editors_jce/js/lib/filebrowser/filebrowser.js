@@ -1107,7 +1107,7 @@
                     }
 
                     $.each(e.properties, function (k, v) {
-                        if (v !== '') {
+                        if (v != null && v !== '') {
 
                             if (k == 'attribution') {
                                 var val = [];
