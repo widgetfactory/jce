@@ -2153,14 +2153,15 @@ class Browser
                     throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
 
-                // check file name is not blocked (executable extensions etc.)
-                if (Utility::validateFileName(Utility::mb_basename($item)) === false) {
-                    throw new \InvalidArgumentException('Delete Failed: The file name is invalid.');
-                }
-
-                // check extension is allowed
+                // check extension is allowed and the name is not blocked (executable extensions etc.).
+                // Pass the profile's allowed types so svg/html/htm stay operable when the profile
+                // permits them (matches the listing gate in getFiles()).
                 $ext     = Utility::getExtension($item, true);
                 $allowed = (array) $this->getFileTypes('array');
+
+                if (Utility::validateFileName(Utility::mb_basename($item), $allowed) === false) {
+                    throw new \InvalidArgumentException('Delete Failed: The file name is invalid.');
+                }
 
                 if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
                     throw new \InvalidArgumentException('Delete Failed: Invalid file extension.');
@@ -2232,8 +2233,9 @@ class Browser
 
         $allowed = (array) $this->getFileTypes('array');
 
-        // check source file name is not blocked (executable extensions etc.)
-        if (Utility::validateFileName(Utility::mb_basename($source)) === false) {
+        // check source file name is not blocked (executable extensions etc.). Pass the profile's
+        // allowed types so svg/html/htm stay operable when the profile permits them.
+        if (Utility::validateFileName(Utility::mb_basename($source), $allowed) === false) {
             throw new \InvalidArgumentException('Rename Failed: The source file name is invalid.');
         }
 
