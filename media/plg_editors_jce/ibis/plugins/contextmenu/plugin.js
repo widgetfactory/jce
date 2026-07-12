@@ -90,6 +90,7 @@
             getMenu(ed, e).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
             Event.add(ed.getDoc(), 'click', hideMenu);
+            Event.add(DOM.doc, 'mousedown', hideMenu);
 
             ed.nodeChanged();
         });
@@ -111,6 +112,7 @@
                 self._menu.removeAll();
                 self._menu.destroy();
                 Event.remove(ed.getDoc(), 'click', hideMenu);
+                Event.remove(DOM.doc, 'mousedown', hideMenu);
                 self._menu = null;
             }
         }
