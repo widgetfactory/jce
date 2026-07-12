@@ -674,6 +674,11 @@ class pkg_jceInstallerScript
         // remove profile manifiests
         $files['2.9.99.7'] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: [];
 
+        // remove editor.php in pro
+        $files['2.9.99.10'] = array(
+            JPATH_SITE . '/plugins/system/jcepro/editor/libraries/classes/editor.php'
+        );
+
         // remove pro source plugin
         $files['2.9.70'] = array(
             $site . '/editor/plugins/source/config.php',
