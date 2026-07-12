@@ -165,6 +165,14 @@ final class WFRequest extends CMSObject
 
             $raw  = file_get_contents('php://input');
             $json = ($raw !== '' && $raw !== false) ? json_decode($raw, false, 32) : null;
+
+            // The body is pure JSON, so the "data" payload (read by handlers such as createTemplate
+            // via $app->input->post) is not in $_POST. Surface it to the POST input so those handlers
+            // keep working, matching the urlencoded path where it arrives as a POST field. Only "data"
+            // is exposed; the RPC envelope (method/params/id) stays in $json for the dispatcher.
+            if (is_object($json) && isset($json->data) && is_scalar($json->data)) {
+                $app->input->post->set('data', $json->data);
+            }
         } else {
             $raw  = $app->input->getVar('json', '', 'POST', 'STRING', 2);
             $json = $raw ? json_decode($raw, false, 32) : null;
