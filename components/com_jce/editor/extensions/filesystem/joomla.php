@@ -447,6 +447,8 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     /**
      * Get the source directory of a file path.
+     * 
+     * @param string $path File path
      */
     public function getSourceDir($path)
     {
@@ -483,7 +485,7 @@ class WFJoomlaFileSystem extends WFFileSystem
     /**
      * Return constituent parts of a file path eg: base directory, file name.
      *
-     * @param $path Relative or absolute path
+     * @param string $path Relative or absolute path
      */
     public function pathinfo($path)
     {
@@ -587,11 +589,11 @@ class WFJoomlaFileSystem extends WFFileSystem
     /**
      * Delete the relative file(s).
      *
-     * @param $files the relative path to the file name or comma seperated list of multiple paths
+     * @param string $src the relative path to the file name or comma seperated list of multiple paths
      *
-     * @return string $error on failure
+     * @return WFFileSystemResult $result
      */
-    public function delete($src)
+    public function delete($src): WFFileSystemResult
     {
         $path = $this->toAbsolute($src);
 
@@ -672,8 +674,8 @@ class WFJoomlaFileSystem extends WFFileSystem
     /**
      * Copy a file.
      *
-     * @param string $files The relative file or comma seperated list of files
-     * @param string $dest  The relative path of the destination dir
+     * @param string $file The relative file or comma seperated list of files
+     * @param string $destination  The relative path of the destination dir
      *
      * @return string $error on failure
      */
