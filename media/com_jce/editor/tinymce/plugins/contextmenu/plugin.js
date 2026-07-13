@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved.
  * @copyright   Copyright 2009, Moxiecode Systems AB
  * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
@@ -90,7 +90,12 @@
             getMenu(ed, e).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
             Event.add(ed.getDoc(), 'click', hideMenu);
-            Event.add(DOM.doc, 'mousedown', hideMenu);
+            Event.add(DOM.doc, 'mousedown', function (e) {
+                if (e.target && e.target.closest('.mceMenu')) {
+                    return;
+                }
+                hideMenu(e);
+            });
 
             ed.nodeChanged();
         });
@@ -181,6 +186,8 @@
                 icon: 'justifyfull',
                 cmd: 'JustifyFull'
             });
+
+            m.addSeparator();
 
             self.onContextMenu.dispatch(self, m, el, col);
 
