@@ -87,10 +87,18 @@
                 ed.selection.select(e.target);
             }
 
-            getMenu(ed, e).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
+            var m = getMenu(ed, e);
+
+            m.showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
             Event.add(ed.getDoc(), 'click', hideMenu);
-            Event.add(DOM.doc, 'mousedown', hideMenu);
+            Event.add(DOM.doc, 'mousedown', function (e) {                
+                if (e.target && e.target.closest('.mceMenu')) {
+                    return;
+                }
+
+                hideMenu();
+            });
 
             ed.nodeChanged();
         });
@@ -181,6 +189,8 @@
                 icon: 'justifyfull',
                 cmd: 'JustifyFull'
             });
+
+            m.addSeparator();
 
             self.onContextMenu.dispatch(self, m, el, col);
 
