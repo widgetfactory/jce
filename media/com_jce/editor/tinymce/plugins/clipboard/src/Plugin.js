@@ -25,7 +25,6 @@ tinymce.PluginManager.add('clipboard', function (ed, url) {
                 if (ed.getParam('clipboard_cut', 1)) {
                     m.add({
                         title: 'advanced.cut_desc',
-                        /* TODO - Change to clipboard.cut_desc */
                         icon: 'cut',
                         cmd: 'Cut'
                     }).setDisabled(c);
@@ -34,7 +33,6 @@ tinymce.PluginManager.add('clipboard', function (ed, url) {
                 if (ed.getParam('clipboard_copy', 1)) {
                     m.add({
                         title: 'advanced.copy_desc',
-                        /* TODO - Change to clipboard.copy_desc */
                         icon: 'copy',
                         cmd: 'Copy'
                     }).setDisabled(c);
@@ -43,17 +41,19 @@ tinymce.PluginManager.add('clipboard', function (ed, url) {
                 if (pasteHtml) {
                     m.add({
                         title: 'clipboard.paste_desc',
-                        /* TODO - Change to clipboard.paste_desc */
                         icon: 'paste',
-                        cmd: 'mcePaste'
+                        onclick: function () {
+                            ed.execCommand('mcePaste', true);
+                        }
                     });
                 }
                 if (pasteText) {
                     m.add({
                         title: 'clipboard.paste_text_desc',
-                        /* TODO - Change to clipboard.paste_text_desc */
                         icon: 'pastetext',
-                        cmd: 'mcePasteText'
+                        onclick: function () {
+                            ed.execCommand('mcePasteText', true);
+                        }
                     });
                 }
             });
@@ -66,6 +66,9 @@ tinymce.PluginManager.add('clipboard', function (ed, url) {
     // Add commands
     each(['mcePasteText', 'mcePaste'], function (cmd) {
         ed.addCommand(cmd, function (ui) {
+            console.log(ui, FakeClipboard.hasData());
+
+
             // use fake clipboard if data is available and the paste action is from a button
             if (ui && FakeClipboard.hasData()) {
                 ed.execCommand('mcePasteFakeClipboard', false, { isPlainText: cmd === 'mcePasteText' });

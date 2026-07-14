@@ -200,7 +200,6 @@
                     if (ed.getParam('clipboard_cut', 1)) {
                         m.add({
                             title: 'advanced.cut_desc',
-                            /* TODO - Change to clipboard.cut_desc */
                             icon: 'cut',
                             cmd: 'Cut'
                         }).setDisabled(c);
@@ -209,7 +208,6 @@
                     if (ed.getParam('clipboard_copy', 1)) {
                         m.add({
                             title: 'advanced.copy_desc',
-                            /* TODO - Change to clipboard.copy_desc */
                             icon: 'copy',
                             cmd: 'Copy'
                         }).setDisabled(c);
@@ -218,17 +216,19 @@
                     if (pasteHtml) {
                         m.add({
                             title: 'clipboard.paste_desc',
-                            /* TODO - Change to clipboard.paste_desc */
                             icon: 'paste',
-                            cmd: 'mcePaste'
+                            onclick: function () {
+                                ed.execCommand('mcePaste', true);
+                            }
                         });
                     }
                     if (pasteText) {
                         m.add({
                             title: 'clipboard.paste_text_desc',
-                            /* TODO - Change to clipboard.paste_text_desc */
                             icon: 'pastetext',
-                            cmd: 'mcePasteText'
+                            onclick: function () {
+                                ed.execCommand('mcePasteText', true);
+                            }
                         });
                     }
                 });
