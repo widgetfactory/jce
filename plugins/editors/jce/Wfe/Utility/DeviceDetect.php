@@ -12,9 +12,10 @@ namespace Wfe\Utility;
 \defined('_JEXEC') or die;
 
 /**
- * Minimal device detection: phone / tablet / desktop
- * - Uses UA heuristics only (optionally you can pass Client Hints headers)
- * - Not meant for security decisions; only UI/UX branching
+ * Minimal UA-based device detection for phone/tablet/desktop classification.
+ *
+ * Not intended for security decisions — use only for UI/UX branching.
+ * Accepts Client Hints headers (Sec-CH-UA-Mobile) when available.
  */
 final class DeviceDetect
 {
@@ -24,22 +25,37 @@ final class DeviceDetect
     /** @var array<string, string> */
     private $headers;
 
+    /**
+     * @param string|null $userAgent User-agent string; defaults to $_SERVER['HTTP_USER_AGENT'].
+     * @param array|null  $headers   Normalised header map; defaults to readHeaders() from $_SERVER.
+     */
     public function __construct($userAgent = null, $headers = null)
     {
         $this->ua = \is_string($userAgent) ? $userAgent : (isset($_SERVER['HTTP_USER_AGENT']) ? (string) $_SERVER['HTTP_USER_AGENT'] : '');
         $this->headers = \is_array($headers) ? $headers : $this->readHeaders();
     }
 
+    /**
+     * @return bool
+     */
     public function isPhone()
     {
         return $this->deviceType() === 'phone';
     }
 
+    /**
+     * @return bool
+     */
     public function isTablet()
     {
         return $this->deviceType() === 'tablet';
     }
 
+    /**
+     * Returns true for both phones and tablets.
+     *
+     * @return bool
+     */
     public function isMobile()
     {
         $t = $this->deviceType();
@@ -92,6 +108,11 @@ final class DeviceDetect
         return 'desktop';
     }
 
+    /**
+     * @param string $ua User Agent
+     *
+     * @return bool
+     */
     private function isIPad($ua)
     {
         // Classic iPad
@@ -108,29 +129,57 @@ final class DeviceDetect
         return false;
     }
 
+    /**
+     * @param string $ua User Agent
+     *
+     * @return bool
+     */
     private function isAndroidTablet($ua)
     {
         // Android tablet typically has "Android" but NOT "Mobile"
         return (stripos($ua, 'Android') !== false && stripos($ua, 'Mobile') === false);
     }
 
+    /**
+     * @param string $ua User Agent
+     *
+     * @return bool
+     */
     private function isAndroidPhone($ua)
     {
         // Android phone typically has Android + Mobile
         return (stripos($ua, 'Android') !== false && stripos($ua, 'Mobile') !== false);
     }
 
+    /**
+     * @param string $ua      User Agent
+     * @param string $pattern Regex fragment without delimiters; matched case-insensitively.
+     *
+     * @return bool
+     */
     private function match($ua, $pattern)
     {
         return (bool) preg_match('#' . $pattern . '#i', $ua);
     }
 
+    /**
+     * Returns the normalised value of a request header by lowercase name.
+     *
+     * @param string $name Header name, e.g. 'sec-ch-ua-mobile'.
+     *
+     * @return string Empty string if the header is absent.
+     */
     private function header($name)
     {
         $key = strtolower($name);
         return isset($this->headers[$key]) ? $this->headers[$key] : '';
     }
 
+    /**
+     * Builds a normalised header map from $_SERVER (HTTP_* keys → lowercase hyphenated names).
+     *
+     * @return array<string, string>
+     */
     private function readHeaders()
     {
         $out = array();
