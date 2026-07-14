@@ -20,28 +20,26 @@ use Joomla\Registry\Registry;
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 /**
- * JCE class.
+ * Core JCE application — profile resolution, parameter loading, and plugin validation.
  *
- * @static
- *
- * @since    1.5
+ * @since   1.5
  */
 class WFApplication extends CMSObject
 {
-    // Editor instance
+    /** @var WFApplication */
     protected static $instance;
 
-    // Editor Profile
+    /** @var array<string, object> */
     protected static $profiles = array();
 
-    // Editor Params
+    /** @var array<string, Registry> */
     protected static $params = array();
 
-    // JInput Reference
+    /** @var \Joomla\Input\Input */
     public $input;
 
     /**
-     * Constructor activating the default information of the class.
+     * @param array $config Optional configuration values passed to setProperties().
      */
     public function __construct($config = array())
     {
@@ -54,12 +52,11 @@ class WFApplication extends CMSObject
     }
 
     /**
-     * Returns a reference to a editor object.
+     * Returns the singleton WFApplication instance.
      *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
+     * @param array $config Configuration passed to the constructor on first call.
      *
-     * @return JCE The editor object
+     * @return WFApplication
      */
     public static function getInstance($config = array())
     {
@@ -71,7 +68,7 @@ class WFApplication extends CMSObject
     }
 
     /**
-     * Get the current version.
+     * Returns an MD5 hash of the component manifest, used as a cache-busting version token.
      *
      * @return string
      */
@@ -84,13 +81,21 @@ class WFApplication extends CMSObject
         return $version;
     }
 
+    /**
+     * Resolves a component object by numeric ID or option string.
+     *
+     * @param int|null    $id     Component ID to look up.
+     * @param string|null $option Component option (e.g. "com_content") used as fallback.
+     *
+     * @return object
+     */
     protected function getComponent($id = null, $option = null)
     {
         if ($id) {
             $components = ComponentHelper::getComponents();
 
-            foreach ($components as $option => $component) {
-                if ($id == $component->id) {
+            foreach ($components as $component) {
+                if ((int) $id === $component->id) {
                     return $component;
                 }
             }
@@ -99,6 +104,11 @@ class WFApplication extends CMSObject
         return ComponentHelper::getComponent($option);
     }
 
+    /**
+     * Returns the component ID for the currently active option.
+     *
+     * @return int
+     */
     public function getContext()
     {
         $option = Factory::getApplication()->input->getCmd('option');
@@ -107,6 +117,11 @@ class WFApplication extends CMSObject
         return $component->id;
     }
 
+    /**
+     * Returns true when the current request is a JCE file-browser view.
+     *
+     * @return bool
+     */
     private function isFileBrowser()
     {
         $app = Factory::getApplication();
@@ -127,6 +142,11 @@ class WFApplication extends CMSObject
         return false;
     }
 
+    /**
+     * Builds the context variables used to match an editor profile.
+     *
+     * @return array{option: string, area: int, device: string, groups: int[]}
+     */
     private function getProfileVars()
     {
         $app = Factory::getApplication();
@@ -142,14 +162,13 @@ class WFApplication extends CMSObject
 
         // find the component if this is called from within the JCE component
         if ($option == 'com_jce') {
-            $context = $app->input->getInt('context');
+            $context = $app->input->getCmd('context');
 
             if ($context) {
-
                 if ($context === 'mediafield') {
                     $settings['option'] = 'mediafield';
                 } else {
-                    $component = $this->getComponent($context);
+                    $component = $this->getComponent((int) $context);
                     $settings['option'] = $component->option;
                 }
             }
@@ -158,15 +177,17 @@ class WFApplication extends CMSObject
         // get the Joomla! area, default to "site"
         $settings['area'] = $app->getClientId() === 0 ? 1 : 2;
 
-        $mobile = new WFDeviceDetect();
+        // class_exists triggers autoload - fix errors after upgrade from earlier version
+        if (class_exists('WFDeviceDetect')) {
+            $mobile = new WFDeviceDetect();
 
-        // phone
-        if ($mobile->isPhone()) {
-            $settings['device'] = 'phone';
-        }
+            if ($mobile->isPhone()) {
+                $settings['device'] = 'phone';
+            }
 
-        if ($mobile->isTablet()) {
-            $settings['device'] = 'tablet';
+            if ($mobile->isTablet()) {
+                $settings['device'] = 'tablet';
+            }
         }
 
         $settings['groups'] = $user->getAuthorisedGroups();
@@ -174,6 +195,11 @@ class WFApplication extends CMSObject
         return $settings;
     }
 
+    /**
+     * Returns the raw parameter array stored on the JCE editor plugin record.
+     *
+     * @return array
+     */
     private function getEditorParams()
     {
         $editor = PluginHelper::getPlugin('editors', 'jce');
@@ -182,11 +208,25 @@ class WFApplication extends CMSObject
         return is_array($params) ? $params : array();
     }
 
+    /**
+     * Returns true for built-in plugins that are always available regardless of profile.
+     *
+     * @param string $plugin Plugin name.
+     *
+     * @return bool
+     */
     private function isCorePlugin($plugin)
     {
         return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
     }
 
+    /**
+     * Validates that a plugin is installed and, when a checksum is present, that its main file is unmodified.
+     *
+     * @param string $name Plugin name, optionally prefixed with "editor-" or "editor_".
+     *
+     * @return bool
+     */
     public function isValidPlugin($name)
     {
         $plugins = JcePluginsHelper::getPlugins();
@@ -215,16 +255,25 @@ class WFApplication extends CMSObject
         return true;
     }
 
+    /**
+     * Returns true if a profile exists that enables the given plugin.
+     *
+     * @param string $plugin Plugin name.
+     *
+     * @return bool
+     */
     public function checkProfile($plugin)
     {
         $profile = $this->getActiveProfile(array('plugin' => $plugin));
         return $profile ? true : false;
     }
+
     /**
-     * Return the active profile based on certain conditions.
+     * Returns the first matching editor profile for the current request context.
      *
-     * @param array $options An array of options to pass to the getProfile method
-     * @return object The active profile
+     * @param array $options Options forwarded to getProfiles(); supports key 'plugin'.
+     *
+     * @return object|null
      */
     public function getActiveProfile($options = array())
     {
@@ -235,10 +284,11 @@ class WFApplication extends CMSObject
     }
 
     /**
-     * Legacy getProfile function for backwards compatibility.
+     * Legacy alias for getActiveProfile().
      *
-     * @param array $options
-     * @return void
+     * @param array|string $options Plugin name string or options array.
+     *
+     * @return object|null
      */
     public function getProfile($options = array())
     {
@@ -250,10 +300,13 @@ class WFApplication extends CMSObject
     }
 
     /**
-     * Get an array of editor profiles.
+     * Iterates published profiles and returns the first one matching the current context.
      *
-     * @param array $options Array of options to pass to the getProfile method
-     * @return array Array of editor profiles by key, with "default" being the default profile
+     * Results are keyed by a context signature and cached for the request lifetime.
+     *
+     * @param array $options Supports key 'plugin' to filter by plugin name.
+     *
+     * @return object|null The matched profile row, or null if none qualify.
      */
     protected function getProfiles($options = array())
     {
@@ -397,11 +450,14 @@ class WFApplication extends CMSObject
     }
 
     /**
-     * Get editor parameters.
+     * Returns a Registry merging global editor params with the active profile params.
      *
-     * @param array $options
+     * Editor plugin params are stored under the 'editor' key; profile params are merged on top.
+     * Results are cached by a serialised options signature.
      *
-     * @return object
+     * @param array $options Supports keys 'key', 'path', 'plugin', 'caller'.
+     *
+     * @return Registry
      */
     public function getParams($options = array())
     {
@@ -478,6 +534,13 @@ class WFApplication extends CMSObject
         return self::$params[$signature];
     }
 
+    /**
+     * Returns true for null or an empty array; intentionally does not treat 0 or '' as empty.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
     private function isEmptyValue($value)
     {
         if (is_null($value)) {
@@ -492,11 +555,18 @@ class WFApplication extends CMSObject
     }
 
     /**
-     * Get a parameter by key.
+     * Retrieves a single parameter value with fallback and default resolution.
      *
-     * @param $key Parameter key eg: editor.width
-     * @param $fallback Fallback value
-     * @param $default Default value
+     * Resolution order: profile value → $fallback → $default.
+     * Numeric values are cast to float; 'boolean' type triggers a bool cast.
+     * Returns '' when the resolved value equals $default (system default suppressed).
+     *
+     * @param string $key      Dot-notation key, e.g. "editor.width".
+     * @param mixed  $fallback Returned when the key is absent from the merged params.
+     * @param mixed  $default  System default; when the resolved value equals this, '' is returned.
+     * @param string $type     Pass 'boolean' to cast the result to bool.
+     *
+     * @return mixed
      */
     public function getParam($key, $fallback = '', $default = '', $type = 'string')
     {
