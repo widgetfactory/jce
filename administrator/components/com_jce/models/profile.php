@@ -70,11 +70,11 @@ class JceModelProfile extends AdminModel
     /**
      * Returns a Table object, always creating it.
      *
-     * @param type   $type   The table type to instantiate
-     * @param string $prefix A prefix for the table class name. Optional
-     * @param array  $config Configuration array for model. Optional
+     * @param string  $type   The table type to instantiate
+     * @param string  $prefix A prefix for the table class name. Optional
+     * @param array   $config Configuration array for model. Optional
      *
-     * @return JTable A database object
+     * @return Joomla\CMS\Table\Table A database object
      *
      * @since   1.6
      */
@@ -131,7 +131,7 @@ class JceModelProfile extends AdminModel
     /**
      * Method to allow derived classes to preprocess the form.
      *
-     * @param JForm  $form  A JForm object
+     * @param Form  $form  A JForm object
      * @param mixed  $data  The data expected for the form
      * @param string $group The name of the plugin group to import (defaults to "content")
      *
@@ -562,7 +562,7 @@ class JceModelProfile extends AdminModel
     /**
      * Prepare and sanitise the table data prior to saving.
      *
-     * @param   JTable $table A reference to a JTable object
+     * @param Joomla\CMS\Table\Table $table A Joomla\CMS\Table\Table reference
      */
     protected function prepareTable($table)
     {
@@ -977,8 +977,6 @@ class JceModelProfile extends AdminModel
      */
     public function export($ids)
     {
-        $db = Factory::getDBO();
-
         $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
