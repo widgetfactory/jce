@@ -9,8 +9,6 @@
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
-    overflow: visible;
-    overflow-y: auto;
     margin: 2px 0 0;
     min-width: 10em;
 }
