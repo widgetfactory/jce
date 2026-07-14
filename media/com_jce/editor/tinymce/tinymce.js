@@ -21314,6 +21314,8 @@
 
   clipboardData[internalHtmlMimeType] = '';
 
+  var clipboardTimestamp = 0;
+
   function hasData() {
       return !!clipboardData['text/html'] || !!clipboardData['text/plain'] || !!clipboardData[internalHtmlMimeType];
   }
@@ -21322,15 +21324,17 @@
       if (mimetype) {
           return clipboardData[mimetype] || null;
       }
-      
+
       return clipboardData;
   }
 
+  function getTimestamp() {
+      return clipboardTimestamp;
+  }
+
   function setData(mimetype, content) {
-      clipboardData[mimetype] = {
-          timestamp: Date.now(),
-          content: content
-      };
+      clipboardData[mimetype] = content;
+      clipboardTimestamp = Date.now();
   }
 
   function clearData() {
@@ -21340,12 +21344,14 @@
       };
 
       clipboardData[internalHtmlMimeType] = '';
+      clipboardTimestamp = 0;
   }
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
     clearData: clearData,
     getData: getData$1,
+    getTimestamp: getTimestamp,
     hasData: hasData,
     setData: setData
   });
@@ -23685,15 +23691,13 @@
       
       if (hasData()) {
           var data = getData$1();
-
-          if (data.timeStamp && data.timeStamp > eventTimestamp) {
-              content = data.content;
-
-              clearData();
-              return content;
-          }
+          var timestamp = getTimestamp();
 
           clearData();
+
+          if (timestamp && timestamp > eventTimestamp) {
+              return data;
+          }
       }
       
       var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
@@ -24182,15 +24186,7 @@
 
       editor.addCommand('mcePasteFakeClipboard', function (ui, e) {
           var data = getData$1();
-
-          var content = data.content || '';
-
-          // If the content is empty, we don't need to do anything
-          if (!content) {
-              return;
-          }
-
-          insertClipboardContent(editor, content, true, e.isPlainText === true);
+          insertClipboardContent(editor, data, true, e.isPlainText === true);
       });
   };
 
