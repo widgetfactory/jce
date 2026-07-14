@@ -19,7 +19,11 @@ class WFLinkBrowser_Joomlalinks
     public $_adapters = array();
 
     /**
-     * Constructor activating the default information of the class.
+     * Constructs the link browser instance.
+     *
+     * @param array $options The options for the link browser.
+     * 
+     * @return void
      */
     public function __construct($options = array())
     {
@@ -54,6 +58,13 @@ class WFLinkBrowser_Joomlalinks
         }
     }
 
+    /**
+     * Checks if the given option has access.
+     *
+     * @param string $option The option to check.
+     * 
+     * @return bool True if access is allowed, false otherwise.
+     */
     protected function checkOptionAccess($option)
     {
         $wf = WFEditorPlugin::getInstance();
@@ -67,6 +78,11 @@ class WFLinkBrowser_Joomlalinks
         return (int) $wf->getParam('links.joomlalinks.' . $option, 1) === 1;
     }
 
+    /**
+     * Displays the link browser interface.
+     *
+     * @return void
+     */
     public function display()
     {
         // Load css
@@ -74,12 +90,22 @@ class WFLinkBrowser_Joomlalinks
         $document->addStyleSheet(array('joomlalinks'), 'extensions/links/joomlalinks/css');
     }
 
+    /**
+     * Checks if the link browser is enabled.
+     *
+     * @return boolean
+     */
     public function isEnabled()
     {
         $wf = WFEditorPlugin::getInstance();
         return (bool) $wf->getParam('links.joomlalinks.enable', 1);
     }
 
+    /**
+     * Returns and adapter option, eg: com_content
+     *
+     * @return string Adapter option
+     */
     public function getOption()
     {
         foreach ($this->_adapters as $adapter) {
@@ -89,6 +115,11 @@ class WFLinkBrowser_Joomlalinks
         return $this->_option;
     }
 
+    /**
+     * Returns the list of available adapters.
+     *
+     * @return string HTML list of adapters.
+     */
     public function getList()
     {
         $list = '';
@@ -100,10 +131,15 @@ class WFLinkBrowser_Joomlalinks
         return $list;
     }
 
+    /**
+     * Returns the links for the given adapter option.
+
+     * @param object $args The arguments containing the option.
+     * 
+     * @return array The list of links.
+     */
     public function getLinks($args)
     {
-        $wf = WFEditorPlugin::getInstance();
-
         foreach ($this->_adapters as $adapter) {
             if ($adapter->getOption() == $args->option) {
 

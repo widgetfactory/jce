@@ -227,7 +227,7 @@ class JoomlalinksContent extends CMSObject
         return $url;
     }
 
-    private function getArticles($id)
+    private static function getArticles($id)
     {
         $db = Factory::getDBO();
         $user = Factory::getUser();

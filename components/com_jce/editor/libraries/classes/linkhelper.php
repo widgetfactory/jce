@@ -20,7 +20,7 @@ abstract class WFLinkHelper
      *
      * @param string $url Absolute or Relative URI to Joomla resource
      *
-     * @return The translated humanly readible URL
+     * @return string The translated humanly readible URL
      */
     public static function route($url)
     {
@@ -38,6 +38,11 @@ abstract class WFLinkHelper
         return $url;
     }
 
+    /**
+     * Returns the default menu item ID.
+     *
+     * @return int The default menu item ID.
+     */
     private static function getDefaultItemId()
     {
         // get menus
@@ -49,6 +54,13 @@ abstract class WFLinkHelper
         return $default ? (int) $default->id : 0;
     }
 
+    /**
+     * Removes the alias from a Joomla URL.
+     *
+     * @param string $url Absolute or Relative URI to Joomla resource
+     *
+     * @return string The URL with the alias removed
+     */
     public static function removeAlias($url)
     {
         // Only strip alias after a numeric ID (e.g. id=1:article-alias)
@@ -57,6 +69,13 @@ abstract class WFLinkHelper
         return $url;
     }
 
+    /**
+     * Parses the query variables from a Joomla URL.
+     *
+     * @param string $url Absolute or Relative URI to Joomla resource
+     *
+     * @return array The query variables as an associative array
+     */
     private static function parseQueryVars($url)
     {
         $parsed = parse_url($url, PHP_URL_QUERY);
@@ -65,6 +84,13 @@ abstract class WFLinkHelper
         return $vars;
     }
 
+    /**
+     * Removes the Itemid from a Joomla URL.
+     *
+     * @param string $url Absolute or Relative URI to Joomla resource
+     *
+     * @return string The URL with the Itemid removed
+     */
     public static function removeItemId($url)
     {
         if (strpos($url, 'Itemid') === false) {
@@ -90,6 +116,13 @@ abstract class WFLinkHelper
         return 'index.php?' . $query;
     }
 
+    /**
+     * Removes the home Itemid from a Joomla URL.
+     *
+     * @param string $url Absolute or Relative URI to Joomla resource
+     *
+     * @return string The URL with the home Itemid removed
+     */
     public static function removeHomeItemId($url)
     {
         if (strpos($url, 'Itemid') === false) {

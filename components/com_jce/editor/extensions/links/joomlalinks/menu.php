@@ -91,7 +91,7 @@ class JoomlalinksMenu extends CMSObject
 
                         case 'alias':
                             // If this is an alias use the item id stored in the parameters to make the link.
-                            $link = 'index.php?Itemid=' . $params->get('aliasoptions');
+                            $link = 'index.php?Itemid=' . (int) $params->get('aliasoptions', 0);
                             break;
 
                         default:
@@ -115,7 +115,7 @@ class JoomlalinksMenu extends CMSObject
 
                     // language
                     if (isset($menu->language)) {
-                        $link .= $this->getLangauge($menu->language);
+                        $link .= $this->getLanguage($menu->language);
                     }
 
                     $items[] = array(
@@ -146,7 +146,7 @@ class JoomlalinksMenu extends CMSObject
 
                     // language
                     if (isset($menu->language)) {
-                        $link .= $this->getLangauge($menu->language);
+                        $link .= $this->getLanguage($menu->language);
                     }
 
                     if ($params->get('secure')) {
@@ -226,32 +226,6 @@ class JoomlalinksMenu extends CMSObject
         return $db->loadObjectList();
     }
 
-    private static function getAlias($id)
-    {
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
-
-        $query = $db->getQuery(true);
-
-        $query->select('params')->from('#__menu')->where('id = ' . (int) $id);
-
-        $db->setQuery($query, 0);
-        $params = new Registry($db->loadResult());
-
-        $query->clear();
-        $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item')));
-
-        if (!$user->authorise('core.admin')) {
-            $query->where('access IN (' . implode(',', array_map('intval', $user->getAuthorisedViewLevels())) . ')');
-        }
-
-        $query->order('name');
-
-        $db->setQuery($query, 0);
-
-        return $db->loadObject();
-    }
-
     private static function getChildren($id)
     {
         $db = Factory::getDBO();
@@ -308,7 +282,7 @@ class JoomlalinksMenu extends CMSObject
         return $db->loadObjectList();
     }
 
-    private function getLangauge($language)
+    private function getLanguage($language)
     {
         $db = Factory::getDBO();
         $query = $db->getQuery(true);

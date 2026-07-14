@@ -56,7 +56,10 @@ class JoomlalinksWeblinks extends CMSObject
             require_once JPATH_SITE . '/includes/application.php';
         }
 
-        require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
+        $helperFile = JPATH_SITE . '/components/com_weblinks/helpers/route.php';
+        if (is_file($helperFile)) {
+            require_once $helperFile;
+        }
 
         $language = '';
 
@@ -162,16 +165,12 @@ class JoomlalinksWeblinks extends CMSObject
         return $items;
     }
 
-    public static function getWeblinks($id)
+    private static function getWeblinks($id)
     {
         $wf = WFEditorPlugin::getInstance();
 
         $db = Factory::getDBO();
         $user = Factory::getUser();
-
-        $query = $db->getQuery(true);
-
-        $section = Text::_('Web Links');
 
         $query = $db->getQuery(true);
 

@@ -52,21 +52,12 @@ class JoomlalinksTags extends CMSObject
         require_once JPATH_SITE . '/components/com_tags/helpers/route.php';
 
         $items = array();
-        $view = isset($args->view) ? $args->view : '';
-
         $language = '';
 
         // create a new RouteHelper instance
         $router = new RouteHelper();
 
-        $tags = array();
-
-        if (!isset($args->id)) {
-            $args->id = 1;
-        }
-
-        // get any articles in this category (in Joomla! 1.6+ a category can contain sub-categories and articles)
-        $tags = self::getTags($args->id);
+        $tags = self::getTags();
 
         if (!empty($tags)) {
             // output article links
@@ -76,7 +67,7 @@ class JoomlalinksTags extends CMSObject
                 }
 
                 $id = $router->getRoute($tag->slug ?? $tag->id, 'com_tags.tag', '', $language);
-                $id = $this->route($id);
+                $id = self::route($id);
 
                 $items[] = array(
                     'id' => $id,
@@ -89,7 +80,7 @@ class JoomlalinksTags extends CMSObject
         return $items;
     }
 
-    private static function getTags($id)
+    private static function getTags()
     {
         $db = Factory::getDBO();
         $user = Factory::getUser();
