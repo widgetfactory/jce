@@ -27,23 +27,23 @@ use Wfe\Helper\ArrayHelper;
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 /**
- * Application class.
+ * Core JCE application — profile resolution, parameter loading, and plugin validation.
  */
 class Application
 {
     use ConfigurationTrait;
-    
-    // Editor Profile
+
+    /** @var array<string, object> */
     protected static $profiles = array();
 
-    // Editor Params
+    /** @var array<string, Registry> */
     protected static $params = array();
 
-    // JInput Reference
+    /** @var \Joomla\Input\Input */
     public $input;
 
     /**
-     * Constructor activating the default information of the class.
+     * @param array $config Optional configuration values applied via ConfigurationTrait.
      */
     public function __construct($config = array())
     {
@@ -65,7 +65,7 @@ class Application
     }
 
     /**
-     * Get the current version.
+     * Returns an MD5 hash of the component manifest, used as a cache-busting version token.
      *
      * @return string
      */
@@ -78,13 +78,21 @@ class Application
         return $version;
     }
 
+    /**
+     * Resolves a component object by numeric ID or option string.
+     *
+     * @param int|null    $id     Component ID to look up.
+     * @param string|null $option Component option (e.g. "com_content") used as fallback.
+     *
+     * @return object
+     */
     protected function getComponent($id = null, $option = null)
     {
         if ($id) {
             $components = ComponentHelper::getComponents();
 
-            foreach ($components as $option => $component) {
-                if ($id == $component->id) {
+            foreach ($components as $component) {
+                if ((int) $id === $component->id) {
                     return $component;
                 }
             }
@@ -93,6 +101,11 @@ class Application
         return ComponentHelper::getComponent($option);
     }
 
+    /**
+     * Returns the component ID for the currently active option.
+     *
+     * @return int
+     */
     public function getContext()
     {
         $option = $this->input->getCmd('option');
@@ -101,6 +114,11 @@ class Application
         return $component->id;
     }
 
+    /**
+     * Builds the context variables used to match an editor profile.
+     *
+     * @return array{option: string, area: int, device: string, groups: int[]}
+     */
     private function getProfileVars()
     {
         $app = Factory::getApplication();
@@ -116,14 +134,13 @@ class Application
 
         // find the component if this is called from within the JCE component
         if ($option == 'com_jce') {
-            $context = $app->getInput()->getInt('context');
+            $context = $app->getInput()->getCmd('context');
 
             if ($context) {
-
                 if ($context === 'mediafield') {
                     $settings['option'] = 'mediafield';
                 } else {
-                    $component = $this->getComponent($context);
+                    $component = $this->getComponent((int) $context);
                     $settings['option'] = $component->option;
                 }
             }
@@ -148,6 +165,11 @@ class Application
         return $settings;
     }
 
+    /**
+     * Returns the raw parameter array stored on the JCE editor plugin record.
+     *
+     * @return array
+     */
     private function getEditorParams()
     {
         $editor = PluginHelper::getPlugin('editors', 'jce');
@@ -156,11 +178,25 @@ class Application
         return is_array($params) ? $params : [];
     }
 
+    /**
+     * Returns true for built-in plugins that are always available regardless of profile.
+     *
+     * @param string $plugin Plugin name.
+     *
+     * @return bool
+     */
     private function isCorePlugin($plugin)
     {
         return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
     }
 
+    /**
+     * Validates that a plugin is installed and, when a checksum is present, that its main file is unmodified.
+     *
+     * @param string $name Plugin name, optionally prefixed with "editor-" or "editor_".
+     *
+     * @return bool
+     */
     public function isValidPlugin($name)
     {
         $plugins = PluginsHelper::getEditorPlugins();
@@ -194,16 +230,25 @@ class Application
         return true;
     }
 
+    /**
+     * Returns true if a profile exists that enables the given plugin.
+     *
+     * @param string $plugin Plugin name.
+     *
+     * @return bool
+     */
     public function checkProfile($plugin)
     {
         $profile = $this->getActiveProfile(array('plugin' => $plugin));
         return $profile ? true : false;
     }
+
     /**
-     * Return the active profile based on certain conditions.
+     * Returns the first matching editor profile for the current request context.
      *
-     * @param array $options An array of options to pass to the getProfile method
-     * @return object The active profile
+     * @param array $options Options forwarded to getProfiles(); supports key 'plugin'.
+     *
+     * @return object|null
      */
     public function getActiveProfile($options = array())
     {
@@ -214,10 +259,11 @@ class Application
     }
 
     /**
-     * Legacy getProfile function for backwards compatibility.
+     * Legacy alias for getActiveProfile().
      *
-     * @param array $options
-     * @return void
+     * @param array|string $options Plugin name string or options array.
+     *
+     * @return object|null
      */
     public function getProfile($options = array())
     {
@@ -229,10 +275,13 @@ class Application
     }
 
     /**
-     * Get an array of editor profiles.
+     * Iterates published profiles and returns the first one matching the current context.
      *
-     * @param array $options Array of options to pass to the getProfile method
-     * @return array Array of editor profiles by key, with "default" being the default profile
+     * Results are keyed by a context signature and cached for the request lifetime.
+     *
+     * @param array $options Supports key 'plugin' to filter by plugin name.
+     *
+     * @return object|null The matched profile row, or null if none qualify.
      */
     protected function getProfiles($options = array())
     {
@@ -281,7 +330,7 @@ class Application
         if (empty($items)) {
             return null;
         }
-        
+
         $event = new Event('onWfEditorProfileOptions', array(
             'subject' => $this,
             'options' => $items,
@@ -396,11 +445,14 @@ class Application
     }
 
     /**
-     * Get editor parameters.
+     * Returns a Registry merging global editor params with the active profile params.
      *
-     * @param array $options
+     * Editor plugin params are stored under the 'editor' key; profile params are merged on top.
+     * Results are cached by a serialised options signature.
      *
-     * @return object
+     * @param array $options Supports keys 'key', 'path', 'plugin', 'caller'.
+     *
+     * @return Registry
      */
     public function getParams($options = array())
     {
@@ -481,6 +533,13 @@ class Application
         return self::$params[$signature];
     }
 
+    /**
+     * Returns true for null or an empty array; intentionally does not treat 0 or '' as empty.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
     private function isEmptyValue($value)
     {
         if (is_null($value)) {
@@ -495,11 +554,18 @@ class Application
     }
 
     /**
-     * Get a parameter by key.
+     * Retrieves a single parameter value with fallback and default resolution.
      *
-     * @param $key Parameter key eg: editor.width
-     * @param $fallback Fallback value
-     * @param $default Default value
+     * Resolution order: profile value → $fallback → $default.
+     * Numeric values are cast to float; 'boolean' type triggers a bool cast.
+     * Returns '' when the resolved value equals $default (system default suppressed).
+     *
+     * @param string $key      Dot-notation key, e.g. "editor.width".
+     * @param mixed  $fallback Returned when the key is absent from the merged params.
+     * @param mixed  $default  System default; when the resolved value equals this, '' is returned.
+     * @param string $type     Pass 'boolean' to cast the result to bool.
+     *
+     * @return mixed
      */
     public function getParam($key, $fallback = '', $default = '', $type = 'string')
     {
