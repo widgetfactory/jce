@@ -43,7 +43,7 @@ class WFFileSystem extends WFExtension
     /**
      * Custom parameter function for Filesystems which contain complex values
      *
-     * @param [string] $key Parameter key
+     * @param string $key Parameter key
      * @param string $default Default value to return
      * @return mixed Parameter value or default
      */
@@ -127,7 +127,7 @@ class WFFileSystem extends WFExtension
     /**
      * Return default directory for the filesystem.
      *
-     * @return Relative path to the root directory
+     * @return string Relative path to the root directory
      */
     public function getRootDir()
     {
