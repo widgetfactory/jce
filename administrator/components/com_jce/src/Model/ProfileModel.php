@@ -1251,11 +1251,31 @@ class ProfileModel extends AdminModel
 
                     case 'types':
                         if ($value === '') {
-                            $area = (string) $profile->area[0] || 0;
+                            $area = !empty($profile->area) ? (int) $profile->area[0] : 0;
                             $groups = ProfilesHelper::getUserGroups($area);
                             $value = implode(',', array_unique($groups));
                         } else {
-                            $value = implode(',', array_filter(array_map('intval', explode(',', $value))));
+                            $ids = array_filter(array_map('intval', explode(',', $value)));
+
+                            if (!empty($ids)) {
+                                // Imported profiles may carry group ids from another installation;
+                                // keep only those that match a user group on this site.
+                                $db = $this->getDatabase();
+                                $query = $db->getQuery(true)
+                                    ->select($db->quoteName('id'))
+                                    ->from($db->quoteName('#__usergroups'))
+                                    ->whereIn($db->quoteName('id'), $ids);
+                                $db->setQuery($query);
+                                $ids = array_map('intval', $db->loadColumn());
+                            }
+
+                            // None of the imported ids match a group here, so fall back to
+                            // the Super Users (core.admin) groups rather than trusting stale ids.
+                            if (empty($ids)) {
+                                $ids = ProfilesHelper::getUserGroups(2, 'core.admin');
+                            }
+
+                            $value = implode(',', array_unique($ids));
                         }
 
                         if (!empty($whitelist)) {
