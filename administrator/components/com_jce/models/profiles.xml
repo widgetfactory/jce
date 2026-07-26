@@ -23,7 +23,7 @@
             <name>Default</name>
             <description>WF_PROFILES_DEFAULT_DESC</description>
             <users></users>
-            <types></types>
+            <types>3,4,5,6,7,8</types>
             <components></components>
             <area>0</area>
             <device>desktop,tablet,phone</device>
@@ -37,7 +37,7 @@
             <name>Front End</name>
             <description>WF_PROFILES_FRONTEND_DESC</description>
             <users></users>
-            <types></types>
+            <types>3,4,5</types>
             <components></components>
             <area>1</area>
             <device>desktop,tablet,phone</device>
@@ -51,7 +51,7 @@
             <name>Blogger</name>
             <description>Simple Blogging Profile</description>
             <users></users>
-            <types></types>
+            <types>3,4,5,6,7,8</types>
             <components></components>
             <area>0</area>
             <device>desktop,tablet,phone</device>
@@ -65,7 +65,7 @@
             <name>Mobile</name>
             <description>Sample Mobile Profile</description>
             <users></users>
-            <types></types>
+            <types>3,4,5,6,7,8</types>
             <components></components>
             <area>0</area>
             <device>tablet,phone</device>
@@ -79,7 +79,7 @@
             <name>Markdown</name>
             <description>Sample Markdown Profile</description>
             <users></users>
-            <types>6,7,3,4,5,8</types>
+            <types>3,4,5,6,7,8</types>
             <components></components>
             <area>0</area>
             <device>desktop,tablet,phone</device>

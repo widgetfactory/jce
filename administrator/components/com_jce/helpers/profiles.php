@@ -104,7 +104,7 @@ abstract class JceProfilesHelper
             return false;
         }
 
-        if (!self::processImport($xml)) {
+        if (!self::processImport($xml, 'install')) {
             $app->enqueueMessage(Text::_('WF_INSTALL_PROFILES_ERROR'), 'error');
             return false;
         }
@@ -146,11 +146,13 @@ abstract class JceProfilesHelper
     /**
      * Get user groups with content creation permissions for the given area.
      *
-     * @param int $area 0 = all, 1 = frontend only, 2 = backend only.
+     * @param int    $area       0 = all, 1 = frontend only, 2 = backend only.
+     * @param string $permission ACL action a group must be granted to qualify. Defaults to 'core.create';
+     *                           pass 'core.edit.state' to limit to publisher-level groups and above.
      *
      * @return array List of user group IDs.
      */
-    public static function getUserGroups($area)
+    public static function getUserGroups($area, $permission = 'core.create')
     {
         $db = Factory::getDBO();
 
@@ -166,7 +168,7 @@ abstract class JceProfilesHelper
         foreach ($groups as $group) {
             if (Access::checkGroup($group, 'core.admin')) {
                 $back[] = $group;
-            } elseif (Access::checkGroup($group, 'core.create')) {
+            } elseif (Access::checkGroup($group, $permission)) {
                 if (Access::checkGroup($group, 'core.login.admin')) {
                     $back[] = $group;
                 } else {
@@ -188,13 +190,85 @@ abstract class JceProfilesHelper
     }
 
     /**
+     * Canonical Joomla default user groups, keyed by their default id.
+     * Each entry is array(title, permission) and is used to confirm an id has
+     * not been renamed or repurposed on this installation.
+     *
+     * @return array
+     */
+    protected static function defaultUserGroups()
+    {
+        return array(
+            3 => array('Author', 'core.create'),
+            4 => array('Editor', 'core.edit'),
+            5 => array('Publisher', 'core.edit.state'),
+            6 => array('Manager', 'core.login.admin'),
+            7 => array('Administrator', 'core.manage'),
+            8 => array('Super Users', 'core.admin'),
+        );
+    }
+
+    /**
+     * Validate a list of default group ids against the live installation. An id is
+     * kept only when a group with that id exists, still carries the expected default
+     * title, and holds the matching permission level.
+     *
+     * @param array $ids Candidate group ids.
+     *
+     * @return array Validated group ids.
+     */
+    public static function validateGroups($ids)
+    {
+        $ids = array_filter(array_map('intval', (array) $ids));
+
+        if (empty($ids)) {
+            return array();
+        }
+
+        $map = self::defaultUserGroups();
+
+        $db = Factory::getDBO();
+        $query = $db->getQuery(true)
+            ->select($db->quoteName(array('id', 'title')))
+            ->from($db->quoteName('#__usergroups'))
+            ->where($db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
+        $db->setQuery($query);
+        $rows = $db->loadObjectList('id');
+
+        $valid = array();
+
+        foreach ($ids as $id) {
+            // Must be a known default id that still exists with the expected title
+            // and permission level on this site.
+            if (!isset($map[$id], $rows[$id])) {
+                continue;
+            }
+
+            if ($rows[$id]->title !== $map[$id][0]) {
+                continue;
+            }
+
+            if (!Access::checkGroup($id, $map[$id][1])) {
+                continue;
+            }
+
+            $valid[] = $id;
+        }
+
+        return $valid;
+    }
+
+    /**
      * Process and import profile data from an XML file.
      *
-     * @param string $file Path to the XML file.
+     * @param string $file    Path to the XML file.
+     * @param string $context 'install' for seeding/repair of the bundled profiles (group ids are
+     *                        validated against the canonical Joomla defaults); 'import' for
+     *                        user-supplied uploads (ids are validated against existing groups only).
      *
      * @return int|false Number of profiles imported, or false on error.
      */
-    public static function processImport($file)
+    public static function processImport($file, $context = 'import')
     {
         $data = trim(file_get_contents($file));
 
@@ -265,13 +339,43 @@ abstract class JceProfilesHelper
                         break;
 
                     case 'types':
-                        if ($value === '') {
+                        if ($context === 'install') {
+                            // Seed profiles list canonical Joomla default group ids; keep only
+                            // those whose live group still matches the expected default title
+                            // and permission level, so repurposed ids are never applied.
+                            $ids = self::validateGroups(explode(',', $value));
+
+                            if (empty($ids)) {
+                                // No default group survived validation on this install, so fall
+                                // back to the Super Users (core.admin) groups.
+                                $ids = self::getUserGroups(2, 'core.admin');
+                            }
+                        } elseif ($value === '') {
                             $area = !empty($profile->area) ? (int) $profile->area[0] : 0;
-                            $groups = self::getUserGroups($area);
-                            $value = implode(',', array_unique($groups));
+                            $ids = self::getUserGroups($area);
                         } else {
-                            $value = implode(',', array_filter(array_map('intval', explode(',', $value))));
+                            $ids = array_filter(array_map('intval', explode(',', $value)));
+
+                            if (!empty($ids)) {
+                                // Imported profiles may carry group ids from another installation;
+                                // keep only those that match a user group on this site.
+                                $db = Factory::getDBO();
+                                $query = $db->getQuery(true)
+                                    ->select($db->quoteName('id'))
+                                    ->from($db->quoteName('#__usergroups'))
+                                    ->where($db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
+                                $db->setQuery($query);
+                                $ids = array_map('intval', $db->loadColumn());
+                            }
+
+                            // None of the imported ids match a group here, so fall back to
+                            // the Super Users (core.admin) groups rather than trusting stale ids.
+                            if (empty($ids)) {
+                                $ids = self::getUserGroups(2, 'core.admin');
+                            }
                         }
+
+                        $value = implode(',', array_unique($ids));
 
                         if (!empty($whitelist)) {
                             $filtered = !empty($value) ? array_intersect(explode(',', $value), $whitelist) : [];

@@ -212,7 +212,7 @@ class JceModelProfiles extends ListModel
             return false;
         }
 
-        if (!JceProfilesHelper::processImport($file)) {
+        if (!JceProfilesHelper::processImport($file, 'install')) {
             $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
