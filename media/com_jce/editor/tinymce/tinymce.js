@@ -32847,8 +32847,19 @@
 
         s.icon = s.icon || '';
 
-        if (s.image) {
-          h += '<span role="presentation" class="mceIcon mceIconImage' + s['class'] + '"><img class="mceIcon" src="' + s.image + '" alt="' + DOM.encode(s.title) + '" /></span>' + (l ? '<span class="' + cp + 'Label">' + l + '</span>' : '');
+        if (s.image || s.svg) {
+          h += '<span role="presentation" class="mceIcon mceIconImage' + s['class'] + '">';
+
+          if (s.image) {
+            h += '<img class="mceIcon" src="' + s.image + '" alt="' + DOM.encode(s.title) + '" />';
+          }
+
+          if (s.svg) {
+            h += s.svg;
+          }
+
+          h += '</span>' + (l ? '<span class="' + cp + 'Label">' + l + '</span>' : '');
+
         } else {
           if (s.icon) {
             s.icon = ' mce_' + s.icon;
