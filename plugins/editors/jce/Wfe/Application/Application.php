@@ -286,6 +286,7 @@ class Application
     protected function getProfiles($options = array())
     {
         static $cache = array();
+        static $profiles = null;
 
         if (!isset($options['plugin'])) {
             $options['plugin'] = '';
@@ -319,129 +320,148 @@ class Application
         // add plugin to vars array
         $vars['plugin'] = $plugin;
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
-
-        $query = $db->getQuery(true);
-        $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
-        $db->setQuery($query);
-        $items = $db->loadObjectList();
-
-        // nothing found...
-        if (empty($items)) {
-            return null;
-        }
+        // profiles can be assigned to a specific user, so the user must be part of the signature
+        $vars['uid'] = (int) $user->id;
 
         $event = new Event('onWfEditorProfileOptions', array(
             'subject' => $this,
-            'options' => $items,
+            'options' => $vars,
         ));
 
         $app->getDispatcher()->dispatch('onWfEditorProfileOptions', $event);
 
-        $items = $event->getArgument('options');
+        $vars = $event->getArgument('options');
 
         // create a unique signature to store
         $signature = md5(serialize($vars));
 
-        if (!isset($cache[$signature])) {
+        // a null value is a valid result, so check the key
+        if (array_key_exists($signature, $cache)) {
+            return $cache[$signature];
+        }
 
-            // apply global group whitelist if configured; otherwise all user groups are eligible
-            $whitelist = array_filter((array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', []));
-            $effectiveGroups = !empty($whitelist) ? array_intersect($vars['groups'], $whitelist) : $vars['groups'];
+        // published profiles do not change during a request, so only load them once
+        if ($profiles === null) {
+            $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-            foreach ($items as $item) {
-                // at least one user group or user must be set
-                if (empty($item->types) && empty($item->users)) {
-                    continue;
-                }
+            $query = $db->getQuery(true);
+            $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
+            $db->setQuery($query);
+            $rows = $db->loadObjectList();
 
-                // decrypt params before firing events so handlers can read them
-                if (!empty($item->params)) {
-                    $item->params = EncryptHelper::decrypt($item->params);
-                }
-
-                $event = new Event('onWfEditorBeforeProfileItem', array(
-                    'item' => $item,
-                    'subject' => $this,
-                ));
-
-                $app->getDispatcher()->dispatch('onWfEditorBeforeProfileItem', $event);
-
-                $item = $event->getArgument('item');
-
-                // event can "cancel" this profile item
-                if ($item === false) {
-                    continue;
-                }
-
-                // check user groups - a value should always be set
-                $groups = array_intersect($effectiveGroups, explode(',', $item->types));
-
-                // user not in the current group...
-                if (empty($groups)) {
-                    // no additional users set or no user match
-                    if (empty($item->users) || in_array($user->id, array_map('intval', explode(',', $item->users)), true) === false) {
-                        continue;
-                    }
-                }
-
-                // check component
-                if (!empty($item->components)) {
-                    $components = explode(',', $item->components);
-
-                    // remove duplicates
-                    $components = array_unique($components);
-
-                    if (in_array($vars['option'], $components) === false) {
-                        continue;
-                    }
-                }
-
-                // set device default as 'desktop,tablet,mobile'
-                if (empty($item->device)) {
-                    $item->device = 'desktop,tablet,phone';
-                }
-
-                // check device
-                if (in_array($vars['device'], explode(',', $item->device)) === false) {
-                    continue;
-                }
-
-                // check area
-                if (!empty($item->area) && (int) $item->area != $vars['area']) {
-                    continue;
-                }
-
-                $event = new Event('onWfEditorProfileItem', array(
-                    'item' => $item,
-                    'subject' => $this,
-                ));
-
-                $app->getDispatcher()->dispatch('onWfEditorProfileItem', $event);
-
-                $item = $event->getArgument('item');
-
-                // event can "cancel" this profile item
-                if ($item === false) {
-                    continue;
-                }
-
-                // check against passed in plugin value
-                if ($plugin && in_array($plugin, explode(',', $item->plugins)) === false) {
-                    continue;
-                }
-
-                // assign item to profile
-                $cache[$signature] = (object) $item;
-
-                // return
-                return $cache[$signature];
+            // a failed query is not cached
+            if (!is_array($rows)) {
+                return null;
             }
 
+            $profiles = $rows;
+        }
+
+        // nothing found...
+        if (empty($profiles)) {
             return null;
         }
 
-        return $cache[$signature];
+        // apply global group whitelist if configured; otherwise all user groups are eligible
+        $whitelist = array_filter((array) ComponentHelper::getParams('com_jce')->get('profile_groups_whitelist', []));
+        $effectiveGroups = !empty($whitelist) ? array_intersect($vars['groups'], $whitelist) : $vars['groups'];
+
+        foreach ($profiles as $profile) {
+            // work on a copy as the stored profile is decrypted and passed to events
+            $item = clone $profile;
+
+            // at least one user group or user must be set
+            if (empty($item->types) && empty($item->users)) {
+                continue;
+            }
+
+            // decrypt params before firing events so handlers can read them
+            if (!empty($item->params)) {
+                $item->params = EncryptHelper::decrypt($item->params);
+            }
+
+            $event = new Event('onWfEditorBeforeProfileItem', array(
+                'item' => $item,
+                'subject' => $this,
+            ));
+
+            $app->getDispatcher()->dispatch('onWfEditorBeforeProfileItem', $event);
+
+            $item = $event->getArgument('item');
+
+            // event can "cancel" this profile item
+            if ($item === false) {
+                continue;
+            }
+
+            // check user groups - a value should always be set
+            $groups = array_intersect($effectiveGroups, explode(',', $item->types));
+
+            // user not in the current group...
+            if (empty($groups)) {
+                // no additional users set or no user match
+                if (empty($item->users) || in_array($user->id, array_map('intval', explode(',', $item->users)), true) === false) {
+                    continue;
+                }
+            }
+
+            // check component
+            if (!empty($item->components)) {
+                $components = explode(',', $item->components);
+
+                // remove duplicates
+                $components = array_unique($components);
+
+                if (in_array($vars['option'], $components) === false) {
+                    continue;
+                }
+            }
+
+            // set device default as 'desktop,tablet,mobile'
+            if (empty($item->device)) {
+                $item->device = 'desktop,tablet,phone';
+            }
+
+            // check device
+            if (in_array($vars['device'], explode(',', $item->device)) === false) {
+                continue;
+            }
+
+            // check area
+            if (!empty($item->area) && (int) $item->area != $vars['area']) {
+                continue;
+            }
+
+            $event = new Event('onWfEditorProfileItem', array(
+                'item' => $item,
+                'subject' => $this,
+            ));
+
+            $app->getDispatcher()->dispatch('onWfEditorProfileItem', $event);
+
+            $item = $event->getArgument('item');
+
+            // event can "cancel" this profile item
+            if ($item === false) {
+                continue;
+            }
+
+            // check against passed in plugin value
+            if ($plugin && in_array($plugin, explode(',', $item->plugins)) === false) {
+                continue;
+            }
+
+            // assign item to profile
+            $cache[$signature] = (object) $item;
+
+            // return
+            return $cache[$signature];
+        }
+
+        // no profile matched this context
+        $cache[$signature] = null;
+
+        return null;
     }
 
     /**
