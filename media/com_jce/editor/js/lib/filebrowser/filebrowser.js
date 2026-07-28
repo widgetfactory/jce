@@ -1084,8 +1084,8 @@
                     });
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + encode(e.name) + '"' + data.join(' ') + '>';
-                    if (isRoot) {
-                        h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" disabled /></label>';
+                    if (isRoot && storeLen > 1) {
+                        h += '  <label class="uk-width-0-10 uk-item-checkbox uk-hidden" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" disabled /></label>';
                     } else {
                         h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
                     }
@@ -1892,7 +1892,7 @@
                                     msg = self._translate('file_exists_alert', 'A file with the same name exists in the target folder.');
                                 var name = Wf.String.safe(file.name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
-                                $('li', 'file-list').each(function () {
+                                $('li.file', '#item-list').each(function () {
                                     if (name == $(this).attr('title')) {
                                         found = true;
                                     }
