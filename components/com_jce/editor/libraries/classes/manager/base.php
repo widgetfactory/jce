@@ -38,7 +38,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         parent::__construct($config);
 
         // initialize the browser
-        $browser = $this->getFileBrowser();
+        $_browser = $this->getFileBrowser();
         $request = WFRequest::getInstance();
 
         // Setup plugin XHR callback functions
@@ -266,11 +266,8 @@ class WFMediaManagerBase extends WFEditorPlugin
             $dir = $this->getParam($this->get('caller') . '.dir', $dir);
         }
 
-        // allow root: accept both spellings just in case
-        $allowRoot = (bool) ($filesystem->get('allowroot', $filesystem->get('allow_root', 0)));
-
-        // if the filesystem name matches the base filesystem name, use the base directory if no directory is set and allowRoot is false
-        if ($baseFs['name'] === $filesystem->get('name') && $allowRoot === false) {
+        // if the filesystem name matches the base filesystem name, use the base directory if no directory is set
+        if ($baseFs['name'] === $filesystem->get('name')) {
             // if no directory is set, or it is an empty array, use the base directory
             if (empty($dir)) {
                 $dir = $baseDir;
@@ -307,29 +304,19 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // If no usable entries exist (all blank or effectively empty after normalization)
         if (count($nonBlank) === 0) {
-            if ($allowRoot === false) {
-                $root = $filesystem->get('root', 'images'); // get the default root for the filesystem
+            $root = $filesystem->get('root', 'images'); // get the default root for the filesystem
 
-                if (empty($root)) {
-                    $root = 'images';
-                }
-
-                // Default ONLY here to "images"
-                $hash = md5($root);
-
-                $dirStore[$hash] = [
-                    'path'  => $root,
-                    'label' => '' // no label required for a single path
-                ];
-            } else {
-                // Root allowed: a single blank/root entry
-                $hash = md5('');
-
-                $dirStore[$hash] = [
-                    'path' => '',
-                    'label' => '',
-                ];
+            if (empty($root)) {
+                $root = 'images';
             }
+
+            // Default ONLY here to "images"
+            $hash = md5($root);
+
+            $dirStore[$hash] = [
+                'path'  => $root,
+                'label' => '' // no label required for a single path
+            ];
 
             return $dirStore;
         }
