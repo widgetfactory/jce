@@ -2474,6 +2474,13 @@ class WFFileBrowser extends CMSObject
                     throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
                 }
 
+                // validate extension against allowed list
+                $ext = WFUtility::getExtension($item, true);
+
+                if (!empty($allowed) && in_array($ext, $allowed) === false) {
+                    throw new InvalidArgumentException('Copy Failed: Invalid file extension.');
+                }
+
                 $path = dirname($item);
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
@@ -2601,6 +2608,13 @@ class WFFileBrowser extends CMSObject
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
                     throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                }
+
+                // validate extension against allowed list
+                $ext = WFUtility::getExtension($item, true);
+
+                if (!empty($allowed) && in_array($ext, $allowed) === false) {
+                    throw new InvalidArgumentException('Move Failed: Invalid file extension.');
                 }
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
