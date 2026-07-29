@@ -2239,6 +2239,9 @@ class Browser
             throw new \InvalidArgumentException('Rename Failed: The source file name is invalid.');
         }
 
+        // sanitize the destination
+        $destination = Utility::makeSafe($destination, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
+
         // check for extension in destination name
         if (Utility::validateFileName($destination, $allowed) === false) {
             throw new \InvalidArgumentException('Rename Failed: The file name is invalid.');
@@ -2252,6 +2255,13 @@ class Browser
         if ($filesystem->is_file($source)) {
             if ($this->checkFeature('rename', 'file') === false) {
                 throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            }
+
+            // validate extension against allowed list
+            $ext = Utility::getExtension($source, true);
+
+            if (!empty($allowed) && in_array($ext, $allowed) === false) {
+                throw new \InvalidArgumentException('Rename Failed: Invalid file extension.');
             }
 
             $path = dirname($source);
@@ -2270,8 +2280,6 @@ class Browser
             throw new \InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
         }
 
-        // apply filesystem options
-        $destination = Utility::makeSafe($destination, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
         $result = $filesystem->rename($source, $destination, $args);
 
         if ($result instanceof FilesystemResult) {

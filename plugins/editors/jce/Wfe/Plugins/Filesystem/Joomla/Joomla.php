@@ -657,6 +657,11 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
         $src = $event->getArgument('source');
         $dest = $event->getArgument('destination');
 
+        // fail closed on an empty or dotfile destination.
+        if ((string) $dest === '' || strpos($dest, '.') === 0) {
+            throw new \InvalidArgumentException('Rename Failed: Invalid destination name.');
+        }
+
         $result = new FilesystemResult();
 
         if (is_file($src)) {
@@ -667,6 +672,14 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $this->checkRestrictedDirectory($path);
 
             $result->type = 'files';
+
+            // check if the file exists
+            if (file_exists($path) && realpath($path) !== realpath($src)) {
+                $result->message = Text::sprintf('WF_MANAGER_FILE_EXISTS', Utility::mb_basename($path));
+
+                return $result;
+            }
+
             $result->state = File::move($src, $path);
             $result->path = $path;
             // include original source path
@@ -677,6 +690,13 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
             $this->checkRestrictedDirectory($path);
 
             $result->type = 'folders';
+
+            if (file_exists($path) && realpath($path) !== realpath($src)) {
+                $result->message = Text::sprintf('WF_MANAGER_FOLDER_EXISTS', Utility::mb_basename($path));
+
+                return $result;
+            }
+
             $result->state = Folder::move($src, $path);
             $result->path = $path;
             // include original source path
@@ -959,7 +979,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
             $x = 1;
 
-            while (is_file($destination)) {
+            // file_exists (not is_file) so a directory of the same name is also treated as a conflict
+            while (file_exists($destination)) {
                 if (strpos($suffix, '$') !== false) {
                     $tmpname = $name . str_replace('$', $x, $suffix);
                 } else {
