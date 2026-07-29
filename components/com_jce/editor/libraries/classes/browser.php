@@ -2334,11 +2334,13 @@ class WFFileBrowser extends CMSObject
 
         $allowed = (array) $this->getFileTypes('array');
 
-        // check source file name is not blocked (executable extensions etc.). Pass the profile's
-        // allowed types so svg/html/htm stay operable when the profile permits them.
+        // check source file name is not blocked
         if (WFUtility::validateFileName(WFUtility::mb_basename($source), $allowed) === false) {
             throw new InvalidArgumentException('Rename Failed: The source file name is invalid.');
         }
+
+        // sanitize destination
+        $destination = WFUtility::makeSafe($destination, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination, $allowed) === false) {
@@ -2353,6 +2355,13 @@ class WFFileBrowser extends CMSObject
         if ($filesystem->is_file($source)) {
             if ($this->checkFeature('rename', 'file') === false) {
                 throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            }
+
+            // validate extension against allowed list
+            $ext = WFUtility::getExtension($source, true);
+
+            if (!empty($allowed) && in_array($ext, $allowed) === false) {
+                throw new InvalidArgumentException('Rename Failed: Invalid file extension.');
             }
 
             $path = dirname($source);
@@ -2371,9 +2380,7 @@ class WFFileBrowser extends CMSObject
             throw new InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
         }
 
-        // apply filesystem options
-        $destination = WFUtility::makeSafe($destination, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
-        $result = $filesystem->rename($source, $destination, $args);
+        $result = $filesystem->rename($source, $destination);
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
