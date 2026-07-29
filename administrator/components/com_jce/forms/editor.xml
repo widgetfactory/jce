@@ -161,9 +161,10 @@
                 <option value="uppercase">WF_OPTION_UPPERCASE</option>
                 <option value="lowercase">WF_OPTION_LOWERCASE</option>
             </field>
-            <field name="upload_add_random" type="yesno" default="0" label="WF_PARAM_UPLOAD_ADD_RANDOM" description="WF_PARAM_UPLOAD_ADD_RANDOM_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
+            <field name="upload_add_random" type="radio" default="0" label="WF_PARAM_UPLOAD_ADD_RANDOM" description="WF_PARAM_UPLOAD_ADD_RANDOM_DESC" class="btn-group">
+                <option value="0">JNONE</option>
+                <option value="1">WF_OPTION_UPLOAD_ADD_RANDOM_APPEND</option>
+                <option value="2">WF_OPTION_UPLOAD_ADD_RANDOM_FULL</option>
             </field>
             <field name="date_format" type="text" default="" hint="eg: %d/%m/%Y, %H:%M" label="WF_PARAM_DATE_FORMAT" description="WF_PARAM_DATE_FORMAT_DESC" />
             <field name="total_files" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_LIMIT" description="WF_PARAM_TOTAL_FILES_LIMIT_DESC" />
