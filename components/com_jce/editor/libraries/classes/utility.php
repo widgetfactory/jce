@@ -1282,6 +1282,35 @@ abstract class WFUtility
     }
 
     /**
+     * Fold the fullwidth ASCII block (U+FF01-U+FF5E) to plain ASCII.
+     *
+     * A minimal fallback for the NFKC normalisation in validateFileName() when the intl extension
+     * (Normalizer) is unavailable.
+     *
+     * @param string $string The string to fold.
+     *
+     * @return string The folded string.
+     */
+    private static function foldFullwidthAscii($string)
+    {
+        // U+FF01-U+FF5E encode as EF BC 81 .. EF BD 9E; skip the work when none are present
+        if (strpos($string, "\xEF\xBC") === false && strpos($string, "\xEF\xBD") === false) {
+            return $string;
+        }
+
+        $folded = preg_replace_callback('/[\x{FF01}-\x{FF5E}]/u', function ($m) {
+            // decode the 3 utf-8 bytes inline - mbstring may be absent on the same builds as intl
+            $bytes = $m[0];
+            $code = ((ord($bytes[0]) & 0x0F) << 12) | ((ord($bytes[1]) & 0x3F) << 6) | (ord($bytes[2]) & 0x3F);
+
+            // fullwidth codepoint - 0xFEE0 gives the ASCII codepoint (0x21-0x7E)
+            return chr($code - 0xFEE0);
+        }, $string);
+
+        return $folded !== null ? $folded : $string;
+    }
+
+    /**
      * Check file name for extensions.
      *
      * @param string $name               The file name to validate.
@@ -1295,6 +1324,18 @@ abstract class WFUtility
             return false;
         }
 
+        // fold unicode compatibility characters to their ascii form for the checks below
+        if (class_exists('Normalizer')) {
+            $normalized = \Normalizer::normalize($name, \Normalizer::FORM_KC);
+
+            if ($normalized !== false) {
+                $name = $normalized;
+            }
+        } else {
+            // intl unavailable - fold the fullwidth ascii block as a minimal fallback
+            $name = self::foldFullwidthAscii($name);
+        }
+
         // first character is a dot
         if ($name[0] === '.') {
             return false;
@@ -1306,63 +1347,36 @@ abstract class WFUtility
         // remove multiple . characters
         $name = preg_replace('#(\.){2,}#', '.', $name);
 
-        // list of invalid extensions
+        // Extensions that must never appear in an uploaded file name, in any position.
+        // None of these have a legitimate function in a CMS media library. Grouped by
+        // category for readability; the checks below treat the list as flat.
         $executable = array(
-            'php',
-            'php3',
-            'php4',
-            'php5',
-            'php6',
-            'php7',
-            'php8',
-            'phar',
-            'js',
-            'exe',
-            'phtml',
-            'java',
-            'perl',
-            'py',
-            'asp',
-            'dll',
-            'go',
-            'ade',
-            'adp',
-            'bat',
-            'chm',
-            'cmd',
-            'com',
-            'cpl',
-            'hta',
-            'ins',
-            'isp',
-            'jse',
-            'lib',
-            'mde',
-            'msc',
-            'msp',
-            'mst',
-            'pif',
-            'scr',
-            'sct',
-            'shb',
-            'sys',
-            'vb',
-            'vbe',
-            'vbs',
-            'vxd',
-            'wsc',
-            'wsf',
-            'wsh',
-            'svg',
-            'html',
-            'htm',
+            // PHP, covering every handler mapping seen in the wild
+            'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'pht', 'phtm', 'phtml', 'phps', 'phpt', 'phar', 'pgif',
+            // other server-side languages and script hosts
+            'asp', 'aspx', 'asa', 'asax', 'cer', 'jsp', 'jspx', 'cgi', 'pl', 'perl', 'py', 'java', 'go', 'js', 'jse',
+            'vb', 'vbe', 'vbs', 'wsc', 'wsf', 'wsh', 'sct', 'inc',
+            // server-parsed pages / SSI
+            'shtml', 'shtm', 'stm',
+            // native executables and libraries
+            'exe', 'dll', 'com', 'bat', 'cmd', 'scr', 'pif', 'cpl', 'msc', 'msp', 'mst', 'hta', 'chm', 'sys', 'vxd',
+            'lib', 'shb', 'ade', 'adp', 'ins', 'isp', 'mde',
+            // server configuration
+            'htaccess', 'htpasswd', 'ini',
+            // blocked by default, but allowed as the final extension if the profile permits it
+            'svg', 'html', 'htm',
         );
 
         // get file parts, eg: ['image', 'php', 'jpg']
         $parts = explode('.', $name);
 
+        // normalise each part before comparison
+        $normalise = static function ($part) {
+            return trim($part, " \t\n\r\0\x0B.:;");
+        };
+
         // check and remove the final extension
-        $finalExt = array_pop($parts);
+        $finalExt = $normalise(array_pop($parts));
 
         // svg, html, and htm are blocked by default but have legitimate CMS uses;
         // allow them as the final extension only if the profile has explicitly permitted them
@@ -1376,8 +1390,8 @@ abstract class WFUtility
         // remove name
         array_shift($parts);
 
-        // trim each $parts
-        $parts = array_map('trim', $parts);
+        // normalise each part the same way as the final extension
+        $parts = array_map($normalise, $parts);
 
         // no intermediate extensions in file name
         if (empty($parts)) {
