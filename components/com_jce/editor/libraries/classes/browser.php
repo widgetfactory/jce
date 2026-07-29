@@ -2142,7 +2142,16 @@ class WFFileBrowser extends CMSObject
         $upload = $this->get('upload');
 
         if ($upload['add_random']) {
-            $name = $name . '_' . substr(md5(uniqid(rand(), 1)), 0, 5);
+            $random = bin2hex(random_bytes(8));
+
+            // append a 16 character random string to the file name
+            if ((int) $upload['add_random'] === 1) {
+                $name = $name . '_' . $random;
+
+            // randomize the entire file name
+            } elseif ((int) $upload['add_random'] === 2) {
+                $name = $random;
+            }
         }
 
         $name = $name . '.' . $ext;
