@@ -510,12 +510,15 @@ class WFEditor
             if (!empty($settings['invalid_elements'])) {
                 $settings['invalid_elements'] = array_values($settings['invalid_elements']);
             }
+
+            // get compression options
+            $settings['compress'] = $this->getCompressionOptions();
         } else {
             $settings['readonly'] = true;
-        }
 
-        // get compression options stylesheet
-        $settings['compress'] = $this->getCompressionOptions();
+            // the compression endpoint requires a valid profile
+            $settings['compress'] = array('javascript' => 0, 'css' => 0);
+        }
 
         // set css compression
         if ($settings['compress']['css']) {
@@ -560,8 +563,10 @@ class WFEditor
             $this->addScript($this->getURL(true) . '/js/editor.min.js');
         }
 
-        // language
-        $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
+        // language - the endpoint requires a valid profile
+        if (is_object($this->profile)) {
+            $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
+        }
 
         $this->getCustomConfig($settings);
 
