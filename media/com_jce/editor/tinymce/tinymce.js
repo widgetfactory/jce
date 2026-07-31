@@ -23687,21 +23687,25 @@
    * @return {Object} Object with mime types and data for those mime types.
    */
   function getClipboardContent(editor, clipboardEvent) {
-      var eventTimestamp = clipboardEvent.timeStamp;
-      
+      var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
+
+      // The system clipboard is the source of truth. FakeClipboard is only a fallback for browsers
+      // that cannot expose clipboard data on paste (eg: iOS), otherwise content copied outside the
+      // editor would be replaced by the last content copied within it.
+      if (hasHtmlOrText(content) || 'Files' in content) {
+          // an external copy has replaced whatever was stored internally
+          clearData();
+
+          return content;
+      }
+
       if (hasData()) {
           var data = getData$1();
-          var timestamp = getTimestamp();
 
           clearData();
 
-          if (timestamp && timestamp > eventTimestamp) {
-              return data;
-          }
+          return data;
       }
-      
-      var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
-      //var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
 
       return content;
   }
@@ -23831,6 +23835,15 @@
           // clean up extra whitespace
           if (editor.settings.paste_remove_whitespace) {
               o.content = o.content.replace(/(&nbsp;|\u00a0|\s| ){2,}/g, ' ');
+          }
+
+          // convert "smart" quotes and apostrophes to their straight equivalents
+          if (editor.settings.paste_convert_smart_quotes) {
+              o.content = o.content
+                  // \u201c \u201d (U+201C/U+201D) -> "
+                  .replace(/[\u201c\u201d]/g, '"')
+                  // \u2018 \u2019 (U+2018/U+2019) -> '
+                  .replace(/[\u2018\u2019]/g, "'");
           }
 
           // process regular expression
@@ -49353,6 +49366,10 @@
         CaretContainerRemove.remove(node.nextSibling);
         editor.dom.remove(node);
 
+        // The node backing the fake selection is gone, drop the offscreen container with it. This
+        // cannot be left to onAfterSetSelectionRange since a null range below never sets a selection.
+        removeContentEditableSelection();
+
         if (editor.dom.isEmpty(editor.getBody())) {
           editor.setContent('');
           editor.focus();
@@ -49767,7 +49784,8 @@
 
           if (selectedContentEditableNode) {
             if (!selectedContentEditableNode.parentNode) {
-              selectedContentEditableNode = null;
+              // The selected node was removed from the DOM, clean up the offscreen container as well
+              removeContentEditableSelection();
               return;
             }
 
@@ -49962,15 +49980,17 @@
       function removeContentEditableSelection() {
         if (selectedContentEditableNode) {
           selectedContentEditableNode.removeAttribute('data-mce-selected');
-          editor.dom.remove(realSelectionId);
-
           selectedContentEditableNode = null;
         }
+
+        // Always remove the offscreen container, the selected node reference can be
+        // cleared or become detached while the container is still in the DOM
+        editor.dom.remove(realSelectionId);
       }
 
       function destroy() {
         fakeCaret.destroy();
-        selectedContentEditableNode = null;
+        removeContentEditableSelection();
       }
 
       function hideFakeCaret() {
