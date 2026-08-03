@@ -631,12 +631,15 @@ img.mce-object.mce-object-object {
 }
 img.mce-object.mce-object-shockwave {
   background-image: url(img/media/shockwave.svg);
+  background-size: 256px;
 }
 img.mce-object.mce-object-flash {
   background-image: url(img/media/swf.svg);
+  background-size: 256px;
 }
 img.mce-object.mce-object-quicktime {
   background-image: url(img/media/quicktime.svg);
+  background-size: 256px;
 }
 img.mce-object.mce-object-divx {
   background-image: url(img/media/video.svg);
