@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Component\ComponentHelper;
 
 class WFBrowserPlugin extends WFMediaManager
 {
@@ -22,6 +23,7 @@ class WFBrowserPlugin extends WFMediaManager
      */
     protected $_filetypes = 'doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,webp,apng,avif,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv';
 
+    // identifies a media field request for routing only, the profile determines access
     private function isMediaField()
     {
         $app = Factory::getApplication();
@@ -65,42 +67,43 @@ class WFBrowserPlugin extends WFMediaManager
     {
         $app = Factory::getApplication();
 
-        if ($app->input->getInt('standalone')) {
-            return true;
+        // the standalone File Browser is only available in the Control Panel, but media fields are also standalone
+        if ($app->input->getInt('standalone') && !$this->isMediaField()) {
+            return Factory::getUser()->authorise('jce.browser', 'com_jce');
         }
 
-        // media field usage: element present with a mediatype (standalone=0, no caller)
-        if ($this->isMediaField()) {
-            return true;
-        }
-
-        $map = array(
-            'imgmanager'        => 'basic_dialog_filebrowser',
-            'imgmanager_ext'    => 'basic_dialog_filebrowser',
-            'mediamanager'      => 'basic_dialog_filebrowser',
-            'link'              => 'file_browser',
-            'iframe'            => 'file_browser',
-            'table'             => 'file_browser',
-            'style'             => 'file_browser',
-        );
-
+        // the caller is only set when it is assigned to the active profile
         $caller = $this->get('caller');
 
-        if (!$caller) {
+        if ($caller) {
+            // these plugins have no file browser of their own, so it can be disabled
+            $map = array('link', 'iframe', 'table', 'style');
+
+            if (in_array($caller, $map, true)) {
+                return (int) $this->getParam($caller . '.file_browser', 1) !== 0;
+            }
+
+            return true;
+        }
+
+        // media field usage: element present with a mediatype, standalone or not
+        if ($this->isMediaField()) {
+            if ((int) $this->getParam('mediafield_enable', 1)) {
+                if ($app->input->getInt('converted')) {
+                    if ((int) ComponentHelper::getParams('com_jce')->get('replace_media_manager', 1)) {
+                        return (int) $this->getParam('mediafield_conversion', 1);
+                    }
+
+                    return false;
+                }
+
+                return true;
+            }
+
             return false;
         }
 
-        $key = $map[$caller] ?? null;
-
-        if (!$key) {
-            return false;
-        }
-
-        if ((int) $this->getParam($caller . '.' . $key, 1) === 0) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
     public function __construct($config = array())
