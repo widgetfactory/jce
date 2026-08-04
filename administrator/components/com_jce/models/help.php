@@ -32,7 +32,7 @@ class JceModelHelp extends BaseDatabaseModel
             return '';
         }
         $path = realpath($base . '/' . $file);
-        if (!$path || strpos($path, $base) !== 0) {
+        if (!$path || strpos($path, $base . DIRECTORY_SEPARATOR) !== 0) {
             return '';
         }
         return $path;
