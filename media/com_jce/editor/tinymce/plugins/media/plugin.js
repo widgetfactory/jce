@@ -16,28 +16,20 @@
         VK = tinymce.VK,
         Serializer = tinymce.html.Serializer,
         DomParser = tinymce.html.DomParser,
-        SaxParser = tinymce.html.SaxParser,
         DOM = tinymce.DOM;
 
-    // Polyfill for String.prototype.startsWith
-    if (!String.prototype.startsWith) {
-        String.prototype.startsWith = function (search, pos) {
-            pos = pos || 0;
-            return this.substring(pos, pos + search.length) === search;
-        };
-    }
-
-    // ES5-compatible indexOf helper
-    function indexOf(array, item) {
-        for (var i = 0; i < array.length; i++) {
-            if (array[i] === item) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
+
+    // used to clean the html stored in the data-mce-html attribute
+    var sanitizeSettings = {
+        schema: 'mixed',
+        invalid_elements: 'script,noscript,svg',
+        forced_root_block: false,
+        verify_html: true,
+        validate: true
+    };
+
+    var sanitizeSchema = new tinymce.html.Schema(sanitizeSettings);
 
     var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
@@ -641,10 +633,11 @@
         var audioExts = ['mp3', 'ogg', 'webm', 'wav', 'm4a', 'aiff'];
         var videoExts = ['mp4', 'ogv', 'ogg', 'webm', 'mov', 'qt', 'mpg', 'mpeg', 'divx'];
         var objectExts = ['swf', 'pdf'];
+        var objectTypes = ['application/x-shockwave-flash', 'application/pdf'];
 
         // Strict MIME-type match if provided
         if (type.startsWith('audio/')) {
-            if (indexOf(audioExts, ext) === -1) {
+            if (!audioExts.includes(ext)) {
                 return false;
             }
             if (isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
@@ -653,7 +646,7 @@
         }
 
         if (type.startsWith('video/')) {
-            if (indexOf(videoExts, ext) === -1) {
+            if (!videoExts.includes(ext)) {
                 return false;
             }
             if (isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
@@ -661,16 +654,21 @@
             }
         }
 
+        // object types are matched on mime alone, as the url may have no file extension
+        if (objectTypes.includes(type) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
+            return 'object';
+        }
+
         // Fallback to extension if no usable MIME type
-        if (indexOf(videoExts, ext) !== -1 && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
+        if (videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
             return 'video';
         }
 
-        if (indexOf(audioExts, ext) !== -1 && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
+        if (audioExts.includes(ext) && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
             return 'audio';
         }
 
-        if (indexOf(objectExts, ext) !== -1 && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
+        if (objectExts.includes(ext) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
             return 'object';
         }
 
@@ -724,67 +722,36 @@
         return isSupportedIframe(editor, src);
     };
 
-    var sanitize = function (editor, html) {
-        var writer = new tinymce.html.Writer();
-        var blocked;
+    // walk all descendants, processing each node after its children
+    function eachNode(node, callback) {
+        each(node.children(), function (child) {
+            eachNode(child, callback);
 
-        new tinymce.html.SaxParser({
-            validate: false,
-            allow_conditional_comments: false,
-            special: 'script,noscript',
+            callback(child);
+        });
+    }
 
-            comment: function (text) {
-                writer.comment(text);
-            },
+    var sanitize = function (editor, html, context) {
+        // parse in context so media children, eg: <param />, are not removed as invalid
+        var frag = new DomParser(sanitizeSettings, sanitizeSchema).parse(html, { context: context || 'div' });
 
-            cdata: function (text) {
-                writer.cdata(text);
-            },
+        eachNode(frag, function (node) {
+            // remove bookmark and bogus nodes
+            if (node.attr('data-mce-type') === 'bookmark' || node.attr('data-mce-bogus')) {
+                node.remove();
 
-            text: function (text, raw) {
-                writer.text(text, raw);
-            },
-
-            start: function (name, attrs, empty) {
-                blocked = true;
-
-                if (name === 'script' || name === 'noscript' || name === 'svg') {
-                    return;
-                }
-
-                // remove any node with a data-mce-bookmark attribute
-                if (attrs.map && attrs.map['data-mce-type'] == 'bookmark' || attrs.map['data-mce-bogus']) {
-                    return;
-                }
-
-                for (var i = attrs.length - 1; i >= 0; i--) {
-                    var attrName = attrs[i].name;
-
-                    if (attrName.indexOf('on') === 0) {
-                        delete attrs.map[attrName];
-                        attrs.splice(i, 1);
-                    }
-
-                    if (attrName === 'style') {
-                        attrs[i].value = editor.dom.serializeStyle(editor.dom.parseStyle(attrs[i].value), name);
-                    }
-                }
-
-                writer.start(name, attrs, empty);
-
-                blocked = false;
-            },
-
-            end: function (name) {
-                if (blocked) {
-                    return;
-                }
-
-                writer.end(name);
+                return;
             }
-        }, htmlSchema).parse(html);
 
-        return writer.getContent();
+            var style = node.attr('style');
+
+            // normalise style values
+            if (style) {
+                node.attr('style', editor.dom.serializeStyle(editor.dom.parseStyle(style), node.name) || null);
+            }
+        });
+
+        return new Serializer(sanitizeSettings, sanitizeSchema).serialize(frag);
     };
 
     /**
@@ -823,19 +790,22 @@
     function parseHTML(value) {
         var nodes = [];
 
-        new SaxParser({
-            start: function (name, attrs) {
-                if (name === "source" && attrs.map) {
-                    nodes.push({ 'name': name, 'value': attrs.map });
-                } else if (name === "param") {
-                    nodes.push({ 'name': name, 'value': attrs.map });
-                } else if (name === "embed") {
-                    nodes.push({ 'name': name, 'value': attrs.map });
-                } else if (name === "track") {
-                    nodes.push({ 'name': name, 'value': attrs.map });
-                }
-            }
-        }).parse(value);
+        // template content is inert, so nothing is fetched and no scripts run
+        var template = document.createElement('template');
+        template.innerHTML = value;
+
+        // extract the media child nodes, leaving the rest as html
+        each(template.content.querySelectorAll('source,param,embed,track'), function (elm) {
+            var attribs = {};
+
+            each(elm.attributes, function (attr) {
+                attribs[attr.name] = attr.value;
+            });
+
+            nodes.push({ 'name': elm.nodeName.toLowerCase(), 'value': attribs });
+
+            elm.remove();
+        });
 
         var settings = {
             invalid_elements: 'source,param,embed,track',
@@ -848,7 +818,7 @@
         var schema = new tinymce.html.Schema(settings);
 
         // clean content
-        var content = new Serializer(settings, schema).serialize(new DomParser(settings, schema).parse(value));
+        var content = new Serializer(settings, schema).serialize(new DomParser(settings, schema).parse(template.innerHTML));
 
         nodes.push({ 'name': 'html', 'value': content });
 
@@ -1321,6 +1291,17 @@
     function nodeToMedia(editor, node) {
         var elm, tag = node.attr('data-mce-object'), attribs = {};
 
+        if (!tag) {
+            return null;
+        }
+
+        tag = tag.toLowerCase();
+
+        // must be a valid tag
+        if (!['object', 'embed', 'video', 'audio', 'iframe'].includes(tag)) {
+            return null;
+        }
+
         if (isResponsiveMedia(node)) {
             var parent = node.parent;
 
@@ -1352,7 +1333,7 @@
                 if (child.name === 'html') {
                     var inner = new Node('#text', 3);
                     inner.raw = true;
-                    inner.value = sanitize(editor, child.value);
+                    inner.value = sanitize(editor, child.value, tag);
                     elm.append(inner);
                 } else {
                     var inner = new Node(child.name, 1);
@@ -1379,7 +1360,7 @@
         elm.attr('data-mce-html', null);
 
         // add embed for some object media
-        if (tag === 'object' && elm.getAll('embed').length === 0 && objectRequiresEmbed(elm.attr('type'))) {
+        if (tag === 'object' && elm.getAll('embed').length === 0 && objectRequiresEmbed(elm.attr('type')) && elm.attributes.length) {
             var embed = new Node('embed', 1);
 
             embed.shortEnded = true;
@@ -1401,11 +1382,26 @@
             updateSandbox(editor, elm);
         }
 
-        return elm;
+        var settings = {
+            validate: editor.settings.validate,
+            sanitize_html: editor.settings.sanitize_html
+        };
+
+        // re-parse to validate the content restored from data-mce-html
+        var html = new Serializer(settings, editor.schema).serialize(elm);
+        var newElement = new DomParser(settings, editor.schema).parse(html).getAll(tag)[0];
+
+        return newElement || elm;
     }
 
     var convertPlaceholderToMedia = function (editor, node) {
         var elm = nodeToMedia(editor, node);
+
+        if (!elm) {
+            node.remove();
+
+            return null;
+        }
 
         if (!isObjectEmbed(elm.name)) {
             node.empty();
@@ -1489,20 +1485,19 @@
                         for (var j = 0; j < params.length; j++) {
                             var param = params[j];
 
-                            if (param.attr('movie')) {
-                                src = param.attr('value');
+                            // legacy <param movie="url" /> or standard <param name="movie" value="url" />
+                            if (param.attr('movie') || param.attr('name') === 'movie') {
+                                src = param.attr('movie') || param.attr('value');
                             }
                         }
                     }
 
-                    // try embed
-                    if (!src) {
-                        var embed = node.getAll('embed');
+                    // an embed child can provide the src and the mime type
+                    var embed = node.getAll('embed');
 
-                        if (embed.length) {
-                            src = embed[0].attr('src');
-                            type = embed[0].attr('type') || type;
-                        }
+                    if (embed.length) {
+                        src = src || embed[0].attr('src');
+                        type = type || embed[0].attr('type');
                     }
                 }
             }
@@ -1564,7 +1559,8 @@
                     // get the extension
                     var ext = cleanSrc.split('.').pop();
 
-                    node.attr('type', mimes[ext] || 'application/octet-stream');
+                    // fall back to the declared type as the url may have no file extension
+                    node.attr('type', mimes[ext] || type || 'application/octet-stream');
                 }
             }
         }
@@ -1703,7 +1699,7 @@
 
                     continue;
                 }
-                
+
                 if (!htmlSchema.isValid('img', attrName) || attrName == 'src') {
                     attrName = 'data-mce-p-' + attrName;
                 }
@@ -1814,7 +1810,7 @@
         }
 
         if (innerHtml) {
-            targetNode.attr("data-mce-html", escape(sanitize(editor, innerHtml)));
+            targetNode.attr("data-mce-html", escape(sanitize(editor, innerHtml, sourceNode.name)));
             targetNode.empty();
         }
     };

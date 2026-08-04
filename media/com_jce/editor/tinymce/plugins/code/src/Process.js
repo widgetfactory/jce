@@ -2,21 +2,33 @@ import Content from './Content';
 
 const each = tinymce.each;
 
-let htmlSchema, shortEndedElements = {}, booleanAttributes = {};
+/**
+ * Get the state for an editor instance, so editors on the same page do not share a schema
+ * @param {Object} editor
+ */
+function getState(editor) {
+    return editor._codeState || { shortEndedElements: {}, booleanAttributes: {} };
+}
 
 function init(editor) {
-    htmlSchema = new tinymce.html.Schema({
-        schema: 'mixed',
-        invalid_elements: editor.settings.invalid_elements
-    });
+    var state = {
+        htmlSchema: new tinymce.html.Schema({
+            schema: 'mixed',
+            invalid_elements: editor.settings.invalid_elements || ''
+        }),
+        shortEndedElements: {},
+        booleanAttributes: {}
+    };
 
     each(editor.schema.getShortEndedElements(), function (_shortEnded, name) {
-        shortEndedElements[name.toLowerCase()] = true;
+        state.shortEndedElements[name.toLowerCase()] = true;
     });
 
     each(editor.schema.getBoolAttrs(), function (_boolAttr, name) {
-        booleanAttributes[name.toLowerCase()] = true;
+        state.booleanAttributes[name.toLowerCase()] = true;
     });
+
+    editor._codeState = state;
 }
 
 function canKeepCode(editor, type) {
@@ -33,7 +45,7 @@ function canKeepCode(editor, type) {
  * @param {String} name
  */
 function isInvalidElement(editor, name) {
-    var invalid_elements = editor.settings.invalid_elements.split(',');
+    var invalid_elements = (editor.settings.invalid_elements || '').split(',');
     return tinymce.inArray(invalid_elements, name) !== -1;
 }
 
@@ -43,6 +55,12 @@ function isInvalidElement(editor, name) {
  * @param {String} name
  */
 function isXmlElement(editor, name) {
+    var htmlSchema = getState(editor).htmlSchema;
+
+    if (!htmlSchema) {
+        return false;
+    }
+
     return !htmlSchema.isValid(name) && !isInvalidElement(editor, name);
 }
 
@@ -77,6 +95,13 @@ function sanitizeNode(editor, node, raw) {
         case 1: {
             const tagName = node.nodeName.toLowerCase();
 
+            // code nested in xml must not bypass the code_allow_* settings
+            if (tagName === 'script' || tagName === 'style' || tagName === 'link') {
+                if (!canKeepCode(editor, tagName === 'link' ? 'style' : tagName)) {
+                    return '';
+                }
+            }
+
             if (!isValid(editor, tagName)) {
                 return '';
             }
@@ -92,7 +117,7 @@ function sanitizeNode(editor, node, raw) {
                     continue;
                 }
 
-                if (booleanAttributes[name]) {
+                if (getState(editor).booleanAttributes[name]) {
                     if (value === '' || value === 'true' || value === name) {
                         html.push(' ', name);
                         continue;
@@ -102,7 +127,7 @@ function sanitizeNode(editor, node, raw) {
                 html.push(' ', name, '="', editor.dom.encode(value, true), '"');
             }
 
-            if (shortEndedElements[tagName]) {
+            if (getState(editor).shortEndedElements[tagName]) {
                 if (editor.settings.schema === 'html5-strict') {
                     html.push('>');
                 } else {
@@ -150,6 +175,12 @@ function sanitizeNode(editor, node, raw) {
 function validateXml(editor, xml) {
     var parser = new DOMParser();
     var doc = parser.parseFromString(xml, 'text/xml');
+
+    // malformed xml produces a parsererror document, which must not be treated as content
+    if (!doc.documentElement || doc.getElementsByTagName('parsererror').length) {
+        return null;
+    }
+
     return sanitizeNode(editor, doc.documentElement, true);
 }
 
@@ -175,7 +206,14 @@ function processXML(editor, content) {
         }
 
         if (editor.settings.code_validate_xml !== false) {
-            match = validateXml(editor, match);
+            var validated = validateXml(editor, match);
+
+            // leave malformed xml for the html sanitizer
+            if (validated === null) {
+                return match;
+            }
+
+            match = validated;
         }
 
         return Content.createHtml(editor, match, 'xml');
@@ -228,12 +266,14 @@ function processShortcode(editor, html, tagName) {
     // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
     tagName = tagName || 'span';
 
-    // Temporarily protect shortcodes inside attribute values so they are not processed
+    // Temporarily protect shortcodes inside attribute values so they are not processed.
+    // The token is randomised so it cannot be forged by the content itself.
     var attrPlaceholders = [];
+    var token = '__shortcode_attr_' + Math.random().toString(36).slice(2) + '_';
 
     html = html.replace(/=("[^"]*\{[^"]*"|'[^']*\{[^']*')/g, function (match) {
         attrPlaceholders.push(match);
-        return '="__SHORTCODE_ATTR_' + (attrPlaceholders.length - 1) + '__"';
+        return '="' + token + (attrPlaceholders.length - 1) + '__"';
     });
 
     // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
@@ -248,8 +288,11 @@ function processShortcode(editor, html, tagName) {
 
     // Restore protected attribute values
     if (attrPlaceholders.length) {
-        html = html.replace(/="__SHORTCODE_ATTR_(\d+)__"/g, function (_match, index) {
-            return attrPlaceholders[parseInt(index, 10)];
+        html = html.replace(new RegExp('="' + token + '(\\d+)__"', 'g'), function (match, index) {
+            index = parseInt(index, 10);
+
+            // only restore a value we stored
+            return index < attrPlaceholders.length ? attrPlaceholders[index] : match;
         });
     }
 
