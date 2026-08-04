@@ -43,17 +43,19 @@ ibis.PluginManager.add('clipboard', function (ed, url) {
                 if (pasteHtml) {
                     m.add({
                         title: 'clipboard.paste_desc',
-                        /* TODO - Change to clipboard.paste_desc */
                         icon: 'paste',
-                        cmd: 'mcePaste'
+                        onclick: function () {
+                            ed.execCommand('mcePaste', true);
+                        }
                     });
                 }
                 if (pasteText) {
                     m.add({
                         title: 'clipboard.paste_text_desc',
-                        /* TODO - Change to clipboard.paste_text_desc */
                         icon: 'pastetext',
-                        cmd: 'mcePasteText'
+                        onclick: function () {
+                            ed.execCommand('mcePasteText', true);
+                        }
                     });
                 }
             });
