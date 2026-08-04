@@ -1,6 +1,3 @@
-import replace from '@rollup/plugin-replace';
-import { eslint } from "rollup-plugin-eslint";
-
 export default [
   {
     input: 'src/Plugin.js',
@@ -11,13 +8,6 @@ export default [
       intro : '/* eslint-disable */'
     },
 
-    plugins: [
-      //uglify({mangle: false})
-      replace({
-        'ibis$1': 'ibis'
-      }),
-      eslint({
-      })
-    ]
+    plugins: []
   }
 ];
