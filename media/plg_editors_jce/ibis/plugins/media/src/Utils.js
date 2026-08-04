@@ -7,24 +7,6 @@ var each = ibis.each,
     SaxParser = ibis.html.SaxParser,
     DOM = ibis.DOM;
 
-// Polyfill for String.prototype.startsWith
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (search, pos) {
-        pos = pos || 0;
-        return this.substring(pos, pos + search.length) === search;
-    };
-}
-
-// ES5-compatible indexOf helper
-function indexOf(array, item) {
-    for (var i = 0; i < array.length; i++) {
-        if (array[i] === item) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 var htmlSchema = new ibis.html.Schema({ schema: 'mixed' });
 
 var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -135,19 +117,22 @@ function cleanClassValue(value) {
 function parseHTML(value) {
     var nodes = [];
 
-    new SaxParser({
-        start: function (name, attrs) {
-            if (name === "source" && attrs.map) {
-                nodes.push({ 'name': name, 'value': attrs.map });
-            } else if (name === "param") {
-                nodes.push({ 'name': name, 'value': attrs.map });
-            } else if (name === "embed") {
-                nodes.push({ 'name': name, 'value': attrs.map });
-            } else if (name === "track") {
-                nodes.push({ 'name': name, 'value': attrs.map });
-            }
-        }
-    }).parse(value);
+    // template content is inert, so nothing is fetched and no scripts run
+    var template = document.createElement('template');
+    template.innerHTML = value;
+
+    // extract the media child nodes, leaving the rest as html
+    each(template.content.querySelectorAll('source,param,embed,track'), function (elm) {
+        var attribs = {};
+
+        each(elm.attributes, function (attr) {
+            attribs[attr.name] = attr.value;
+        });
+
+        nodes.push({ 'name': elm.nodeName.toLowerCase(), 'value': attribs });
+
+        elm.remove();
+    });
 
     var settings = {
         invalid_elements: 'source,param,embed,track',
@@ -158,7 +143,7 @@ function parseHTML(value) {
 
     var schema = new ibis.html.Schema(settings);
 
-    var content = new Serializer(settings, schema).serialize(new DomParser(settings, schema).parse(value));
+    var content = new Serializer(settings, schema).serialize(new DomParser(settings, schema).parse(template.innerHTML));
 
     nodes.push({ 'name': 'html', 'value': content });
 
@@ -168,7 +153,7 @@ function parseHTML(value) {
 export {
     each, extend, Node, VK, Serializer, DomParser, SaxParser, DOM,
     htmlSchema, transparentSrc, alignStylesMap,
-    indexOf, isNonEditable, isPreviewMedia, isObjectEmbed, isCenterAligned,
+    isNonEditable, isPreviewMedia, isObjectEmbed, isCenterAligned,
     isAbsoluteUrl, isLocalUrl, isUrlValue, stripQuery, normalizeUrl, escapeRegex,
     cleanClassValue, parseHTML
 };

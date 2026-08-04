@@ -61,8 +61,9 @@ ibis.PluginManager.add('code', function (editor, url) {
     // should code blocks be used?
     var code_blocks = editor.settings.code_use_blocks !== false;
 
-    // allow script URLs, eg: href="javascript:;"
-    if (editor.settings.code_allow_script) {
+    // allow script URLs, eg: href="javascript:;". This is a separate permission to
+    // code_allow_script, but defaults to it for backwards compatibility.
+    if (editor.settings.code_allow_script && editor.settings.code_allow_script_urls !== false) {
         editor.settings.allow_script_urls = true;
     }
 
@@ -261,7 +262,7 @@ ibis.PluginManager.add('code', function (editor, url) {
             inlineElements.push(name);
         });
 
-        if (editor.settings.code_protect_shortcode) {
+        if (editor.settings.code_protect_shortcode && editor.textpattern) {
             editor.textpattern.addPattern({
                 start: '{',
                 end: '}',
@@ -455,7 +456,7 @@ ibis.PluginManager.add('code', function (editor, url) {
                     continue;
                 }
 
-                var value = node.firstChild.value;
+                var value = node.firstChild ? node.firstChild.value : '';
 
                 // replace linebreaks with newlines
                 if (value) {
@@ -547,6 +548,7 @@ ibis.PluginManager.add('code', function (editor, url) {
                 // pre node is empty, remove
                 if (node.isEmpty()) {
                     node.remove();
+                    continue;
                 }
 
                 // skip xml
@@ -590,21 +592,25 @@ ibis.PluginManager.add('code', function (editor, url) {
                             while (n--) {
                                 var item = items[n];
 
-                                // eslint-disable-next-line no-loop-func
-                                each(item.attributes, function (attr) {
+                                // walk backwards as removing an attribute mutates the array
+                                var a = item.attributes.length;
+
+                                while (a--) {
+                                    var attr = item.attributes[a];
+
                                     if (!attr) {
-                                        return true;
+                                        continue;
                                     }
 
                                     // allow data-* attributes
                                     if (attr.name.indexOf('data-') === 0 && attr.name.indexOf('data-mce-') === -1) {
-                                        return true;
+                                        continue;
                                     }
 
                                     if (editor.schema.isValid(filterName, attr.name) === false) {
                                         item.attr(attr.name, null);
                                     }
-                                });
+                                }
                             }
                         });
                     }
@@ -720,7 +726,8 @@ ibis.PluginManager.add('code', function (editor, url) {
 
             // shortcode content will be encoded as text, so decode
             if (editor.settings.code_protect_shortcode) {
-                o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
+                // only shortcode-like braces are decoded, so escaped markup in ordinary text stays escaped
+                o.content = o.content.replace(/\{([\w-][\s\S]*?)\}/gi, function (match, content) {
                     return '{' + ed.dom.decode(content) + '}';
                 });
 

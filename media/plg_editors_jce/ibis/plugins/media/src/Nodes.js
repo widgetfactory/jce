@@ -1,66 +1,47 @@
-import { each, extend, Node, DOM, htmlSchema, transparentSrc, alignStylesMap, isNonEditable, isPreviewMedia, isObjectEmbed, isCenterAligned, stripQuery, cleanClassValue, parseHTML } from './Utils.js';
+import { each, extend, Node, DomParser, Serializer, DOM, htmlSchema, transparentSrc, alignStylesMap, isNonEditable, isPreviewMedia, isObjectEmbed, isCenterAligned, stripQuery, cleanClassValue, parseHTML } from './Utils.js';
 import { getMediaProps, updateSandbox, isSupportedMedia, isSupportedProvider, isValidElement, isSupportedUrl, validateIframe, objectRequiresEmbed, lookup, mimes } from './Providers.js';
 
-var sanitize = function (editor, html) {
-    var writer = new ibis.html.Writer();
-    var blocked;
+// used to clean the html stored in the data-mce-html attribute
+var sanitizeSettings = {
+    schema: 'mixed',
+    invalid_elements: 'script,noscript,svg',
+    forced_root_block: false,
+    verify_html: true,
+    validate: true
+};
 
-    new ibis.html.SaxParser({
-        validate: false,
-        allow_conditional_comments: false,
-        special: 'script,noscript',
+var sanitizeSchema = new ibis.html.Schema(sanitizeSettings);
 
-        comment: function (text) {
-            writer.comment(text);
-        },
+// walk all descendants, processing each node after its children
+function eachNode(node, callback) {
+    each(node.children(), function (child) {
+        eachNode(child, callback);
 
-        cdata: function (text) {
-            writer.cdata(text);
-        },
+        callback(child);
+    });
+}
 
-        text: function (text, raw) {
-            writer.text(text, raw);
-        },
+var sanitize = function (editor, html, context) {
+    // parse in context so media children, eg: <param />, are not removed as invalid
+    var frag = new DomParser(sanitizeSettings, sanitizeSchema).parse(html, { context: context || 'div' });
 
-        start: function (name, attrs, empty) {
-            blocked = true;
+    eachNode(frag, function (node) {
+        // remove bookmark and bogus nodes
+        if (node.attr('data-mce-type') === 'bookmark' || node.attr('data-mce-bogus')) {
+            node.remove();
 
-            if (name === 'script' || name === 'noscript' || name === 'svg') {
-                return;
-            }
-
-            if (attrs.map && attrs.map['data-mce-type'] == 'bookmark' || attrs.map['data-mce-bogus']) {
-                return;
-            }
-
-            for (var i = attrs.length - 1; i >= 0; i--) {
-                var attrName = attrs[i].name;
-
-                if (attrName.indexOf('on') === 0) {
-                    delete attrs.map[attrName];
-                    attrs.splice(i, 1);
-                }
-
-                if (attrName === 'style') {
-                    attrs[i].value = editor.dom.serializeStyle(editor.dom.parseStyle(attrs[i].value), name);
-                }
-            }
-
-            writer.start(name, attrs, empty);
-
-            blocked = false;
-        },
-
-        end: function (name) {
-            if (blocked) {
-                return;
-            }
-
-            writer.end(name);
+            return;
         }
-    }, htmlSchema).parse(html);
 
-    return writer.getContent();
+        var style = node.attr('style');
+
+        // normalise style values
+        if (style) {
+            node.attr('style', editor.dom.serializeStyle(editor.dom.parseStyle(style), node.name) || null);
+        }
+    });
+
+    return new Serializer(sanitizeSettings, sanitizeSchema).serialize(frag);
 };
 
 // eslint-disable-next-line no-unused-vars
@@ -331,7 +312,7 @@ var retainAttributesAndInnerHtml = function (editor, sourceNode, targetNode) {
     }
 
     if (innerHtml) {
-        targetNode.attr("data-mce-html", escape(sanitize(editor, innerHtml)));
+        targetNode.attr("data-mce-html", escape(sanitize(editor, innerHtml, sourceNode.name)));
         targetNode.empty();
     }
 };
@@ -615,8 +596,29 @@ var placeholderToPreview = function (editor, node) {
     return replacement;
 };
 
+function parseAndSanitize(editor, elm) {
+    var settings = {
+        validate: editor.settings.validate,
+        sanitize_html: editor.settings.sanitize_html
+    };
+
+    var html = new Serializer(settings, editor.schema).serialize(elm);
+    return new DomParser(settings, editor.schema).parse(html);
+}
+
 function nodeToMedia(editor, node) {
     var elm, tag = node.attr('data-mce-object'), attribs = {};
+
+    if (!tag) {
+        return null;
+    }
+
+    tag = tag.toLowerCase();
+
+    // must be a valid tag
+    if (!['object', 'embed', 'video', 'audio', 'iframe'].includes(tag)) {
+        return null;
+    }
 
     if (isResponsiveMedia(node)) {
         var parent = node.parent;
@@ -648,7 +650,7 @@ function nodeToMedia(editor, node) {
             if (child.name === 'html') {
                 var inner = new Node('#text', 3);
                 inner.raw = true;
-                inner.value = sanitize(editor, child.value);
+                inner.value = sanitize(editor, child.value, tag);
                 elm.append(inner);
             } else {
                 var inner = new Node(child.name, 1);
@@ -672,7 +674,7 @@ function nodeToMedia(editor, node) {
 
     elm.attr('data-mce-html', null);
 
-    if (tag === 'object' && elm.getAll('embed').length === 0 && objectRequiresEmbed(elm.attr('type'))) {
+    if (tag === 'object' && elm.getAll('embed').length === 0 && objectRequiresEmbed(elm.attr('type')) && elm.attributes.length) {
         var embed = new Node('embed', 1);
 
         embed.shortEnded = true;
@@ -694,11 +696,21 @@ function nodeToMedia(editor, node) {
         updateSandbox(editor, elm);
     }
 
-    return elm;
+    // re-parse to validate the content
+    var frag = parseAndSanitize(editor, elm);
+    var newElement = frag.getAll(tag)[0];
+
+    return newElement || elm;
 }
 
 var convertPlaceholderToMedia = function (editor, node) {
     var elm = nodeToMedia(editor, node);
+
+    if (!elm) {
+        node.remove();
+
+        return null;
+    }
 
     if (!isObjectEmbed(elm.name)) {
         node.empty();
@@ -771,19 +783,19 @@ var convertMediaToPlaceholder = function (editor, node) {
                     for (var j = 0; j < params.length; j++) {
                         var param = params[j];
 
-                        if (param.attr('movie')) {
-                            src = param.attr('value');
+                        // legacy <param movie="url" /> or standard <param name="movie" value="url" />
+                        if (param.attr('movie') || param.attr('name') === 'movie') {
+                            src = param.attr('movie') || param.attr('value');
                         }
                     }
                 }
 
-                if (!src) {
-                    var embed = node.getAll('embed');
+                // an embed child can provide the src and the mime type
+                var embed = node.getAll('embed');
 
-                    if (embed.length) {
-                        src = embed[0].attr('src');
-                        type = embed[0].attr('type') || type;
-                    }
+                if (embed.length) {
+                    src = src || embed[0].attr('src');
+                    type = type || embed[0].attr('type');
                 }
             }
         }
@@ -833,7 +845,8 @@ var convertMediaToPlaceholder = function (editor, node) {
 
                 var ext = cleanSrc.split('.').pop();
 
-                node.attr('type', mimes[ext] || 'application/octet-stream');
+                // fall back to the declared type as the url may have no file extension
+                node.attr('type', mimes[ext] || type || 'application/octet-stream');
             }
         }
     }

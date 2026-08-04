@@ -1,4 +1,4 @@
-import { each, indexOf, isNonEditable, isLocalUrl, stripQuery, normalizeUrl, escapeRegex } from './Utils.js';
+import { each, isNonEditable, isLocalUrl, stripQuery, normalizeUrl, escapeRegex } from './Utils.js';
 
 var sandbox_iframes_exclusions = [
     'youtube.com',
@@ -506,9 +506,10 @@ function isSupportedMedia(editor, url, type) {
     var audioExts = ['mp3', 'ogg', 'webm', 'wav', 'm4a', 'aiff'];
     var videoExts = ['mp4', 'ogv', 'ogg', 'webm', 'mpg', 'mpeg'];
     var objectExts = ['pdf'];
+    var objectTypes = ['application/pdf'];
 
     if (type.startsWith('audio/')) {
-        if (indexOf(audioExts, ext) === -1) {
+        if (!audioExts.includes(ext)) {
             return false;
         }
         if (isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
@@ -517,7 +518,7 @@ function isSupportedMedia(editor, url, type) {
     }
 
     if (type.startsWith('video/')) {
-        if (indexOf(videoExts, ext) === -1) {
+        if (!videoExts.includes(ext)) {
             return false;
         }
         if (isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
@@ -525,15 +526,20 @@ function isSupportedMedia(editor, url, type) {
         }
     }
 
-    if (indexOf(videoExts, ext) !== -1 && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
+    // object types are matched on mime alone, as the url may have no file extension
+    if (objectTypes.includes(type) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
+        return 'object';
+    }
+
+    if (videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
         return 'video';
     }
 
-    if (indexOf(audioExts, ext) !== -1 && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
+    if (audioExts.includes(ext) && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
         return 'audio';
     }
 
-    if (indexOf(objectExts, ext) !== -1 && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
+    if (objectExts.includes(ext) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
         return 'object';
     }
 
