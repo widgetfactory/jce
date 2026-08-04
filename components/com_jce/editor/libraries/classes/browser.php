@@ -109,8 +109,6 @@ class WFFileBrowser extends CMSObject
         $this->setRequest(array($this, 'getTreeItem'));
 
         $this->setRequest(array($this, 'searchItems'));
-
-        $this->setRequest(array($this, 'upload'));
     }
 
     /**
