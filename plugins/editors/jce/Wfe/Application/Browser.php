@@ -109,8 +109,6 @@ class Browser
         $this->setRequest(array($this, 'getTreeItem'));
 
         $this->setRequest(array($this, 'searchItems'));
-
-        $this->setRequest(array($this, 'upload'));
     }
 
     /**
@@ -2050,11 +2048,21 @@ class Browser
         $upload = $this->getConfig('upload');
 
         if ($upload['add_random']) {
-            $random = bin2hex(random_bytes(8));
+            // the length of the random string in characters, restricted to the supported values
+            $length = isset($upload['random_length']) ? (int) $upload['random_length'] : 16;
 
-            // append a 16 character random string to the file name
+            if (!in_array($length, array(8, 16, 32), true)) {
+                $length = 16;
+            }
+
+            $random = bin2hex(random_bytes($length / 2));
+
+            // the random string makes the name unique, so it can be kept much shorter
+            $limit = 128;
+
+            // append the random string to the file name, truncating the name so it still fits
             if ((int) $upload['add_random'] === 1) {
-                $name = $name . '_' . $random;
+                $name = Utility::truncateName($name, $ext, $limit - strlen($random) - 1) . '_' . $random;
 
             // randomize the entire file name
             } elseif ((int) $upload['add_random'] === 2) {

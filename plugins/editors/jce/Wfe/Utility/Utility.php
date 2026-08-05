@@ -130,6 +130,36 @@ abstract class Utility
     }
 
     /**
+     * Truncate a file name so the name and its extension fit within a maximum byte length
+     *
+     * @param  string $name The file name without the extension
+     * @param  string $ext The file extension
+     * @param  int $limit The maximum length in bytes of the complete file name
+     * @return string The truncated file name without the extension
+     */
+    public static function truncateName($name, $ext = '', $limit = 255)
+    {
+        // the space available for the name, allowing for the extension and separator
+        $available = $limit - strlen($ext) - ($ext === '' ? 0 : 1);
+
+        if ($available < 1 || strlen($name) <= $available) {
+            return $name;
+        }
+
+        // cut on a character boundary so multibyte characters are not split
+        if (function_exists('mb_strcut')) {
+            $name = mb_strcut($name, 0, $available, 'UTF-8');
+        } else {
+            $name = substr($name, 0, $available);
+        }
+
+        // remove any separator left at the end of the truncated name
+        $trimmed = rtrim($name, '._- ');
+
+        return $trimmed === '' ? $name : $trimmed;
+    }
+
+    /**
      * Get the file name
      *
      * @param  string $path The file path

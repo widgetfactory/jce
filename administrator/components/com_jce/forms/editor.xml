@@ -166,6 +166,11 @@
                 <option value="1">WF_OPTION_UPLOAD_ADD_RANDOM_APPEND</option>
                 <option value="2">WF_OPTION_UPLOAD_ADD_RANDOM_FULL</option>
             </field>
+            <field name="upload_random_length" type="radio" default="16" label="WF_PARAM_UPLOAD_RANDOM_LENGTH" description="WF_PARAM_UPLOAD_RANDOM_LENGTH_DESC" class="btn-group" showon="upload_add_random:1,2">
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+            </field>
             <field name="date_format" type="text" default="" hint="eg: %d/%m/%Y, %H:%M" label="WF_PARAM_DATE_FORMAT" description="WF_PARAM_DATE_FORMAT_DESC" />
             <field name="total_files" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_LIMIT" description="WF_PARAM_TOTAL_FILES_LIMIT_DESC" />
             <field name="total_size" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_SIZE_LIMIT" description="WF_PARAM_TOTAL_FILES_SIZE_LIMIT_DESC" />
