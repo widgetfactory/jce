@@ -18,8 +18,26 @@
     Dispatcher = ibis.util.Dispatcher,
     DOM = ibis.DOM;
 
+  // parser and serializer are reused as the settings and schema do not change
+  function getValidator(ed) {
+    if (!ed.contentValidator) {
+      // create new settings object extended with editor settings, without root blocks and with validation forced on
+      var settings = extend({}, ed.settings, {
+        forced_root_block: false,
+        validate: true
+      });
+
+      ed.contentValidator = {
+        parser: new DomParser(settings, ed.schema),
+        serializer: new HtmlSerializer(settings, ed.schema)
+      };
+    }
+
+    return ed.contentValidator;
+  }
+
   function validateContent(ed, content) {
-    if (!ed.settings.validate) {
+    if (ed.settings.verify_html === false) {
       return content;
     }
 
@@ -31,32 +49,16 @@
       load: true // set to true to process code blocks
     };
 
-    // create new settings object
-    var settings = {};
-
-    // extend with editor settings
-    extend(settings, ed.settings);
-
     // set content
     args.content = content;
 
     // run on onBeforeGetContent
     ed.onBeforeGetContent.dispatch(ed, args);
 
-    // no root blocks
-    settings.forced_root_block = false;
-
-    // must validate
-    settings.validate = true;
-
-    // create dom parser
-    var parser = new DomParser(settings, ed.schema);
-
-    // create html serializer
-    var serializer = new HtmlSerializer(settings, ed.schema);
+    var validator = getValidator(ed);
 
     // clean content
-    args.content = serializer.serialize(parser.parse(args.content), args);
+    args.content = validator.serializer.serialize(validator.parser.parse(args.content), args);
 
     // onPostProcess
     ed.onPostProcess.dispatch(ed, args);
@@ -90,6 +92,29 @@
       }
     }
 
+    function makeSafe(value) {
+      var doc = document.implementation.createHTMLDocument('');
+      var div = doc.createElement('div');
+
+      div.innerHTML = value;
+
+      each(div.querySelectorAll('script,noscript'), function (node) {
+        node.parentNode.removeChild(node);
+      });
+
+      each(div.querySelectorAll('*'), function (node) {
+        var attrs = node.attributes, i;
+
+        for (i = attrs.length - 1; i >= 0; i--) {
+          if (attrs[i].name.toLowerCase().indexOf('on') === 0) {
+            node.removeAttribute(attrs[i].name);
+          }
+        }
+      });
+
+      return div.innerHTML;
+    }
+
     function insertContent(value) {
       value = Entities.decode(value);
 
@@ -97,7 +122,7 @@
         if (elm.nodeName === 'TEXTAREA') {
           elm.value = value;
         } else {
-          elm.innerHTML = value;
+          elm.innerHTML = makeSafe(value);
         }
       }
 
@@ -239,8 +264,14 @@
         });
 
         // UndoManager gets content without event processing, so extract manually
+        var container;
+
         ed.undoManager.onBeforeAdd.add(function (um, level) {
-          var container = ed.dom.create('div', {}, level.content);
+          if (!container) {
+            container = document.implementation.createHTMLDocument('').createElement('div');
+          }
+
+          container.innerHTML = level.content;
 
           if (isFakeRoot(container.firstChild)) {
             level.content = container.firstChild.innerHTML;
@@ -278,18 +309,19 @@
           }
         }
 
-        each(ed.dom.select('img,poster'), function (elm) {
-          var src = elm.getAttribute('src');
+        each(ed.dom.select('img,[poster]'), function (elm) {
+          var src = elm.getAttribute('src'), query = false;
 
           if (src && src.indexOf('?') !== -1) {
             src = src.substring(0, src.indexOf('?'));
+            query = true;
           }
 
           if (src == o.before) {
             var after = o.after;
             var stamp = '?' + new Date().getTime();
 
-            if (src.indexOf('?') !== -1 && after.indexOf('?') === -1) {
+            if (query && after.indexOf('?') === -1) {
               after += stamp;
             }
 
@@ -333,7 +365,8 @@
       }
     });
 
-    if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
+    // editable_root is set by third-party integrations, so it stays a loose check
+    if (ed.settings.forced_root_block === false && ed.settings.editable_root != false) {
       fakeRootBlock();
     }
   });

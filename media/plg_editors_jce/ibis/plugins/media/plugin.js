@@ -890,6 +890,13 @@
                 continue;
             }
 
+            // the cleanup plugin protects event attributes as data-mce-on*, store them as placeholder attributes
+            if (attrName.indexOf('data-mce-on') === 0 && editor.settings.allow_event_attributes) {
+                targetNode.attr('data-mce-p-' + attrName.substring(9), attrValue);
+
+                continue;
+            }
+
             if (attrName.indexOf('data-mce') !== -1) {
                 if (attrName.indexOf('data-mce-p-') === -1) {
                     continue;
@@ -905,7 +912,8 @@
                     continue;
                 }
 
-                if (!htmlSchema.isValid('img', attrName) || attrName == 'src') {
+                // an attribute already stored for the placeholder must not be prefixed again
+                if (attrName.indexOf('data-mce-p-') !== 0 && (!htmlSchema.isValid('img', attrName) || attrName == 'src')) {
                     attrName = 'data-mce-p-' + attrName;
                 }
             }

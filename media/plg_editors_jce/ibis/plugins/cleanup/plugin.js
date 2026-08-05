@@ -75,7 +75,7 @@ ibis.PluginManager.add('cleanup', function (ed, url) {
     });
 
     if (ed.settings.allow_event_attributes) {
-      var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
+      var dataEventAttrs = ibis.map(eventAttrs, function (name) {
         return 'data-mce-' + name;
       });
 
@@ -98,7 +98,12 @@ ibis.PluginManager.add('cleanup', function (ed, url) {
         each(elm.attributes, function (obj, name) {
           if (name.indexOf('on') === 0) {
             delete elm.attributes[name];
-            elm.attributesOrder.splice(ibis.inArray(elm, elm.attributesOrder, name), 1);
+
+            var idx = ibis.inArray(elm.attributesOrder, name);
+
+            if (idx !== -1) {
+              elm.attributesOrder.splice(idx, 1);
+            }
           }
         });
       });
@@ -153,8 +158,6 @@ ibis.PluginManager.add('cleanup', function (ed, url) {
 
       var content = ed.getContent({ cleanup: true });
 
-      console.log(content);
-
       s.verify_html = true;
 
       var schema = new ibis.html.Schema(s);
@@ -179,22 +182,34 @@ ibis.PluginManager.add('cleanup', function (ed, url) {
 
     o.content = processAttributes(ed, o.content);
 
-    if (ed.settings.allow_event_attributes) {
+    if (/data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
       var doc = document.implementation.createHTMLDocument('');
       var div = doc.createElement('div');
       div.innerHTML = o.content;
 
-      tinymce.each(div.querySelectorAll('*'), function (node) {
-        var attrs = node.attributes;
-        for (var i = attrs.length - 1; i >= 0; i--) {
-          var name = attrs[i].name;
+      each(div.querySelectorAll('*'), function (node) {
+        var attrs = node.attributes, names = [], i;
 
-          if (name.indexOf('on') === 0) {
-            node.setAttribute('data-mce-' + name, attrs[i].value);
+        for (i = attrs.length - 1; i >= 0; i--) {
+          names.push(attrs[i].name);
+        }
+
+        each(names, function (name) {
+          if (name.toLowerCase().indexOf('data-mce-on') === 0) {
             node.removeAttribute(name);
           }
+        });
 
+        if (!ed.settings.allow_event_attributes) {
+          return;
         }
+
+        each(names, function (name) {
+          if (name.toLowerCase().indexOf('on') === 0) {
+            node.setAttribute('data-mce-' + name, node.getAttribute(name));
+            node.removeAttribute(name);
+          }
+        });
       });
 
       o.content = div.innerHTML;

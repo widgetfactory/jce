@@ -17,51 +17,94 @@
                 return '';
             }
 
-            return val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+            val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+
+            // the value is written back into an event attribute, so it must not be able to break out of it
+            if (/['"<>\\]/.test(val)) {
+                return '';
+            }
+
+            return val;
+        }
+
+        // read / write an attribute on a dom node
+        function domAttr(node) {
+            return function (name, value) {
+                if (arguments.length === 1) {
+                    return node.getAttribute(name);
+                }
+
+                if (value === null) {
+                    node.removeAttribute(name);
+                } else {
+                    node.setAttribute(name, value);
+                }
+            };
+        }
+
+        // read / write an attribute on a parser node
+        function parserAttr(node) {
+            return function (name, value) {
+                return arguments.length === 1 ? node.attr(name) : node.attr(name, value);
+            };
+        }
+
+        // convert an image mouseover / mouseout event attribute pair to data attributes
+        function convertEventAttributes(attr) {
+            var mouseover = attr('onmouseover'), mouseout = attr('onmouseout');
+
+            if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+                return;
+            }
+
+            mouseover = cleanEventAttribute(mouseover);
+
+            attr('onmouseover', null);
+
+            if (!mouseover) {
+                return;
+            }
+
+            attr('data-mouseover', mouseover);
+
+            if (!mouseout || mouseout.indexOf('this.src') !== 0) {
+                return;
+            }
+
+            mouseout = cleanEventAttribute(mouseout);
+
+            attr('onmouseout', null);
+
+            if (mouseout) {
+                attr('data-mouseout', mouseout);
+            }
         }
 
         ed.onPreInit.add(function () {
             ed.onBeforeSetContent.add(function (ed, o) {
+                var hasData = /data-mouse(over|out)=/i.test(o.content);
+                var hasEvent = /onmouseover\s*=/i.test(o.content);
 
-                if (o.content.indexOf('onmouseover=') === -1) {
+                if (!hasData && !hasEvent) {
                     return;
                 }
 
-                var div = ed.dom.create('div', {}, o.content);
+                var doc = document.implementation.createHTMLDocument('');
+                var div = doc.createElement('div');
+                div.innerHTML = o.content;
 
-                each(ed.dom.select('img[onmouseover]', div), function (node) {
-                    var mouseover = node.getAttribute('onmouseover'), mouseout = node.getAttribute('onmouseout');
+                if (hasData) {
+                    each(div.querySelectorAll('[data-mouseover],[data-mouseout]'), function (node) {
+                        node.removeAttribute('data-mouseover');
+                        node.removeAttribute('data-mouseout');
+                    });
+                }
 
-                    if (!mouseover || mouseover.indexOf('this.src') !== 0) {
-                        return true;
-                    }
-
-                    mouseover = cleanEventAttribute(mouseover);
-
-                    // remove attribute
-                    node.removeAttribute('onmouseover');
-
-                    // if cleaned value is blank, move on
-                    if (!mouseover) {
-                        return true;
-                    }
-
-                    node.setAttribute('data-mouseover', mouseover);
-
-                    if (mouseout && mouseout.indexOf('this.src') === 0) {
-
-                        mouseout = cleanEventAttribute(mouseout);
-
-                        // remove attribute
-                        node.removeAttribute('onmouseout');
-
-                        if (!mouseout) {
-                            return;
-                        }
-
-                        node.setAttribute('data-mouseout', mouseout);
-                    }
-                });
+                if (hasEvent) {
+                    each(div.querySelectorAll('img[onmouseover]'), function (node) {
+                        convertEventAttributes(domAttr(node));
+                    });
+                }
 
                 o.content = div.innerHTML;
             });
@@ -77,23 +120,7 @@
                         continue;
                     }
 
-                    var mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
-
-                    if (!mouseover || mouseover.indexOf('this.src') !== 0) {
-                        continue;
-                    }
-
-                    mouseover = cleanEventAttribute(mouseover);
-
-                    node.attr('data-mouseover', mouseover);
-                    node.attr('onmouseover', null);
-
-                    if (mouseout && mouseout.indexOf('this.src') === 0) {
-                        mouseout = cleanEventAttribute(mouseout);
-
-                        node.attr('data-mouseout', mouseout);
-                        node.attr('onmouseout', null);
-                    }
+                    convertEventAttributes(parserAttr(node));
                 }
             });
 
@@ -109,6 +136,7 @@
 
                     var mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
 
+                    // cleanEventAttribute discards a value that could break out of the event attribute
                     mouseover = cleanEventAttribute(mouseover);
 
                     node.attr('data-mouseover', null);
@@ -140,7 +168,7 @@
 
             ed.onUpdateMedia.add(function (ed, o) {
                 bindMouseoverEvent(ed);
-                
+
                 if (!o.before || !o.after) {
                     return;
                 }
@@ -165,11 +193,11 @@
 
         function bindMouseoverEvent(ed) {
             each(ed.dom.select('img'), function (elm) {
-                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
+                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover');
 
                 elm.onmouseover = elm.onmouseout = null;
 
-                if (!src || !mouseover || !mouseout) {
+                if (!src || !mouseover) {
                     return true;
                 }
 
