@@ -49124,7 +49124,7 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -49142,8 +49142,26 @@
       Dispatcher = tinymce.util.Dispatcher,
       DOM = tinymce.DOM;
 
+    // parser and serializer are reused as the settings and schema do not change
+    function getValidator(ed) {
+      if (!ed.contentValidator) {
+        // create new settings object extended with editor settings, without root blocks and with validation forced on
+        var settings = extend({}, ed.settings, {
+          forced_root_block: false,
+          validate: true
+        });
+
+        ed.contentValidator = {
+          parser: new DomParser(settings, ed.schema),
+          serializer: new HtmlSerializer(settings, ed.schema)
+        };
+      }
+
+      return ed.contentValidator;
+    }
+
     function validateContent(ed, content) {
-      if (!ed.settings.validate) {
+      if (ed.settings.verify_html === false) {
         return content;
       }
 
@@ -49155,32 +49173,16 @@
         load: true // set to true to process code blocks
       };
 
-      // create new settings object
-      var settings = {};
-
-      // extend with editor settings
-      extend(settings, ed.settings);
-
       // set content
       args.content = content;
 
       // run on onBeforeGetContent
       ed.onBeforeGetContent.dispatch(ed, args);
 
-      // no root blocks
-      settings.forced_root_block = false;
-
-      // must validate
-      settings.validate = true;
-
-      // create dom parser
-      var parser = new DomParser(settings, ed.schema);
-
-      // create html serializer
-      var serializer = new HtmlSerializer(settings, ed.schema);
+      var validator = getValidator(ed);
 
       // clean content
-      args.content = serializer.serialize(parser.parse(args.content), args);
+      args.content = validator.serializer.serialize(validator.parser.parse(args.content), args);
 
       // onPostProcess
       ed.onPostProcess.dispatch(ed, args);
@@ -49214,6 +49216,29 @@
         }
       }
 
+      function makeSafe(value) {
+        var doc = document.implementation.createHTMLDocument('');
+        var div = doc.createElement('div');
+
+        div.innerHTML = value;
+
+        each(div.querySelectorAll('script,noscript'), function (node) {
+          node.parentNode.removeChild(node);
+        });
+
+        each(div.querySelectorAll('*'), function (node) {
+          var attrs = node.attributes, i;
+
+          for (i = attrs.length - 1; i >= 0; i--) {
+            if (attrs[i].name.toLowerCase().indexOf('on') === 0) {
+              node.removeAttribute(attrs[i].name);
+            }
+          }
+        });
+
+        return div.innerHTML;
+      }
+
       function insertContent(value) {
         value = Entities.decode(value);
 
@@ -49221,7 +49246,7 @@
           if (elm.nodeName === 'TEXTAREA') {
             elm.value = value;
           } else {
-            elm.innerHTML = value;
+            elm.innerHTML = makeSafe(value);
           }
         }
 
@@ -49363,8 +49388,14 @@
           });
 
           // UndoManager gets content without event processing, so extract manually
+          var container;
+
           ed.undoManager.onBeforeAdd.add(function (um, level) {
-            var container = ed.dom.create('div', {}, level.content);
+            if (!container) {
+              container = document.implementation.createHTMLDocument('').createElement('div');
+            }
+
+            container.innerHTML = level.content;
 
             if (isFakeRoot(container.firstChild)) {
               level.content = container.firstChild.innerHTML;
@@ -49402,18 +49433,19 @@
             }
           }
 
-          each(ed.dom.select('img,poster'), function (elm) {
-            var src = elm.getAttribute('src');
+          each(ed.dom.select('img,[poster]'), function (elm) {
+            var src = elm.getAttribute('src'), query = false;
 
             if (src && src.indexOf('?') !== -1) {
               src = src.substring(0, src.indexOf('?'));
+              query = true;
             }
 
             if (src == o.before) {
               var after = o.after;
               var stamp = '?' + new Date().getTime();
 
-              if (src.indexOf('?') !== -1 && after.indexOf('?') === -1) {
+              if (query && after.indexOf('?') === -1) {
                 after += stamp;
               }
 
@@ -49457,7 +49489,8 @@
         }
       });
 
-      if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
+      // editable_root is set by third-party integrations, so it stays a loose check
+      if (ed.settings.forced_root_block === false && ed.settings.editable_root != false) {
         fakeRootBlock();
       }
     });
@@ -50023,7 +50056,7 @@
             if (node.name !== 'br') {
               continue;
             }
-            
+
             if (!node.prev && !node.next) {
               textNode = new Node('#text', 3);
               textNode.value = '\u00a0';
@@ -50037,29 +50070,33 @@
 
       ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
         var i = nodes.length;
+
         while (i--) {
           nodes[i].attr('data-mce-tmp', null);
         }
+
       });
 
       ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
         var i = nodes.length;
+
         while (i--) {
           nodes[i].attr('data-mce-tmp', null);
         }
+
+      });
+
+      var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
+        return 'data-mce-' + name;
       });
 
       if (ed.settings.allow_event_attributes) {
-        var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
-          return 'data-mce-' + name;
-        });
-
         ed.serializer.addAttributeFilter(dataEventAttrs, function (nodes, name) {
           var i = nodes.length;
 
           while (i--) {
             nodes[i].attr(name.slice(9), nodes[i].attr(name));
-            nodes[i].attr(name, null);    
+            nodes[i].attr(name, null);
           }
         });
       }
@@ -50073,7 +50110,12 @@
           each(elm.attributes, function (obj, name) {
             if (name.indexOf('on') === 0) {
               delete elm.attributes[name];
-              elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
+
+              var idx = tinymce.inArray(elm.attributesOrder, name);
+
+              if (idx !== -1) {
+                elm.attributesOrder.splice(idx, 1);
+              }
             }
           });
         });
@@ -50152,22 +50194,34 @@
 
       o.content = processAttributes(ed, o.content);
 
-      if (ed.settings.allow_event_attributes) {
+      if (/data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
         var doc = document.implementation.createHTMLDocument('');
         var div = doc.createElement('div');
         div.innerHTML = o.content;
 
-        tinymce.each(div.querySelectorAll('*'), function (node) {
-          var attrs = node.attributes;
-          for (var i = attrs.length - 1; i >= 0; i--) {
-            var name = attrs[i].name;
+        each(div.querySelectorAll('*'), function (node) {
+          var attrs = node.attributes, names = [], i;
 
-            if (name.indexOf('on') === 0) {
-              node.setAttribute('data-mce-' + name, attrs[i].value);
+          for (i = attrs.length - 1; i >= 0; i--) {
+            names.push(attrs[i].name);
+          }
+
+          each(names, function (name) {
+            if (name.toLowerCase().indexOf('data-mce-on') === 0) {
               node.removeAttribute(name);
             }
+          });
 
+          if (!ed.settings.allow_event_attributes) {
+            return;
           }
+
+          each(names, function (name) {
+            if (name.toLowerCase().indexOf('on') === 0) {
+              node.setAttribute('data-mce-' + name, node.getAttribute(name));
+              node.removeAttribute(name);
+            }
+          });
         });
 
         o.content = div.innerHTML;
@@ -51508,51 +51562,93 @@
                   return '';
               }
 
-              return val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+              val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+
+              if (/['"<>\\]/.test(val)) {
+                  return '';
+              }
+
+              return val;
+          }
+
+          // read / write an attribute on a dom node
+          function domAttr(node) {
+              return function (name, value) {
+                  if (arguments.length === 1) {
+                      return node.getAttribute(name);
+                  }
+
+                  if (value === null) {
+                      node.removeAttribute(name);
+                  } else {
+                      node.setAttribute(name, value);
+                  }
+              };
+          }
+
+          // read / write an attribute on a parser node
+          function parserAttr(node) {
+              return function (name, value) {
+                  return arguments.length === 1 ? node.attr(name) : node.attr(name, value);
+              };
+          }
+
+          // convert an image mouseover / mouseout event attribute pair to data attributes
+          function convertEventAttributes(attr) {
+              var mouseover = attr('onmouseover'), mouseout = attr('onmouseout');
+
+              if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+                  return;
+              }
+
+              mouseover = cleanEventAttribute(mouseover);
+
+              attr('onmouseover', null);
+
+              if (!mouseover) {
+                  return;
+              }
+
+              attr('data-mouseover', mouseover);
+
+              if (!mouseout || mouseout.indexOf('this.src') !== 0) {
+                  return;
+              }
+
+              mouseout = cleanEventAttribute(mouseout);
+
+              attr('onmouseout', null);
+
+              if (mouseout) {
+                  attr('data-mouseout', mouseout);
+              }
           }
 
           ed.onPreInit.add(function () {
               ed.onBeforeSetContent.add(function (ed, o) {
+                  var hasData = /data-mouse(over|out)=/i.test(o.content);
+                  var hasEvent = /onmouseover\s*=/i.test(o.content);
 
-                  if (o.content.indexOf('onmouseover=') === -1) {
+                  if (!hasData && !hasEvent) {
                       return;
                   }
 
-                  var div = ed.dom.create('div', {}, o.content);
+                  var doc = document.implementation.createHTMLDocument('');
+                  var div = doc.createElement('div');
+                  div.innerHTML = o.content;
 
-                  each(ed.dom.select('img[onmouseover]', div), function (node) {
-                      var mouseover = node.getAttribute('onmouseover'), mouseout = node.getAttribute('onmouseout');
+                  if (hasData) {
+                      each(div.querySelectorAll('[data-mouseover],[data-mouseout]'), function (node) {
+                          node.removeAttribute('data-mouseover');
+                          node.removeAttribute('data-mouseout');
+                      });
+                  }
 
-                      if (!mouseover || mouseover.indexOf('this.src') !== 0) {
-                          return true;
-                      }
-
-                      mouseover = cleanEventAttribute(mouseover);
-
-                      // remove attribute
-                      node.removeAttribute('onmouseover');
-
-                      // if cleaned value is blank, move on
-                      if (!mouseover) {
-                          return true;
-                      }
-
-                      node.setAttribute('data-mouseover', mouseover);
-
-                      if (mouseout && mouseout.indexOf('this.src') === 0) {
-
-                          mouseout = cleanEventAttribute(mouseout);
-
-                          // remove attribute
-                          node.removeAttribute('onmouseout');
-
-                          if (!mouseout) {
-                              return;
-                          }
-
-                          node.setAttribute('data-mouseout', mouseout);
-                      }
-                  });
+                  if (hasEvent) {
+                      each(div.querySelectorAll('img[onmouseover]'), function (node) {
+                          convertEventAttributes(domAttr(node));
+                      });
+                  }
 
                   o.content = div.innerHTML;
               });
@@ -51568,23 +51664,7 @@
                           continue;
                       }
 
-                      var mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
-
-                      if (!mouseover || mouseover.indexOf('this.src') !== 0) {
-                          continue;
-                      }
-
-                      mouseover = cleanEventAttribute(mouseover);
-
-                      node.attr('data-mouseover', mouseover);
-                      node.attr('onmouseover', null);
-
-                      if (mouseout && mouseout.indexOf('this.src') === 0) {
-                          mouseout = cleanEventAttribute(mouseout);
-
-                          node.attr('data-mouseout', mouseout);
-                          node.attr('onmouseout', null);
-                      }
+                      convertEventAttributes(parserAttr(node));
                   }
               });
 
@@ -51619,11 +51699,6 @@
                   }
               });
 
-              // update events when content is inserted
-              /*ed.selection.onSetContent.add(function () {
-                  bindMouseoverEvent(ed);
-              });*/
-
               // update events when content is set
               ed.onSetContent.add(function () {
                   bindMouseoverEvent(ed);
@@ -51631,7 +51706,7 @@
 
               ed.onUpdateMedia.add(function (ed, o) {
                   bindMouseoverEvent(ed);
-                  
+
                   if (!o.before || !o.after) {
                       return;
                   }
@@ -51656,11 +51731,11 @@
 
           function bindMouseoverEvent(ed) {
               each(ed.dom.select('img'), function (elm) {
-                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
+                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover');
 
                   elm.onmouseover = elm.onmouseout = null;
 
-                  if (!src || !mouseover || !mouseout) {
+                  if (!src || !mouseover) {
                       return true;
                   }
 

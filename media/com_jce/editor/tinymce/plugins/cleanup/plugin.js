@@ -48,7 +48,7 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
           if (node.name !== 'br') {
             continue;
           }
-          
+
           if (!node.prev && !node.next) {
             textNode = new Node('#text', 3);
             textNode.value = '\u00a0';
@@ -62,29 +62,33 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
 
     ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
       var i = nodes.length;
+
       while (i--) {
         nodes[i].attr('data-mce-tmp', null);
       }
+
     });
 
     ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
       var i = nodes.length;
+
       while (i--) {
         nodes[i].attr('data-mce-tmp', null);
       }
+
+    });
+
+    var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
+      return 'data-mce-' + name;
     });
 
     if (ed.settings.allow_event_attributes) {
-      var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
-        return 'data-mce-' + name;
-      });
-
       ed.serializer.addAttributeFilter(dataEventAttrs, function (nodes, name) {
         var i = nodes.length;
 
         while (i--) {
           nodes[i].attr(name.slice(9), nodes[i].attr(name));
-          nodes[i].attr(name, null);    
+          nodes[i].attr(name, null);
         }
       });
     }
@@ -98,7 +102,12 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
         each(elm.attributes, function (obj, name) {
           if (name.indexOf('on') === 0) {
             delete elm.attributes[name];
-            elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
+
+            var idx = tinymce.inArray(elm.attributesOrder, name);
+
+            if (idx !== -1) {
+              elm.attributesOrder.splice(idx, 1);
+            }
           }
         });
       });
@@ -177,22 +186,34 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
 
     o.content = processAttributes(ed, o.content);
 
-    if (ed.settings.allow_event_attributes) {
+    if (/data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
       var doc = document.implementation.createHTMLDocument('');
       var div = doc.createElement('div');
       div.innerHTML = o.content;
 
-      tinymce.each(div.querySelectorAll('*'), function (node) {
-        var attrs = node.attributes;
-        for (var i = attrs.length - 1; i >= 0; i--) {
-          var name = attrs[i].name;
+      each(div.querySelectorAll('*'), function (node) {
+        var attrs = node.attributes, names = [], i;
 
-          if (name.indexOf('on') === 0) {
-            node.setAttribute('data-mce-' + name, attrs[i].value);
+        for (i = attrs.length - 1; i >= 0; i--) {
+          names.push(attrs[i].name);
+        }
+
+        each(names, function (name) {
+          if (name.toLowerCase().indexOf('data-mce-on') === 0) {
             node.removeAttribute(name);
           }
+        });
 
+        if (!ed.settings.allow_event_attributes) {
+          return;
         }
+
+        each(names, function (name) {
+          if (name.toLowerCase().indexOf('on') === 0) {
+            node.setAttribute('data-mce-' + name, node.getAttribute(name));
+            node.removeAttribute(name);
+          }
+        });
       });
 
       o.content = div.innerHTML;
