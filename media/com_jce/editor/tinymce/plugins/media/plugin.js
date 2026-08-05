@@ -1384,7 +1384,9 @@
 
         var settings = {
             validate: editor.settings.validate,
-            sanitize_html: editor.settings.sanitize_html
+            sanitize_html: editor.settings.sanitize_html,
+            // the re-parse validates, so it must be told that event attributes are allowed
+            allow_event_attributes: !!editor.settings.allow_event_attributes
         };
 
         // re-parse to validate the content restored from data-mce-html
