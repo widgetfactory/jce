@@ -173,11 +173,10 @@ class Weblinks extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         $items    = [];
         $language = '';
 
-        if (!defined('_JEXEC')) {
-            require_once JPATH_SITE . '/includes/application.php';
+        $helperFile = JPATH_SITE . '/components/com_weblinks/helpers/route.php';
+        if (is_file($helperFile)) {
+            require_once $helperFile;
         }
-
-        require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
 
         switch ($args->view) {
             default:
@@ -258,9 +257,7 @@ class Weblinks extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
 
                     $id = \WeblinksHelperRoute::getWeblinkRoute($weblink->slug, $weblink->catslug, $language);
 
-                    if (defined('_JEXEC')) {
-                        $id .= '&task=weblink.go';
-                    }
+                    $id .= '&task=weblink.go';
 
                     $items[] = [
                         'id'    => $this->routeUrl($id),
@@ -276,26 +273,25 @@ class Weblinks extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
 
     private function getWeblinks($id)
     {
-        $db      = Factory::getContainer()->get(DatabaseInterface::class);
-        $user    = Factory::getApplication()->getIdentity();
-        $dbquery = $db->getQuery(true);
-        $query   = $db->getQuery(true);
-        $case    = '';
+        $db    = Factory::getContainer()->get(DatabaseInterface::class);
+        $user  = Factory::getApplication()->getIdentity();
+        $query = $db->getQuery(true);
+        $case  = '';
 
-        if ((int) $this->getParam('links.joomlalinks.weblinks_alias', 0)) {
+        if ((int) $this->getParam('weblinks_alias', 0)) {
             $case_when1  = ' CASE WHEN ';
-            $case_when1 .= $dbquery->charLength('a.alias', '!=', '0');
+            $case_when1 .= $query->charLength('a.alias', '!=', '0');
             $case_when1 .= ' THEN ';
-            $a_id        = $dbquery->castAsChar('a.id');
-            $case_when1 .= $dbquery->concatenate([$a_id, 'a.alias'], ':');
+            $a_id        = $query->castAs('CHAR', 'a.id');
+            $case_when1 .= $query->concatenate([$a_id, 'a.alias'], ':');
             $case_when1 .= ' ELSE ';
             $case_when1 .= $a_id . ' END as slug';
 
             $case_when2  = ' CASE WHEN ';
-            $case_when2 .= $dbquery->charLength('b.alias', '!=', '0');
+            $case_when2 .= $query->charLength('b.alias', '!=', '0');
             $case_when2 .= ' THEN ';
-            $c_id        = $dbquery->castAsChar('b.id');
-            $case_when2 .= $dbquery->concatenate([$c_id, 'b.alias'], ':');
+            $c_id        = $query->castAs('CHAR', 'b.id');
+            $case_when2 .= $query->concatenate([$c_id, 'b.alias'], ':');
             $case_when2 .= ' ELSE ';
             $case_when2 .= $c_id . ' END as catslug';
 
