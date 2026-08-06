@@ -51300,17 +51300,25 @@
       // Register plugin
       tinymce.PluginManager.add('effects', function (ed, url) {
           function cleanEventAttribute(val) {
+              val = tinymce.trim(val);
+
               if (!val) {
                   return '';
               }
 
-              val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+              // unwrap to the url, trimming any space inside the quotes
+              val = tinymce.trim(val.replace(/^this\.src\s*=\s*'([^']+)';?$/, '$1'));
 
               if (/['"<>\\]/.test(val)) {
                   return '';
               }
 
               return val;
+          }
+
+          // a src swap, the value is trimmed by the caller
+          function isSrcSwap(val) {
+              return /^this\.src\s*=/.test(val);
           }
 
           // read / write an attribute on a dom node
@@ -51335,14 +51343,9 @@
               };
           }
 
-          // a src swap, allowing for whitespace as cleanEventAttribute does
-          function isSrcSwap(val) {
-              return !!val && /^\s*this\.src\s*=/.test(val);
-          }
-
           // convert an image mouseover / mouseout event attribute pair to data attributes
           function convertEventAttributes(attr) {
-              var mouseover = attr('onmouseover'), mouseout = attr('onmouseout');
+              var mouseover = tinymce.trim(attr('onmouseover')), mouseout = tinymce.trim(attr('onmouseout'));
 
               if (!isSrcSwap(mouseover)) {
                   return;
