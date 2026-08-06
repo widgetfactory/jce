@@ -46,7 +46,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         parent::__construct($config);
 
         // initialize the browser
-        $browser = $this->getFileBrowser();
+        $_browser = $this->getFileBrowser();
         $request = Request::getInstance();
 
         // Setup plugin XHR callback functions
@@ -459,6 +459,7 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
                 'max_size' => $this->getParam('max_size', 10240),
                 'validate_mimetype' => (int) $this->getParam('editor.validate_mimetype', 1),
                 'add_random' => (int) $this->getParam('editor.upload_add_random', 0),
+                'random_length' => (int) $this->getParam('editor.upload_random_length', 16),
                 'total_files' => (float) $this->getParam('editor.total_files', 0),
                 'total_size' => (float) $this->getParam('editor.total_size', 0),
                 'remove_exif' => (int) $this->getParam('editor.upload_remove_exif', 0),
