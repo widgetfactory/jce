@@ -25,9 +25,11 @@ JLoader::registerNamespace('tubalmartin\CssMin', WF_EDITOR . '/vendor/cssmin/src
 JLoader::registerAlias('WFApplication', 'Wfe\\Compat\\WFApplication');
 JLoader::registerAlias('WFFileSystem', 'Wfe\\Compat\\WFFileSystem');
 JLoader::registerAlias('WFEditorPlugin', 'Wfe\\Compat\\WFEditorPlugin');
+JLoader::registerAlias('WFJoomlaFileSystem', 'Wfe\\Compat\\WFJoomlaFileSystem');
+JLoader::registerAlias('WFMediaManager', 'Wfe\\Compat\\WFMediaManager');
+
 JLoader::registerAlias('WFText', 'Wfe\\Language\\Text');
 JLoader::registerAlias('WFRequest', 'Wfe\\Http\\Request');
 JLoader::registerAlias('WFFileBrowser', 'Wfe\\Plugins\\Editor\\Browser\\Plugin');
 JLoader::registerAlias('WFUtility', 'Wfe\\Utility\\Utility');
 JLoader::registerAlias('WFFileSystemResult', 'Wfe\\Adapter\\Plugin\\Filesystem\\FilesystemResult');
-JLoader::registerAlias('WFJoomlaFileSystem', 'Wfe\\Compat\\WFJoomlaFileSystem');
