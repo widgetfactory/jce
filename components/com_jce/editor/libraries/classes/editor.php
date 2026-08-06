@@ -80,7 +80,7 @@ class WFEditor
      *
      * @var array
      */
-    private static $plugins = array('core', 'help', 'autolink', 'effects', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'blobupload', 'upload', 'figure', 'ui', 'noneditable', 'branding');
+    private static $plugins = array('core', 'cleanup', 'help', 'autolink', 'code', 'effects', 'format', 'importcss', 'colorpicker', 'blobupload', 'upload', 'figure', 'ui', 'noneditable', 'branding');
 
     /**
      * Initialization state
