@@ -102,6 +102,24 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         return substr($tag, 0, strpos($tag, '-'));
     }
 
+    // resolve a topic file within the editor folder, returning an empty string if it escapes it
+    private function resolveTopicFile($file)
+    {
+        $base = realpath(WF_EDITOR);
+
+        if (!$base) {
+            return '';
+        }
+
+        $path = realpath($base . '/' . $file);
+
+        if (!$path || strpos($path, $base . DIRECTORY_SEPARATOR) !== 0) {
+            return '';
+        }
+
+        return $path;
+    }
+
     public function getTopics($file)
     {
         $result = '';
@@ -121,7 +139,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 
                     // if file attribute load file
                     if ($file) {
-                        $result .= $this->getTopics(WF_EDITOR . '/' . $file);
+                        $result .= $this->getTopics($this->resolveTopicFile($file));
                     } else {
                         $result .= '<li id="' . $key . '" class="' . $class . '"><a href="#"><span class="uk-icon uk-icon-copy uk-margin-small-right"></span>&nbsp;' . trim(Text::_($title)) . '</a>';
                     }
@@ -135,7 +153,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
                             if ($file = (string) $subtopic->attributes()->file) {
                                 $result .= '<li class="subtopics uk-parent"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(Text::_((string) $subtopic->attributes()->title)) . '</a>';
                                 $result .= '<ul class="uk-nav uk-nav-side uk-list-space hidden">';
-                                $result .= $this->getTopics(WF_EDITOR . '/' . $file);
+                                $result .= $this->getTopics($this->resolveTopicFile($file));
                                 $result .= '</ul>';
                                 $result .= '</li>';
                             } else {
