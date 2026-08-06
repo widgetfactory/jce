@@ -25177,7 +25177,7 @@
       // Add onBeforeSetContent with cleanup
       self.onBeforeSetContent.add(function (e, args) {
         if (args.format !== 'raw') {
-          var node = new ibis.html.DomParser(editor.settings, editor.schema).parse(args.content, extend(args, { isRootContent: true, forced_root_block: false }));
+          var node = editor.createParser().parse(args.content, extend(args, { isRootContent: true, forced_root_block: false }));
           args.content = new ibis.html.Serializer({ validate: false }, editor.schema).serialize(node);
         }
       });
@@ -26535,17 +26535,10 @@
         }
       });
 
-      function isValidProtected(html, protect) {
-        return protect && protect.some(function (pattern) {
-          var m = html.match(pattern);
-          return m !== null && m[0].length === html.length;
-        });
-      }
-
       // Convert comments to cdata and handle protected comments
       htmlParser.addNodeFilter('#comment', function (nodes) {
         var i = nodes.length,
-          node, protectedHtml;
+          node;
 
         while (i--) {
           node = nodes[i];
@@ -26554,16 +26547,8 @@
             node.name = '#cdata';
             node.type = 4;
             node.value = node.value.replace(/^\[CDATA\[|\]\]$/g, '');
-          } else if (node.value.indexOf('mce:protected ') === 0) {
-            protectedHtml = unescape(node.value).substr(14);
-            if (isValidProtected(protectedHtml, settings.protect)) {
-              node.name = "#text";
-              node.type = 3;
-              node.raw = true;
-              node.value = protectedHtml;
-            } else {
-              node.remove();
-            }
+          } else if (/^\s*mce:protected\b/i.test(node.value)) {
+            node.remove();
           }
         }
       });
@@ -35803,6 +35788,39 @@
 
     ibis.Editor.prototype = {
       /**
+       * Creates a DomParser with the rules that must apply to any content entering the editor.
+       * Callers can add their own filters to the returned parser.
+       *
+       * @method createParser
+       * @param {Object} settings Optional settings, defaults to the editor settings.
+       * @return {ibis.html.DomParser} Parser instance.
+       */
+      createParser: function (settings) {
+        var self = this,
+          parser = new ibis.html.DomParser(settings || self.settings, self.schema);
+
+        // Strip forged data-mce-src, data-mce-href and data-mce-style on input
+        parser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style', function (nodes, name) {
+          var i = nodes.length;
+          while (i--) {
+            nodes[i].attr(name, null);
+          }
+        });
+
+        // Remove legacy protected comments, nothing creates them now
+        parser.addNodeFilter('#comment', function (nodes) {
+          var i = nodes.length;
+          while (i--) {
+            if (/^\s*mce:protected\b/i.test(nodes[i].value)) {
+              nodes[i].remove();
+            }
+          }
+        });
+
+        return parser;
+      },
+
+      /**
        * Renderes the editor/adds it to the page.
        *
        * @method render
@@ -36318,16 +36336,7 @@
          * @property parser
          * @type ibis.html.DomParser
          */
-        self.parser = new ibis.html.DomParser(settings, self.schema);
-
-        // Strip forged data-mce-src, data-mce-href and data-mce-style on input to prevent
-        // XSS via attribute promotion during serialization (GHSA-vg35-5wq7-3x7w)
-        self.parser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style', function (nodes, name) {
-          var i = nodes.length;
-          while (i--) {
-            nodes[i].attr(name, null);
-          }
-        });
+        self.parser = self.createParser(settings);
 
         // Convert src and href into data-mce-src, data-mce-href and data-mce-style
         self.parser.addAttributeFilter('src,href,style', function (nodes, name) {
@@ -36356,17 +36365,6 @@
             }
           }
         });
-
-        // Keep scripts from executing - removed as this is handled by the Code plugin by placeholder conversion
-        /*self.parser.addNodeFilter('script', function (nodes) {
-          var i = nodes.length,
-            node;
-
-          while (i--) {
-            node = nodes[i];
-            node.attr('type', 'mce-' + (node.attr('type') || 'text/javascript'));
-          }
-        });*/
 
         self.parser.addNodeFilter('#cdata', function (nodes) {
           var i = nodes.length,
@@ -36495,16 +36493,6 @@
 
         if (settings.nowrap) {
           body.style.whiteSpace = "nowrap";
-        }
-
-        if (settings.protect) {
-          self.onBeforeSetContent.add(function (ed, o) {
-            each(settings.protect, function (pattern) {
-              o.content = o.content.replace(pattern, function (str) {
-                return '<!--mce:protected ' + escape(str) + '-->';
-              });
-            });
-          });
         }
 
         // Add visual aids when new contents is added
@@ -47917,7 +47905,6 @@
   (function () {
     var Entities = ibis.html.Entities, each = ibis.each,
       extend = ibis.extend,
-      DomParser = ibis.html.DomParser,
       HtmlSerializer = ibis.html.Serializer,
       Dispatcher = ibis.util.Dispatcher,
       DOM = ibis.DOM;
@@ -47932,7 +47919,8 @@
         });
 
         ed.contentValidator = {
-          parser: new DomParser(settings, ed.schema),
+          // createParser applies the rules that must hold for any content entering the editor
+          parser: ed.createParser(settings),
           serializer: new HtmlSerializer(settings, ed.schema)
         };
       }
@@ -49283,7 +49271,7 @@
                       html.push('>');
 
                       for (let child of Array.from(node.childNodes)) {
-                          html.push(sanitizeNode(editor, child));
+                          html.push(sanitizeNode(editor, child, raw));
                       }
 
                       html.push('</', tagName, '>');
@@ -49294,7 +49282,7 @@
 
               case 3: {
                   var text = node.nodeValue;
-                  text = text ;
+                  text = raw ? text : editor.dom.encode(text, true);
                   html.push(text);
                   break;
               }
@@ -49327,7 +49315,7 @@
               return null;
           }
 
-          return sanitizeNode(editor, doc.documentElement);
+          return sanitizeNode(editor, doc.documentElement, true);
       }
 
       /**
@@ -50310,9 +50298,6 @@
 
                       return content;
                   });
-
-                  // strip any mce:protected comments
-                  o.content = o.content.replace(/<!--mce:protected [\s\S]+?-->/gi, '');
               }
           });
       });
@@ -50334,11 +50319,14 @@
       // Register plugin
       ibis.PluginManager.add('effects', function (ed, url) {
           function cleanEventAttribute(val) {
+              val = ibis.trim(val);
+
               if (!val) {
                   return '';
               }
 
-              val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+              // unwrap to the url, trimming any space inside the quotes
+              val = ibis.trim(val.replace(/^this\.src\s*=\s*'([^']+)';?$/, '$1'));
 
               // the value is written back into an event attribute, so it must not be able to break out of it
               if (/['"<>\\]/.test(val)) {
@@ -50370,11 +50358,16 @@
               };
           }
 
+          // a src swap, the value is trimmed by the caller
+          function isSrcSwap(val) {
+              return /^this\.src\s*=/.test(val);
+          }
+
           // convert an image mouseover / mouseout event attribute pair to data attributes
           function convertEventAttributes(attr) {
-              var mouseover = attr('onmouseover'), mouseout = attr('onmouseout');
+              var mouseover = ibis.trim(attr('onmouseover')), mouseout = ibis.trim(attr('onmouseout'));
 
-              if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+              if (!isSrcSwap(mouseover)) {
                   return;
               }
 
@@ -50388,7 +50381,7 @@
 
               attr('data-mouseover', mouseover);
 
-              if (!mouseout || mouseout.indexOf('this.src') !== 0) {
+              if (!isSrcSwap(mouseout)) {
                   return;
               }
 
