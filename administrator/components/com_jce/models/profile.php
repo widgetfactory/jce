@@ -229,6 +229,13 @@ class JceModelProfile extends AdminModel
     {
         $data = $this->getItem();
 
+        // the requested profile could not be loaded
+        if ($data === false) {
+            $app = Factory::getApplication();
+            $app->enqueueMessage(Text::_('JLIB_APPLICATION_ERROR_NOT_EXIST'), 'error');
+            $app->redirect('index.php?option=com_jce&view=profiles');
+        }
+
         // convert 0 value to null to force defaults
         if (empty($data->area)) {
             $data->area = null;
