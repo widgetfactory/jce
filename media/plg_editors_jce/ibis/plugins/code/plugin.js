@@ -1232,9 +1232,6 @@
 
                     return content;
                 });
-
-                // strip any mce:protected comments
-                o.content = o.content.replace(/<!--mce:protected [\s\S]+?-->/gi, '');
             }
         });
     });
