@@ -1,164 +1,177 @@
-.ui-jce {
-    .tooltip {
+    // out: false
+    @tooltip-bg: #333;
+    @tooltip-header-bg: #444;
+    @tooltip-color: #fff;
+    @tooltip-border: rgba(255, 255, 255, 0.15);
+    @tooltip-arrow: 6px;
+
+    // the attribute and :not() raise specificity above template rules on [role="tooltip"]
+    .uk-tooltip[role="tooltip"]:not(.show) {
       position: absolute;
-      z-index: 1030;
-      display: block;
-      font-size: 11px;
-      line-height: 1.4;
-      opacity: 0;
-      filter: alpha(opacity=0);
-      visibility: visible;
-      text-align: left;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      z-index: 1080;
+      display: none;
+      box-sizing: border-box;
       min-width: 200px;
-  
-      &.in {
-        opacity: 0.8;
-        filter: alpha(opacity=80);
+      max-width: 320px;
+      margin: 0;
+      padding: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      line-height: 1.4;
+      letter-spacing: normal;
+      text-align: left;
+      text-transform: none;
+      white-space: normal;
+      background: none;
+      border: 0;
+      // beats the template's border-radius !important on [role="tooltip"]
+      border-radius: 0 !important;
+      box-shadow: none;
+      opacity: 0;
+      visibility: hidden;
+
+      * {
+        box-sizing: border-box;
       }
-  
-      &.top, &.right, &.bottom, &.left {
-        .tooltip-arrow;
-      }
-  
-      &.top {
-        padding: 5px 0;
-        margin-top: -3px;
-  
-        .tooltip-arrow {
-          bottom: 0;
-          left: 50%;
-          margin-left: -5px;
-          border-top-color: #000000;
-          border-width: 5px 5px 0;
-        }
-      }
-  
-      &.right {
-        padding: 0 5px;
-        margin-left: 3px;
-  
-        .tooltip-arrow {
-          top: 50%;
-          left: 0;
-          margin-top: -5px;
-          border-right-color: #000000;
-          border-width: 5px 5px 5px 0;
-        }
-      }
-  
-      &.bottom {
-        padding: 5px 0;
-        margin-top: 3px;
-  
-        .tooltip-arrow {
-          top: 0;
-          left: 50%;
-          margin-left: -5px;
-          border-bottom-color: #000000;
-          border-width: 0 5px 5px;
-        }
-      }
-  
-      &.left {
-        padding: 0 5px;
-        margin-left: -3px;
-  
-        .tooltip-arrow {
-          top: 50%;
-          right: 0;
-          margin-top: -5px;
-          border-left-color: #000000;
-          border-width: 5px 0 5px 5px;
-        }
-      }
-  
-      .tooltip-inner {
-        max-width: inherit;
-        padding: 8px;
-        color: #ffffff;
-        text-align: left;
-        text-decoration: none;
-        background-color: #000000;
-        border-radius: 4px;
-      }
-  
-      .tooltip-arrow {
-        position: absolute;
-        width: 0;
-        height: 0;
-        border-color: transparent;
-        border-style: solid;
-      }
-  
-      .close {
+
+      &.uk-tooltip-in {
         opacity: 1;
-        color: #fff;
-        padding: 0 5px;
-        text-shadow: inherit;
-        float: inherit;
-        position: absolute;
-        right: 0;
-        top: 5px;
-  
-        &:hover,
-        &:focus {
-          color: #fff;
-          opacity: 1;
-        }
       }
-  
+
       p {
         margin: 0;
       }
-  
-      .tooltip-inner h4 {
-        margin: 5px 0px;
-        font-size: 12px;
+
+      // container padding leaves room for the arrow
+      &.uk-tooltip-top {
+        padding-bottom: @tooltip-arrow;
+        margin-top: -3px;
       }
-    }
-  
-    .popover[role="tooltip"] {
-      background-color: #fff;
-      padding: 0.25em;
-      
-      &.center {
-        text-align: initial;
+
+      &.uk-tooltip-bottom {
+        padding-top: @tooltip-arrow;
+        margin-top: 3px;
       }
-  
-      .close {
-        padding: 5px 10px;
-        font-size: 24px;
-        float: right;
+
+      &.uk-tooltip-right {
+        padding-left: @tooltip-arrow;
+        margin-left: 3px;
+      }
+
+      &.uk-tooltip-left {
+        padding-right: @tooltip-arrow;
+        margin-left: -3px;
+      }
+
+      .uk-tooltip-inner {
+        position: relative;
+        padding: 0;
+        color: @tooltip-color;
+        text-align: left;
+        text-decoration: none;
+        word-wrap: break-word;
+        background-color: @tooltip-bg;
+        border: 0;
+        border-radius: 5px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .uk-tooltip-title {
+        margin: 0;
+        padding: 6px 12px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
         line-height: 18px;
+        color: @tooltip-color;
+        border: 0;
+        border-bottom: 1px solid @tooltip-border;
+        border-radius: 5px 5px 0 0;
+      }
+
+      .uk-tooltip-content {
+        min-height: 1em;
+        padding: 8px 12px;
+        color: @tooltip-color;
+      }
+
+      .uk-tooltip-close {
+        position: absolute;
+        top: 2px;
+        right: 4px;
+        z-index: 1;
+        float: none;
+        width: auto;
+        height: auto;
+        padding: 0 4px;
+        font-size: 18px;
         font-weight: bold;
-        color: #000;
-        opacity: 0.2;
+        line-height: 18px;
+        color: @tooltip-color;
+        text-shadow: none;
         cursor: pointer;
-  
+        background: none;
+        border: 0;
+        opacity: 0.6;
+
         &::after {
           content: "\00d7";
         }
+
+        &:hover,
+        &:focus {
+          color: @tooltip-color;
+          opacity: 1;
+        }
       }
-  
-      .popover-header {
+
+      // leave room for the close icon when the tip is pinned open
+      &.uk-tooltip-sticky .uk-tooltip-title {
+        padding-right: 28px;
+      }
+
+      .uk-tooltip-arrow {
+        position: absolute;
+        width: 0;
+        height: 0;
         margin: 0;
-        padding: 8px 14px;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 18px;
-        background-color: inherit;
-        border-bottom: 1px solid #ebebeb;
-        border-radius: 5px 5px 0 0;
+        border-color: transparent;
+        border-style: solid;
       }
-  
-      .popover-content {
-        min-height: 1em;
-        padding: 0.5rem;
+
+      &.uk-tooltip-top .uk-tooltip-arrow {
+        bottom: 0;
+        left: 50%;
+        margin-left: -@tooltip-arrow;
+        border-width: @tooltip-arrow @tooltip-arrow 0;
+        border-top-color: @tooltip-bg;
       }
-  
-      .popover-arrow {
-        left: calc(50% - 0.5em);
+
+      // points at the header, so it takes the header colour
+      &.uk-tooltip-bottom .uk-tooltip-arrow {
+        top: 0;
+        left: 50%;
+        margin-left: -@tooltip-arrow;
+        border-width: 0 @tooltip-arrow @tooltip-arrow;
+        border-bottom-color: @tooltip-header-bg;
+      }
+
+      // side positions place the tip beside the target, so the arrow points back at it
+      &.uk-tooltip-right .uk-tooltip-arrow {
+        top: 50%;
+        left: 0;
+        margin-top: -@tooltip-arrow;
+        border-width: @tooltip-arrow @tooltip-arrow @tooltip-arrow 0;
+        border-right-color: @tooltip-bg;
+      }
+
+      &.uk-tooltip-left .uk-tooltip-arrow {
+        top: 50%;
+        right: 0;
+        margin-top: -@tooltip-arrow;
+        border-width: @tooltip-arrow 0 @tooltip-arrow @tooltip-arrow;
+        border-left-color: @tooltip-bg;
       }
     }
-  }  

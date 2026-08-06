@@ -120,9 +120,9 @@
 
             if (!$tips.get(0)) {
                 $tips = $('<div class="uk-tooltip" role="tooltip" aria-hidden="true">' +
-                    '<span class="close uk-icon uk-icon-close" title="Close"></span>' +
+                    '<span class="uk-tooltip-close uk-icon uk-icon-close" title="Close"></span>' +
                     '<div class="uk-tooltip-inner"></div>' +
-                    '<div class="arrow"></div>' +
+                    '<div class="uk-tooltip-arrow"></div>' +
                     '</div>').appendTo(options.parent);
 
                 $('.uk-icon-close', $tips).on('click', function () {
@@ -131,10 +131,6 @@
             }
 
             $tips.addClass(options.className);
-
-            if ($tips.hasClass('popover')) {
-                $tips.find('.arrow').addClass('popover-arrow');
-            }
         }
 
         /**
@@ -149,7 +145,7 @@
             var $tips = $('.uk-tooltip');
 
             if ($(element).hasClass('hasPopover')) {
-                $tips.addClass('popover');
+                $tips.addClass('uk-tooltip-popover');
             }
 
             // store element
@@ -178,7 +174,7 @@
 
                 if (title) {
                     // Set tooltip title html
-                    h += '<h4>' + title + '</h4>';
+                    h += '<h4 class="uk-tooltip-title">' + title + '</h4>';
                 }
 
                 // Store original title and remove
@@ -194,13 +190,8 @@
             // Set tooltip html
             $('.uk-tooltip-inner', $tips).html(h);
 
-            if ($(element).hasClass('hasPopover')) {
-                $('.uk-tooltip-inner > h4', $tips).addClass('popover-title popover-header');
-                $('.uk-tooltip-inner > .uk-tooltip-content', $tips).addClass('popover-content popover-body');
-            }
-
             // Set visible
-            $tips.show().addClass('in').attr('aria-hidden', 'false');
+            $tips.show().addClass('uk-tooltip-in').attr('aria-hidden', 'false');
 
             locate(e, element);
 
@@ -236,7 +227,7 @@
             $tips.css('visibility', 'hidden').attr('aria-hidden', 'true').hide();
 
             // reset classes
-            $('.uk-tooltip').attr('class', 'uk-tooltip').removeClass('in');
+            $('.uk-tooltip').attr('class', 'uk-tooltip');
             // empty tooltip
             $('.uk-tooltip-inner').empty();
 
@@ -359,11 +350,7 @@
             };
 
             $.each(position.split(' '), function (i, s) {
-                $tips.addClass(s).addClass('uk-tooltip-' + s);
-
-                if ($tips.hasClass('popover')) {
-                    $tips.addClass(s).addClass('bs-popover-' + s);
-                }
+                $tips.addClass('uk-tooltip-' + s);
             });
 
             $tips.css(style[position]);
