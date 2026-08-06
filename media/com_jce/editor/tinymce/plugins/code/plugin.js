@@ -1193,7 +1193,7 @@
 
                 // shortcode content will be encoded as text, so decode
                 if (editor.settings.code_protect_shortcode) {
-                    // only shortcode-like braces are decoded, so escaped markup in ordinary text stays escaped
+                    // only shortcode-like braces are decoded
                     o.content = o.content.replace(/\{([\w-][\s\S]*?)\}/gi, function (match, content) {
                         return '{' + ed.dom.decode(content) + '}';
                     });
@@ -1232,9 +1232,6 @@
 
                     return content;
                 });
-
-                // strip any mce:protected comments
-                o.content = o.content.replace(/<!--mce:protected [\s\S]+?-->/gi, '');
             }
         });
     });
