@@ -166,11 +166,7 @@ class Tags extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
 
         $router = new RouteHelper();
 
-        if (!isset($args->id)) {
-            $args->id = 1;
-        }
-
-        $tags = $this->getTags($args->id);
+        $tags = $this->getTags();
 
         if (!empty($tags)) {
             foreach ($tags as $tag) {
@@ -192,7 +188,7 @@ class Tags extends \Wfe\Plugins\Links\Joomla\Provider\AbstractProvider
         return $items;
     }
 
-    private function getTags($id)
+    private function getTags()
     {
         $app  = Factory::getApplication();
         $db   = Factory::getContainer()->get(DatabaseInterface::class);
