@@ -13,7 +13,6 @@
 (function () {
   var Entities = tinymce.html.Entities, each = tinymce.each,
     extend = tinymce.extend,
-    DomParser = tinymce.html.DomParser,
     HtmlSerializer = tinymce.html.Serializer,
     Dispatcher = tinymce.util.Dispatcher,
     DOM = tinymce.DOM;
@@ -28,7 +27,8 @@
       });
 
       ed.contentValidator = {
-        parser: new DomParser(settings, ed.schema),
+        // createParser applies the rules that must hold for any content entering the editor
+        parser: ed.createParser(settings),
         serializer: new HtmlSerializer(settings, ed.schema)
       };
     }
