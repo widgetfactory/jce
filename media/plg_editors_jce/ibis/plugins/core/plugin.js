@@ -13,7 +13,6 @@
 (function () {
   var Entities = ibis.html.Entities, each = ibis.each,
     extend = ibis.extend,
-    DomParser = ibis.html.DomParser,
     HtmlSerializer = ibis.html.Serializer,
     Dispatcher = ibis.util.Dispatcher,
     DOM = ibis.DOM;
@@ -28,7 +27,8 @@
       });
 
       ed.contentValidator = {
-        parser: new DomParser(settings, ed.schema),
+        // createParser applies the rules that must hold for any content entering the editor
+        parser: ed.createParser(settings),
         serializer: new HtmlSerializer(settings, ed.schema)
       };
     }
