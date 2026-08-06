@@ -13,11 +13,14 @@
     // Register plugin
     ibis.PluginManager.add('effects', function (ed, url) {
         function cleanEventAttribute(val) {
+            val = ibis.trim(val);
+
             if (!val) {
                 return '';
             }
 
-            val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+            // unwrap to the url, trimming any space inside the quotes
+            val = ibis.trim(val.replace(/^this\.src\s*=\s*'([^']+)';?$/, '$1'));
 
             // the value is written back into an event attribute, so it must not be able to break out of it
             if (/['"<>\\]/.test(val)) {
@@ -49,11 +52,16 @@
             };
         }
 
+        // a src swap, the value is trimmed by the caller
+        function isSrcSwap(val) {
+            return /^this\.src\s*=/.test(val);
+        }
+
         // convert an image mouseover / mouseout event attribute pair to data attributes
         function convertEventAttributes(attr) {
-            var mouseover = attr('onmouseover'), mouseout = attr('onmouseout');
+            var mouseover = ibis.trim(attr('onmouseover')), mouseout = ibis.trim(attr('onmouseout'));
 
-            if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+            if (!isSrcSwap(mouseover)) {
                 return;
             }
 
@@ -67,7 +75,7 @@
 
             attr('data-mouseover', mouseover);
 
-            if (!mouseout || mouseout.indexOf('this.src') !== 0) {
+            if (!isSrcSwap(mouseout)) {
                 return;
             }
 
