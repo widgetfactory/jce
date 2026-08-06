@@ -11,7 +11,7 @@
     <description>PKG_JCE_XML_DESCRIPTION</description>
     <updateservers>
         <server type="extension" priority="1" name="JCE Editor Package">
-            <![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce@@pro@@.xml]]>
+            <![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce@@pro@@3.xml]]>
         </server>
     </updateservers>
     @@dlid@@
