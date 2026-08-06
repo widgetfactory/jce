@@ -890,13 +890,6 @@
                 continue;
             }
 
-            // the cleanup plugin protects event attributes as data-mce-on*, store them as placeholder attributes
-            if (attrName.indexOf('data-mce-on') === 0 && editor.settings.allow_event_attributes) {
-                targetNode.attr('data-mce-p-' + attrName.substring(9), attrValue);
-
-                continue;
-            }
-
             if (attrName.indexOf('data-mce') !== -1) {
                 if (attrName.indexOf('data-mce-p-') === -1) {
                     continue;
@@ -912,8 +905,7 @@
                     continue;
                 }
 
-                // an attribute already stored for the placeholder must not be prefixed again
-                if (attrName.indexOf('data-mce-p-') !== 0 && (!htmlSchema.isValid('img', attrName) || attrName == 'src')) {
+                if (!htmlSchema.isValid('img', attrName) || attrName == 'src') {
                     attrName = 'data-mce-p-' + attrName;
                 }
             }
@@ -1298,7 +1290,9 @@
     function parseAndSanitize(editor, elm) {
         var settings = {
             validate: editor.settings.validate,
-            sanitize_html: editor.settings.sanitize_html
+            sanitize_html: editor.settings.sanitize_html,
+            // the re-parse validates, so it must be told that event attributes are allowed
+            allow_event_attributes: !!editor.settings.allow_event_attributes
         };
 
         var html = new Serializer(settings, editor.schema).serialize(elm);

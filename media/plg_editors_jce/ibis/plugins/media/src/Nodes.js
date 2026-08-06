@@ -599,7 +599,9 @@ var placeholderToPreview = function (editor, node) {
 function parseAndSanitize(editor, elm) {
     var settings = {
         validate: editor.settings.validate,
-        sanitize_html: editor.settings.sanitize_html
+        sanitize_html: editor.settings.sanitize_html,
+        // the re-parse validates, so it must be told that event attributes are allowed
+        allow_event_attributes: !!editor.settings.allow_event_attributes
     };
 
     var html = new Serializer(settings, editor.schema).serialize(elm);
