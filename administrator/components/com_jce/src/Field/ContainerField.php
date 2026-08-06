@@ -13,7 +13,6 @@ namespace Joomla\Component\Jce\Administrator\Field;
 
 defined('JPATH_SITE') or die;
 
-use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Language\Text;
