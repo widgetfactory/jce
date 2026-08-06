@@ -40,8 +40,6 @@ const manageClickEvent = (e) => {
 
     const parent = e.target.closest('.styleformat-list');
 
-    console.log(parent);
-
     const trashElm = e.target.closest('.styleformat-item-trash');
     const addElm = e.target.closest('.styleformat-item-plus');
 
@@ -50,8 +48,6 @@ const manageClickEvent = (e) => {
         const styleformatList = parent.querySelectorAll('.styleformat');
 
         const elm = trashElm.closest('.styleformat');
-
-        console.log(elm);
 
         if (styleformatList.length === 1) {
             // clear inputs and remove styles
@@ -68,6 +64,10 @@ const manageClickEvent = (e) => {
 
     if (addElm) {
         const item = addElm.previousElementSibling;
+
+        if (!item) {
+            return;
+        }
 
         const clone = item.cloneNode(true);
         addElm.before(clone);
@@ -89,7 +89,11 @@ const manageClickEvent = (e) => {
         });
 
         // focus first input (title)
-        clone.querySelector('input').focus();
+        const firstInput = clone.querySelector('input');
+
+        if (firstInput) {
+            firstInput.focus();
+        }
     }
 
     // create collapsible action
@@ -142,10 +146,16 @@ const setup = () => {
             // only proceed if title set and at least one other value of element, class or style
             const titleInput = item.querySelector('.styleformat-item-title input');
 
-            if (titleInput.value) {
+            if (titleInput && titleInput.value) {
                 // get all values in sequence and encode
                 item.querySelectorAll('input[type="text"], select').forEach((input) => {
-                    const key = input.closest('[data-key]').dataset.key;
+                    const keyElement = input.closest('[data-key]');
+
+                    if (!keyElement) {
+                        return;
+                    }
+
+                    const key = keyElement.dataset.key;
                     const val = input.value;
 
                     if (val !== '') {
@@ -174,20 +184,35 @@ const setup = () => {
 
         if (hiddenInput) {
             hiddenInput.value = value;
-            hiddenInput.dispatchEvent(new Event('change'));
+            // must bubble to reach the delegated form listener
+            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
         }
     });
 
     styleformatList.addEventListener('change', (e) => {
+        // the update below writes to the hidden input and re-dispatches "change", so ignore it here
+        if (e.target.matches('input[type="hidden"]')) {
+            return;
+        }
+
         styleformatList.dispatchEvent(new Event('update'));
 
         if (e.target.matches('input[type="text"], select')) {
             const input = e.target;
             const styleformat = input.closest('.styleformat');
+            const keyElement = input.closest('[data-key]');
 
+            if (!styleformat || !keyElement) {
+                return;
+            }
 
             const title = styleformat.querySelector('.styleformat-item-title input');
-            const key = input.closest('[data-key]').dataset.key;
+
+            if (!title) {
+                return;
+            }
+
+            const key = keyElement.dataset.key;
             const val = input.value;
 
             if (key === 'element') {

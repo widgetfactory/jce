@@ -79,22 +79,25 @@ if (editorResizing) {
 const jformConfigEditorToggle = document.querySelector('#jform_config_editor_toggle');
 const editorToggle = document.querySelector('#editor_toggle');
 
-jformConfigEditorToggle.addEventListener('change', () => {
-    const v = jformConfigEditorToggle.value;
-    // Show statusbar by default
-    editorToggle.style.display = v === '1' ? 'block' : 'none';
-});
+// only available in Pro
+if (jformConfigEditorToggle && editorToggle) {
+    jformConfigEditorToggle.addEventListener('change', () => {
+        const v = jformConfigEditorToggle.value;
+        // Show statusbar by default
+        editorToggle.style.display = v === '1' ? 'block' : 'none';
+    });
 
-jformConfigEditorToggle.dispatchEvent(new Event('change'));
+    jformConfigEditorToggle.dispatchEvent(new Event('change'));
 
-// Hide toggle display if required
-editorToggle.hidden = jformConfigEditorToggle.length === 0;
+    // Hide toggle display if required
+    editorToggle.hidden = jformConfigEditorToggle.length === 0;
 
-// Editor toggle label
-const jformConfigEditorToggleLabel = document.querySelector('#jform_config_editor_toggle_label');
+    // Editor toggle label
+    const jformConfigEditorToggleLabel = document.querySelector('#jform_config_editor_toggle_label');
 
-jformConfigEditorToggleLabel.addEventListener('change', () => {
-    if (jformConfigEditorToggleLabel.value) {
-        editorToggle.textContent = jformConfigEditorToggleLabel.value;
-    }
-});
+    jformConfigEditorToggleLabel.addEventListener('change', () => {
+        if (jformConfigEditorToggleLabel.value) {
+            editorToggle.textContent = jformConfigEditorToggleLabel.value;
+        }
+    });
+}

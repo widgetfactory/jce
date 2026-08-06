@@ -13,6 +13,7 @@ import BlockFormats from './blockformats.js';
 import Fonts from './fonts.js';
 import Filetypes from './filetype.js';
 import StyleFormats from './styleformat.js';
+import Drag from './drag.js';
 
 function htmlspecialchars_decode(str) {
     var reverseEntities = {
@@ -107,35 +108,55 @@ window.addEventListener('load', function () {
 
 const dataToggle = (event) => {
     const { target } = event;
+    const group = target.closest('.control-group');
+
+    if (!group) {
+        return;
+    }
+
     const key = target.getAttribute('data-toggle');
     const value = target.value;
 
-    const parent = target.closest('.control-group').parentNode;
+    const parent = group.parentNode;
 
-    parent.querySelectorAll('[data-toggle-target]').forEach((element) => {
-        // hide all
+    // only process inputs the element directly owns, not those belonging to a nested toggle
+    const setDisabled = (element, state) => {
+        element.querySelectorAll('input,select,textarea').forEach((input) => {
+            if (input.closest('[data-toggle-target]') === element) {
+                input.disabled = state;
+            }
+        });
+    };
+
+    // hide all targets belonging to this toggle
+    parent.querySelectorAll(`[data-toggle-target^="${key}-"]`).forEach((element) => {
         element.hidden = true;
 
-        element.querySelectorAll('input,select,textarea').forEach((input) => {
-            input.disabled = true;
-        });
-
-        target.dispatchEvent(new Event('toggle:hidden'));
+        setDisabled(element, true);
     });
 
-    if (value) {
-        const item = parent.querySelector(`[data-toggle-target="${key}-${value}"]`);
+    target.dispatchEvent(new Event('toggle:hidden'));
 
-        if (item) {
-            item.hidden = false;
-
-            item.querySelectorAll('input,select,textarea').forEach((input) => {
-                input.disabled = false;
-            });
-
-            target.dispatchEvent(new Event('toggle:visible'));
-        }
+    if (!value) {
+        return;
     }
+
+    const item = parent.querySelector(`[data-toggle-target="${key}-${value}"]`);
+
+    if (!item) {
+        return;
+    }
+
+    item.hidden = false;
+
+    setDisabled(item, false);
+
+    // re-apply nested toggles so their own state determines what is enabled
+    item.querySelectorAll('select[data-toggle]').forEach((select) => {
+        dataToggle({ target: select });
+    });
+
+    target.dispatchEvent(new Event('toggle:visible'));
 };
 
 function init() {
@@ -149,6 +170,9 @@ function init() {
 
     // Layout
     Layout.createLayout();
+
+    // editor resize handle
+    Drag.setup();
 
     // init toggle
     document.querySelectorAll('select[data-toggle]').forEach((select) => {
@@ -185,11 +209,8 @@ function init() {
             // trigget Layout events
             Layout.triggerChange(e);
     
-            // Get name as escaped string
-            const name = elm.name.replace(/[!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '\\$1');
-    
             // Add class to this element and any that share its name, e.g., param[]
-            this.querySelectorAll(`[name="${name}"]`).forEach((element) => {
+            Array.from(this.elements).filter((el) => el.name === elm.name).forEach((element) => {
                 element.classList.add('isdirty');
             });
     
@@ -255,9 +276,7 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    window.setTimeout(() => {
-        init();
-    }, 100);
+    requestAnimationFrame(() => requestAnimationFrame(init));
 });
 
 export default {};

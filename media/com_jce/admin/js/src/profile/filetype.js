@@ -7,60 +7,79 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+// must match the icon class rendered by FiletypeField
+const FILE_CLASS_PREFIX = 'wfe-i-file-';
+
+const removeFileClass = function (file) {
+    if (!file) {
+        return;
+    }
+
+    Array.from(file.classList).forEach((className) => {
+        if (className.startsWith(FILE_CLASS_PREFIX)) {
+            file.classList.remove(className);
+        }
+    });
+};
+
 const setup = function () {
 
     document.querySelectorAll('.filetype').forEach(function (filetype) {
         const input = filetype.querySelector('input[type="hidden"]');
 
-        const filetypeList = filetype.querySelector('.filetype-list');
+        // there is one list per filetype group
+        const filetypeLists = filetype.querySelectorAll('.filetype-list');
 
         const serialize = function () {
             const list = [];
 
-            const checkboxes = filetypeList.querySelectorAll('.filetype-item input[type="checkbox"]');
+            filetypeLists.forEach(function (filetypeList) {
+                const checkboxes = filetypeList.querySelectorAll('.filetype-item input[type="checkbox"]');
 
-            // map values as either enabled or disabled
-            const v1 = Array.from(checkboxes).map(function (checkbox) {
-                if (!checkbox.checked) {
-                    return `-${checkbox.value}`;
+                // map values as either enabled or disabled
+                const v1 = Array.from(checkboxes).map(function (checkbox) {
+                    if (!checkbox.checked) {
+                        return `-${checkbox.value}`;
+                    }
+                    return checkbox.value;
+                });
+
+                const customInputs = filetypeList.querySelectorAll('.filetype-custom input[type="text"]');
+
+                // map only non-empty values
+                const v2 = Array.from(customInputs).filter(function (input) {
+                    return input.value !== '';
+                }).map(function (input) {
+                    return input.value;
+                });
+
+                const items = [...v1, ...v2].join(',');
+
+                const groupElement = filetypeList.querySelector('.filetype-group');
+
+                // no group, store the items only
+                if (!groupElement) {
+                    list.push(items);
+                    return;
                 }
-                return checkbox.value;
-            });
 
-            const customInputs = filetypeList.querySelectorAll('.filetype-custom input[type="text"]');
+                let group = groupElement.dataset.filetypeGroup;
 
-            // map only non-empty values
-            const v2 = Array.from(customInputs).filter(function (input) {
-                return input.value !== '';
-            }).map(function (input) {
-                return input.value;
-            });
+                const groupCheckbox = groupElement.querySelector('input[type="checkbox"]');
 
-            let group = '';
-            const groupCheckboxes = filetypeList.querySelectorAll('.filetype-group input[type="checkbox"]');
-
-            Array.from(groupCheckboxes).map(function (checkbox) {
-                group = checkbox.closest('.filetype-group').dataset.filetypeGroup;
-
-                // mark group as removed by appending a dash to the group name
-                if (!checkbox.checked) {
+                // mark group as removed by prepending a dash to the group name
+                if (groupCheckbox && !groupCheckbox.checked) {
                     group = `-${group}`;
                 }
+
+                list.push(`${group}=${items}`);
             });
 
-            const items = [...v1, ...v2].join(',');
-
-            if (group) {
-                list.push(`${group}=${items}`);
-            } else {
-                list.push(items);
-            }
-
-            const value = list.join(';');
-
-            input.value = value;
+            input.value = list.join(';');
             input.classList.add('isdirty');
-            filetype.value = value;
+
+            // must bubble to reach the delegated form listener
+            input.dispatchEvent(new Event('change', { bubbles: true }));
         };
 
         // global click handler
@@ -72,12 +91,19 @@ const setup = function () {
 
                 const open = btn.getAttribute('aria-expanded') === 'true';
                 btn.setAttribute('aria-expanded', String(!open));
-                filetypeList.hidden = open;
+
+                filetypeLists.forEach(function (filetypeList) {
+                    filetypeList.hidden = open;
+                });
 
                 return;
             }
 
             let item = e.target.closest('.filetype-item');
+
+            if (!item) {
+                return;
+            }
 
             if (e.target.closest('.filetype-custom .filetype-clear')) {
                 e.preventDefault();
@@ -105,18 +131,14 @@ const setup = function () {
             if (e.target.closest('.filetype-remove')) {
                 const parent = item.parentNode;
 
-                // clear values
-                if (parent.querySelectorAll('.filetype-custom').length == 1) {
+                // clear the last remaining custom item instead of removing it
+                if (item.matches('.filetype-custom') && parent.querySelectorAll('.filetype-custom').length == 1) {
                     const inp = item.querySelector('input[type="text"]');
                     const file = inp.previousElementSibling;
                     // clear values
                     inp.value = '';
                     // remove existing classes
-                    Array.from(file.classList).forEach((className) => {
-                        if (className.startsWith('mce-i-file-')) {
-                            file.classList.remove(className);
-                        }
-                    });
+                    removeFileClass(file);
                     // remove item
                 } else {
                     item.remove();
@@ -141,14 +163,10 @@ const setup = function () {
                     const file = inp.previousElementSibling;
 
                     // remove existing classes
-                    Array.from(file.classList).forEach((className) => {
-                        if (className.startsWith('mce-i-file-')) {
-                            file.classList.remove(className);
-                        }
-                    });
+                    removeFileClass(file);
 
                     if (inp.value) {
-                        file.classList.add(`mce-i-file-${inp.value}`);
+                        file.classList.add(`${FILE_CLASS_PREFIX}${inp.value}`);
                     }
                 }
 

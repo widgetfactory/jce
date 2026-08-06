@@ -13,9 +13,12 @@ const setup = () => {
         });
 
         el.addEventListener('update', () => {
-            el.querySelectorAll('input[name]').forEach((input) => {
-                input.dispatchEvent(new Event('change'));
-            });
+            // all checkboxes share the same name, so one bubbling change marks them all as dirty
+            const input = el.querySelector('input[name]');
+
+            if (input) {
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
         });
 
         Sortable(el, {

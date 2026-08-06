@@ -18,10 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
   Repeatable.setup();
 
   // remove loader
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.jce-ui').classList.remove('loading');
-  });
-  
+  const ui = document.querySelector('.jce-ui');
+
+  if (ui) {
+    ui.classList.remove('loading');
+  }
 });
 
 export default {};

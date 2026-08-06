@@ -22,8 +22,11 @@ function createLayout() {
         }
     });
 
-    if (!document.querySelector('[name$="[config][editor][toggle]"]')) {
-        document.getElementById('editor_toggle').hidden = true;
+    const editorToggle = document.getElementById('editor_toggle');
+
+    // the toggle parameter is not available in all editions
+    if (editorToggle && !document.querySelector('[name$="[config][editor][toggle]"]')) {
+        editorToggle.hidden = true;
     }
 }
 
@@ -36,6 +39,11 @@ function setRows() {
         );
 
     const rowsInput = document.querySelector('input[name="jform[rows]"]');
+
+    if (!rowsInput) {
+        return;
+    }
+
     rowsInput.value = rows.join(';');
     rowsInput.dispatchEvent(new Event('change'));
 }
@@ -55,8 +63,11 @@ function setPlugins() {
     });
 
     const pluginsInput = document.querySelector('input[name="jform[plugins]"]');
-    pluginsInput.value = plugins.join(',');
-    pluginsInput.dispatchEvent(new Event('change'));
+
+    if (pluginsInput) {
+        pluginsInput.value = plugins.join(',');
+        pluginsInput.dispatchEvent(new Event('change'));
+    }
 
     setParams(plugins);
 }
@@ -181,7 +192,12 @@ function triggerChange(e) {
         const value = elm.value || '100%';
         const str = /%/.test(value) ? value : parseInt(value, 10) + 'px';
 
-        document.querySelector('.widthMarker span').textContent = str;
+        const widthMarker = document.querySelector('.widthMarker span');
+
+        if (widthMarker) {
+            widthMarker.textContent = str;
+        }
+
         document.querySelectorAll('.widthMarker, .mce-ibis').forEach((el) => {
             el.style.width = str;
         });
@@ -201,17 +217,23 @@ function triggerChange(e) {
 
     if (elm.matches('[name$="[editor][resizing]"]')) {
         const value = parseInt(elm.value, 10);
-        form.querySelector('.editor-layout .mce-ibis .mce-statusbar .mce-resizehandle').hidden = !value;
+        const handle = form.querySelector('.editor-layout .mce-ibis .mce-statusbar .mce-resizehandle');
+
+        if (handle) {
+            handle.hidden = !value;
+        }
     }
 
-    if (elm.matches('[name$="[editor][toggle]"]')) {
+    const editorToggle = document.getElementById('editor_toggle');
+
+    if (editorToggle && elm.matches('[name$="[editor][toggle]"]')) {
         const value = parseInt(elm.value, 10);
-        document.getElementById('editor_toggle').hidden = !value;
+        editorToggle.hidden = !value;
     }
 
-    if (elm.matches('[name$="[editor][toggle_label]"]')) {
+    if (editorToggle && elm.matches('[name$="[editor][toggle_label]"]')) {
         if (elm.value) {
-            document.getElementById('editor_toggle').textContent = elm.value;
+            editorToggle.textContent = elm.value;
         }
     }
 }

@@ -73,34 +73,34 @@ const setup = () => {
 
             el.querySelectorAll('.font-item').forEach((fontItem) => {
                 const obj = {};
-                let key, value;
+                let key, font;
 
                 // custom values
                 const [keyInput, valInput] = fontItem.querySelectorAll('input[type="text"]');
 
                 if (keyInput && valInput) {
                     key = keyInput.value;
-                    value = valInput.value;
+                    font = valInput.value;
 
-                    if (key && value) {
-                        obj[key] = value;
+                    if (key && font) {
+                        obj[key] = font;
                     }
                 }
 
                 // default values
                 let values = '';
 
-                var input = fontItem.querySelector('input[type="checkbox"]:checked');
+                const input = fontItem.querySelector('input[type="checkbox"]:checked');
 
                 if (input) {
                     values = input.value;
                 }
 
                 if (values) {
-                    [key, value] = values.split('=');
+                    [key, font] = values.split('=');
 
-                    if (key && value) {
-                        obj[key] = value;
+                    if (key && font) {
+                        obj[key] = font;
                     }
                 }
 
@@ -114,9 +114,14 @@ const setup = () => {
             }
 
             const hiddenInput = el.querySelector('input[type="hidden"]');
+
+            if (!hiddenInput) {
+                return;
+            }
+
             hiddenInput.value = value;
-            // trigger for isdirty state change
-            hiddenInput.dispatchEvent(new Event('change'));
+            // trigger for isdirty state change, must bubble to reach the delegated form listener
+            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
         });
 
         Sortable(el, {

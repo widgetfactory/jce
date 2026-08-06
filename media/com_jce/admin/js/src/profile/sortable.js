@@ -104,9 +104,6 @@ const Sortable = (selector, options) => {
                 return;
             }
 
-            // prevent bubbling if there are more than one sortable elements
-            evt.stopPropagation();
-
             // ignore mousedown on an invalid element
             if (options.ignore && elm.matches(options.ignore)) {
                 return;
@@ -132,6 +129,23 @@ const Sortable = (selector, options) => {
 
             if (elm.parentNode == container) {
 
+                // prevent bubbling if there are more than one sortable elements
+                evt.stopPropagation();
+
+                // all listeners below are bound to this signal so they can be removed in one step
+                const controller = new AbortController();
+                const signal = controller.signal;
+
+                let dragStarted = false;
+
+                // clean up if the mouse is released without a drag starting
+                document.addEventListener('mouseup', () => {
+                    if (!dragStarted) {
+                        removeDraggable();
+                        controller.abort();
+                    }
+                }, { signal });
+
                 // Create a new Set and add the container element
                 const containerSet = new Set([container]);
 
@@ -151,6 +165,8 @@ const Sortable = (selector, options) => {
                 });
 
                 elm.addEventListener('dragstart', (evt) => {
+                    dragStarted = true;
+
                     evt.dataTransfer.effectAllowed = 'move';
 
                     // Create a placeholder div with the same width and height as the dragged element
@@ -171,14 +187,14 @@ const Sortable = (selector, options) => {
                     }, 1);
 
                     options.start({ event: evt, element: elm, placeholder: placeholder });
-                }, { once: true });
+                }, { once: true, signal });
 
                 containers.forEach(item => {
-                    const DragOver = item.addEventListener('dragover', (evt) => {
+                    item.addEventListener('dragover', (evt) => {
                         evt.preventDefault();
 
                         // ignore placeholder
-                        if (evt.target === placeholder || (options.placeholder && evt.target.matches(options.placeholder))) {
+                        if (evt.target === placeholder || (options.placeholder && evt.target.matches(`.${options.placeholder}`))) {
                             return;
                         }
 
@@ -222,7 +238,7 @@ const Sortable = (selector, options) => {
                                 }
                             }
                         }
-                    });
+                    }, { signal });
 
                     item.addEventListener('drop', (evt) => {
                         evt.preventDefault();
@@ -243,7 +259,9 @@ const Sortable = (selector, options) => {
 
                         removePlaceholder();
                         removeDraggable();
-                    }, { once: true });
+
+                        // note: cleanup is left to "dragend", which always fires after "drop"
+                    }, { once: true, signal });
 
                     item.addEventListener('dragend', (evt) => {
                         if (dragElement) {
@@ -253,9 +271,8 @@ const Sortable = (selector, options) => {
                         removePlaceholder();
                         removeDraggable();
 
-                        item.removeEventListener('dragover', DragOver);
-
-                    }, { once: true });
+                        controller.abort();
+                    }, { once: true, signal });
                 });
             }
         });

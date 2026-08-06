@@ -11,7 +11,8 @@ function addChangeEvent(elm) {
 
         elm = evt.target.closest('.wf-keyvalue');
 
-        if (!elm) {
+        // the element may have been removed from the DOM, eg: repeatable:delete
+        if (!elm || !elm.parentNode) {
             return;
         }
 
@@ -37,9 +38,14 @@ function addChangeEvent(elm) {
         // update hidden input
         const hiddenInput = elm.parentNode.querySelector('input[name][type="hidden"]');
 
+        if (!hiddenInput) {
+            return;
+        }
+
         hiddenInput.value = JSON.stringify(items);
-        // trigger for isdirty state change
-        hiddenInput.dispatchEvent(new Event('change'));
+
+        // trigger for isdirty state change, must bubble to reach the delegated form listener
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
 }
 
