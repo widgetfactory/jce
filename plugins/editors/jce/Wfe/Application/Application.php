@@ -92,7 +92,7 @@ class Application
             $components = ComponentHelper::getComponents();
 
             foreach ($components as $component) {
-                if ((int) $id === $component->id) {
+                if ((int) $id === (int) $component->id) {
                     return $component;
                 }
             }
