@@ -13,6 +13,7 @@ namespace Joomla\Component\Jce\Administrator\Helper;
 
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Component\Jce\Administrator\Table\ProfilesTable;
@@ -133,20 +134,35 @@ abstract class ProfilesHelper
         // Wrap bare JSON params values in CDATA so SimpleXML doesn't mangle them.
         $data = preg_replace('#<params>\{(.+?)\}</params>#s', '<params><![CDATA[{$1}]]></params>', $data);
 
+        libxml_use_internal_errors(true);
         $xml = simplexml_load_string($data);
+        libxml_clear_errors();
 
         if (!$xml) {
             return false;
         }
+
+        $filter = InputFilter::getInstance();
+
+        // only these elements may be assigned to the table
+        $allowedKeys = ['name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params'];
 
         foreach ($xml->profiles->children() as $profile) {
             $table = new ProfilesTable($db);
 
             foreach ($profile->children() as $item) {
                 $key   = $item->getName();
+
+                if (!in_array($key, $allowedKeys, true)) {
+                    continue;
+                }
+
                 $value = (string) $item;
 
                 switch ($key) {
+                    case 'name':
+                        $value = $filter->clean($value, 'STRING');
+                        break;
                     case 'description':
                         $value = Text::_($value);
                         break;
