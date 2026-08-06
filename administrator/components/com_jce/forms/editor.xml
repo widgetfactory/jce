@@ -32,15 +32,15 @@
                 <option value="bottom">WF_OPTION_BOTTOM</option>
                 <option value="none">JNONE</option>
             </field>
-            <field name="path" type="yesno" default="1" label="WF_PARAM_EDITOR_PATH" description="WF_PARAM_EDITOR_PATH_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+            <field name="path" type="yesno" default="1" label="WF_PARAM_EDITOR_PATH" description="WF_PARAM_EDITOR_PATH_DESC" showon="statusbar_location:top,bottom">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="wordcount" type="yesno" default="1" label="WF_PARAM_EDITOR_WORDCOUNT" description="WF_PARAM_EDITOR_WORDCOUNT_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+            <field name="wordcount" type="yesno" default="1" label="WF_PARAM_EDITOR_WORDCOUNT" description="WF_PARAM_EDITOR_WORDCOUNT_DESC" showon="statusbar_location:top,bottom">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="resizing" type="list" default="1" label="WF_PARAM_EDITOR_RESIZING" description="WF_PARAM_EDITOR_RESIZING_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+            <field name="resizing" type="list" default="1" label="WF_PARAM_EDITOR_RESIZING" description="WF_PARAM_EDITOR_RESIZING_DESC" showon="statusbar_location:top,bottom">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -98,7 +98,7 @@
                 <option value="2">WF_PARAM_CSS_INHERIT</option>
             </field>
 
-            <field name="profile_content_css_custom" type="repeatable" default="" label="WF_PARAM_CSS_CUSTOM" description="WF_PARAM_CSS_CUSTOM_DESC" showon="profile_content_css:0[OR]profile_content_css:1">
+            <field name="profile_content_css_custom" type="repeatable" default="" label="WF_PARAM_CSS_CUSTOM" description="WF_PARAM_CSS_CUSTOM_DESC" showon="profile_content_css:0,1">
                 <field type="text" size="50" hiddenLabel="true" hint="eg: templates/$template/css/content.css" />
             </field>
 
