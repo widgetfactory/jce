@@ -27249,7 +27249,7 @@
       // Add onBeforeSetContent with cleanup
       self.onBeforeSetContent.add(function (e, args) {
         if (args.format !== 'raw') {
-          var node = new tinymce.html.DomParser(editor.settings, editor.schema).parse(args.content, extend(args, { isRootContent: true, forced_root_block: false }));
+          var node = editor.createParser().parse(args.content, extend(args, { isRootContent: true, forced_root_block: false }));
           args.content = new tinymce.html.Serializer({ validate: false }, editor.schema).serialize(node);
         }
       });
@@ -28607,17 +28607,10 @@
         }
       });
 
-      function isValidProtected(html, protect) {
-        return protect && protect.some(function (pattern) {
-          var m = html.match(pattern);
-          return m !== null && m[0].length === html.length;
-        });
-      }
-
-      // Convert comments to cdata and handle protected comments
+      // Convert comments to cdata and remove legacy protected comments
       htmlParser.addNodeFilter('#comment', function (nodes) {
         var i = nodes.length,
-          node, protectedHtml;
+          node;
 
         while (i--) {
           node = nodes[i];
@@ -28626,16 +28619,8 @@
             node.name = '#cdata';
             node.type = 4;
             node.value = node.value.replace(/^\[CDATA\[|\]\]$/g, '');
-          } else if (node.value.indexOf('mce:protected ') === 0) {
-            protectedHtml = unescape(node.value).substr(14);
-            if (isValidProtected(protectedHtml, settings.protect)) {
-              node.name = "#text";
-              node.type = 3;
-              node.raw = true;
-              node.value = protectedHtml;
-            } else {
-              node.remove();
-            }
+          } else if (/^\s*mce:protected\b/i.test(node.value)) {
+            node.remove();
           }
         }
       });
@@ -37169,6 +37154,39 @@
 
     tinymce.Editor.prototype = {
       /**
+       * Creates a DomParser with the rules that must apply to any content entering the editor.
+       * Callers can add their own filters to the returned parser.
+       *
+       * @method createParser
+       * @param {Object} settings Optional settings, defaults to the editor settings.
+       * @return {tinymce.html.DomParser} Parser instance.
+       */
+      createParser: function (settings) {
+        var self = this,
+          parser = new tinymce.html.DomParser(settings || self.settings, self.schema);
+
+        // Strip forged data-mce-src, data-mce-href and data-mce-style on input
+        parser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style', function (nodes, name) {
+          var i = nodes.length;
+          while (i--) {
+            nodes[i].attr(name, null);
+          }
+        });
+
+        // Remove legacy protected comments, nothing creates them now
+        parser.addNodeFilter('#comment', function (nodes) {
+          var i = nodes.length;
+          while (i--) {
+            if (/^\s*mce:protected\b/i.test(nodes[i].value)) {
+              nodes[i].remove();
+            }
+          }
+        });
+
+        return parser;
+      },
+
+      /**
        * Renderes the editor/adds it to the page.
        *
        * @method render
@@ -37685,15 +37703,7 @@
          * @property parser
          * @type tinymce.html.DomParser
          */
-        self.parser = new tinymce.html.DomParser(settings, self.schema);
-
-        // Strip forged data-mce-src, data-mce-href and data-mce-style on input
-        self.parser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style', function (nodes, name) {
-          var i = nodes.length;
-          while (i--) {
-            nodes[i].attr(name, null);
-          }
-        });
+        self.parser = self.createParser(settings);
 
         // Convert src and href into data-mce-src, data-mce-href and data-mce-style
         self.parser.addAttributeFilter('src,href,style', function (nodes, name) {
@@ -37861,16 +37871,6 @@
 
         if (settings.nowrap) {
           body.style.whiteSpace = "nowrap";
-        }
-
-        if (settings.protect) {
-          self.onBeforeSetContent.add(function (ed, o) {
-            each(settings.protect, function (pattern) {
-              o.content = o.content.replace(pattern, function (str) {
-                return '<!--mce:protected ' + escape(str) + '-->';
-              });
-            });
-          });
         }
 
         // Add visual aids when new contents is added
@@ -49137,7 +49137,6 @@
   (function () {
     var Entities = tinymce.html.Entities, each = tinymce.each,
       extend = tinymce.extend,
-      DomParser = tinymce.html.DomParser,
       HtmlSerializer = tinymce.html.Serializer,
       Dispatcher = tinymce.util.Dispatcher,
       DOM = tinymce.DOM;
@@ -49152,7 +49151,8 @@
         });
 
         ed.contentValidator = {
-          parser: new DomParser(settings, ed.schema),
+          // createParser applies the rules that must hold for any content entering the editor
+          parser: ed.createParser(settings),
           serializer: new HtmlSerializer(settings, ed.schema)
         };
       }
@@ -49492,261 +49492,6 @@
       // editable_root is set by third-party integrations, so it stays a loose check
       if (ed.settings.forced_root_block === false && ed.settings.editable_root != false) {
         fakeRootBlock();
-      }
-    });
-  })();
-
-  /**
-   * @package    JCE
-   * @copyright    Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-   * JCE is free software. This version may have been modified pursuant
-   * to the GNU General Public License, and as distributed it includes or
-   * is derivative of works licensed under the GNU General Public License or
-   * other free or open source software licenses.
-   */
-
-  /*global tinymce:true */
-
-  (function () {
-    tinymce.PluginManager.add('help', function (ed, url) {
-      ed.addCommand('mceHelp', function () {
-        ed.windowManager.open({
-          title: ed.getLang('dlg.help', 'Help'),
-          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-          size: 'mce-modal-landscape-full'
-        });
-      });
-
-      // Register buttons
-      ed.addButton('help', {
-        title: 'dlg.help',
-        cmd: 'mceHelp'
-      });
-    });
-  })();
-
-  /**
-   * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
-   * JCE is free software. This version may have been modified pursuant
-   * to the GNU General Public License, and as distributed it includes or
-   * is derivative of works licensed under the GNU General Public License or
-   * other free or open source software licenses.
-   */
-
-  /*global tinymce:true */
-
-  (function () {
-    var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
-
-    tinymce.PluginManager.add('autolink', function (ed, url) {
-      if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
-        return;
-      }
-
-      if (ed.settings.autolink_pattern) {
-        AutoLinkPattern = ed.settings.autolink_pattern;
-      }
-
-      ed.onAutoLink = new tinymce.util.Dispatcher(this);
-
-      // Add a key down handler
-      ed.onKeyDown.addToTop(function (ed, e) {
-        if (e.keyCode == 13) {
-          return handleEnter(ed);
-        }
-      });
-
-      // Internet Explorer has built-in automatic linking for most cases
-      if (tinymce.isIE) {
-        return;
-      }
-
-      ed.onKeyPress.add(function (ed, e) {
-        if (e.which == 41) {
-          return handleEclipse(ed);
-        }
-      });
-
-      // Add a key up handler
-      ed.onKeyUp.add(function (ed, e) {
-        if (e.keyCode == 32) {
-          return handleSpacebar(ed);
-        }
-      });
-
-      function handleEclipse(ed) {
-        parseCurrentLine(ed, -1, '(');
-      }
-
-      function handleSpacebar(ed) {
-        parseCurrentLine(ed, 0, '');
-      }
-
-      function handleEnter(ed) {
-        parseCurrentLine(ed, -1, '');
-      }
-
-      function parseCurrentLine(editor, endOffset, delimiter) {
-        var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
-
-        function scopeIndex(container, index) {
-          if (index < 0) {
-            index = 0;
-          }
-
-          if (container.nodeType == 3) {
-            var len = container.data.length;
-
-            if (index > len) {
-              index = len;
-            }
-          }
-
-          return index;
-        }
-
-        function setStart(container, offset) {
-          if (container.nodeType != 1 || container.hasChildNodes()) {
-            rng.setStart(container, scopeIndex(container, offset));
-          } else {
-            rng.setStartBefore(container);
-          }
-        }
-
-        function setEnd(container, offset) {
-          if (container.nodeType != 1 || container.hasChildNodes()) {
-            rng.setEnd(container, scopeIndex(container, offset));
-          } else {
-            rng.setEndAfter(container);
-          }
-        }
-
-        // Never create a link when we are inside a link
-        if (editor.selection.getNode().tagName == 'A') {
-          return;
-        }
-
-        // We need at least five characters to form a URL,
-        // hence, at minimum, five characters from the beginning of the line.
-        rng = editor.selection.getRng(true).cloneRange();
-        if (rng.startOffset < 5) {
-          // During testing, the caret is placed between two text nodes.
-          // The previous text node contains the URL.
-          prev = rng.endContainer.previousSibling;
-          if (!prev) {
-            if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
-              return;
-            }
-
-            prev = rng.endContainer.firstChild.nextSibling;
-          }
-
-          len = prev.length;
-          setStart(prev, len);
-          setEnd(prev, len);
-
-          if (rng.endOffset < 5) {
-            return;
-          }
-
-          end = rng.endOffset;
-          endContainer = prev;
-        } else {
-          endContainer = rng.endContainer;
-
-          // Get a text node
-          if (endContainer.nodeType != 3 && endContainer.firstChild) {
-            while (endContainer.nodeType != 3 && endContainer.firstChild) {
-              endContainer = endContainer.firstChild;
-            }
-
-            // Move range to text node
-            if (endContainer.nodeType == 3) {
-              setStart(endContainer, 0);
-              setEnd(endContainer, endContainer.nodeValue.length);
-            }
-          }
-
-          if (rng.endOffset == 1) {
-            end = 2;
-          } else {
-            end = rng.endOffset - 1 - endOffset;
-          }
-        }
-
-        start = end;
-
-        do {
-          // Move the selection one character backwards.
-          setStart(endContainer, end >= 2 ? end - 2 : 0);
-          setEnd(endContainer, end >= 1 ? end - 1 : 0);
-          end -= 1;
-          rngText = rng.toString();
-
-          // Loop until one of the following is found: a blank space, &nbsp;, delimiter, (end-2) >= 0
-        } while (rngText != ' ' && rngText !== '' && rngText.charCodeAt(0) != 160 && (end - 2) >= 0 && rngText != delimiter);
-
-        if (rng.toString() == delimiter || rng.toString().charCodeAt(0) == 160) {
-          setStart(endContainer, end);
-          setEnd(endContainer, start);
-          end += 1;
-        } else if (rng.startOffset === 0) {
-          setStart(endContainer, 0);
-          setEnd(endContainer, start);
-        } else {
-          setStart(endContainer, end);
-          setEnd(endContainer, start);
-        }
-
-        // Exclude last . from word like "www.site.com."
-        text = rng.toString();
-        if (text.charAt(text.length - 1) == '.') {
-          setEnd(endContainer, start - 1);
-        }
-
-        text = rng.toString();
-        matches = text.match(AutoLinkPattern);
-
-        if (matches) {
-          if (matches[1] == 'www.') {
-            matches[1] = 'https://www.';
-          } else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
-            matches[1] = 'mailto:' + matches[1];
-          }
-
-          if (matches[1].indexOf('http') !== -1) {
-            if (!editor.getParam('autolink_url', true)) {
-              return;
-            }
-          }
-
-          if (matches[1].indexOf('mailto:') !== -1) {
-            if (!editor.getParam('autolink_email', true)) {
-              return;
-            }
-          }
-
-          bookmark = editor.selection.getBookmark();
-
-          editor.selection.setRng(rng);
-          editor.execCommand('createlink', false, matches[1] + matches[2]);
-
-          var node = editor.selection.getNode();
-
-          if (editor.settings.default_link_target) {
-            editor.dom.setAttrib(node, 'target', editor.settings.default_link_target);
-          }
-
-          editor.onAutoLink.dispatch(editor, { node: node });
-
-          editor.selection.moveToBookmark(bookmark);
-          editor.nodeChanged();
-        }
       }
     });
   })();
@@ -51495,7 +51240,7 @@
 
                   // shortcode content will be encoded as text, so decode
                   if (editor.settings.code_protect_shortcode) {
-                      // only shortcode-like braces are decoded, so escaped markup in ordinary text stays escaped
+                      // only shortcode-like braces are decoded
                       o.content = o.content.replace(/\{([\w-][\s\S]*?)\}/gi, function (match, content) {
                           return '{' + ed.dom.decode(content) + '}';
                       });
@@ -51534,9 +51279,6 @@
 
                       return content;
                   });
-
-                  // strip any mce:protected comments
-                  o.content = o.content.replace(/<!--mce:protected [\s\S]+?-->/gi, '');
               }
           });
       });
@@ -51593,11 +51335,16 @@
               };
           }
 
+          // a src swap, allowing for whitespace as cleanEventAttribute does
+          function isSrcSwap(val) {
+              return !!val && /^\s*this\.src\s*=/.test(val);
+          }
+
           // convert an image mouseover / mouseout event attribute pair to data attributes
           function convertEventAttributes(attr) {
               var mouseover = attr('onmouseover'), mouseout = attr('onmouseout');
 
-              if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+              if (!isSrcSwap(mouseover)) {
                   return;
               }
 
@@ -51611,7 +51358,7 @@
 
               attr('data-mouseover', mouseover);
 
-              if (!mouseout || mouseout.indexOf('this.src') !== 0) {
+              if (!isSrcSwap(mouseout)) {
                   return;
               }
 
@@ -51749,6 +51496,261 @@
               });
           }
       });
+  })();
+
+  /**
+   * @package    JCE
+   * @copyright    Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
+   */
+
+  /*global tinymce:true */
+
+  (function () {
+    tinymce.PluginManager.add('help', function (ed, url) {
+      ed.addCommand('mceHelp', function () {
+        ed.windowManager.open({
+          title: ed.getLang('dlg.help', 'Help'),
+          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
+          size: 'mce-modal-landscape-full'
+        });
+      });
+
+      // Register buttons
+      ed.addButton('help', {
+        title: 'dlg.help',
+        cmd: 'mceHelp'
+      });
+    });
+  })();
+
+  /**
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @copyright   Copyright 2009, Moxiecode Systems AB
+   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
+   */
+
+  /*global tinymce:true */
+
+  (function () {
+    var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+
+    tinymce.PluginManager.add('autolink', function (ed, url) {
+      if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
+        return;
+      }
+
+      if (ed.settings.autolink_pattern) {
+        AutoLinkPattern = ed.settings.autolink_pattern;
+      }
+
+      ed.onAutoLink = new tinymce.util.Dispatcher(this);
+
+      // Add a key down handler
+      ed.onKeyDown.addToTop(function (ed, e) {
+        if (e.keyCode == 13) {
+          return handleEnter(ed);
+        }
+      });
+
+      // Internet Explorer has built-in automatic linking for most cases
+      if (tinymce.isIE) {
+        return;
+      }
+
+      ed.onKeyPress.add(function (ed, e) {
+        if (e.which == 41) {
+          return handleEclipse(ed);
+        }
+      });
+
+      // Add a key up handler
+      ed.onKeyUp.add(function (ed, e) {
+        if (e.keyCode == 32) {
+          return handleSpacebar(ed);
+        }
+      });
+
+      function handleEclipse(ed) {
+        parseCurrentLine(ed, -1, '(');
+      }
+
+      function handleSpacebar(ed) {
+        parseCurrentLine(ed, 0, '');
+      }
+
+      function handleEnter(ed) {
+        parseCurrentLine(ed, -1, '');
+      }
+
+      function parseCurrentLine(editor, endOffset, delimiter) {
+        var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
+
+        function scopeIndex(container, index) {
+          if (index < 0) {
+            index = 0;
+          }
+
+          if (container.nodeType == 3) {
+            var len = container.data.length;
+
+            if (index > len) {
+              index = len;
+            }
+          }
+
+          return index;
+        }
+
+        function setStart(container, offset) {
+          if (container.nodeType != 1 || container.hasChildNodes()) {
+            rng.setStart(container, scopeIndex(container, offset));
+          } else {
+            rng.setStartBefore(container);
+          }
+        }
+
+        function setEnd(container, offset) {
+          if (container.nodeType != 1 || container.hasChildNodes()) {
+            rng.setEnd(container, scopeIndex(container, offset));
+          } else {
+            rng.setEndAfter(container);
+          }
+        }
+
+        // Never create a link when we are inside a link
+        if (editor.selection.getNode().tagName == 'A') {
+          return;
+        }
+
+        // We need at least five characters to form a URL,
+        // hence, at minimum, five characters from the beginning of the line.
+        rng = editor.selection.getRng(true).cloneRange();
+        if (rng.startOffset < 5) {
+          // During testing, the caret is placed between two text nodes.
+          // The previous text node contains the URL.
+          prev = rng.endContainer.previousSibling;
+          if (!prev) {
+            if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
+              return;
+            }
+
+            prev = rng.endContainer.firstChild.nextSibling;
+          }
+
+          len = prev.length;
+          setStart(prev, len);
+          setEnd(prev, len);
+
+          if (rng.endOffset < 5) {
+            return;
+          }
+
+          end = rng.endOffset;
+          endContainer = prev;
+        } else {
+          endContainer = rng.endContainer;
+
+          // Get a text node
+          if (endContainer.nodeType != 3 && endContainer.firstChild) {
+            while (endContainer.nodeType != 3 && endContainer.firstChild) {
+              endContainer = endContainer.firstChild;
+            }
+
+            // Move range to text node
+            if (endContainer.nodeType == 3) {
+              setStart(endContainer, 0);
+              setEnd(endContainer, endContainer.nodeValue.length);
+            }
+          }
+
+          if (rng.endOffset == 1) {
+            end = 2;
+          } else {
+            end = rng.endOffset - 1 - endOffset;
+          }
+        }
+
+        start = end;
+
+        do {
+          // Move the selection one character backwards.
+          setStart(endContainer, end >= 2 ? end - 2 : 0);
+          setEnd(endContainer, end >= 1 ? end - 1 : 0);
+          end -= 1;
+          rngText = rng.toString();
+
+          // Loop until one of the following is found: a blank space, &nbsp;, delimiter, (end-2) >= 0
+        } while (rngText != ' ' && rngText !== '' && rngText.charCodeAt(0) != 160 && (end - 2) >= 0 && rngText != delimiter);
+
+        if (rng.toString() == delimiter || rng.toString().charCodeAt(0) == 160) {
+          setStart(endContainer, end);
+          setEnd(endContainer, start);
+          end += 1;
+        } else if (rng.startOffset === 0) {
+          setStart(endContainer, 0);
+          setEnd(endContainer, start);
+        } else {
+          setStart(endContainer, end);
+          setEnd(endContainer, start);
+        }
+
+        // Exclude last . from word like "www.site.com."
+        text = rng.toString();
+        if (text.charAt(text.length - 1) == '.') {
+          setEnd(endContainer, start - 1);
+        }
+
+        text = rng.toString();
+        matches = text.match(AutoLinkPattern);
+
+        if (matches) {
+          if (matches[1] == 'www.') {
+            matches[1] = 'https://www.';
+          } else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
+            matches[1] = 'mailto:' + matches[1];
+          }
+
+          if (matches[1].indexOf('http') !== -1) {
+            if (!editor.getParam('autolink_url', true)) {
+              return;
+            }
+          }
+
+          if (matches[1].indexOf('mailto:') !== -1) {
+            if (!editor.getParam('autolink_email', true)) {
+              return;
+            }
+          }
+
+          bookmark = editor.selection.getBookmark();
+
+          editor.selection.setRng(rng);
+          editor.execCommand('createlink', false, matches[1] + matches[2]);
+
+          var node = editor.selection.getNode();
+
+          if (editor.settings.default_link_target) {
+            editor.dom.setAttrib(node, 'target', editor.settings.default_link_target);
+          }
+
+          editor.onAutoLink.dispatch(editor, { node: node });
+
+          editor.selection.moveToBookmark(bookmark);
+          editor.nodeChanged();
+        }
+      }
+    });
   })();
 
   /**
