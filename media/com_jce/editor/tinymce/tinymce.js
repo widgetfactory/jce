@@ -52421,9 +52421,14 @@
           '#e3f2fd'
         ];
 
-        var guidelines = '#787878', visualchars = '#a8a8a8', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
+        var guidelines = '#787878', visualchars = '#a8a8a8', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', caret = '', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
         if (!bodybg) {
+          return;
+        }
+
+        // a transparent background cannot be measured, and is treated as opaque black by getRGBA
+        if (bodybg === 'transparent' || /,\s*0\s*\)$/.test(bodybg)) {
           return;
         }
 
@@ -52451,6 +52456,11 @@
           }
         }
 
+        // the caret is drawn in the text colour, so give it a readable colour of its own if the text is hard to see
+        if (color && !isReadable(color, bodybg, 4.5)) {
+          caret = isReadable('#ffffff', bodybg, 4.5) ? '#ffffff' : '#000000';
+        }
+
         if (guidelines || control) {
           var css = ':root{';
 
@@ -52466,6 +52476,10 @@
           if (control) {
             css += '--mce-control-selection: ' + control + ';';
             css += '--mce-control-selection-bg: ' + controlbg + ';';
+          }
+
+          if (caret) {
+            css += '--mce-caret-color: ' + caret + ';';
           }
 
           css += '}';
