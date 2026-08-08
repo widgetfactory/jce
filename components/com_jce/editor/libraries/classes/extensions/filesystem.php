@@ -184,12 +184,12 @@ class WFFileSystem extends WFExtension
         return 0;
     }
 
-    public function getFiles($path, $filter)
+    public function getFiles($path, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
         return array();
     }
 
-    public function getFolders($path, $filter)
+    public function getFolders($path, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
         return array();
     }
