@@ -1095,6 +1095,13 @@ class JceModelProfile extends AdminModel
             return false;
         }
 
+        // quick file type check
+        if (WFUtility::getExtension($file['name'], true) !== 'xml') {
+            @unlink($file['tmp_name']);
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_INVALID_FILE'), 'error');
+            return false;
+        }
+
         if ($file['error'] || $file['size'] < 1) {
             if (!empty($file['tmp_name'])) {
                 @unlink($file['tmp_name']);
