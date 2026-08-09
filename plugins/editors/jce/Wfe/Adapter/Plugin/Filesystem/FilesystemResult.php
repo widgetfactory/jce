@@ -12,35 +12,61 @@ namespace Wfe\Adapter\Plugin\Filesystem;
 
 \defined('_JEXEC') or die;
 
+/**
+ * Result of a filesystem operation.
+ *
+ * Returned by the write operations (delete, rename, copy, move, upload, createFolder). The browser
+ * reads $state to decide whether the operation succeeded, $message to report a failure, and $path
+ * and $url to describe the item to the client.
+ */
 final class FilesystemResult
 {
-    /*
-     * @var Object type eg: file / folder
+    /**
+     * The item type, files or folders.
+     *
+     * @var string
      */
-
     public $type = 'files';
-    /*
-     * @boolean    Result state
+
+    /**
+     * Whether the operation succeeded.
+     *
+     * @var bool
      */
     public $state = false;
-    /*
-     * @int    Error code
+
+    /**
+     * Error code, when the adapter provides one.
+     *
+     * @var int
      */
     public $code = null;
-    /*
-     * @var Error message
+
+    /**
+     * Error message, shown to the user when the operation fails.
+     *
+     * @var string
      */
     public $message = null;
-    /*
-     * @var File / Folder path
+
+    /**
+     * Path of the resulting file or folder.
+     *
+     * @var string
      */
     public $path = null;
-    /*
-     * @var File / Folder url
+
+    /**
+     * Url of the resulting file or folder.
+     *
+     * @var string
      */
     public $url = null;
-    /*
-     * @var Original Source path
+
+    /**
+     * Original source path, for operations that move or copy an item.
+     *
+     * @var string
      */
     public $source = null;
 

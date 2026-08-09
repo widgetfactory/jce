@@ -15,10 +15,23 @@ namespace Wfe\Adapter\Plugin\Filesystem;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
 
+/**
+ * Base filesystem adapter.
+ *
+ * Defines the contract every filesystem adapter implements and provides safe defaults, so an
+ * adapter only overrides what it supports. The defaults are inert: read methods return empty
+ * values and write methods report success without touching anything, which keeps the browser
+ * working against an adapter that has not implemented an operation.
+ *
+ * Adapters: the local joomla adapter, plus the s3, azure, webdav and server plugins.
+ */
 class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
 {
     /**
      * Constructor activating the default information of the class.
+     *
+     * @param array  $config    Configuration values, merged over the defaults set here.
+     * @param object $container The plugin container.
      */
     public function __construct($config = array(), $container = null)
     {
@@ -106,6 +119,17 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         return 'images';
     }
 
+    /**
+     * Sort a list of items by a property key.
+     *
+     * The key is read from the item, or from its 'properties' array. A leading "-" reverses the
+     * order, eg: "-modified". Sorting is natural and case insensitive.
+     *
+     * @param array  $items The items to sort
+     * @param string $type  The property to sort by, optionally prefixed with "-"
+     *
+     * @return array The sorted items
+     */
     protected static function sortItemsByKey($items, $type)
     {
         $sortable = array();
@@ -127,41 +151,101 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         return $items;
     }
 
+    /**
+     * Convert a relative path to an absolute path.
+     *
+     * @param string $path Relative path
+     *
+     * @return string Absolute path
+     */
     public function toAbsolute($path)
     {
         return $path;
     }
 
+    /**
+     * Convert an absolute path to a relative path.
+     *
+     * @param string $path Absolute path
+     *
+     * @return string Relative path
+     */
     public function toRelative($path)
     {
         return $path;
     }
 
+    /**
+     * Get the total size of a folder in bytes.
+     *
+     * @param string  $path    Folder path
+     * @param boolean $recurse Whether to include subfolders
+     *
+     * @return int Total size in bytes
+     */
     public function getTotalSize($path, $recurse = true)
     {
         return 0;
     }
 
+    /**
+     * Count the files in a folder.
+     *
+     * @param string  $path    Folder path
+     * @param boolean $recurse Whether to include subfolders
+     *
+     * @return int Number of files
+     */
     public function countFiles($path, $recurse = false)
     {
         return 0;
     }
 
+    /**
+     * Get a list of files in a directory.
+     *
+     * @param string $path   Relative directory path
+     * @param string $filter File name filter pattern
+     *
+     * @return array List of file data arrays
+     */
     public function getFiles($path, $filter)
     {
         return array();
     }
 
+    /**
+     * Get a list of folders in a directory.
+     *
+     * @param string $path   Relative directory path
+     * @param string $filter Folder name filter pattern
+     *
+     * @return array List of folder data arrays
+     */
     public function getFolders($path, $filter)
     {
         return array();
     }
 
+    /**
+     * Resolve the directory a path belongs to.
+     *
+     * @param string $path Relative path
+     *
+     * @return string The directory path
+     */
     public function getSourceDir($path)
     {
         return $path;
     }
 
+    /**
+     * Resolve the directory holding a file, or return the path unchanged if it is not a file.
+     *
+     * @param string $path Relative path
+     *
+     * @return string The directory path
+     */
     public function getSourceDirFromFile($path)
     {
         if ($this->is_file($path)) {
@@ -171,41 +255,106 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         return $path;
     }
 
+    /**
+     * Compare two paths for equality.
+     *
+     * Adapters that are case insensitive or that normalise separators override this.
+     *
+     * @param string $needle   The path to find
+     * @param string $haystack The path to compare against
+     *
+     * @return bool True if the paths refer to the same item
+     */
     public function isMatch($needle, $haystack)
     {
         return $needle == $haystack;
     }
 
+    /**
+     * Get the parts of a path.
+     *
+     * @param string $path The path to inspect
+     *
+     * @return array The dirname, basename, extension and filename values
+     */
     public function pathinfo($path)
     {
         return pathinfo($path);
     }
 
+    /**
+     * Delete a file or folder.
+     *
+     * @param string $path Relative path to the item
+     *
+     * @return FilesystemResult|bool The result object, or true when nothing was done
+     */
     public function delete($path)
     {
         return true;
     }
 
+    /**
+     * Create a folder.
+     *
+     * @param string $path Relative path to the parent directory
+     * @param string $new  Name of the folder to create
+     *
+     * @return FilesystemResult|bool The result object, or true when nothing was done
+     */
     public function createFolder($path, $new)
     {
         return true;
     }
 
+    /**
+     * Rename a file or folder within its own directory.
+     *
+     * $dest is a name, not a path. For a file the source extension is appended by the adapter.
+     *
+     * @param string $src  Relative path to the item
+     * @param string $dest The new name, without an extension
+     *
+     * @return FilesystemResult|bool The result object, or true when nothing was done
+     */
     public function rename($src, $dest)
     {
         return true;
     }
 
+    /**
+     * Copy a file or folder into a directory.
+     *
+     * @param string $src  Relative path to the item
+     * @param string $dest Relative path to the destination directory
+     *
+     * @return FilesystemResult|bool The result object, or true when nothing was done
+     */
     public function copy($src, $dest)
     {
         return true;
     }
 
+    /**
+     * Move a file or folder into a directory.
+     *
+     * @param string $src  Relative path to the item
+     * @param string $dest Relative path to the destination directory
+     *
+     * @return FilesystemResult|bool The result object, or true when nothing was done
+     */
     public function move($src, $dest)
     {
         return true;
     }
 
+    /**
+     * Get a folder's properties.
+     *
+     * @param string $path Folder relative path
+     *
+     * @return array Array with a 'properties' key holding the modified date
+     */
     public function getFolderDetails($path)
     {
         return array(
@@ -213,6 +362,15 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         );
     }
 
+    /**
+     * Get a file's properties.
+     *
+     * Image types gain width, height and preview values on top of the standard set.
+     *
+     * @param string $path File relative path
+     *
+     * @return array Array with a 'properties' key holding the size and modified date
+     */
     public function getFileDetails($path)
     {
         $data = array(
@@ -237,6 +395,13 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         return $data;
     }
 
+    /**
+     * Get the pixel dimensions of an image.
+     *
+     * @param string $path File relative path
+     *
+     * @return array Array with 'width' and 'height' keys
+     */
     public function getDimensions($path)
     {
         return array(
@@ -245,36 +410,87 @@ class AbstractFilesystem extends \Wfe\Adapter\Plugin\AbstractPlugin
         );
     }
 
+    /**
+     * Upload a file to the filesystem.
+     *
+     * @param string $method Upload method
+     * @param string $src    Temporary source file path
+     * @param string $dir    Destination directory (relative)
+     * @param string $name   Destination filename
+     *
+     * @return FilesystemResult|bool The result object, or true when nothing was done
+     */
     public function upload($method, $src, $dir, $name)
     {
         return true;
     }
 
+    /**
+     * Check whether a path exists.
+     *
+     * @param string $path Relative path
+     *
+     * @return bool True if the item exists
+     */
     public function exists($path)
     {
         return true;
     }
 
+    /**
+     * Read a file's contents.
+     *
+     * @param string $path Relative file path
+     *
+     * @return string|false The contents, or false on failure
+     */
     public function read($path)
     {
         return '';
     }
 
+    /**
+     * Write data to a file, creating or replacing it.
+     *
+     * @param string $path    Relative file path
+     * @param string $content The data to write
+     *
+     * @return bool True on success
+     */
     public function write($path, $content)
     {
         return true;
     }
 
+    /**
+     * Determine whether the filesystem is on the local server.
+     *
+     * @return bool True for a local filesystem
+     */
     public function isLocal()
     {
         return $this->getConfig('local') === true;
     }
 
+    /**
+     * Check whether a path is a file.
+     *
+     * @param string $path Relative path
+     *
+     * @return bool True if the path is a file
+     */
     public function is_file($path)
     {
         return true;
     }
 
+    /**
+     * Check whether a path is a directory.
+     *
+     * @param string $path Relative path
+     *
+     * @return bool True if the path is a directory
+     */
     public function is_dir($path)
     {
         return true;
