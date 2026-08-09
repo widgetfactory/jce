@@ -1,9 +1,9 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
  * @copyright   Copyright 2009, Moxiecode Systems AB
  * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
- * @license   	GNU General Public License version 2 or later; see LICENSE.txt
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -15,28 +15,43 @@
 (function () {
     var each = ibis.each, BlobCache = ibis.file.BlobCache, Conversions = ibis.file.Conversions, Uuid = ibis.util.Uuid, DOM = ibis.DOM;
 
+    var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+    // characters that are not allowed in a file name
+    var invalidCharacters = /[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g;
+
+    // executable extensions, including those hidden in the name, eg. image.php.jpg
+    var invalidExtensions = /\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i;
+
     var count = 0;
 
-    var uniqueId = function (prefix) {
+    function uniqueId(prefix) {
         return (prefix || 'blobid') + (count++);
-    };
+    }
 
     function isSupportedImage(value) {
-        return /\.(jpg|jpeg|png|gif|webp|avif)$/.test(value);
+        return /\.(jpg|jpeg|png|gif|webp|avif)$/i.test(value);
     }
 
     function getImageExtension(value) {
         if (isSupportedImage(value)) {
-            return value.substring(value.length, value.lastIndexOf('.') + 1);
+            return value.slice(value.lastIndexOf('.') + 1);
         }
 
         return '';
     }
 
-    function uploadHandler(settings, blobInfo, success, failure, progress) {
-        var xhr, formData;
+    function getResponseError(json) {
+        if (json && json.error && json.error.message) {
+            return json.error.message;
+        }
 
-        xhr = new XMLHttpRequest();
+        return 'Invalid JSON response!';
+    }
+
+    function uploadHandler(settings, blobInfo, success, failure, progress) {
+        var xhr = new XMLHttpRequest(), formData = new FormData();
+
         xhr.open('POST', settings.url);
 
         xhr.upload.onprogress = function (e) {
@@ -55,22 +70,20 @@
                 return;
             }
 
-            json = JSON.parse(xhr.responseText);
-
-            if (!json || json.error) {
-                failure(json.error.message || 'Invalid JSON response!');
-                return;
+            try {
+                json = JSON.parse(xhr.responseText);
+            } catch (e) {
+                json = null;
             }
 
-            if (!json.result || !json.result.files) {
-                failure(json.error.message || 'Invalid JSON response!');
+            if (!json || json.error || !json.result || !json.result.files || !json.result.files.length) {
+                failure(getResponseError(json));
                 return;
             }
 
             success(json.result.files[0]);
         };
 
-        formData = new FormData();
         formData.append('file', blobInfo.blob(), blobInfo.filename());
 
         // Add multipart params
@@ -85,70 +98,133 @@
         xhr.send(formData);
     }
 
-    function imageToBlobInfo(blobCache, img, resolve, reject) {
-        var base64, blobInfo;
+    function createBlobInfo(blob, base64) {
+        var blobInfo = BlobCache.create(uniqueId(), blob, base64);
+        BlobCache.add(blobInfo);
 
-        if (img.src.indexOf('blob:') === 0) {
-            blobInfo = blobCache.getByUri(img.src);
+        return blobInfo;
+    }
+
+    function imageToBlobInfo(img) {
+        return new Promise(function (resolve, reject) {
+            var base64, blobInfo;
+
+            if (img.src.indexOf('blob:') === 0) {
+                blobInfo = BlobCache.getByUri(img.src);
+
+                if (blobInfo) {
+                    resolve({ image: img, blobInfo: blobInfo });
+                    return;
+                }
+
+                Conversions.uriToBlob(img.src).then(function (blob) {
+                    return Conversions.blobToDataUri(blob).then(function (dataUri) {
+                        var data = Conversions.parseDataUri(dataUri).data;
+
+                        resolve({ image: img, blobInfo: createBlobInfo(blob, data) });
+                    });
+                }, reject);
+
+                return;
+            }
+
+            base64 = Conversions.parseDataUri(img.src).data;
+
+            blobInfo = BlobCache.findFirst(function (cachedBlobInfo) {
+                return cachedBlobInfo.base64() === base64;
+            });
 
             if (blobInfo) {
-                resolve({
-                    image: img,
-                    blobInfo: blobInfo
-                });
-            } else {
-                Conversions.uriToBlob(img.src).then(function (blob) {
-                    Conversions.blobToDataUri(blob).then(function (dataUri) {
-                        base64 = Conversions.parseDataUri(dataUri).data;
-                        blobInfo = blobCache.create(uniqueId(), blob, base64);
-                        blobCache.add(blobInfo);
+                resolve({ image: img, blobInfo: blobInfo });
+                return;
+            }
 
-                        resolve({
-                            image: img,
-                            blobInfo: blobInfo
-                        });
-                    });
-                }, function (err) {
-                    reject(err);
+            Conversions.uriToBlob(img.src).then(function (blob) {
+                resolve({ image: img, blobInfo: createBlobInfo(blob, base64) });
+            }, reject);
+        });
+    }
+
+    /**
+     * Convert each image to a blob, re-using the result for images that share a source. Images that
+     * cannot be converted resolve as null.
+     * @param {Array} images
+     * @returns {Promise}
+     */
+    function processImages(images) {
+        var cache = {};
+
+        var promises = ibis.map(images, function (img) {
+            if (!cache[img.src]) {
+                cache[img.src] = imageToBlobInfo(img)['catch'](function () {
+                    return null;
                 });
             }
 
-            return;
-        }
+            // a cached result refers to the first image processed, so resolve with the actual image
+            return cache[img.src].then(function (result) {
+                if (!result) {
+                    return null;
+                }
 
-        base64 = Conversions.parseDataUri(img.src).data;
-        blobInfo = blobCache.findFirst(function (cachedBlobInfo) {
-            return cachedBlobInfo.base64() === base64;
+                return { image: img, blobInfo: result.blobInfo };
+            });
         });
 
-        if (blobInfo) {
-            resolve({
-                image: img,
-                blobInfo: blobInfo
-            });
-        } else {
-            Conversions.uriToBlob(img.src).then(function (blob) {
-                blobInfo = blobCache.create(uniqueId(), blob, base64);
-                blobCache.add(blobInfo);
-
-                resolve({
-                    image: img,
-                    blobInfo: blobInfo
-                });
-            }, function (err) {
-                reject(err);
-            });
-        }
+        return Promise.all(promises);
     }
 
-    ibis.PluginManager.add('blobupload', function (ed, url) {
+    function isUploadableImage(img) {
+        var src = img.getAttribute('src');
+
+        if (img.hasAttribute('data-mce-bogus') || img.hasAttribute('data-mce-placeholder') || img.hasAttribute('data-mce-upload-marker')) {
+            return false;
+        }
+
+        if (!src || src == transparentSrc) {
+            return false;
+        }
+
+        return src.indexOf('blob:') === 0 || src.indexOf('data:') === 0;
+    }
+
+    ibis.PluginManager.add('blobupload', function (ed) {
         var uploaders = [];
+
+        // the source of each pasted image that is waiting to be uploaded
+        var pending = {};
+
+        function hasPendingImages() {
+            for (var src in pending) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * Remove images that are waiting to be uploaded from an undo level. The blob or data uri they
+         * use is only valid while the editor is open, so an undo must not be able to restore one.
+         * @param {String} content
+         * @returns {String}
+         */
+        function removePendingImages(content) {
+            if (!hasPendingImages()) {
+                return content;
+            }
+
+            // match the whole tag, allowing for a ">" inside an attribute value
+            return content.replace(/<img(?:[^>"']|"[^"]*"|'[^']*')*>/gi, function (image) {
+                var match = /\ssrc="([^"]*)"/i.exec(image);
+
+                return match && pending[match[1]] ? '' : image;
+            });
+        }
 
         ed.onPreInit.add(function () {
             // get list of supported plugins
-            each(ed.plugins, function (plg, name) {
+            each(ed.plugins, function (plg) {
                 if (ibis.is(plg.getUploadConfig, 'function')) {
-
                     var data = plg.getUploadConfig();
 
                     if (data.inline && data.filetypes) {
@@ -158,13 +234,39 @@
             });
         });
 
+        // find the images in the editor content that the marker refers to
+        function getMarkerImages(marker) {
+            return ibis.grep(ed.dom.select('img[src]'), function (image) {
+                return image.src == marker.src;
+            });
+        }
+
         function findMarker(marker) {
+            return getMarkerImages(marker)[0];
+        }
+
+        function removeMarker(marker) {
+            each(getMarkerImages(marker), function (image) {
+                ed.selection.select(image);
+                ed.execCommand('mceRemoveNode');
+
+                var node = ed.selection.getNode();
+
+                // restore bogus break
+                if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
+                    ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
+                }
+            });
+        }
+
+        function getUploader(blobInfo) {
             var found;
 
-            each(ed.dom.select('img[src]'), function (image) {
-                if (image.src == marker.src) {
-                    found = image;
+            each(uploaders, function (instance) {
+                var url = instance.getUploadURL({ name: blobInfo.filename() });
 
+                if (url) {
+                    found = { instance: instance, url: url };
                     return false;
                 }
             });
@@ -172,162 +274,145 @@
             return found;
         }
 
-        function removeMarker(marker) {
-            each(ed.dom.select('img[src]'), function (image) {
-                if (image.src == marker.src) {
-                    ed.selection.select(image);
-                    ed.execCommand('mceRemoveNode');
+        function createDialogContent() {
+            var html = '' +
+                '<div class="mceForm">' +
+                '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
+                '<div class="mceModalRow">' +
+                '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
+                '   <div class="mceModalControl mceModalControlAppend">' +
+                '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
+                '       <select id="' + ed.id + '_blob_mimetype">' +
+                '           <option value="jpeg">jpeg</option>' +
+                '           <option value="png">png</option>' +
+                '       </select>' +
+                '   </div>' +
+                '</div>' +
+                '<div class="mceModalRow">' +
+                '   <label for="' + ed.id + '_blob_quality">' + ed.getLang('dlg.quality', 'Quality') + '</label>' +
+                '   <div class="mceModalControl">' +
+                '       <select id="' + ed.id + '_blob_quality" class="mce-flex-25">';
 
-                    var node = ed.selection.getNode();
+            each([100, 90, 80, 70, 60, 50, 40, 30, 20, 10], function (value) {
+                html += '<option value="' + value + '">' + value + '</option>';
+            });
 
-                    // restore bogus break
-                    if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
-                        ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
-                    }
-                }
+            html += '' +
+                '       </select>' +
+                '       <span role="presentation">%</span>' +
+                '   </div>' +
+                '</div>' +
+                '</div>';
+
+            return html;
+        }
+
+        function showUploadError(message) {
+            ed.windowManager.alert({
+                text: message,
+                title: ed.getLang('upload.error', 'Upload Error')
             });
         }
 
-        function processImages(images) {
-            var cachedPromises = {};
+        // replace the marker with the element created by the uploader
+        function replaceMarker(uploader, data) {
+            var elm = uploader.insertUploadedFile(data);
 
-            var promises = ibis.map(images, function (img) {
-                var newPromise;
+            if (!elm || elm.nodeName !== 'IMG') {
+                return;
+            }
 
-                if (cachedPromises[img.src]) {
-                    // Since the cached promise will return the cached image
-                    // We need to wrap it and resolve with the actual image
-                    return new Promise(function (resolve) {
-                        cachedPromises[img.src].then(function (imageInfo) {
-                            if (typeof imageInfo === 'string') { // error apparently
-                                return imageInfo;
-                            }
-                            resolve({
-                                image: img,
-                                blobInfo: imageInfo.blobInfo
-                            });
-                        });
-                    });
-                }
+            // the marker is selected so that it is replaced by the inserted content. An undo level
+            // must not be added here as it would store the marker and restore it on undo
+            ed.selection.select(data.marker);
 
-                newPromise = new Promise(function (resolve, reject) {
-                    imageToBlobInfo(BlobCache, img, resolve, reject);
-                }).then(function (result) {
-                    delete cachedPromises[result.image.src];
-                    return result;
-                })['catch'](function (error) {
-                    delete cachedPromises[img.src];
-                    return error;
-                });
+            elm.setAttribute('data-mce-tmp', '1');
 
-                cachedPromises[img.src] = newPromise;
+            ed.execCommand('mceInsertContent', false, ed.dom.getOuterHTML(elm));
 
-                return newPromise;
+            each(ed.dom.select('[data-mce-tmp]'), function (node) {
+                ed.selection.select(node);
+                node.removeAttribute('data-mce-tmp');
             });
-
-            return Promise.all(promises);
         }
-
-        ed.onInit.add(function () {
-            ed.onPasteBeforeInsert.add(function (ed, o) {
-                var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-                var node = ed.dom.create('div', 0, o.content), images = ibis.grep(ed.dom.select('img[src]', node), function (img) {
-                    var src = img.getAttribute('src');
-
-                    if (img.hasAttribute('data-mce-bogus')) {
-                        return false;
-                    }
-
-                    if (img.hasAttribute('data-mce-placeholder')) {
-                        return false;
-                    }
-
-                    if (img.hasAttribute('data-mce-upload-marker')) {
-                        return false;
-                    }
-
-                    if (!src || src == transparentSrc) {
-                        return false;
-                    }
-
-                    if (src.indexOf('blob:') === 0) {
-                        return true;
-                    }
-
-                    if (src.indexOf('data:') === 0) {
-                        return true;
-                    }
-
-                    return false;
-                });
-
-                if (images.length) {
-                    var promises = [];
-
-                    processImages(images).then(function (result) {
-                        each(result, function (item) {
-                            if (typeof item == 'string') {
-                                return;
-                            }
-
-                            ed.selection.select(findMarker(item.image));
-                            ed.selection.scrollIntoView();
-
-                            promises.push(uploadPastedImage(item.image, item.blobInfo));
-                        });
-                    });
-
-                    Promise.all(promises).then();
-                }
-            });
-        });
 
         function uploadPastedImage(marker, blobInfo) {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve) {
                 // no suitable uploaders, remove blob
                 if (!uploaders.length) {
                     removeMarker(marker);
-
                     return resolve();
                 }
 
-                var html = '' +
-                    '<div class="mceForm">' +
-                    '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
-                    '<div class="mceModalRow">' +
-                    '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
-                    '   <div class="mceModalControl mceModalControlAppend">' +
-                    '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
-                    '       <select id="' + ed.id + '_blob_mimetype">' +
-                    '           <option value="jpeg">jpeg</option>' +
-                    '           <option value="png">png</option>' +
-                    '       </select>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<div class="mceModalRow">' +
-                    '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.quality', 'Quality') + '</label>' +
-                    '   <div class="mceModalControl">' +
-                    '       <select id="' + ed.id + '_blob_quality" class="mce-flex-25">' +
-                    '           <option value="100">100</option>' +
-                    '           <option value="90">90</option>' +
-                    '           <option value="80">80</option>' +
-                    '           <option value="70">70</option>' +
-                    '           <option value="60">60</option>' +
-                    '           <option value="50">50</option>' +
-                    '           <option value="40">40</option>' +
-                    '           <option value="30">30</option>' +
-                    '           <option value="20">20</option>' +
-                    '           <option value="10">10</option>' +
-                    '       </select>' +
-                    '       <span role="presentation">%</span>' +
-                    '   </div>' +
-                    '</div>' +
-                    '</div>';
+                function cancel() {
+                    removeMarker(marker);
+                    resolve();
+                }
+
+                function submit() {
+                    var filename = DOM.getValue(ed.id + '_blob_input');
+
+                    if (!filename) {
+                        return cancel();
+                    }
+
+                    // remove some common characters
+                    filename = filename.replace(invalidCharacters, '');
+
+                    if (invalidExtensions.test(filename)) {
+                        showUploadError(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                        return cancel();
+                    }
+
+                    var uploader = getUploader(blobInfo);
+
+                    if (!uploader) {
+                        return cancel();
+                    }
+
+                    var mimetype = DOM.getValue(ed.id + '_blob_mimetype') || getImageExtension(blobInfo.filename()) || 'jpeg';
+                    var quality = DOM.getValue(ed.id + '_blob_quality') || 100;
+
+                    var props = {
+                        method: 'upload',
+                        id: Uuid.uuid('wf_'),
+                        inline: 1,
+                        name: filename + '.' + mimetype,
+                        url: uploader.url + '&' + ed.settings.query,
+                        mimetype: 'image/' + mimetype,
+                        quality: quality
+                    };
+
+                    var image = findMarker(marker);
+
+                    ed.setProgressState(true);
+
+                    uploadHandler(props, blobInfo, function (data) {
+                        if (image) {
+                            data.marker = image;
+
+                            replaceMarker(uploader.instance, data);
+
+                            ed.dom.remove(image);
+                        }
+
+                        ed.setProgressState(false);
+
+                        win.close();
+
+                        return resolve();
+                    }, function (error) {
+                        showUploadError(error);
+
+                        ed.setProgressState(false);
+
+                        return resolve();
+                    }, function () { });
+                }
 
                 var win = ed.windowManager.open({
                     title: ed.getLang('dlg.name', 'Name'),
-                    content: html,
+                    content: createDialogContent(),
                     size: 'mce-modal-landscape-small',
                     buttons: [
                         {
@@ -337,114 +422,66 @@
                         {
                             title: ed.getLang('submit', 'Submit'),
                             id: 'submit',
-                            onclick: function (e) {
-                                var filename = DOM.getValue(ed.id + '_blob_input');
-
-                                if (!filename) {
-                                    removeMarker(marker);
-                                    return resolve();
-                                }
-
-                                // remove some common characters
-                                filename = filename.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
-
-                                // check for extension in file name, eg. image.php.jpg
-                                if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
-                                    ed.windowManager.alert({
-                                        text: ed.getLang('upload.file_extension_error', 'File type not supported'),
-                                        title: ed.getLang('upload.error', 'Upload Error')
-                                    });
-
-                                    removeMarker(marker);
-                                    return resolve();
-                                }
-
-                                var url, uploader;
-
-                                each(uploaders, function (instance) {
-                                    if (!url) {
-                                        url = instance.getUploadURL({ name: blobInfo.filename() });
-
-                                        if (url) {
-                                            uploader = instance;
-                                            return false;
-                                        }
-                                    }
-                                });
-
-                                if (!url) {
-                                    removeMarker(marker);
-                                    return resolve();
-                                }
-
-                                var ext = getImageExtension(blobInfo.filename()) || 'jpeg';
-
-                                var quality = DOM.getValue(ed.id + '_blob_quality') || 100;
-                                var mimetype = DOM.getValue(ed.id + '_blob_mimetype') || ext;
-
-                                var props = {
-                                    method: 'upload',
-                                    id: Uuid.uuid('wf_'),
-                                    inline: 1,
-                                    name: filename,
-                                    url: url + '&' + ed.settings.query,
-                                    mimetype: 'image/' + mimetype,
-                                    quality: quality
-                                };
-
-                                var images = ibis.grep(ed.dom.select('img[src]'), function (image) {
-                                    return image.src == marker.src;
-                                });
-
-                                ed.setProgressState(true);
-
-                                uploadHandler(props, blobInfo, function (data) {
-                                    data.marker = images[0];
-
-                                    var elm = uploader.insertUploadedFile(data);
-
-                                    if (elm) {
-                                        ed.undoManager.add();
-                                        // replace marker with new element
-                                        ed.dom.replace(elm, images[0]);
-                                        // select new image
-                                        ed.selection.select(elm);
-                                    }
-
-                                    ed.setProgressState(false);
-
-                                    win.close();
-
-                                    return resolve();
-
-                                }, function (error) {
-
-                                    ed.windowManager.alert({
-                                        text: error,
-                                        title: ed.getLang('upload.error', 'Upload Error')
-                                    });
-
-                                    ed.setProgressState(false);
-
-                                    return resolve();
-                                }, function () { });
-                            },
+                            onclick: submit,
                             classes: 'primary'
                         }
                     ],
                     open: function () {
-                        //DOM.select('input + span', this.elm)[0].innerText = '.' + getImageExtension(blobInfo.filename());
-
                         window.setTimeout(function () {
                             DOM.get(ed.id + '_blob_input').focus();
                         }, 10);
                     },
-                    close: function () {
-                        removeMarker(marker);
-                        return resolve();
-                    }
+                    close: cancel
                 });
             });
         }
+
+        ed.onInit.add(function () {
+            // the paste that inserts the image stores it in an undo level, so it is stripped out here
+            ed.undoManager.onBeforeAdd.add(function (um, level) {
+                level.content = removePendingImages(level.content);
+            });
+
+            ed.onPasteBeforeInsert.add(function (ed, o) {
+                var node = ed.dom.create('div', 0, o.content);
+                var images = ibis.grep(ed.dom.select('img[src]', node), isUploadableImage);
+
+                if (!images.length) {
+                    return;
+                }
+
+                // flag the images before they are pasted, so that they are kept out of the undo level
+                each(images, function (img) {
+                    pending[img.getAttribute('src')] = true;
+                });
+
+                processImages(images).then(function (result) {
+                    // upload in sequence so that only one dialog is open at a time
+                    return result.reduce(function (promise, item, index) {
+                        // the image has been uploaded, removed or could not be converted
+                        function done() {
+                            delete pending[images[index].getAttribute('src')];
+                        }
+
+                        return promise.then(function () {
+                            if (!item) {
+                                return;
+                            }
+
+                            var image = findMarker(item.image);
+
+                            if (!image) {
+                                return;
+                            }
+
+                            ed.selection.select(image);
+                            ed.selection.scrollIntoView();
+
+                            return uploadPastedImage(item.image, item.blobInfo);
+                        }).then(done, done);
+                    }, Promise.resolve());
+                });
+            });
+        });
     });
 })();
