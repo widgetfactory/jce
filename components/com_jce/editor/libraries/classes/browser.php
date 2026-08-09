@@ -542,6 +542,65 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
+     * Check a file name is not blocked and its extension is one the profile allows.
+     *
+     * Public so the editor plugins can apply the same gate to names they handle themselves.
+     *
+     * @param string $path  The path or name to check.
+     * @param string $error The message prefix for thrown exceptions.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If the name is blocked or the type is not allowed.
+     */
+    public function checkFileName($path, $error = 'Action Failed')
+    {
+        $allowed = (array) $this->getFileTypes('array');
+
+        if (WFUtility::validateFileName(WFUtility::mb_basename($path), $allowed) === false) {
+            throw new InvalidArgumentException($error . ': The file name is invalid.');
+        }
+
+        $ext = WFUtility::getExtension($path, true);
+
+        if (!empty($allowed) && in_array($ext, $allowed, true) === false) {
+            throw new InvalidArgumentException($error . ': Invalid file type.');
+        }
+    }
+
+    /**
+     * Decode and validate a path from a request, optionally resolving it to the directory store.
+     *
+     * Every entry point receives a url encoded, possibly prefixed relative path. This applies
+     * the standard sequence: decode, reject traversal and invalid characters, then resolve the
+     * prefix to a real path, eg: abcdef:stories => images/stories
+     *
+     * @param string $path    The raw path from the request.
+     * @param bool   $resolve Whether to resolve the path to the directory store.
+     *
+     * Public so the media manager plugins can validate a path before using it.
+     *
+     * @return string The decoded, validated path.
+     *
+     * @throws InvalidArgumentException If the path fails validation.
+     */
+    public function preparePath($path, $resolve = true)
+    {
+        // decode and cast as string
+        $path = (string) rawurldecode($path);
+
+        // check path
+        WFUtility::checkPath($path);
+
+        if ($resolve) {
+            // extract the path from the complex path, removing the prefix
+            $path = $this->resolvePath($path);
+        }
+
+        return $path;
+    }
+
+    /**
      * Return the default upload/browse path (first store entry, in "prefix:" form).
      *
      * @return string Path prefix with trailing colon.
@@ -563,19 +622,6 @@ class WFFileBrowser extends CMSObject
     private function getDirectoryStore()
     {
         $filesystem = $this->getFileSystem();
-
-        // If Allow Root is enabled, return a single blank/root entry
-        if (empty($filesystem->getRootDir())) {
-            $hash = md5('__allow_root_access__');
-
-            return array(
-                $hash => array(
-                    'path'   => '',
-                    'label'  => '',
-                    'prefix' => $hash,
-                )
-            );
-        }
 
         $dir = (array) $this->get('dir');
 
@@ -879,6 +925,11 @@ class WFFileBrowser extends CMSObject
             return true;
         }
 
+        // the root sits above every filter path, so it is never accessible once filters are set
+        if (empty($path)) {
+            return false;
+        }
+
         $allowFilters = [];
         $denyFilters = [];
 
@@ -917,10 +968,9 @@ class WFFileBrowser extends CMSObject
             // process path for variables, text case etc.
             $this->processPath($filter);
 
-            // Allow if path is empty (root ancestor), exact match, an ancestor of the
-            // filter (so the user can navigate into it), or a descendant of the filter.
+            // Allow on an exact match, an ancestor of the filter (so the user can
+            // navigate into it), or a descendant of the filter.
             if (
-                empty($path) ||
                 $path === $filter ||
                 strpos($filter, $path . '/') === 0 ||
                 strpos($path, $filter . '/') === 0
@@ -932,11 +982,6 @@ class WFFileBrowser extends CMSObject
 
         if ($access === false) {
             return false;
-        }
-
-        // path is empty so no deny filters applied
-        if (empty($path)) {
-            return true;
         }
 
         // explode path to array for deny filter matching
@@ -1022,9 +1067,7 @@ class WFFileBrowser extends CMSObject
                 return false;
             }
 
-            $path = dirname($item['id']);
-
-            return $this->checkPathAccess($path);
+            return $this->checkPathAccess(WFUtility::mb_dirname($item['id']));
         });
 
         return $list;
@@ -1063,6 +1106,41 @@ class WFFileBrowser extends CMSObject
         });
 
         return $list;
+    }
+
+    /**
+     * Check a search result is valid.
+     *
+     * @param array  $item The result item, with a resolved 'path' value.
+     * @param string $type The item type, files or folders.
+     *
+     * @return bool True if the item may be listed.
+     */
+    private function checkSearchItem($item, $type)
+    {
+        try {
+            WFUtility::checkName($item['name']);
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
+
+        if ($type === 'files') {
+            $allowed = (array) $this->getFileTypes('array');
+
+            if (WFUtility::validateFileName($item['name'], $allowed) === false) {
+                return false;
+            }
+
+            $ext = WFUtility::getExtension($item['name'], true);
+
+            if (!empty($allowed) && in_array($ext, $allowed, true) === false) {
+                return false;
+            }
+
+            return $this->checkPathAccess(WFUtility::mb_dirname($item['path']));
+        }
+
+        return $this->checkPathAccess($item['path']);
     }
 
     /**
@@ -1108,8 +1186,7 @@ class WFFileBrowser extends CMSObject
      */
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
-        $path = rawurldecode($path);
-        WFUtility::checkPath($path);
+        $path = $this->preparePath($path, false);
 
         $result = array(
             'folders' => array(),
@@ -1224,6 +1301,11 @@ class WFFileBrowser extends CMSObject
             // trim leading and trailing slash
             $source = trim($source, '/');
 
+            // check access
+            if (!$this->checkPathAccess($source)) {
+                continue;
+            }
+
             $list = $filesystem->searchItems($source, $filter, $filetypes, $sort, $depth);
 
             $items = array_merge($list['folders'], $list['files']);
@@ -1240,10 +1322,14 @@ class WFFileBrowser extends CMSObject
                     $item['id'] = trim($item['id'], '/');
                 }
 
+                $item['path'] = WFUtility::makePath($storeItem['path'], $item['id']);
+
+                if ($this->checkSearchItem($item, $type) === false) {
+                    continue;
+                }
+
                 if ($type === 'files') {
                     $item['classes'] = '';
-
-                    $item['path'] = WFUtility::makePath($storeItem['path'], $item['id']);
 
                     if (empty($item['properties'])) {
                         $item['properties'] = $filesystem->getFileDetails($item);
@@ -1251,8 +1337,6 @@ class WFFileBrowser extends CMSObject
                 }
 
                 if ($type === 'folders') {
-                    $item['path'] = WFUtility::makePath($storeItem['path'], $item['id']);
-
                     if (empty($item['properties'])) {
                         $item['properties'] = $filesystem->getFolderDetails($item);
                     }
@@ -1304,11 +1388,8 @@ class WFFileBrowser extends CMSObject
      */
     public function getItems($source, $limit = 25, $start = 0, $filter = '', $sort = '')
     {
-        // decode path
-        $source = rawurldecode($source);
-
-        // check if source is a valid path;
-        WFUtility::checkPath($source);
+        // decode and check the path, the store machinery below does its own prefix parsing
+        $source = $this->preparePath($source, false);
 
         $filesystem = $this->getFileSystem();
 
@@ -1503,9 +1584,7 @@ class WFFileBrowser extends CMSObject
      */
     public function getTreeItem($path = "")
     {
-        $path = rawurldecode($path);
-
-        WFUtility::checkPath($path);
+        $path = $this->preparePath($path, false);
 
         $path = trim($path, '/');
 
@@ -1594,10 +1673,8 @@ class WFFileBrowser extends CMSObject
      */
     public function getTree($path = '')
     {
-        // decode path
-        $path = rawurldecode($path);
-
-        WFUtility::checkPath($path);
+        // decode and check the path, getTreeItems resolves it itself
+        $path = $this->preparePath($path, false);
 
         $result = $this->getTreeItems($path);
 
@@ -1699,12 +1776,17 @@ class WFFileBrowser extends CMSObject
      */
     public function getFolderDetails($dir)
     {
-        WFUtility::checkPath($dir);
+        $path = $this->preparePath($dir);
+
+        // check access
+        if (!$this->checkPathAccess($path)) {
+            throw new InvalidArgumentException('Action Failed: Access to the target directory is restricted');
+        }
 
         $filesystem = $this->getFileSystem();
 
         // get array with folder date and content count eg: array('date'=>'00-00-000', 'folders'=>1, 'files'=>2);
-        return $filesystem->getFolderDetails($dir);
+        return $filesystem->getFolderDetails($path);
     }
 
     /**
@@ -1715,12 +1797,21 @@ class WFFileBrowser extends CMSObject
      */
     public function getFileDetails($file)
     {
-        WFUtility::checkPath($file);
+        $file = $this->preparePath($file, false);
+
+        $this->checkFileName($file);
+
+        $path = $this->resolvePath($file);
+
+        // check access
+        if (!$this->checkPathAccess(WFUtility::mb_dirname($path))) {
+            throw new InvalidArgumentException('Action Failed: Access to the target directory is restricted');
+        }
 
         $filesystem = $this->getFileSystem();
 
         // get array with folder date and content count eg: array('date'=>'00-00-000', 'folders'=>1, 'files'=>2);
-        return $filesystem->getFileDetails($file);
+        return $filesystem->getFileDetails($path);
     }
 
     /**
@@ -1961,7 +2052,7 @@ class WFFileBrowser extends CMSObject
      * @return true  Always returns true on success.
      * @throws InvalidArgumentException On any validation failure.
      */
-    private function validateUploadedFile($file)
+    public function validateUploadedFile($file)
     {
         // check the POST data array
         if (empty($file) || empty($file['tmp_name'])) {
@@ -2157,7 +2248,7 @@ class WFFileBrowser extends CMSObject
             if ((int) $upload['add_random'] === 1) {
                 $name = WFUtility::truncateName($name, $ext, $limit - strlen($random) - 1) . '_' . $random;
 
-            // randomize the entire file name
+                // randomize the entire file name
             } elseif ((int) $upload['add_random'] === 2) {
                 $name = $random;
             }
@@ -2232,6 +2323,55 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
+     * Check that an item exists, that the feature is permitted for its type, and that the
+     * directory containing it is accessible.
+     *
+     * Files are checked against their parent directory, as the access filters are directory
+     * based. Folders are checked against themselves. Files are additionally gated on the
+     * profile's allowed file types so blocked extensions cannot be operated on.
+     *
+     * @param string $item   The resolved path of the item.
+     * @param string $action The feature to check, eg: delete, rename, move.
+     * @param string $error  The message prefix for thrown exceptions, eg: Delete Failed.
+     * @param string $scope  The directory noun used in the access message, target or source.
+     *
+     * @return string The directory the access check was performed against.
+     *
+     * @throws Exception                If the feature is not permitted for the item type.
+     * @throws InvalidArgumentException If the item does not exist or access is restricted.
+     */
+    private function checkItemAccess($item, $action, $error, $scope = 'target')
+    {
+        $filesystem = $this->getFileSystem();
+
+        if ($filesystem->is_file($item)) {
+            if ($this->checkFeature($action, 'file') === false) {
+                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            }
+
+            $this->checkFileName($item, $error);
+
+            // the filters are directory based, so a file is checked against its parent
+            $path = WFUtility::mb_dirname($item);
+        } elseif ($filesystem->is_dir($item)) {
+            if ($this->checkFeature($action, 'folder') === false) {
+                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            }
+
+            $path = $item;
+        } else {
+            throw new InvalidArgumentException($error . ': Item does not exist.');
+        }
+
+        // check access
+        if (!$this->checkPathAccess($path)) {
+            throw new InvalidArgumentException($error . ': Access to the ' . $scope . ' directory is restricted');
+        }
+
+        return $path;
+    }
+
+    /**
      * Delete one or more files or folders.
      *
      * @param  string $items Comma-separated list of relative paths to delete.
@@ -2250,48 +2390,9 @@ class WFFileBrowser extends CMSObject
         $items = explode(',', rawurldecode((string) $items));
 
         foreach ($items as $item) {
-            // decode and cast as string
-            $item = (string) rawurldecode($item);
+            $item = $this->preparePath($item);
 
-            // check path
-            WFUtility::checkPath($item);
-
-            $item = $this->resolvePath($item);
-
-            if ($filesystem->is_file($item)) {
-                if ($this->checkFeature('delete', 'file') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-                }
-
-                // check extension is allowed and the name is not blocked (executable extensions etc.).
-                // Pass the profile's allowed types so svg/html/htm stay operable when the profile
-                // permits them (matches the listing gate in getFiles()).
-                $ext     = WFUtility::getExtension($item, true);
-                $allowed = (array) $this->getFileTypes('array');
-
-                if (WFUtility::validateFileName(WFUtility::mb_basename($item), $allowed) === false) {
-                    throw new InvalidArgumentException('Delete Failed: The file name is invalid.');
-                }
-
-                if (is_array($allowed) && !empty($allowed) && in_array($ext, $allowed) === false) {
-                    throw new InvalidArgumentException('Delete Failed: Invalid file extension.');
-                }
-
-                $path = $item;
-            } elseif ($filesystem->is_dir($item)) {
-                if ($this->checkFeature('delete', 'folder') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-                }
-
-                $path = dirname($item);
-            } else {
-                throw new InvalidArgumentException('Delete Failed: Item does not exist.');
-            }
-
-            // check access
-            if (!$this->checkPathAccess($path)) {
-                throw new InvalidArgumentException('Delete Failed: Access to the target directory is restricted');
-            }
+            $this->checkItemAccess($item, 'delete', 'Delete Failed');
 
             $result = $filesystem->delete($item);
 
@@ -2314,32 +2415,23 @@ class WFFileBrowser extends CMSObject
 
     /**
      * Rename a file or folder.
-     * Source and destination are read via func_get_args() for legacy compatibility.
+     * @param string $source      The relative path of the item to rename.
+     * @param string $destination The new name for the item.
      *
      * @return array Result array with renamed item data or error messages.
      * @throws Exception              If the rename feature is not permitted.
      * @throws InvalidArgumentException On path or access validation failure.
      */
-    public function renameItem()
+    public function renameItem($source, $destination)
     {
         // check for feature access
         if (!$this->checkFeature('rename', 'folder') && !$this->checkFeature('rename', 'file')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
 
-        $args = func_get_args();
-
-        $source = array_shift($args);
-        $destination = array_shift($args);
-
-        // decode and cast as string
-        $source = (string) rawurldecode($source);
-
-        // decode and cast as string
-        $destination = (string) rawurldecode($destination);
-
-        WFUtility::checkPath($source);
-        WFUtility::checkPath($destination);
+        // the source is resolved below, after the destination name has been validated
+        $source = $this->preparePath($source, false);
+        $destination = $this->preparePath($destination, false);
 
         $allowed = (array) $this->getFileTypes('array');
 
@@ -2361,33 +2453,7 @@ class WFFileBrowser extends CMSObject
 
         $filesystem = $this->getFileSystem();
 
-        if ($filesystem->is_file($source)) {
-            if ($this->checkFeature('rename', 'file') === false) {
-                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-            }
-
-            // validate extension against allowed list
-            $ext = WFUtility::getExtension($source, true);
-
-            if (!empty($allowed) && in_array($ext, $allowed) === false) {
-                throw new InvalidArgumentException('Rename Failed: Invalid file extension.');
-            }
-
-            $path = dirname($source);
-        } elseif ($filesystem->is_dir($source)) {
-            if ($this->checkFeature('rename', 'folder') === false) {
-                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-            }
-
-            $path = $source;
-        } else {
-            throw new InvalidArgumentException('Rename Failed: Item does not exist.');
-        }
-
-        // check access
-        if (!$this->checkPathAccess($path)) {
-            throw new InvalidArgumentException('Rename Failed: Access to the target directory is restricted');
-        }
+        $this->checkItemAccess($source, 'rename', 'Rename Failed');
 
         $result = $filesystem->rename($source, $destination);
 
@@ -2435,14 +2501,7 @@ class WFFileBrowser extends CMSObject
 
         $items = explode(',', rawurldecode((string) $items));
 
-        // decode and cast as string
-        $destination = (string) rawurldecode($destination);
-
-        // check destination path
-        WFUtility::checkPath($destination);
-
-        // extract the path from the complex path, removing the prefix
-        $destination = $this->resolvePath($destination);
+        $destination = $this->preparePath($destination);
 
         if (empty($destination)) {
             throw new InvalidArgumentException('Copy Failed:Invalid destination path.');
@@ -2451,7 +2510,7 @@ class WFFileBrowser extends CMSObject
         $allowed = (array) $this->getFileTypes('array');
 
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination, $allowed) === false) {
+        if (WFUtility::validateFileName(WFUtility::mb_basename($destination), $allowed) === false) {
             throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
         }
 
@@ -2466,40 +2525,16 @@ class WFFileBrowser extends CMSObject
         }
 
         foreach ($items as $item) {
-            // decode and cast as string
-            $item = (string) rawurldecode($item);
+            // the name is checked before the path is resolved to the directory store
+            $item = $this->preparePath($item, false);
 
-            // check source path
-            WFUtility::checkPath($item);
-
-            if (WFUtility::validateFileName($item, $allowed) === false) {
+            if (WFUtility::validateFileName(WFUtility::mb_basename($item), $allowed) === false) {
                 throw new InvalidArgumentException('Copy Failed: The file name is invalid.');
             }
 
             $item = $this->resolvePath($item);
 
-            if ($filesystem->is_file($item)) {
-                if ($this->checkFeature('move', 'file') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-                }
-
-                // validate extension against allowed list
-                $ext = WFUtility::getExtension($item, true);
-
-                if (!empty($allowed) && in_array($ext, $allowed) === false) {
-                    throw new InvalidArgumentException('Copy Failed: Invalid file extension.');
-                }
-
-                $path = dirname($item);
-            } elseif ($filesystem->is_dir($item)) {
-                if ($this->checkFeature('move', 'folder') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-                }
-
-                $path = $item;
-            } else {
-                throw new InvalidArgumentException('Copy Failed: Item does not exist.');
-            }
+            $this->checkItemAccess($item, 'move', 'Copy Failed');
 
             $target = WFUtility::makePath($destination, WFUtility::mb_basename($item));
 
@@ -2515,11 +2550,6 @@ class WFFileBrowser extends CMSObject
                         return $this->getResult();
                     }
                 }
-            }
-
-            // check access
-            if (!$this->checkPathAccess($path)) {
-                throw new InvalidArgumentException('Copy Failed: Access to the target directory is restricted');
             }
 
             $result = $filesystem->copy($item, $destination, $conflict);
@@ -2570,14 +2600,8 @@ class WFFileBrowser extends CMSObject
 
         $items = explode(',', rawurldecode((string) $items));
 
-        // decode and cast as string
-        $destination = (string) rawurldecode($destination);
-
-        // check destination path
-        WFUtility::checkPath($destination);
-
         // resolve the path to the directory store, eg: files/foo.pdf => images/files/foo.pdf
-        $destination = $this->resolvePath($destination);
+        $destination = $this->preparePath($destination);
 
         if (empty($destination)) {
             throw new InvalidArgumentException('Move Failed: The destination path is invalid.');
@@ -2586,7 +2610,7 @@ class WFFileBrowser extends CMSObject
         $allowed = (array) $this->getFileTypes('array');
 
         // check for extension in destination name
-        if (WFUtility::validateFileName($destination, $allowed) === false) {
+        if (WFUtility::validateFileName(WFUtility::mb_basename($destination), $allowed) === false) {
             throw new InvalidArgumentException('Move Failed: The file name is invalid.');
         }
 
@@ -2601,35 +2625,14 @@ class WFFileBrowser extends CMSObject
         }
 
         foreach ($items as $item) {
-            // decode and cast as string
-            $item = (string) rawurldecode($item);
+            $item = $this->preparePath($item);
 
-            // check source path
-            WFUtility::checkPath($item);
-
-            // extract the path from the complex path, removing the prefix
-            $item = $this->resolvePath($item);
-
-            if (WFUtility::validateFileName($item, $allowed) === false) {
+            if (WFUtility::validateFileName(WFUtility::mb_basename($item), $allowed) === false) {
                 throw new InvalidArgumentException('Move Failed: The file name is invalid.');
             }
 
-            if ($filesystem->is_file($item)) {
-                if ($this->checkFeature('move', 'file') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-                }
-
-                // validate extension against allowed list
-                $ext = WFUtility::getExtension($item, true);
-
-                if (!empty($allowed) && in_array($ext, $allowed) === false) {
-                    throw new InvalidArgumentException('Move Failed: Invalid file extension.');
-                }
-            } elseif ($filesystem->is_dir($item)) {
-                if ($this->checkFeature('move', 'folder') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
-                }
-            }
+            // the item is removed from its directory, so the access check is against the source
+            $this->checkItemAccess($item, 'move', 'Move Failed', 'source');
 
             if ($filesystem->is_file(WFUtility::makePath($destination, WFUtility::mb_basename($item))) && $overwrite === false) {
                 $this->setResult($item, 'confirm');
@@ -2666,23 +2669,19 @@ class WFFileBrowser extends CMSObject
 
     /**
      * Create a new folder in a target directory.
-     * Target path and folder name are read via func_get_args() for legacy compatibility.
+     * @param string $target The target directory where the new folder will be created.
+     * @param string $name   The name of the new folder.
      *
      * @return array Result array with new folder data or error messages.
      * @throws Exception              If the folder create feature is not permitted.
      * @throws InvalidArgumentException On path or access validation failure.
      */
-    public function folderNew()
+    public function folderNew($target, $name)
     {
         // check if the user has access to create a folder
         if ($this->checkFeature('create', 'folder') === false) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
         }
-
-        $args = func_get_args();
-
-        // path where the new folder will be created
-        $target = array_shift($args);
 
         // a folder cannot be created in the primary directory tree
         if (empty($target)) {
@@ -2690,44 +2689,38 @@ class WFFileBrowser extends CMSObject
         }
 
         // the name of the new folder
-        $new = array_shift($args);
+        $name = (string) rawurldecode($name);
 
-        // decode and cast as string
-        $target = (string) rawurldecode($target);
-        $new = (string) rawurldecode($new);
+        $target = $this->preparePath($target);
 
-        $target = $this->resolvePath($target);
-
-        // check access
-        if (!$this->checkPathAccess($target)) {
-            throw new InvalidArgumentException('Action Failed: Access to the target directory is restricted');
-        }
+        // the target must be an existing, accessible directory
+        $this->checkItemAccess($target, 'create', 'Action Failed');
 
         $filesystem = $this->getFileSystem();
 
-        $name = WFUtility::makeSafe($new, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+        $name = WFUtility::makeSafe($name, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
         // check for extension in destination name
         if (WFUtility::validateFileName($name) === false) {
             throw new InvalidArgumentException('Action Failed: The file name is invalid.');
         }
 
-        $result = $filesystem->createFolder($target, $name, $args);
+        $result = $filesystem->createFolder($target, $name);
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
                 if ($result->message) {
                     $this->setResult($result->message, 'error');
                 } else {
-                    $this->setResult(Text::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', WFUtility::mb_basename($new)), 'error');
+                    $this->setResult(Text::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', WFUtility::mb_basename($name)), 'error');
                 }
             } else {
                 $data = array(
-                    'name'  => WFUtility::mb_basename($new),
-                    'id'    => WFUtility::mb_basename($new),
+                    'name'  => WFUtility::mb_basename($name),
+                    'id'    => WFUtility::mb_basename($name),
                 );
 
-                $event = $this->fireEvent('onFolderNew', array($new));
+                $event = $this->fireEvent('onFolderNew', array($name));
 
                 // merge event data with default values
                 $data = array_merge($data, $event);
@@ -2747,7 +2740,18 @@ class WFFileBrowser extends CMSObject
      */
     public function getDimensions($file)
     {
-        return $this->getFileSystem()->getDimensions($file);
+        $file = $this->preparePath($file, false);
+
+        $this->checkFileName($file);
+
+        $path = $this->resolvePath($file);
+
+        // check access
+        if (!$this->checkPathAccess(WFUtility::mb_dirname($path))) {
+            throw new InvalidArgumentException('Action Failed: Access to the target directory is restricted');
+        }
+    
+        return $this->getFileSystem()->getDimensions($path);
     }
 
     /**
@@ -2784,7 +2788,14 @@ class WFFileBrowser extends CMSObject
      */
     public function readFile($file)
     {
-        $path = $this->resolvePath($file);
+        $path = $this->preparePath($file);
+
+        $this->checkFileName($path);
+
+        // check access
+        if (!$this->checkPathAccess(WFUtility::mb_dirname($path))) {
+            throw new InvalidArgumentException('Action Failed: Access to the target directory is restricted');
+        }
 
         return $this->getFileSystem()->read($path);
     }
@@ -2798,8 +2809,11 @@ class WFFileBrowser extends CMSObject
      */
     public function writeFile($file, $data)
     {
-        $path = $this->resolvePath($file);
+        $path = $this->preparePath($file);
 
+        $this->checkFileName($path);
+
+        // no access check, this also writes derived files such as thumbnails
         return $this->getFileSystem()->write($path, $data);
     }
 
@@ -2810,7 +2824,7 @@ class WFFileBrowser extends CMSObject
      */
     public function is_file($file)
     {
-        $path = $this->resolvePath($file);
+        $path = $this->preparePath($file, true);
 
         return $this->getFileSystem()->is_file($path);
     }
@@ -2823,7 +2837,7 @@ class WFFileBrowser extends CMSObject
      */
     public function is_dir($path)
     {
-        $path = $this->resolvePath($path);
+        $path = $this->preparePath($path, true);
 
         return $this->getFileSystem()->is_dir($path);
     }
