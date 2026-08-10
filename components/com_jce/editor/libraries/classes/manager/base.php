@@ -122,28 +122,45 @@ class WFMediaManagerBase extends WFEditorPlugin
 
     public function onUpload($file, $relative = '') {}
 
+    /**
+     * Get the dimensions of an image file.
+     *
+     * @param string $file Relative path to the image file.
+     * @return array Array with 'width' and 'height' keys.
+     */
     public function getDimensions($file)
     {
-        $browser = $this->getFileBrowser();
+        $browser    = $this->getFileBrowser();
+        $path       = $browser->preparePath($file, true);
 
         $data = array();
 
-        $extension = WFUtility::getExtension($file, true);
+        $extension = WFUtility::getExtension($path, true);
 
-        // images and flash
-        if (in_array($extension, array('jpg', 'jpeg', 'png', 'apng', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp', 'swf'))) {
-            list($data['width'], $data['height']) = $browser->getDimensions($file);
-            return $data;
+        // images, the browser validates the path and returns a width/height array
+        if (in_array($extension, array('jpg', 'jpeg', 'png', 'apng', 'gif', 'bmp', 'wbmp', 'tif', 'tiff', 'psd', 'ico', 'webp'))) {
+            return $browser->getDimensions($file);
         }
-
-        $path = $browser->toAbsolute($file);
 
         // svg
         if ($extension == 'svg') {
-            $svg = @simplexml_load_file($path);
+            // readFile validates the name, the file type and directory access
+            $svg = $browser->readFile($path);
 
-            if ($svg && isset($svg['viewBox'])) {
-                list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
+            if ($svg === false) {
+                return $data;
+            }
+
+            // Strip DOCTYPE to prevent entity-based XXE (local file:// and network) on all PHP versions
+            $svg = preg_replace('/<!DOCTYPE[^[>]*(\[[^\]]*\])?>/is', '', $svg);
+
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($svg, 'SimpleXMLElement', LIBXML_NONET);
+            libxml_clear_errors();
+            libxml_use_internal_errors(false);
+
+            if ($xml && isset($xml['viewBox'])) {
+                list($start_x, $start_y, $end_x, $end_y) = explode(' ', $xml['viewBox']);
 
                 $width = (int) $end_x;
                 $height = (int) $end_y;
