@@ -111,7 +111,7 @@ final class Request
         foreach ($query as $key => $value) {
             // Array keys are always int or string; guard string keys for null bytes
             if (is_string($key) && strpos($key, "\x00") !== false) {
-                throw new InvalidArgumentException("Invalid Data", 403);
+                throw new \InvalidArgumentException("Invalid Data", 403);
             }
 
             // Recurse into nested arrays/objects.
@@ -123,7 +123,7 @@ final class Request
 
             // Guard scalar values for null bytes
             if ($value !== null && strpos((string) $value, "\x00") !== false) {
-                throw new InvalidArgumentException("Invalid Data", 403);
+                throw new \InvalidArgumentException("Invalid Data", 403);
             }
         }
     }
@@ -171,6 +171,10 @@ final class Request
         } else {
             $raw  = $app->input->getVar('json', '', 'POST', 'STRING', 2);
             $json = $raw ? json_decode($raw, false, 32) : null;
+        }
+
+        if (!$method && !$json) {
+            throw new \InvalidArgumentException("Invalid Data", 403);
         }
 
         // get current request id
