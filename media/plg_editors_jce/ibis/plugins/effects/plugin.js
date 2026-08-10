@@ -73,7 +73,7 @@
                 return;
             }
 
-            attr('data-mouseover', mouseover);
+            attr('data-mce-mouseover', mouseover);
 
             if (!isSrcSwap(mouseout)) {
                 return;
@@ -84,16 +84,14 @@
             attr('onmouseout', null);
 
             if (mouseout) {
-                attr('data-mouseout', mouseout);
+                attr('data-mce-mouseout', mouseout);
             }
         }
 
         ed.onPreInit.add(function () {
+            // stale data-mce-* attributes in loaded content are removed by the cleanup plugin
             ed.onBeforeSetContent.add(function (ed, o) {
-                var hasData = /data-mouse(over|out)=/i.test(o.content);
-                var hasEvent = /onmouseover\s*=/i.test(o.content);
-
-                if (!hasData && !hasEvent) {
+                if (!/onmouseover\s*=/i.test(o.content)) {
                     return;
                 }
 
@@ -101,18 +99,9 @@
                 var div = doc.createElement('div');
                 div.innerHTML = o.content;
 
-                if (hasData) {
-                    each(div.querySelectorAll('[data-mouseover],[data-mouseout]'), function (node) {
-                        node.removeAttribute('data-mouseover');
-                        node.removeAttribute('data-mouseout');
-                    });
-                }
-
-                if (hasEvent) {
-                    each(div.querySelectorAll('img[onmouseover]'), function (node) {
-                        convertEventAttributes(domAttr(node));
-                    });
-                }
+                each(div.querySelectorAll('img[onmouseover]'), function (node) {
+                    convertEventAttributes(domAttr(node));
+                });
 
                 o.content = div.innerHTML;
             });
@@ -132,7 +121,7 @@
                 }
             });
 
-            ed.serializer.addAttributeFilter('data-mouseover', function (nodes) {
+            ed.serializer.addAttributeFilter('data-mce-mouseover', function (nodes) {
                 var i = nodes.length;
 
                 while (i--) {
@@ -142,13 +131,13 @@
                         continue;
                     }
 
-                    var mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
+                    var mouseover = node.attr('data-mce-mouseover'), mouseout = node.attr('data-mce-mouseout');
 
                     // cleanEventAttribute discards a value that could break out of the event attribute
                     mouseover = cleanEventAttribute(mouseover);
 
-                    node.attr('data-mouseover', null);
-                    node.attr('data-mouseout', null);
+                    node.attr('data-mce-mouseover', null);
+                    node.attr('data-mce-mouseout', null);
 
                     if (!mouseover) {
                         continue;
@@ -181,19 +170,19 @@
                     return;
                 }
 
-                each(ed.dom.select('img[data-mouseover]'), function (elm) {
-                    var mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
+                each(ed.dom.select('img[data-mce-mouseover]'), function (elm) {
+                    var mouseover = elm.getAttribute('data-mce-mouseover'), mouseout = elm.getAttribute('data-mce-mouseout');
 
                     if (!mouseover) {
                         return true;
                     }
 
                     if (mouseover == o.before) {
-                        elm.setAttribute('data-mouseover', o.after);
+                        elm.setAttribute('data-mce-mouseover', o.after);
                     }
 
                     if (mouseout == o.before) {
-                        elm.setAttribute('data-mouseout', o.after);
+                        elm.setAttribute('data-mce-mouseout', o.after);
                     }
                 });
             });
@@ -201,7 +190,7 @@
 
         function bindMouseoverEvent(ed) {
             each(ed.dom.select('img'), function (elm) {
-                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover');
+                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mce-mouseover');
 
                 elm.onmouseover = elm.onmouseout = null;
 
@@ -210,11 +199,11 @@
                 }
 
                 elm.onmouseover = function () {
-                    elm.setAttribute('src', elm.getAttribute('data-mouseover'));
+                    elm.setAttribute('src', elm.getAttribute('data-mce-mouseover'));
                 };
 
                 elm.onmouseout = function () {
-                    elm.setAttribute('src', elm.getAttribute('data-mouseout') || src);
+                    elm.setAttribute('src', elm.getAttribute('data-mce-mouseout') || src);
                 };
             });
         }
