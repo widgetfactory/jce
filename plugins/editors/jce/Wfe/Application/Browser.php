@@ -2115,8 +2115,14 @@ class Browser
         }
 
         // validate and process the user-supplied destination name
-        $name = (string) $app->input->get('name', $file['name'], 'STRING');
+        $name = (string) $app->input->get('name', '', 'STRING');
         $name = rawurldecode($name);
+
+        // the uploaded file name is not used as a fallback, so the request must supply one
+        if ($name === '') {
+            @unlink($file['tmp_name']);
+            throw new \InvalidArgumentException('Upload Failed: No file name was provided.');
+        }
 
         if (Utility::validateFileName($name, $allowed) === false) {
             @unlink($file['tmp_name']);
@@ -2601,6 +2607,9 @@ class Browser
         // the name of the new folder
         $name = (string) rawurldecode($name);
 
+        // a folder name, not a path
+        Utility::checkFolderName($name);
+
         $target = $this->preparePath($target);
 
         // the target must be an existing, accessible directory
@@ -2608,7 +2617,15 @@ class Browser
 
         $filesystem = $this->getFileSystem();
 
+        // check for extension in destination name
+        if (Utility::validateFileName($name) === false) {
+            throw new \InvalidArgumentException('Action Failed: The file name is invalid.');
+        }
+
         $name = Utility::makeSafe($name, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
+
+        // guard against makeSafe ever producing a path
+        Utility::checkFolderName($name);
 
         // check for extension in destination name
         if (Utility::validateFileName($name) === false) {
