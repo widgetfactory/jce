@@ -48801,7 +48801,14 @@
       'onstalled', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting',
       'oncanplay', 'oncanplaythrough', 'ondurationchange', 'onemptied', 'onended',
       'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousewheel',
-      'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange'
+      'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange',
+      // anything parked on input must appear here or it cannot be restored on output
+      'onauxclick', 'onbeforeinput', 'onbeforetoggle', 'onfocusin', 'onfocusout', 'onscrollend',
+      'onpointerdown', 'onpointerup', 'onpointermove', 'onpointerover', 'onpointerout',
+      'onpointerenter', 'onpointerleave', 'onpointercancel', 'ongotpointercapture', 'onlostpointercapture',
+      'ontouchstart', 'ontouchend', 'ontouchmove', 'ontouchcancel',
+      'onanimationstart', 'onanimationend', 'onanimationiteration',
+      'ontransitionstart', 'ontransitionend', 'ontransitionrun', 'ontransitioncancel'
     ];
 
     ed.onPreInit.add(function () {
@@ -48958,7 +48965,10 @@
 
       o.content = processAttributes(ed, o.content);
 
-      if (/data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
+      // content loaded from the element is external, so it can never carry the internal namespace
+      var stripInternal = !!o.load && /data-mce-/i.test(o.content);
+
+      if (stripInternal || /data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
         var doc = document.implementation.createHTMLDocument('');
         var div = doc.createElement('div');
         div.innerHTML = o.content;
@@ -48967,11 +48977,12 @@
           var attrs = node.attributes, names = [], i;
 
           for (i = attrs.length - 1; i >= 0; i--) {
-            names.push(attrs[i].name);
+            names.push(attrs[i].name.toLowerCase());
           }
 
+          // the whole internal namespace on load, protected event attributes on every path
           each(names, function (name) {
-            if (name.toLowerCase().indexOf('data-mce-on') === 0) {
+            if (name.indexOf(stripInternal ? 'data-mce-' : 'data-mce-on') === 0) {
               node.removeAttribute(name);
             }
           });
@@ -48981,7 +48992,7 @@
           }
 
           each(names, function (name) {
-            if (name.toLowerCase().indexOf('on') === 0) {
+            if (name.indexOf('on') === 0) {
               node.setAttribute('data-mce-' + name, node.getAttribute(name));
               node.removeAttribute(name);
             }
@@ -49271,7 +49282,7 @@
                       html.push('>');
 
                       for (let child of Array.from(node.childNodes)) {
-                          html.push(sanitizeNode(editor, child, raw));
+                          html.push(sanitizeNode(editor, child));
                       }
 
                       html.push('</', tagName, '>');
@@ -49282,7 +49293,7 @@
 
               case 3: {
                   var text = node.nodeValue;
-                  text = raw ? text : editor.dom.encode(text, true);
+                  text = text ;
                   html.push(text);
                   break;
               }
@@ -49315,7 +49326,7 @@
               return null;
           }
 
-          return sanitizeNode(editor, doc.documentElement, true);
+          return sanitizeNode(editor, doc.documentElement);
       }
 
       /**
@@ -50379,7 +50390,7 @@
                   return;
               }
 
-              attr('data-mouseover', mouseover);
+              attr('data-mce-mouseover', mouseover);
 
               if (!isSrcSwap(mouseout)) {
                   return;
@@ -50390,16 +50401,14 @@
               attr('onmouseout', null);
 
               if (mouseout) {
-                  attr('data-mouseout', mouseout);
+                  attr('data-mce-mouseout', mouseout);
               }
           }
 
           ed.onPreInit.add(function () {
+              // stale data-mce-* attributes in loaded content are removed by the cleanup plugin
               ed.onBeforeSetContent.add(function (ed, o) {
-                  var hasData = /data-mouse(over|out)=/i.test(o.content);
-                  var hasEvent = /onmouseover\s*=/i.test(o.content);
-
-                  if (!hasData && !hasEvent) {
+                  if (!/onmouseover\s*=/i.test(o.content)) {
                       return;
                   }
 
@@ -50407,18 +50416,9 @@
                   var div = doc.createElement('div');
                   div.innerHTML = o.content;
 
-                  if (hasData) {
-                      each(div.querySelectorAll('[data-mouseover],[data-mouseout]'), function (node) {
-                          node.removeAttribute('data-mouseover');
-                          node.removeAttribute('data-mouseout');
-                      });
-                  }
-
-                  if (hasEvent) {
-                      each(div.querySelectorAll('img[onmouseover]'), function (node) {
-                          convertEventAttributes(domAttr(node));
-                      });
-                  }
+                  each(div.querySelectorAll('img[onmouseover]'), function (node) {
+                      convertEventAttributes(domAttr(node));
+                  });
 
                   o.content = div.innerHTML;
               });
@@ -50438,7 +50438,7 @@
                   }
               });
 
-              ed.serializer.addAttributeFilter('data-mouseover', function (nodes) {
+              ed.serializer.addAttributeFilter('data-mce-mouseover', function (nodes) {
                   var i = nodes.length;
 
                   while (i--) {
@@ -50448,13 +50448,13 @@
                           continue;
                       }
 
-                      var mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
+                      var mouseover = node.attr('data-mce-mouseover'), mouseout = node.attr('data-mce-mouseout');
 
                       // cleanEventAttribute discards a value that could break out of the event attribute
                       mouseover = cleanEventAttribute(mouseover);
 
-                      node.attr('data-mouseover', null);
-                      node.attr('data-mouseout', null);
+                      node.attr('data-mce-mouseover', null);
+                      node.attr('data-mce-mouseout', null);
 
                       if (!mouseover) {
                           continue;
@@ -50487,19 +50487,19 @@
                       return;
                   }
 
-                  each(ed.dom.select('img[data-mouseover]'), function (elm) {
-                      var mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
+                  each(ed.dom.select('img[data-mce-mouseover]'), function (elm) {
+                      var mouseover = elm.getAttribute('data-mce-mouseover'), mouseout = elm.getAttribute('data-mce-mouseout');
 
                       if (!mouseover) {
                           return true;
                       }
 
                       if (mouseover == o.before) {
-                          elm.setAttribute('data-mouseover', o.after);
+                          elm.setAttribute('data-mce-mouseover', o.after);
                       }
 
                       if (mouseout == o.before) {
-                          elm.setAttribute('data-mouseout', o.after);
+                          elm.setAttribute('data-mce-mouseout', o.after);
                       }
                   });
               });
@@ -50507,7 +50507,7 @@
 
           function bindMouseoverEvent(ed) {
               each(ed.dom.select('img'), function (elm) {
-                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover');
+                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mce-mouseover');
 
                   elm.onmouseover = elm.onmouseout = null;
 
@@ -50516,11 +50516,11 @@
                   }
 
                   elm.onmouseover = function () {
-                      elm.setAttribute('src', elm.getAttribute('data-mouseover'));
+                      elm.setAttribute('src', elm.getAttribute('data-mce-mouseover'));
                   };
 
                   elm.onmouseout = function () {
-                      elm.setAttribute('src', elm.getAttribute('data-mouseout') || src);
+                      elm.setAttribute('src', elm.getAttribute('data-mce-mouseout') || src);
                   };
               });
           }
@@ -51192,9 +51192,14 @@
           '#e3f2fd'
         ];
 
-        var guidelines = '#787878', visualchars = '#a8a8a8', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
+        var guidelines = '#787878', visualchars = '#a8a8a8', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', caret = '', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
         if (!bodybg) {
+          return;
+        }
+
+        // a transparent background cannot be measured, and is treated as opaque black by getRGBA
+        if (bodybg === 'transparent' || /,\s*0\s*\)$/.test(bodybg)) {
           return;
         }
 
@@ -51222,6 +51227,11 @@
           }
         }
 
+        // the caret is drawn in the text colour, so give it a readable colour of its own if the text is hard to see
+        if (color && !isReadable(color, bodybg, 4.5)) {
+          caret = isReadable('#ffffff', bodybg, 4.5) ? '#ffffff' : '#000000';
+        }
+
         if (guidelines || control) {
           var css = ':root{';
 
@@ -51237,6 +51247,10 @@
           if (control) {
             css += '--mce-control-selection: ' + control + ';';
             css += '--mce-control-selection-bg: ' + controlbg + ';';
+          }
+
+          if (caret) {
+            css += '--mce-caret-color: ' + caret + ';';
           }
 
           css += '}';
@@ -51998,10 +52012,10 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
+   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
    * @copyright   Copyright 2009, Moxiecode Systems AB
    * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU General Public License version 2 or later; see LICENSE.txt
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -52018,25 +52032,19 @@
       Env = ibis.util.Env;
 
     // Register plugin
-    ibis.PluginManager.add('upload', function (ed, url) {
+    ibis.PluginManager.add('upload', function (ed) {
       var plugins = [], files = [];
 
+      function hasFiles(e) {
+        var dataTransfer = e.dataTransfer;
+
+        return !!(dataTransfer && dataTransfer.files && dataTransfer.files.length);
+      }
+
+      // block the browser default handling of dropped files
       function cancel() {
-        // Block browser default drag over
-        ed.dom.bind(ed.getBody(), 'dragover', function (e) {
-          var dataTransfer = e.dataTransfer;
-
-          // cancel dropped files
-          if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-            e.preventDefault();
-          }
-        });
-
-        ed.dom.bind(ed.getBody(), 'drop', function (e) {
-          var dataTransfer = e.dataTransfer;
-
-          // cancel dropped files
-          if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+        ed.dom.bind(ed.getBody(), 'dragover drop', function (e) {
+          if (hasFiles(e)) {
             e.preventDefault();
           }
         });
@@ -52044,9 +52052,8 @@
 
       ed.onPreInit.add(function () {
         // get list of supported plugins
-        each(ed.plugins, function (plg, name) {
+        each(ed.plugins, function (plg) {
           if (ibis.is(plg.getUploadConfig, 'function')) {
-
             var data = plg.getUploadConfig();
 
             if (data.inline && data.filetypes) {
@@ -52068,7 +52075,7 @@
         ed.schema.addValidElements('+media[type|width|height|class|style|title|*]');
 
         // Remove bogus elements
-        ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
+        ed.serializer.addAttributeFilter('data-mce-marker', function (nodes) {
           var i = nodes.length;
 
           while (i--) {
@@ -52122,7 +52129,8 @@
             node, cls;
 
           while (i--) {
-            node = nodes[i], cls = node.attr('class');
+            node = nodes[i];
+            cls = node.attr('class');
 
             if (cls && /mce-item-upload-marker/.test(cls)) {
               // remove marker classes
@@ -52197,31 +52205,29 @@
 
         // Attach drop handler and grab files
         ed.dom.bind(ed.getBody(), 'drop', function (e) {
-          var dataTransfer = e.dataTransfer, rng;
-
           // Add dropped files
-          if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-            each(dataTransfer.files, function (file) {
-              if (!rng) {
-                rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
+          if (hasFiles(e)) {
+            var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
 
-                if (rng) {
-                  ed.selection.setRng(rng);
-                }
-              }
+            if (rng) {
+              ed.selection.setRng(rng);
+            }
 
+            // store the content before any placeholders are created, so that an undo restores it
+            ed.undoManager.add();
+
+            each(e.dataTransfer.files, function (file) {
               addFile(file);
             });
 
             cancelEvent(e);
           }
 
-          // upload...
-          if (files.length) {
-            each(files, function (file) {
-              uploadFile(file);
-            });
-          }
+          // upload queued files, working on a copy as the queue is modified as each upload completes
+          each(files.slice(0), function (file) {
+            uploadFile(file);
+          });
+
           // stop Firefox opening the image in a new window if the drop target is itself (drag cancelled)
           if (ibis.isGecko && e.target.nodeName == 'IMG') {
             cancelEvent(e);
@@ -52269,14 +52275,14 @@
             return;
           }
 
-          json = JSON.parse(xhr.responseText);
-
-          if (!json) {
-            failure('Invalid JSON response!');
+          try {
+            json = JSON.parse(xhr.responseText);
+          } catch (e) {
+            json = null;
           }
 
-          if (json.error || !json.result) {
-            failure(json.error.message || 'Invalid JSON response!');
+          if (!json || json.error || !json.result) {
+            failure(json && json.error && json.error.message ? json.error.message : 'Invalid JSON response!');
             return;
           }
 
@@ -52295,111 +52301,112 @@
         xhr.send(formData);
       }
 
-      function addFile(file) {
-        // check for extension in file name, eg. image.php.jpg
-        if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
+      function showUploadError(text) {
+        ed.windowManager.alert({
+          text: text,
+          title: ed.getLang('upload.error', 'Upload Error')
+        });
+      }
 
-          ed.windowManager.alert({
-            text: ed.getLang('upload.file_extension_error', 'File type not supported'),
-            title: ed.getLang('upload.error', 'Upload Error')
-          });
+      function showFileTypeError() {
+        showUploadError(ed.getLang('upload.file_extension_error', 'File type not supported'));
+      }
 
-          return false;
-        }
-
-        // get first url for the file type
+      // find the first plugin that will accept the file and store its upload url
+      function assignUploader(file) {
         each(plugins, function (plg) {
-          if (!file.upload_url) {
-            var url = plg.getUploadURL(file);
+          var url = plg.getUploadURL(file);
 
-            if (url) {
-              file.upload_url = url;
-              file.uploader = plg;
+          if (url) {
+            file.upload_url = url;
+            file.uploader = plg;
 
-              return false;
-            }
+            return false;
           }
         });
 
-        if (file.upload_url) {
-          if (ibis.is(file.uploader.getUploadConfig, 'function')) {
-            // check file type and size
-            var config = file.uploader.getUploadConfig();
+        return !!file.upload_url;
+      }
 
-            var name = file.target_name || file.name;
-
-            // remove some common characters
-            file.filename = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
-
-            if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
-
-              ed.windowManager.alert({
-                text: ed.getLang('upload.file_extension_error', 'File type not supported'),
-                title: ed.getLang('upload.error', 'Upload Error')
-              });
-
-              return false;
-            }
-
-            if (file.size) {
-              var max = parseInt(config.max_size, 10) || 1024;
-
-              if (file.size > max * 1024) {
-
-                ed.windowManager.alert({
-                  text: ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'),
-                  title: ed.getLang('upload.error', 'Upload Error')
-                });
-
-                return false;
-              }
-            }
-          }
-
-          if (!file.marker && ed.settings.upload_use_placeholder !== false) {
-
-            var uid = Uuid.uuid('wf-tmp-');
-
-            ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="' + uid + '">\uFEFF</span>', {
-              skip_undo: 1
-            });
-
-            var n = ed.dom.get(uid), w, h;
-
-            // get approximate size of image from file size
-            if (/image\/(gif|png|jpeg|jpg)/.test(file.type) && file.size) {
-              w = h = Math.round(Math.sqrt(file.size));
-
-              // set minimum value of 100
-              w = Math.max(300, w);
-              h = Math.max(300, h);
-
-              ed.dom.setStyles(n, {
-                width: w,
-                height: h
-              });
-
-              ed.dom.addClass(n, 'mce-item-upload');
-            } else {
-              ed.setProgressState(true);
-            }
-
-            file.marker = n;
-          }
-
-          // add files to queue
-          files.push(file);
-
+      // validate the file type and size against the uploader configuration
+      function isValidFile(file) {
+        if (!ibis.is(file.uploader.getUploadConfig, 'function')) {
           return true;
-        } else {
+        }
 
-          ed.windowManager.alert({
-            text: ed.getLang('upload.file_extension_error', 'File type not supported'),
-            title: ed.getLang('upload.error', 'Upload Error')
-          });
+        var config = file.uploader.getUploadConfig();
 
+        if (!new RegExp('\\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
+          showFileTypeError();
           return false;
         }
+
+        if (file.size) {
+          var max = parseInt(config.max_size, 10) || 1024;
+
+          if (file.size > max * 1024) {
+            showUploadError(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      // insert a placeholder element at the caret to show upload progress
+      function createPlaceholder(file) {
+        var uid = Uuid.uuid('wf-tmp-'), size;
+
+        ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="' + uid + '">\uFEFF</span>', {
+          skip_undo: 1
+        });
+
+        var n = ed.dom.get(uid);
+
+        // get approximate size of image from file size, with a minimum value of 300
+        if (/image\/(gif|png|jpeg|jpg)/.test(file.type) && file.size) {
+          size = Math.max(300, Math.round(Math.sqrt(file.size)));
+
+          ed.dom.setStyles(n, {
+            width: size,
+            height: size
+          });
+
+          ed.dom.addClass(n, 'mce-item-upload');
+        } else {
+          ed.setProgressState(true);
+        }
+
+        return n;
+      }
+
+      function addFile(file) {
+        // check for extension in file name, eg. image.php.jpg
+        if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
+          showFileTypeError();
+          return false;
+        }
+
+        if (!assignUploader(file)) {
+          showFileTypeError();
+          return false;
+        }
+
+        if (!isValidFile(file)) {
+          return false;
+        }
+
+        // remove some common characters
+        file.filename = (file.target_name || file.name).replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
+        if (!file.marker && ed.settings.upload_use_placeholder !== false) {
+          file.marker = createPlaceholder(file);
+        }
+
+        // add files to queue
+        files.push(file);
+
+        return true;
       }
 
       /**
@@ -52409,13 +52416,11 @@
       function createUploadMarker(node) {
         var src = node.attr('src') || '',
           style = {},
-          styles, cls = [];
+          cls = [];
 
-        // get alt from src if not base64 encoded
+        // get alt from the file name in the src, if not base64 encoded
         if (!node.attr('alt') && !/data:image/.test(src)) {
-          var alt = src.substring(src.length, src.lastIndexOf('/') + 1);
-          // set alt
-          node.attr('alt', alt);
+          node.attr('alt', src.slice(src.lastIndexOf('/') + 1));
         }
 
         if (node.attr('style')) {
@@ -52477,69 +52482,64 @@
        * @param {*} data 
        * @returns 
        */
+      // transfer the styles, width and height of the marker to the uploaded element
+      function transferMarkerStyles(marker, elm) {
+        var styles = ed.dom.getAttrib(marker, 'data-mce-style');
+        var w = marker.width || 0;
+        var h = marker.height || 0;
+
+        if (styles) {
+          styles = ed.dom.styles.parse(styles);
+
+          if (styles.width) {
+            w = styles.width;
+            delete styles.width;
+          }
+
+          if (styles.height) {
+            h = styles.height;
+            delete styles.height;
+          }
+
+          ed.dom.setStyles(elm, styles);
+        }
+
+        if (w) {
+          ed.dom.setAttrib(elm, 'width', w);
+        }
+
+        if (h) {
+          // width alone will scale the image, so height is not required
+          ed.dom.setAttrib(elm, 'height', w ? '' : h);
+        }
+      }
+
       function selectAndInsert(file, data) {
-        var marker = file.marker, uploader = file.uploader;
+        var marker = file.marker;
 
         // select marker
         ed.selection.select(marker);
 
-        var elm = uploader.insertUploadedFile(data);
+        var elm = file.uploader.insertUploadedFile(data);
 
-        if (elm) {
-          // is an element node
-          if (typeof elm === 'object' && elm.nodeType) {
-            // transfer width and height from marker
-            if (ed.dom.hasClass(marker, 'mce-item-upload-marker')) {
-              var styles = ed.dom.getAttrib(marker, 'data-mce-style');
+        if (!elm) {
+          return;
+        }
 
-              var w = marker.width || 0;
-              var h = marker.height || 0;
-
-              // transfer styles
-              if (styles) {
-                // parse to object
-                styles = ed.dom.styles.parse(styles);
-
-                if (styles.width) {
-                  w = styles.width;
-
-                  delete styles.width;
-                }
-
-                if (styles.height) {
-                  h = styles.height;
-
-                  delete styles.height;
-                }
-
-                // set styles
-                ed.dom.setStyles(elm, styles);
-              }
-
-              // pass through width and height
-              if (w) {
-                ed.dom.setAttrib(elm, 'width', w);
-              }
-
-              if (h) {
-                if (w) {
-                  h = '';
-                }
-
-                ed.dom.setAttrib(elm, 'height', h);
-              }
-            }
-
-            ed.undoManager.add();
-
-            // replace marker with new element
-            ed.dom.replace(elm, marker);
+        // is an element node
+        if (typeof elm === 'object' && elm.nodeType) {
+          if (ed.dom.hasClass(marker, 'mce-item-upload-marker')) {
+            transferMarkerStyles(marker, elm);
           }
 
-          ed.nodeChanged();
-
-          return true;
+          // the marker is selected, so it is replaced by the inserted content. An undo level must not
+          // be added here as it would store the marker and restore it on undo
+          ed.execCommand('mceInsertContent', false, ed.dom.getOuterHTML(elm));
         }
+
+        ed.nodeChanged();
+
+        return true;
       }
 
       /*
@@ -52606,41 +52606,39 @@
 
           var zIndex = ed.id == 'mce_fullscreen' ? dom.get('mce_fullscreen_container').style.zIndex : 0;
 
-          dom.setStyles('wf_upload_button', {
-            'top': y + p2.h / 2 - 16,
-            'left': x + p2.w / 2 - 50,
-            'display': 'block',
-            'zIndex': zIndex + 1
-          });
-
-          dom.setStyles('wf_select_button', {
-            'top': y + p2.h / 2 - 16,
-            'left': x + p2.w / 2 - 50,
-            'display': 'block',
-            'zIndex': zIndex + 1
+          each(['wf_upload_button', 'wf_select_button'], function (id) {
+            dom.setStyles(id, {
+              'top': y + p2.h / 2 - 16,
+              'left': x + p2.w / 2 - 50,
+              'display': 'block',
+              'zIndex': zIndex + 1
+            });
           });
 
           // bind onchange event to input to trigger upload
           input.onchange = function () {
-            if (input.files) {
-              var file = input.files[0];
+            var file = input.files ? input.files[0] : null;
 
-              if (file) {
-                file.marker = marker;
+            if (!file) {
+              return;
+            }
 
-                if (addFile(file)) {
-                  // add width and height as styles if set
-                  each(['width', 'height'], function (key) {
-                    ed.dom.setStyle(marker, key, ed.dom.getAttrib(marker, key));
-                  });
+            file.marker = marker;
 
-                  // rename to "span" to support css:after
-                  file.marker = ed.dom.rename(marker, 'span');
+            // store the content while the marker is still a placeholder, so that an undo restores it
+            ed.undoManager.add();
 
-                  uploadFile(file);
-                  removeUpload();
-                }
-              }
+            if (addFile(file)) {
+              // add width and height as styles if set
+              each(['width', 'height'], function (key) {
+                ed.dom.setStyle(marker, key, ed.dom.getAttrib(marker, key));
+              });
+
+              // rename to "span" to support css:after
+              file.marker = ed.dom.rename(marker, 'span');
+
+              uploadFile(file);
+              removeUpload();
             }
           };
         });
@@ -52656,55 +52654,43 @@
         });
       }
 
+      // remove the file from the upload queue
       function removeFile(file) {
-        // remove from list
-        for (var i = 0; i < files.length; i++) {
-          if (files[i] === file) {
-            files.splice(i, 1);
-          }
-        }
+        var i = ibis.inArray(files, file);
 
-        files.splice(ibis.inArray(files, file), 1);
+        if (i !== -1) {
+          files.splice(i, 1);
+        }
       }
 
       function uploadFile(file) {
+        // remove the file from the queue and clean up its placeholder
+        function cleanup() {
+          removeFile(file);
+
+          if (file.marker) {
+            ed.dom.remove(file.marker);
+          }
+
+          ed.setProgressState(false);
+        }
 
         uploadHandler(file, function (response) {
-
-          var files = response.files || [], item = files.length ? files[0] : {};
+          var uploaded = response.files || [], item = uploaded.length ? uploaded[0] : {};
 
           if (file.uploader) {
-
-            var obj = ibis.extend({
+            selectAndInsert(file, ibis.extend({
               type: file.type,
               name: file.name
-            }, item);
-
-            selectAndInsert(file, obj);
+            }, item));
           }
 
-          removeFile(file);
-
-          if (file.marker) {
-            ed.dom.remove(file.marker);
-          }
-
-          ed.setProgressState(false);
+          cleanup();
 
         }, function (message) {
+          showUploadError(message);
 
-          ed.windowManager.alert({
-            text: message,
-            title: ed.getLang('upload.error', 'Upload Error')
-          });
-
-          removeFile(file);
-
-          if (file.marker) {
-            ed.dom.remove(file.marker);
-          }
-
-          ed.setProgressState(false);
+          cleanup();
 
         }, function (value) {
           if (file.marker) {
@@ -53261,10 +53247,10 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
+   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
    * @copyright   Copyright 2009, Moxiecode Systems AB
    * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-   * @license   	GNU General Public License version 2 or later; see LICENSE.txt
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
@@ -53276,28 +53262,43 @@
   (function () {
       var each = ibis.each, BlobCache = ibis.file.BlobCache, Conversions = ibis.file.Conversions, Uuid = ibis.util.Uuid, DOM = ibis.DOM;
 
+      var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+      // characters that are not allowed in a file name
+      var invalidCharacters = /[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g;
+
+      // executable extensions, including those hidden in the name, eg. image.php.jpg
+      var invalidExtensions = /\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i;
+
       var count = 0;
 
-      var uniqueId = function (prefix) {
+      function uniqueId(prefix) {
           return (prefix || 'blobid') + (count++);
-      };
+      }
 
       function isSupportedImage(value) {
-          return /\.(jpg|jpeg|png|gif|webp|avif)$/.test(value);
+          return /\.(jpg|jpeg|png|gif|webp|avif)$/i.test(value);
       }
 
       function getImageExtension(value) {
           if (isSupportedImage(value)) {
-              return value.substring(value.length, value.lastIndexOf('.') + 1);
+              return value.slice(value.lastIndexOf('.') + 1);
           }
 
           return '';
       }
 
-      function uploadHandler(settings, blobInfo, success, failure, progress) {
-          var xhr, formData;
+      function getResponseError(json) {
+          if (json && json.error && json.error.message) {
+              return json.error.message;
+          }
 
-          xhr = new XMLHttpRequest();
+          return 'Invalid JSON response!';
+      }
+
+      function uploadHandler(settings, blobInfo, success, failure, progress) {
+          var xhr = new XMLHttpRequest(), formData = new FormData();
+
           xhr.open('POST', settings.url);
 
           xhr.upload.onprogress = function (e) {
@@ -53316,22 +53317,20 @@
                   return;
               }
 
-              json = JSON.parse(xhr.responseText);
-
-              if (!json || json.error) {
-                  failure(json.error.message || 'Invalid JSON response!');
-                  return;
+              try {
+                  json = JSON.parse(xhr.responseText);
+              } catch (e) {
+                  json = null;
               }
 
-              if (!json.result || !json.result.files) {
-                  failure(json.error.message || 'Invalid JSON response!');
+              if (!json || json.error || !json.result || !json.result.files || !json.result.files.length) {
+                  failure(getResponseError(json));
                   return;
               }
 
               success(json.result.files[0]);
           };
 
-          formData = new FormData();
           formData.append('file', blobInfo.blob(), blobInfo.filename());
 
           // Add multipart params
@@ -53346,70 +53345,133 @@
           xhr.send(formData);
       }
 
-      function imageToBlobInfo(blobCache, img, resolve, reject) {
-          var base64, blobInfo;
+      function createBlobInfo(blob, base64) {
+          var blobInfo = BlobCache.create(uniqueId(), blob, base64);
+          BlobCache.add(blobInfo);
 
-          if (img.src.indexOf('blob:') === 0) {
-              blobInfo = blobCache.getByUri(img.src);
+          return blobInfo;
+      }
+
+      function imageToBlobInfo(img) {
+          return new Promise(function (resolve, reject) {
+              var base64, blobInfo;
+
+              if (img.src.indexOf('blob:') === 0) {
+                  blobInfo = BlobCache.getByUri(img.src);
+
+                  if (blobInfo) {
+                      resolve({ image: img, blobInfo: blobInfo });
+                      return;
+                  }
+
+                  Conversions.uriToBlob(img.src).then(function (blob) {
+                      return Conversions.blobToDataUri(blob).then(function (dataUri) {
+                          var data = Conversions.parseDataUri(dataUri).data;
+
+                          resolve({ image: img, blobInfo: createBlobInfo(blob, data) });
+                      });
+                  }, reject);
+
+                  return;
+              }
+
+              base64 = Conversions.parseDataUri(img.src).data;
+
+              blobInfo = BlobCache.findFirst(function (cachedBlobInfo) {
+                  return cachedBlobInfo.base64() === base64;
+              });
 
               if (blobInfo) {
-                  resolve({
-                      image: img,
-                      blobInfo: blobInfo
-                  });
-              } else {
-                  Conversions.uriToBlob(img.src).then(function (blob) {
-                      Conversions.blobToDataUri(blob).then(function (dataUri) {
-                          base64 = Conversions.parseDataUri(dataUri).data;
-                          blobInfo = blobCache.create(uniqueId(), blob, base64);
-                          blobCache.add(blobInfo);
+                  resolve({ image: img, blobInfo: blobInfo });
+                  return;
+              }
 
-                          resolve({
-                              image: img,
-                              blobInfo: blobInfo
-                          });
-                      });
-                  }, function (err) {
-                      reject(err);
+              Conversions.uriToBlob(img.src).then(function (blob) {
+                  resolve({ image: img, blobInfo: createBlobInfo(blob, base64) });
+              }, reject);
+          });
+      }
+
+      /**
+       * Convert each image to a blob, re-using the result for images that share a source. Images that
+       * cannot be converted resolve as null.
+       * @param {Array} images
+       * @returns {Promise}
+       */
+      function processImages(images) {
+          var cache = {};
+
+          var promises = ibis.map(images, function (img) {
+              if (!cache[img.src]) {
+                  cache[img.src] = imageToBlobInfo(img)['catch'](function () {
+                      return null;
                   });
               }
 
-              return;
-          }
+              // a cached result refers to the first image processed, so resolve with the actual image
+              return cache[img.src].then(function (result) {
+                  if (!result) {
+                      return null;
+                  }
 
-          base64 = Conversions.parseDataUri(img.src).data;
-          blobInfo = blobCache.findFirst(function (cachedBlobInfo) {
-              return cachedBlobInfo.base64() === base64;
+                  return { image: img, blobInfo: result.blobInfo };
+              });
           });
 
-          if (blobInfo) {
-              resolve({
-                  image: img,
-                  blobInfo: blobInfo
-              });
-          } else {
-              Conversions.uriToBlob(img.src).then(function (blob) {
-                  blobInfo = blobCache.create(uniqueId(), blob, base64);
-                  blobCache.add(blobInfo);
-
-                  resolve({
-                      image: img,
-                      blobInfo: blobInfo
-                  });
-              }, function (err) {
-                  reject(err);
-              });
-          }
+          return Promise.all(promises);
       }
 
-      ibis.PluginManager.add('blobupload', function (ed, url) {
+      function isUploadableImage(img) {
+          var src = img.getAttribute('src');
+
+          if (img.hasAttribute('data-mce-bogus') || img.hasAttribute('data-mce-placeholder') || img.hasAttribute('data-mce-upload-marker')) {
+              return false;
+          }
+
+          if (!src || src == transparentSrc) {
+              return false;
+          }
+
+          return src.indexOf('blob:') === 0 || src.indexOf('data:') === 0;
+      }
+
+      ibis.PluginManager.add('blobupload', function (ed) {
           var uploaders = [];
+
+          // the source of each pasted image that is waiting to be uploaded
+          var pending = {};
+
+          function hasPendingImages() {
+              for (var src in pending) {
+                  return true;
+              }
+
+              return false;
+          }
+
+          /**
+           * Remove images that are waiting to be uploaded from an undo level. The blob or data uri they
+           * use is only valid while the editor is open, so an undo must not be able to restore one.
+           * @param {String} content
+           * @returns {String}
+           */
+          function removePendingImages(content) {
+              if (!hasPendingImages()) {
+                  return content;
+              }
+
+              // match the whole tag, allowing for a ">" inside an attribute value
+              return content.replace(/<img(?:[^>"']|"[^"]*"|'[^']*')*>/gi, function (image) {
+                  var match = /\ssrc="([^"]*)"/i.exec(image);
+
+                  return match && pending[match[1]] ? '' : image;
+              });
+          }
 
           ed.onPreInit.add(function () {
               // get list of supported plugins
-              each(ed.plugins, function (plg, name) {
+              each(ed.plugins, function (plg) {
                   if (ibis.is(plg.getUploadConfig, 'function')) {
-
                       var data = plg.getUploadConfig();
 
                       if (data.inline && data.filetypes) {
@@ -53419,13 +53481,39 @@
               });
           });
 
+          // find the images in the editor content that the marker refers to
+          function getMarkerImages(marker) {
+              return ibis.grep(ed.dom.select('img[src]'), function (image) {
+                  return image.src == marker.src;
+              });
+          }
+
           function findMarker(marker) {
+              return getMarkerImages(marker)[0];
+          }
+
+          function removeMarker(marker) {
+              each(getMarkerImages(marker), function (image) {
+                  ed.selection.select(image);
+                  ed.execCommand('mceRemoveNode');
+
+                  var node = ed.selection.getNode();
+
+                  // restore bogus break
+                  if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
+                      ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
+                  }
+              });
+          }
+
+          function getUploader(blobInfo) {
               var found;
 
-              each(ed.dom.select('img[src]'), function (image) {
-                  if (image.src == marker.src) {
-                      found = image;
+              each(uploaders, function (instance) {
+                  var url = instance.getUploadURL({ name: blobInfo.filename() });
 
+                  if (url) {
+                      found = { instance: instance, url: url };
                       return false;
                   }
               });
@@ -53433,162 +53521,145 @@
               return found;
           }
 
-          function removeMarker(marker) {
-              each(ed.dom.select('img[src]'), function (image) {
-                  if (image.src == marker.src) {
-                      ed.selection.select(image);
-                      ed.execCommand('mceRemoveNode');
+          function createDialogContent() {
+              var html = '' +
+                  '<div class="mceForm">' +
+                  '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
+                  '<div class="mceModalRow">' +
+                  '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
+                  '   <div class="mceModalControl mceModalControlAppend">' +
+                  '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
+                  '       <select id="' + ed.id + '_blob_mimetype">' +
+                  '           <option value="jpeg">jpeg</option>' +
+                  '           <option value="png">png</option>' +
+                  '       </select>' +
+                  '   </div>' +
+                  '</div>' +
+                  '<div class="mceModalRow">' +
+                  '   <label for="' + ed.id + '_blob_quality">' + ed.getLang('dlg.quality', 'Quality') + '</label>' +
+                  '   <div class="mceModalControl">' +
+                  '       <select id="' + ed.id + '_blob_quality" class="mce-flex-25">';
 
-                      var node = ed.selection.getNode();
+              each([100, 90, 80, 70, 60, 50, 40, 30, 20, 10], function (value) {
+                  html += '<option value="' + value + '">' + value + '</option>';
+              });
 
-                      // restore bogus break
-                      if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
-                          ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
-                      }
-                  }
+              html += '' +
+                  '       </select>' +
+                  '       <span role="presentation">%</span>' +
+                  '   </div>' +
+                  '</div>' +
+                  '</div>';
+
+              return html;
+          }
+
+          function showUploadError(message) {
+              ed.windowManager.alert({
+                  text: message,
+                  title: ed.getLang('upload.error', 'Upload Error')
               });
           }
 
-          function processImages(images) {
-              var cachedPromises = {};
+          // replace the marker with the element created by the uploader
+          function replaceMarker(uploader, data) {
+              var elm = uploader.insertUploadedFile(data);
 
-              var promises = ibis.map(images, function (img) {
-                  var newPromise;
+              if (!elm || elm.nodeName !== 'IMG') {
+                  return;
+              }
 
-                  if (cachedPromises[img.src]) {
-                      // Since the cached promise will return the cached image
-                      // We need to wrap it and resolve with the actual image
-                      return new Promise(function (resolve) {
-                          cachedPromises[img.src].then(function (imageInfo) {
-                              if (typeof imageInfo === 'string') { // error apparently
-                                  return imageInfo;
-                              }
-                              resolve({
-                                  image: img,
-                                  blobInfo: imageInfo.blobInfo
-                              });
-                          });
-                      });
-                  }
+              // the marker is selected so that it is replaced by the inserted content. An undo level
+              // must not be added here as it would store the marker and restore it on undo
+              ed.selection.select(data.marker);
 
-                  newPromise = new Promise(function (resolve, reject) {
-                      imageToBlobInfo(BlobCache, img, resolve, reject);
-                  }).then(function (result) {
-                      delete cachedPromises[result.image.src];
-                      return result;
-                  })['catch'](function (error) {
-                      delete cachedPromises[img.src];
-                      return error;
-                  });
+              elm.setAttribute('data-mce-tmp', '1');
 
-                  cachedPromises[img.src] = newPromise;
+              ed.execCommand('mceInsertContent', false, ed.dom.getOuterHTML(elm));
 
-                  return newPromise;
+              each(ed.dom.select('[data-mce-tmp]'), function (node) {
+                  ed.selection.select(node);
+                  node.removeAttribute('data-mce-tmp');
               });
-
-              return Promise.all(promises);
           }
-
-          ed.onInit.add(function () {
-              ed.onPasteBeforeInsert.add(function (ed, o) {
-                  var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
-                  var node = ed.dom.create('div', 0, o.content), images = ibis.grep(ed.dom.select('img[src]', node), function (img) {
-                      var src = img.getAttribute('src');
-
-                      if (img.hasAttribute('data-mce-bogus')) {
-                          return false;
-                      }
-
-                      if (img.hasAttribute('data-mce-placeholder')) {
-                          return false;
-                      }
-
-                      if (img.hasAttribute('data-mce-upload-marker')) {
-                          return false;
-                      }
-
-                      if (!src || src == transparentSrc) {
-                          return false;
-                      }
-
-                      if (src.indexOf('blob:') === 0) {
-                          return true;
-                      }
-
-                      if (src.indexOf('data:') === 0) {
-                          return true;
-                      }
-
-                      return false;
-                  });
-
-                  if (images.length) {
-                      var promises = [];
-
-                      processImages(images).then(function (result) {
-                          each(result, function (item) {
-                              if (typeof item == 'string') {
-                                  return;
-                              }
-
-                              ed.selection.select(findMarker(item.image));
-                              ed.selection.scrollIntoView();
-
-                              promises.push(uploadPastedImage(item.image, item.blobInfo));
-                          });
-                      });
-
-                      Promise.all(promises).then();
-                  }
-              });
-          });
 
           function uploadPastedImage(marker, blobInfo) {
-              return new Promise(function (resolve, reject) {
+              return new Promise(function (resolve) {
                   // no suitable uploaders, remove blob
                   if (!uploaders.length) {
                       removeMarker(marker);
-
                       return resolve();
                   }
 
-                  var html = '' +
-                      '<div class="mceForm">' +
-                      '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
-                      '<div class="mceModalRow">' +
-                      '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
-                      '   <div class="mceModalControl mceModalControlAppend">' +
-                      '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
-                      '       <select id="' + ed.id + '_blob_mimetype">' +
-                      '           <option value="jpeg">jpeg</option>' +
-                      '           <option value="png">png</option>' +
-                      '       </select>' +
-                      '   </div>' +
-                      '</div>' +
-                      '<div class="mceModalRow">' +
-                      '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.quality', 'Quality') + '</label>' +
-                      '   <div class="mceModalControl">' +
-                      '       <select id="' + ed.id + '_blob_quality" class="mce-flex-25">' +
-                      '           <option value="100">100</option>' +
-                      '           <option value="90">90</option>' +
-                      '           <option value="80">80</option>' +
-                      '           <option value="70">70</option>' +
-                      '           <option value="60">60</option>' +
-                      '           <option value="50">50</option>' +
-                      '           <option value="40">40</option>' +
-                      '           <option value="30">30</option>' +
-                      '           <option value="20">20</option>' +
-                      '           <option value="10">10</option>' +
-                      '       </select>' +
-                      '       <span role="presentation">%</span>' +
-                      '   </div>' +
-                      '</div>' +
-                      '</div>';
+                  function cancel() {
+                      removeMarker(marker);
+                      resolve();
+                  }
+
+                  function submit() {
+                      var filename = DOM.getValue(ed.id + '_blob_input');
+
+                      if (!filename) {
+                          return cancel();
+                      }
+
+                      // remove some common characters
+                      filename = filename.replace(invalidCharacters, '');
+
+                      if (invalidExtensions.test(filename)) {
+                          showUploadError(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                          return cancel();
+                      }
+
+                      var uploader = getUploader(blobInfo);
+
+                      if (!uploader) {
+                          return cancel();
+                      }
+
+                      var mimetype = DOM.getValue(ed.id + '_blob_mimetype') || getImageExtension(blobInfo.filename()) || 'jpeg';
+                      var quality = DOM.getValue(ed.id + '_blob_quality') || 100;
+
+                      var props = {
+                          method: 'upload',
+                          id: Uuid.uuid('wf_'),
+                          inline: 1,
+                          name: filename + '.' + mimetype,
+                          url: uploader.url + '&' + ed.settings.query,
+                          mimetype: 'image/' + mimetype,
+                          quality: quality
+                      };
+
+                      var image = findMarker(marker);
+
+                      ed.setProgressState(true);
+
+                      uploadHandler(props, blobInfo, function (data) {
+                          if (image) {
+                              data.marker = image;
+
+                              replaceMarker(uploader.instance, data);
+
+                              ed.dom.remove(image);
+                          }
+
+                          ed.setProgressState(false);
+
+                          win.close();
+
+                          return resolve();
+                      }, function (error) {
+                          showUploadError(error);
+
+                          ed.setProgressState(false);
+
+                          return resolve();
+                      }, function () { });
+                  }
 
                   var win = ed.windowManager.open({
                       title: ed.getLang('dlg.name', 'Name'),
-                      content: html,
+                      content: createDialogContent(),
                       size: 'mce-modal-landscape-small',
                       buttons: [
                           {
@@ -53598,115 +53669,67 @@
                           {
                               title: ed.getLang('submit', 'Submit'),
                               id: 'submit',
-                              onclick: function (e) {
-                                  var filename = DOM.getValue(ed.id + '_blob_input');
-
-                                  if (!filename) {
-                                      removeMarker(marker);
-                                      return resolve();
-                                  }
-
-                                  // remove some common characters
-                                  filename = filename.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
-
-                                  // check for extension in file name, eg. image.php.jpg
-                                  if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
-                                      ed.windowManager.alert({
-                                          text: ed.getLang('upload.file_extension_error', 'File type not supported'),
-                                          title: ed.getLang('upload.error', 'Upload Error')
-                                      });
-
-                                      removeMarker(marker);
-                                      return resolve();
-                                  }
-
-                                  var url, uploader;
-
-                                  each(uploaders, function (instance) {
-                                      if (!url) {
-                                          url = instance.getUploadURL({ name: blobInfo.filename() });
-
-                                          if (url) {
-                                              uploader = instance;
-                                              return false;
-                                          }
-                                      }
-                                  });
-
-                                  if (!url) {
-                                      removeMarker(marker);
-                                      return resolve();
-                                  }
-
-                                  var ext = getImageExtension(blobInfo.filename()) || 'jpeg';
-
-                                  var quality = DOM.getValue(ed.id + '_blob_quality') || 100;
-                                  var mimetype = DOM.getValue(ed.id + '_blob_mimetype') || ext;
-
-                                  var props = {
-                                      method: 'upload',
-                                      id: Uuid.uuid('wf_'),
-                                      inline: 1,
-                                      name: filename,
-                                      url: url + '&' + ed.settings.query,
-                                      mimetype: 'image/' + mimetype,
-                                      quality: quality
-                                  };
-
-                                  var images = ibis.grep(ed.dom.select('img[src]'), function (image) {
-                                      return image.src == marker.src;
-                                  });
-
-                                  ed.setProgressState(true);
-
-                                  uploadHandler(props, blobInfo, function (data) {
-                                      data.marker = images[0];
-
-                                      var elm = uploader.insertUploadedFile(data);
-
-                                      if (elm) {
-                                          ed.undoManager.add();
-                                          // replace marker with new element
-                                          ed.dom.replace(elm, images[0]);
-                                          // select new image
-                                          ed.selection.select(elm);
-                                      }
-
-                                      ed.setProgressState(false);
-
-                                      win.close();
-
-                                      return resolve();
-
-                                  }, function (error) {
-
-                                      ed.windowManager.alert({
-                                          text: error,
-                                          title: ed.getLang('upload.error', 'Upload Error')
-                                      });
-
-                                      ed.setProgressState(false);
-
-                                      return resolve();
-                                  }, function () { });
-                              },
+                              onclick: submit,
                               classes: 'primary'
                           }
                       ],
                       open: function () {
-                          //DOM.select('input + span', this.elm)[0].innerText = '.' + getImageExtension(blobInfo.filename());
-
                           window.setTimeout(function () {
                               DOM.get(ed.id + '_blob_input').focus();
                           }, 10);
                       },
-                      close: function () {
-                          removeMarker(marker);
-                          return resolve();
-                      }
+                      close: cancel
                   });
               });
           }
+
+          ed.onInit.add(function () {
+              // the paste that inserts the image stores it in an undo level, so it is stripped out here
+              ed.undoManager.onBeforeAdd.add(function (um, level) {
+                  level.content = removePendingImages(level.content);
+              });
+
+              ed.onPasteBeforeInsert.add(function (ed, o) {
+                  var node = ed.dom.create('div', 0, o.content);
+                  var images = ibis.grep(ed.dom.select('img[src]', node), isUploadableImage);
+
+                  if (!images.length) {
+                      return;
+                  }
+
+                  // flag the images before they are pasted, so that they are kept out of the undo level
+                  each(images, function (img) {
+                      pending[img.getAttribute('src')] = true;
+                  });
+
+                  processImages(images).then(function (result) {
+                      // upload in sequence so that only one dialog is open at a time
+                      return result.reduce(function (promise, item, index) {
+                          // the image has been uploaded, removed or could not be converted
+                          function done() {
+                              delete pending[images[index].getAttribute('src')];
+                          }
+
+                          return promise.then(function () {
+                              if (!item) {
+                                  return;
+                              }
+
+                              var image = findMarker(item.image);
+
+                              if (!image) {
+                                  return;
+                              }
+
+                              ed.selection.select(image);
+                              ed.selection.scrollIntoView();
+
+                              return uploadPastedImage(item.image, item.blobInfo);
+                          }).then(done, done);
+                      }, Promise.resolve());
+                  });
+              });
+          });
       });
   })();
 
