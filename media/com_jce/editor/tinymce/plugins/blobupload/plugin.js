@@ -49,6 +49,46 @@
         return 'Invalid JSON response!';
     }
 
+    /**
+     * Re-encode a blob as the selected type, so the data sent matches the name it is stored under.
+     * The server derives the extension from the uploaded file, it is not told what to use.
+     */
+    function convertBlob(blob, mimetype, quality) {
+        return new Promise(function (resolve) {
+            var type = 'image/' + mimetype;
+
+            // already the target type, nothing to do
+            if (blob.type === type) {
+                return resolve(blob);
+            }
+
+            var url = URL.createObjectURL(blob), image = new Image();
+
+            image.onload = function () {
+                var canvas = document.createElement('canvas');
+
+                canvas.width = image.naturalWidth;
+                canvas.height = image.naturalHeight;
+
+                canvas.getContext('2d').drawImage(image, 0, 0);
+
+                URL.revokeObjectURL(url);
+
+                canvas.toBlob(function (converted) {
+                    // toBlob returns null when the type is unsupported, fall back to the original
+                    resolve(converted || blob);
+                }, type, (parseInt(quality, 10) || 100) / 100);
+            };
+
+            image.onerror = function () {
+                URL.revokeObjectURL(url);
+                resolve(blob);
+            };
+
+            image.src = url;
+        });
+    }
+
     function uploadHandler(settings, blobInfo, success, failure, progress) {
         var xhr = new XMLHttpRequest(), formData = new FormData();
 
@@ -84,11 +124,13 @@
             success(json.result.files[0]);
         };
 
-        formData.append('file', blobInfo.blob(), blobInfo.filename());
+        // send the blob under the name it will be stored as, so the extension the server derives
+        // from the upload matches the data
+        formData.append('file', settings.blob || blobInfo.blob(), settings.name || blobInfo.filename());
 
         // Add multipart params
         each(settings, function (value, name) {
-            if (name == 'url' || name == 'multipart') {
+            if (name == 'url' || name == 'multipart' || name == 'blob') {
                 return true;
             }
 
@@ -373,41 +415,44 @@
                     var mimetype = DOM.getValue(ed.id + '_blob_mimetype') || getImageExtension(blobInfo.filename()) || 'jpeg';
                     var quality = DOM.getValue(ed.id + '_blob_quality') || 100;
 
-                    var props = {
-                        method: 'upload',
-                        id: Uuid.uuid('wf_'),
-                        inline: 1,
-                        name: filename + '.' + mimetype,
-                        url: uploader.url + '&' + ed.settings.query,
-                        mimetype: 'image/' + mimetype,
-                        quality: quality
-                    };
-
                     var image = findMarker(marker);
 
                     ed.setProgressState(true);
 
-                    uploadHandler(props, blobInfo, function (data) {
-                        if (image) {
-                            data.marker = image;
+                    // the blob is converted here rather than server side, so the data and the
+                    // name agree and the server can derive the extension from the upload itself
+                    convertBlob(blobInfo.blob(), mimetype, quality).then(function (blob) {
+                        var props = {
+                            method: 'upload',
+                            id: Uuid.uuid('wf_'),
+                            inline: 1,
+                            name: filename + '.' + mimetype,
+                            url: uploader.url + '&' + ed.settings.query,
+                            blob: blob
+                        };
 
-                            replaceMarker(uploader.instance, data);
+                        uploadHandler(props, blobInfo, function (data) {
+                            if (image) {
+                                data.marker = image;
 
-                            ed.dom.remove(image);
-                        }
+                                replaceMarker(uploader.instance, data);
 
-                        ed.setProgressState(false);
+                                ed.dom.remove(image);
+                            }
 
-                        win.close();
+                            ed.setProgressState(false);
 
-                        return resolve();
-                    }, function (error) {
-                        showUploadError(error);
+                            win.close();
 
-                        ed.setProgressState(false);
+                            return resolve();
+                        }, function (error) {
+                            showUploadError(error);
 
-                        return resolve();
-                    }, function () { });
+                            ed.setProgressState(false);
+
+                            return resolve();
+                        }, function () { });
+                    });
                 }
 
                 var win = ed.windowManager.open({
