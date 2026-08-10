@@ -22,7 +22,7 @@ trait UploadValidationTrait
      *
      * @param array $file $_FILES entry
      */
-    private function validateUploadedFile($file)
+    public function validateUploadedFile($file)
     {
         if (empty($file) || empty($file['tmp_name'])) {
             throw new \InvalidArgumentException('Upload Failed: No data');
