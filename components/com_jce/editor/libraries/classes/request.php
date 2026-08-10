@@ -178,6 +178,10 @@ final class WFRequest extends CMSObject
             $json = $raw ? json_decode($raw, false, 32) : null;
         }
 
+        if (!$method && !$json) {
+            throw new InvalidArgumentException("Invalid Data", 403);
+        }
+
         // get current request id
         $id = empty($json->id) ? $app->input->getWord('id') : $json->id;
 
