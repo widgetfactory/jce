@@ -2206,8 +2206,14 @@ class WFFileBrowser extends CMSObject
         }
 
         // validate and process the user-supplied destination name
-        $name = (string) $app->input->get('name', $file['name'], 'STRING');
+        $name = (string) $app->input->get('name', '', 'STRING');
         $name = rawurldecode($name);
+
+        // the uploaded file name is not used as a fallback, so the request must supply one
+        if ($name === '') {
+            @unlink($file['tmp_name']);
+            throw new InvalidArgumentException('Upload Failed: No file name was provided.');
+        }
 
         if (WFUtility::validateFileName($name, $allowed) === false) {
             @unlink($file['tmp_name']);
@@ -2691,6 +2697,9 @@ class WFFileBrowser extends CMSObject
         // the name of the new folder
         $name = (string) rawurldecode($name);
 
+        // a folder name, not a path
+        WFUtility::checkFolderName($name);
+
         $target = $this->preparePath($target);
 
         // the target must be an existing, accessible directory
@@ -2698,11 +2707,19 @@ class WFFileBrowser extends CMSObject
 
         $filesystem = $this->getFileSystem();
 
+        // check for extension in destination name
+        if (WFUtility::validateFileName($name) === false) {
+            throw new InvalidArgumentException('Action Failed: The folder name is invalid.');
+        }
+
         $name = WFUtility::makeSafe($name, $this->get('websafe_mode'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+
+        // guard against makeSafe ever producing a path
+        WFUtility::checkFolderName($name);
 
         // check for extension in destination name
         if (WFUtility::validateFileName($name) === false) {
-            throw new InvalidArgumentException('Action Failed: The file name is invalid.');
+            throw new InvalidArgumentException('Action Failed: The folder name is invalid.');
         }
 
         $result = $filesystem->createFolder($target, $name);
