@@ -70,8 +70,9 @@ final class WFResponse
             header($key . ': ' . $value);
         }
 
-        // only echo response if an id is set
-        if (!empty($this->id)) {
+        // only echo response if an id is set, or an error must be reported. A parse failure
+        // loses the id with the body, and a silent 200 is indistinguishable from success
+        if (!empty($this->id) || !empty($this->error)) {
             echo json_encode($data);
         }
 
