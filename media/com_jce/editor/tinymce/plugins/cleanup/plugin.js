@@ -25,7 +25,14 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
     'onstalled', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting',
     'oncanplay', 'oncanplaythrough', 'ondurationchange', 'onemptied', 'onended',
     'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousewheel',
-    'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange'
+    'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange',
+    // anything parked on input must appear here or it cannot be restored on output
+    'onauxclick', 'onbeforeinput', 'onbeforetoggle', 'onfocusin', 'onfocusout', 'onscrollend',
+    'onpointerdown', 'onpointerup', 'onpointermove', 'onpointerover', 'onpointerout',
+    'onpointerenter', 'onpointerleave', 'onpointercancel', 'ongotpointercapture', 'onlostpointercapture',
+    'ontouchstart', 'ontouchend', 'ontouchmove', 'ontouchcancel',
+    'onanimationstart', 'onanimationend', 'onanimationiteration',
+    'ontransitionstart', 'ontransitionend', 'ontransitionrun', 'ontransitioncancel'
   ];
 
   ed.onPreInit.add(function () {
@@ -186,7 +193,10 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
 
     o.content = processAttributes(ed, o.content);
 
-    if (/data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
+    // content loaded from the element is external, so it can never carry the internal namespace
+    var stripInternal = !!o.load && /data-mce-/i.test(o.content);
+
+    if (stripInternal || /data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
       var doc = document.implementation.createHTMLDocument('');
       var div = doc.createElement('div');
       div.innerHTML = o.content;
@@ -195,11 +205,12 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
         var attrs = node.attributes, names = [], i;
 
         for (i = attrs.length - 1; i >= 0; i--) {
-          names.push(attrs[i].name);
+          names.push(attrs[i].name.toLowerCase());
         }
 
+        // the whole internal namespace on load, protected event attributes on every path
         each(names, function (name) {
-          if (name.toLowerCase().indexOf('data-mce-on') === 0) {
+          if (name.indexOf(stripInternal ? 'data-mce-' : 'data-mce-on') === 0) {
             node.removeAttribute(name);
           }
         });
@@ -209,7 +220,7 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
         }
 
         each(names, function (name) {
-          if (name.toLowerCase().indexOf('on') === 0) {
+          if (name.indexOf('on') === 0) {
             node.setAttribute('data-mce-' + name, node.getAttribute(name));
             node.removeAttribute(name);
           }

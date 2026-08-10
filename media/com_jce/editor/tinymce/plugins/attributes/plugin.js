@@ -151,6 +151,12 @@
         for (i = attrs.length - 1; i >= 0; i--) {
             var name = attrs[i].name;
 
+            // an event attribute is stored in the internal namespace, so present it under its own name
+            if (name.indexOf('data-mce-on') === 0) {
+                attribs[name.replace('data-mce-', '')] = node.getAttribute(name);
+                continue;
+            }
+
             // skip internal, eg: _moz_resizing or data-mce-style
             if (name.charAt(0) === "_" || name.indexOf('-mce-') !== -1) {
                 continue;
@@ -221,11 +227,6 @@
                     }
 
                     if (value) {
-
-                        if (name.indexOf('on') == 0) {
-                            value = ed.dom.getAttrib(node, 'data-mce-' + name) || value;
-                        }
-
                         attr[name] = value;
                         custom.push(attr);
                     }
@@ -320,11 +321,16 @@
 
                         // manage onclick type events and update nodeAttribs map
                         each(data, function (value, name) {
-                            if (name == 'onclick' || name == 'ondblclick') {
+                            if (name.indexOf('on') === 0) {
                                 // remove original value
                                 delete data[name];
-                                // add proxy value
-                                data['data-mce-' + name] = value;
+
+                                // only store it when the profile allows event attributes, as nothing
+                                // converts it back on save otherwise
+                                if (ed.settings.allow_event_attributes) {
+                                    // add proxy value
+                                    data['data-mce-' + name] = value;
+                                }
 
                                 delete nodeAttribs['data-mce-' + name];
                             }
@@ -343,7 +349,7 @@
                             each(nodeAttribs, function (val, name) {
                                 data[name] = null;
 
-                                if (name == 'onclick' || name == 'ondblclick') {
+                                if (name.indexOf('on') === 0) {
                                     data['data-mce-' + name] = null;
                                 }
                             });
