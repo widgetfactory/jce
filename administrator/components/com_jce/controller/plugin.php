@@ -43,6 +43,10 @@ class JceControllerPlugin extends BaseController
     {
         // check for session token
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
+
+        if (!in_array($task, ['display', 'xhr'], true)) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
         
         $wf = WFApplication::getInstance();
 
