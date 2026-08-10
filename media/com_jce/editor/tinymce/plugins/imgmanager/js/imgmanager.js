@@ -218,7 +218,7 @@
 
                 // process remaining attributes
                 $.each(attribs, function (key, val) {
-                    if (key === 'data-mouseover' || key === 'data-mouseout' || key.indexOf('on') === 0) {
+                    if (key === 'data-mce-mouseover' || key === 'data-mce-mouseout' || key.indexOf('on') === 0) {
                         return true;
                     }
 
@@ -371,8 +371,8 @@
             }
             
             args = $.extend(args, {
-                'data-mouseover': over ? ed.convertURL(over) : '',
-                'data-mouseout': out ? ed.convertURL(out) : ''
+                'data-mce-mouseover': over ? ed.convertURL(over) : '',
+                'data-mce-mouseout': out ? ed.convertURL(out) : ''
             });
 
             el = ed.selection.getNode();
