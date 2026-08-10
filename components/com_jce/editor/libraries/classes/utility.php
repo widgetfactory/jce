@@ -376,6 +376,40 @@ abstract class WFUtility
     }
 
     /**
+     * Validate a folder name supplied by the user.
+     *
+     * @param string $name The name to validate.
+     *
+     * @return bool True if the value is a single name.
+     *
+     * @throws InvalidArgumentException If the value is a path, or fails checkPath().
+     */
+    public static function checkFolderName($name)
+    {
+        self::checkPath($name);
+
+        // fold compatibility characters first, so the checks cannot be evaded by encoding,
+        // eg: a fullwidth full stop U+FF0E in place of "."
+        if (class_exists('Normalizer')) {
+            $normalized = \Normalizer::normalize($name, \Normalizer::FORM_KC);
+
+            if ($normalized !== false) {
+                $name = $normalized;
+            }
+        } else {
+            $name = self::foldFullwidthAscii($name);
+        }
+
+        // ":" is valid in a path as the store prefix separator, but never in a name.
+        // consecutive dots are stripped by makeSafe, so reject them rather than reduce the name
+        if (self::mb_basename($name) !== $name || strpos($name, ':') !== false || strpos($name, '..') !== false) {
+            throw new InvalidArgumentException('Invalid folder name');
+        }
+
+        return true;
+    }
+
+    /**
      * Validates a file or folder name for safe listing/display.
      *
      * Unlike checkPath(), this does NOT restrict the character set, so that legitimate
@@ -1365,6 +1399,9 @@ abstract class WFUtility
             // intl unavailable - fold the fullwidth ascii block as a minimal fallback
             $name = self::foldFullwidthAscii($name);
         }
+
+        // fold latin accents to ascii.
+        $name = self::utf8_latin_to_ascii($name);
 
         // first character is a dot
         if ($name[0] === '.') {
