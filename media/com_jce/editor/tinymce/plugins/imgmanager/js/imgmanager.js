@@ -11,6 +11,12 @@
 /* global Wf, jQuery, tinyMCEPopup */
 
 (function ($) {
+
+    function toSrcSwap(ed, value) {
+        value = ed.convertURL(value);
+        return /['"<>\\]/.test(value) ? '' : "this.src='" + value + "';";
+    }
+
     function getAttributes(ed, node) {
         var i, attrs = node.attributes, attribs = {};
 
@@ -189,9 +195,8 @@
                 // Longdesc may contain absolute url too
                 $('#longdesc').val(ed.convertURL(ed.dom.getAttrib(n, 'longdesc')));
 
-                $.each(['mouseover', 'mouseout'], function (i, key) {
-                    // get value from data-* attributes
-                    var val = ed.dom.getAttrib(n, 'data-' + key);
+                $.each(['onmouseover', 'onmouseout'], function (i, key) {
+                    var val = ed.dom.getAttrib(n, 'data-mce-' + key);
                     // trim whitespace
                     val = $.trim(val);
                     // clean url
@@ -200,12 +205,12 @@
                     val = ed.convertURL(val);
 
                     // set src as default
-                    if (key == 'mouseout' && !val) {
+                    if (key == 'onmouseout' && !val) {
                         val = src;
                     }
 
                     // update value with on prefix
-                    $('#on' + key).val(val);
+                    $('#' + key).val(val);
                 });
 
                 br = n.nextSibling;
@@ -218,7 +223,11 @@
 
                 // process remaining attributes
                 $.each(attribs, function (key, val) {
-                    if (key === 'data-mce-mouseover' || key === 'data-mce-mouseout' || key.indexOf('on') === 0) {
+                    if (key === 'data-mce-onmouseover' || key === 'data-mce-onmouseout') {
+                        return true;
+                    }
+
+                    if (key.indexOf('data-mce-on') === 0 || key.indexOf('on') === 0) {
                         return true;
                     }
 
@@ -371,8 +380,8 @@
             }
             
             args = $.extend(args, {
-                'data-mce-mouseover': over ? ed.convertURL(over) : '',
-                'data-mce-mouseout': out ? ed.convertURL(out) : ''
+                'data-mce-onmouseover': over ? toSrcSwap(ed, over) : '',
+                'data-mce-onmouseout': out ? toSrcSwap(ed, out) : ''
             });
 
             el = ed.selection.getNode();

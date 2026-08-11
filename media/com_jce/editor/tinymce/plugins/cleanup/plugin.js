@@ -14,27 +14,6 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
 
   var padding = createPadding(Node);
 
-  var eventAttrs = [
-    'onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onmouseenter', 'onmouseleave',
-    'onkeydown', 'onkeypress', 'onkeyup',
-    'onload', 'onunload', 'onabort', 'onerror', 'onresize', 'onscroll', 'onselect',
-    'onchange', 'onsubmit', 'onreset', 'onfocus', 'onblur', 'oninput', 'oninvalid',
-    'ondragstart', 'ondragenter', 'ondragend', 'ondragleave', 'ondragover', 'ondrop',
-    'oncontextmenu', 'onwheel', 'oncopy', 'oncut', 'onpaste',
-    'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onseeked', 'onseeking',
-    'onstalled', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting',
-    'oncanplay', 'oncanplaythrough', 'ondurationchange', 'onemptied', 'onended',
-    'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousewheel',
-    'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange',
-    // anything parked on input must appear here or it cannot be restored on output
-    'onauxclick', 'onbeforeinput', 'onbeforetoggle', 'onfocusin', 'onfocusout', 'onscrollend',
-    'onpointerdown', 'onpointerup', 'onpointermove', 'onpointerover', 'onpointerout',
-    'onpointerenter', 'onpointerleave', 'onpointercancel', 'ongotpointercapture', 'onlostpointercapture',
-    'ontouchstart', 'ontouchend', 'ontouchmove', 'ontouchcancel',
-    'onanimationstart', 'onanimationend', 'onanimationiteration',
-    'ontransitionstart', 'ontransitionend', 'ontransitionrun', 'ontransitioncancel'
-  ];
-
   ed.onPreInit.add(function () {
     ed.serializer.addAttributeFilter('data-mce-caret', function (nodes) {
       var i = nodes.length;
@@ -85,46 +64,7 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
 
     });
 
-    var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
-      return 'data-mce-' + name;
-    });
-
-    if (ed.settings.allow_event_attributes) {
-      ed.serializer.addAttributeFilter(dataEventAttrs, function (nodes, name) {
-        var i = nodes.length;
-
-        while (i--) {
-          nodes[i].attr(name.slice(9), nodes[i].attr(name));
-          nodes[i].attr(name, null);
-        }
-      });
-    }
-
-    function removeEventAttributes() {
-      each(ed.schema.elements, function (elm) {
-        if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
-          return true;
-        }
-
-        each(elm.attributes, function (obj, name) {
-          if (name.indexOf('on') === 0) {
-            delete elm.attributes[name];
-
-            var idx = tinymce.inArray(elm.attributesOrder, name);
-
-            if (idx !== -1) {
-              elm.attributesOrder.splice(idx, 1);
-            }
-          }
-        });
-      });
-    }
-
     if (ed.settings.verify_html !== false) {
-      if (!ed.settings.allow_event_attributes) {
-        removeEventAttributes();
-      }
-
       var elements = ed.schema.elements;
 
       each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
@@ -191,44 +131,8 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
     o.content = convertFromGeshi(o.content);
     o.content = padding.paddEmptyTags(o.content);
 
-    o.content = processAttributes(ed, o.content);
-
-    // content loaded from the element is external, so it can never carry the internal namespace
-    var stripInternal = !!o.load && /data-mce-/i.test(o.content);
-
-    if (stripInternal || /data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
-      var doc = document.implementation.createHTMLDocument('');
-      var div = doc.createElement('div');
-      div.innerHTML = o.content;
-
-      each(div.querySelectorAll('*'), function (node) {
-        var attrs = node.attributes, names = [], i;
-
-        for (i = attrs.length - 1; i >= 0; i--) {
-          names.push(attrs[i].name.toLowerCase());
-        }
-
-        // the whole internal namespace on load, protected event attributes on every path
-        each(names, function (name) {
-          if (name.indexOf(stripInternal ? 'data-mce-' : 'data-mce-on') === 0) {
-            node.removeAttribute(name);
-          }
-        });
-
-        if (!ed.settings.allow_event_attributes) {
-          return;
-        }
-
-        each(names, function (name) {
-          if (name.indexOf('on') === 0) {
-            node.setAttribute('data-mce-' + name, node.getAttribute(name));
-            node.removeAttribute(name);
-          }
-        });
-      });
-
-      o.content = div.innerHTML;
-    }
+    // only content loaded off the element may be stripped of the internal namespace
+    o.content = processAttributes(ed, o.content, !!o.load);
   });
 
   ed.onPostProcess.add(function (ed, o) {

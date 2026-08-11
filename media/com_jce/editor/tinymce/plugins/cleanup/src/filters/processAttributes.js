@@ -1,11 +1,18 @@
 import { isInvalidAttribute, compileInvalidAttrRules } from '../rules/invalidAttributes';
 import { isInvalidAttributeValue, compileInvalidAttrValueRules } from '../rules/invalidAttributeValues';
 
-export function processAttributes(editor, content) {
+/**
+ * @param {tinymce/Editor} editor
+ * @param {String} content
+ * @param {Boolean} stripInternal Remove data-mce-* attributes, for content loaded off the element
+ *                                only. Internal attributes are legitimate everywhere else, eg: an
+ *                                undo level restoring media placeholders.
+ */
+export function processAttributes(editor, content, stripInternal) {
     var invalidAttribRules = editor.getParam('invalid_attributes', '');
     var invalidAttribValueRules = editor.getParam('invalid_attribute_values', '');
 
-    if (!invalidAttribRules && !invalidAttribValueRules) {
+    if (!stripInternal && !invalidAttribRules && !invalidAttribValueRules) {
         return content;
     }
 
@@ -16,8 +23,16 @@ export function processAttributes(editor, content) {
     var i = nodes.length;
     var node;
 
-    var attrRules = compileInvalidAttrRules(invalidAttribRules);
-    var valueRules = compileInvalidAttrValueRules(invalidAttribValueRules);
+    var attrRules = [];
+    var valueRules = [];
+
+    if (invalidAttribRules) {
+        attrRules = compileInvalidAttrRules(invalidAttribRules);
+    }
+
+    if (invalidAttribValueRules) {
+        valueRules = compileInvalidAttrValueRules(invalidAttribValueRules);
+    }
 
     while (i--) {
         node = nodes[i];
@@ -35,6 +50,12 @@ export function processAttributes(editor, content) {
 
             attrName = attr.name.toLowerCase();
             attrValue = node.getAttribute(attrName);
+
+            // remove all internal attributes
+            if (stripInternal && attrName.indexOf('data-mce-') === 0) {
+                node.removeAttribute(attrName);
+                continue;
+            }
 
             if (isInvalidAttribute(attrName, attrRules) ||
                 isInvalidAttributeValue(nodeName, attrName, attrValue, valueRules)) {
