@@ -2540,7 +2540,7 @@ class WFFileBrowser extends CMSObject
 
             $item = $this->resolvePath($item);
 
-            $this->checkItemAccess($item, 'move', 'Copy Failed');
+            $this->checkItemAccess($item, 'move', 'Copy Failed', 'source');
 
             $target = WFUtility::makePath($destination, WFUtility::mb_basename($item));
 
