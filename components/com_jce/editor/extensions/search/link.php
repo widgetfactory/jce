@@ -19,10 +19,32 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\String\StringHelper;
 
+/**
+ * Link search extension.
+ *
+ * Provides the "Search" tab of the editor Link dialog by loading Joomla search
+ * adapters (either the bundled ones in the adapter/ folder, or installed
+ * "search" group plugins) and exposing their results to the editor.
+ */
 class WFLinkSearchExtension extends WFSearchExtension
 {
-    private $enabled = array();
+    /**
+     * Names of the search adapters that were successfully loaded.
+     *
+     * @var array
+     */
+    private $adapters = array();
 
+    /**
+     * Load a bundled search adapter from the adapter/ folder.
+     *
+     * The adapter is skipped silently if the associated component is disabled,
+     * the adapter file is missing, or the expected class is not defined.
+     *
+     * @param string $plugin Adapter name, eg: "content"
+     *
+     * @return void
+     */
     protected function loadDefaultAdapter($plugin)
     {
         $app = Factory::getApplication();
@@ -69,20 +91,22 @@ class WFLinkSearchExtension extends WFSearchExtension
             $instance = new $className($dispatcher, (array) $config);
         }
 
-        $this->enabled[] = $plugin;
+        $this->adapters[] = $plugin;
     }
 
     /**
-     * Constructor activating the default information of the class.
+     * Constructor.
+     *
+     * Loads the configured search adapters and registers the request methods
+     * callable from the editor.
      */
     public function __construct()
     {
         parent::__construct();
 
-        $request = WFRequest::getInstance();
-
-        $request->setRequest(array($this, 'doSearch'));
-        $request->setRequest(array($this, 'getAreas'));
+        if (!$this->isEnabled()) {
+            return;
+        }
 
         $wf = WFEditorPlugin::getInstance();
 
@@ -112,13 +136,23 @@ class WFLinkSearchExtension extends WFSearchExtension
 
             // check plugin imports correctly - plugin may have a db entry, but is missing files
             if (PluginHelper::importPlugin('search', $plugin)) {
-                $this->enabled[] = $plugin;
+                $this->adapters[] = $plugin;
             }
         }
 
         PluginHelper::importPlugin('jce');
+
+        $request = WFRequest::getInstance();
+
+        $request->setRequest(array($this, 'doSearch'));
+        $request->setRequest(array($this, 'getAreas'));
     }
 
+    /**
+     * Add the extension scripts and stylesheets to the dialog document.
+     *
+     * @return void
+     */
     public function display()
     {
         parent::display();
@@ -128,14 +162,22 @@ class WFLinkSearchExtension extends WFSearchExtension
         $document->addStylesheet(array('link'), 'extensions.search.css');
     }
 
+    /**
+     * Check whether link search is enabled for the active profile.
+     *
+     * @return bool
+     */
     public function isEnabled()
     {
         $wf = WFEditorPlugin::getInstance();
-        return (bool) $wf->getParam('search.link.enable', 1) && !empty($this->enabled);
+        
+        return (bool) $wf->getParam('search.link.enable', 1);
     }
 
     /**
-     * Method to get the search areas.
+     * Get the translated search areas provided by the loaded adapters.
+     *
+     * @return array Area key => translated area name
      */
     public function getAreas()
     {
@@ -159,9 +201,16 @@ class WFLinkSearchExtension extends WFSearchExtension
         return $results;
     }
 
-    /*
-     * Truncate search text
+    /**
+     * Truncate search text to a window of characters around the search word.
+     *
      * This method uses portions of components/com_finder/views/search/tmpl/default_result.php
+     *
+     * @param string $text       Text to truncate
+     * @param string $searchword Word to centre the truncated text on
+     *
+     * @return string Truncated text
+     *
      * @copyright Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
      */
     private function truncateText($text, $searchword)
@@ -189,9 +238,16 @@ class WFLinkSearchExtension extends WFSearchExtension
         return $text;
     }
 
-    /*
-     * Prepare search content by clean and truncating
+    /**
+     * Prepare search content by cleaning, truncating and highlighting it.
+     *
      * This method uses portions of SearchHelper::prepareSearchContent from administrator/components/com_search/helpers/search.php
+     *
+     * @param string $text       Raw result text
+     * @param string $searchword Word to highlight
+     *
+     * @return string Cleaned text with the search word wrapped in a mark element
+     *
      * @copyright Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
      */
     public function prepareSearchContent($text, $searchword)
@@ -214,15 +270,18 @@ class WFLinkSearchExtension extends WFSearchExtension
         return $text;
     }
 
-    /*
-     * Render Search fields
+    /**
+     * Render the search form fields.
+     *
      * This method uses portions of SearchViewSearch::display from components/com_search/views/search/view.html.php
+     *
+     * @return string Empty string if search is disabled or no adapters loaded, otherwise the view is displayed
+     *
      * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
      */
-
     public function render()
     {
-        if (!$this->isEnabled()) {
+        if (!$this->isEnabled() || empty($this->adapters)) {
             return '';
         }
 
@@ -251,6 +310,13 @@ class WFLinkSearchExtension extends WFSearchExtension
         $view->display();
     }
 
+    /**
+     * Resolve a search area name from the "option" value of a result url.
+     *
+     * @param string $url Result url
+     *
+     * @return string Translated component name, or an empty string if it cannot be determined
+     */
     private static function getSearchAreaFromUrl($url)
     {
         $query = parse_url($url, PHP_URL_QUERY);
@@ -277,12 +343,17 @@ class WFLinkSearchExtension extends WFSearchExtension
     }
 
     /**
-     * Process search.
+     * Process a search request and return the results grouped by area.
      *
-     * @param type $query Search query
-     * @return array Search Results
+     * The query may be prefixed with an area name, eg: "Articles:example", to
+     * restrict the search to that area. Search phrase, ordering and areas may
+     * also be passed as post data.
      *
      * This method uses portions of SearchController::search from components/com_search/controller.php
+     *
+     * @param string $query Search query
+     *
+     * @return array Search results grouped by area name
      *
      * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved
      */
@@ -416,6 +487,13 @@ class WFLinkSearchExtension extends WFSearchExtension
         return $results;
     }
 
+    /**
+     * Clean up a result url according to the profile link parameters.
+     *
+     * @param string $url Result url
+     *
+     * @return string Url with the alias and/or Itemid removed as required
+     */
     private static function route($url)
     {
         $wf = WFEditorPlugin::getInstance();
@@ -436,6 +514,16 @@ class WFLinkSearchExtension extends WFSearchExtension
         return $url;
     }
 
+    /**
+     * Extract anchor names from result content.
+     *
+     * Only anchors without an href attribute are returned, as those with one
+     * are links rather than link targets.
+     *
+     * @param string $content Result content
+     *
+     * @return array Anchor names
+     */
     private static function getAnchors($content)
     {
         preg_match_all('#<a([^>]+)(name|id)="([a-z]+[\w\-\:\.]*)"([^>]*)>#i', $content, $matches, PREG_SET_ORDER);
