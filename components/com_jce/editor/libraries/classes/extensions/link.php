@@ -15,34 +15,68 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
 
+/**
+ * Link extension.
+ *
+ * Loads the installed "links" extensions, eg: Joomla Links, and provides the
+ * link tree displayed in the editor Link dialog, along with a number of helper
+ * methods shared by the individual link extensions.
+ */
 class WFLinkExtension extends WFExtension
 {
-    /*
-     *  @var varchar
+    /**
+     * Loaded link extension instances.
+     *
+     * @var array
      */
-
     private $extensions = array();
+
+    /**
+     * Singleton instance.
+     *
+     * @var WFLinkExtension
+     */
     protected static $instance;
+
+    /**
+     * Link extension instances, keyed by extension name.
+     *
+     * @var array
+     */
     protected static $links = array();
 
     /**
-     * Constructor activating the default information of the class.
+     * Constructor.
+     *
+     * Loads the available link extensions and registers the request method
+     * callable from the editor.
      */
-    public function __construct()
+    public function __construct($config = array())
     {
-        parent::__construct();
+        parent::__construct($config);
 
         $extensions = self::loadExtensions('links');
 
         // Load all link extensions
         foreach ($extensions as $link) {
-            $this->extensions[] = $this->getLinkExtension($link->name);
+            $extension = $this->getLinkExtension($link->name);
+
+            if ($extension->isEnabled()) {
+                $this->extensions[] = $extension;
+            }
         }
 
         $request = WFRequest::getInstance();
         $request->setRequest(array($this, 'getLinks'));
     }
 
+    /**
+     * Get a singleton instance of this class.
+     *
+     * @param array $config Optional configuration, only used when the instance is first created
+     *
+     * @return WFLinkExtension
+     */
     public static function getInstance($config = array())
     {
         if (!isset(self::$instance)) {
@@ -52,6 +86,11 @@ class WFLinkExtension extends WFExtension
         return self::$instance;
     }
 
+    /**
+     * Display this extension and each of the loaded link extensions.
+     *
+     * @return void
+     */
     public function display()
     {
         parent::display();
@@ -61,10 +100,18 @@ class WFLinkExtension extends WFExtension
         }
     }
 
+    /**
+     * Get a link extension instance by name, creating it if required.
+     *
+     * @param string $name Link extension name, eg: "joomlalinks"
+     *
+     * @return object The link extension instance
+     */
     private function getLinkExtension($name)
     {
         if (array_key_exists($name, self::$links) === false || empty(self::$links[$name])) {
             $classname = 'WFLinkBrowser_' . ucfirst($name);
+
             // create class
             if (class_exists($classname)) {
                 self::$links[$name] = new $classname();
@@ -74,6 +121,11 @@ class WFLinkExtension extends WFExtension
         return self::$links[$name];
     }
 
+    /**
+     * Get the rendered list markup from each enabled link extension.
+     *
+     * @return array
+     */
     public function getLists()
     {
         $list = array();
@@ -87,6 +139,11 @@ class WFLinkExtension extends WFExtension
         return $list;
     }
 
+    /**
+     * Render the link list view.
+     *
+     * @return string Empty string if no link extensions are enabled, otherwise the view is displayed
+     */
     public function render()
     {
         $list = $this->getLists();
@@ -100,6 +157,17 @@ class WFLinkExtension extends WFExtension
         $view->display();
     }
 
+    /**
+     * Clean each value of a request arguments object.
+     *
+     * Values are filtered, stripped of low ascii and backtick characters, then
+     * stripped of tags and html encoded.
+     *
+     * @param object $args   Request arguments
+     * @param string $method Filter type to apply, eg: "string"
+     *
+     * @return object The cleaned arguments object
+     */
     private static function cleanInput($args, $method = 'string')
     {
         $filter = InputFilter::getInstance();
@@ -113,6 +181,16 @@ class WFLinkExtension extends WFExtension
         return $args;
     }
 
+    /**
+     * Get the link list items for a request.
+     *
+     * The request is passed to the link extension that supports the requested
+     * option, and the returned items are xml encoded for the editor.
+     *
+     * @param object $args Request arguments, including the component option to list links for
+     *
+     * @return array Array with a "folders" key, or an empty array if no items were found
+     */
     public function getLinks($args)
     {
         $args = self::cleanInput($args, 'STRING');
@@ -139,9 +217,14 @@ class WFLinkExtension extends WFExtension
     }
 
     /**
-     * Category function used by many extensions.
+     * Get a list of published categories the user is allowed to view.
      *
-     * @return Category list object
+     * Used by many link extensions.
+     *
+     * @param string $section Category extension name, eg: "com_content"
+     * @param int    $parent  Parent category id
+     *
+     * @return array Category list objects
      *
      * @since    1.5
      */
@@ -200,10 +283,13 @@ class WFLinkExtension extends WFExtension
     /**
      * (Attempt to) Get an Itemid.
      *
-     * @param string $component
-     * @param array  $needles
+     * Searches the site menu for an item that points at the given component
+     * and matches one of the view / id pairs passed in.
      *
-     * @return Category list object
+     * @param string $component Component name, eg: "com_content"
+     * @param array  $needles   Array of view name => item id to match against
+     *
+     * @return string Url fragment, eg: "&Itemid=101", or an empty string if no match was found
      */
     public static function getItemId($component, $needles = array())
     {
@@ -238,7 +324,7 @@ class WFLinkExtension extends WFExtension
     /**
      * XML encode a string.
      *
-     * @param     string    String to encode
+     * @param string $string String to encode
      *
      * @return string Encoded string
      */
@@ -248,6 +334,9 @@ class WFLinkExtension extends WFExtension
     }
 }
 
+/**
+ * Base class for individual link extensions, eg: WFLinkBrowser_Joomlalinks.
+ */
 abstract class WFLinkBrowser extends WFLinkExtension
 {
 }
