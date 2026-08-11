@@ -11731,9 +11731,62 @@
        * @param {tinymce.html.Schema} schema - HTML schema for validation.
        */
       tinymce.html.Sanitizer = function (settings, schema) {
+          var self = this;
+
           var special = schema.getSpecialElements();
 
           var uid = 0;
+
+          /**
+           * Direction of event attribute handling for this instance.
+           *
+           * "store"   - content entering the editor, so an event attribute is stored as data-mce-on*
+           *             and cannot run while editing
+           * "restore" - content leaving the editor, so a stored attribute becomes a handler again
+           * null      - neither, for content that is only being validated
+           *
+           * @property mode
+           * @type String
+           */
+          self.mode = null;
+
+          /**
+           * Moves event attributes between their live and stored names.
+           *
+           * A stored attribute arriving from outside is always dropped, as only the editor can
+           * produce one, so a forged or stale value can never become a handler on the way out.
+           *
+           * @param {Element} node Element to process.
+           */
+          function moveEventAttributes(node) {
+              if (!self.mode) {
+                  return;
+              }
+
+              var attrs = node.attributes, i, name, tag = node.tagName.toLowerCase();
+
+              for (i = attrs.length - 1; i >= 0; i--) {
+                  name = attrs[i].name.toLowerCase();
+
+                  if (name.indexOf('data-mce-on') === 0) {
+                      if (self.mode === 'restore' && settings.allow_event_attributes) {
+                          node.setAttribute(name.substr(9), attrs[i].value);
+                      }
+
+                      node.removeAttribute(name);
+
+                      continue;
+                  }
+
+                  if (self.mode === 'store' && name.indexOf('on') === 0) {
+                      if (settings.allow_event_attributes && schema.isValid(tag, name)) {
+                          node.setAttribute('data-mce-' + name, attrs[i].value);
+                      }
+
+                      node.removeAttribute(name);
+                  }
+              }
+          }
 
           function isBooleanAttribute(name) {
               var boolAttrMap = schema.getBoolAttrs();
@@ -11759,7 +11812,7 @@
               }
 
               // Event handlers: only keep if allowed and defined in schema
-              if (/^on[a-z]+/i.test(attrName)) {
+              if (/^on[a-z]+/i.test(attrName) || attrName.indexOf('on') === 0) {
                   if (settings.allow_event_attributes && schema.isValid(tagName, attrName)) {
                       return true;
                   }
@@ -11801,6 +11854,9 @@
               if (node.nodeType !== 1) {
                   return;
               }
+
+              // before any of the skips below, so internal nodes are covered too
+              moveEventAttributes(node);
 
               var tag = node.tagName.toLowerCase();
 
@@ -12198,6 +12254,15 @@
 
       var Sanitizer = new tinymce.html.Sanitizer(settings, schema);
       var nativeParser = new DOMParser();
+
+      /**
+       * Sanitizer used by this parser, exposed so the caller can set the direction of event
+       * attribute handling. See tinymce.html.Sanitizer#mode.
+       *
+       * @property sanitizer
+       * @type tinymce.html.Sanitizer
+       */
+      self.sanitizer = Sanitizer;
 
       /**
        * Finds invalid children of a node according to the schema.
@@ -28465,6 +28530,9 @@
 
       htmlParser = new tinymce.html.DomParser(settings, schema);
 
+      // this is the way out of the editor, so stored event attributes become handlers again
+      htmlParser.sanitizer.mode = 'restore';
+
       // Convert tabindex back to elements when serializing contents
       htmlParser.addAttributeFilter('data-mce-tabindex', function (nodes, name) {
         var i = nodes.length,
@@ -37165,7 +37233,10 @@
         var self = this,
           parser = new tinymce.html.DomParser(settings || self.settings, self.schema);
 
-        // Strip forged data-mce-src, data-mce-href and data-mce-style on input
+        // this content is on its way into the editor, so set sanitizer mode
+        parser.sanitizer.mode = 'store';
+
+        // Strip data-mce-src, data-mce-href and data-mce-style on input
         parser.addAttributeFilter('data-mce-src,data-mce-href,data-mce-style', function (nodes, name) {
           var i = nodes.length;
           while (i--) {
@@ -49150,9 +49221,13 @@
           validate: true
         });
 
+        var parser = ed.createParser(settings);
+
+        // this content is not entering the editor, so event attributes are neither stored nor restored
+        parser.sanitizer.mode = null;
+
         ed.contentValidator = {
-          // createParser applies the rules that must hold for any content entering the editor
-          parser: ed.createParser(settings),
+          parser: parser,
           serializer: new HtmlSerializer(settings, ed.schema)
         };
       }
@@ -49690,11 +49765,18 @@
       return false;
   }
 
-  function processAttributes(editor, content) {
+  /**
+   * @param {tinymce/Editor} editor
+   * @param {String} content
+   * @param {Boolean} stripInternal Remove data-mce-* attributes, for content loaded off the element
+   *                                only. Internal attributes are legitimate everywhere else, eg: an
+   *                                undo level restoring media placeholders.
+   */
+  function processAttributes(editor, content, stripInternal) {
       var invalidAttribRules = editor.getParam('invalid_attributes', '');
       var invalidAttribValueRules = editor.getParam('invalid_attribute_values', '');
 
-      if (!invalidAttribRules && !invalidAttribValueRules) {
+      if (!stripInternal && !invalidAttribRules && !invalidAttribValueRules) {
           return content;
       }
 
@@ -49705,8 +49787,16 @@
       var i = nodes.length;
       var node;
 
-      var attrRules = compileInvalidAttrRules(invalidAttribRules);
-      var valueRules = compileInvalidAttrValueRules(invalidAttribValueRules);
+      var attrRules = [];
+      var valueRules = [];
+
+      if (invalidAttribRules) {
+          attrRules = compileInvalidAttrRules(invalidAttribRules);
+      }
+
+      if (invalidAttribValueRules) {
+          valueRules = compileInvalidAttrValueRules(invalidAttribValueRules);
+      }
 
       while (i--) {
           node = nodes[i];
@@ -49724,6 +49814,12 @@
 
               attrName = attr.name.toLowerCase();
               attrValue = node.getAttribute(attrName);
+
+              // remove all internal attributes
+              if (stripInternal && attrName.indexOf('data-mce-') === 0) {
+                  node.removeAttribute(attrName);
+                  continue;
+              }
 
               if (isInvalidAttribute(attrName, attrRules) ||
                   isInvalidAttributeValue(nodeName, attrName, attrValue, valueRules)) {
@@ -49766,27 +49862,6 @@
     }
 
     var padding = createPadding(Node);
-
-    var eventAttrs = [
-      'onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onmouseenter', 'onmouseleave',
-      'onkeydown', 'onkeypress', 'onkeyup',
-      'onload', 'onunload', 'onabort', 'onerror', 'onresize', 'onscroll', 'onselect',
-      'onchange', 'onsubmit', 'onreset', 'onfocus', 'onblur', 'oninput', 'oninvalid',
-      'ondragstart', 'ondragenter', 'ondragend', 'ondragleave', 'ondragover', 'ondrop',
-      'oncontextmenu', 'onwheel', 'oncopy', 'oncut', 'onpaste',
-      'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onseeked', 'onseeking',
-      'onstalled', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting',
-      'oncanplay', 'oncanplaythrough', 'ondurationchange', 'onemptied', 'onended',
-      'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousewheel',
-      'onshow', 'onsort', 'ontoggle', 'onclose', 'oncuechange',
-      // anything parked on input must appear here or it cannot be restored on output
-      'onauxclick', 'onbeforeinput', 'onbeforetoggle', 'onfocusin', 'onfocusout', 'onscrollend',
-      'onpointerdown', 'onpointerup', 'onpointermove', 'onpointerover', 'onpointerout',
-      'onpointerenter', 'onpointerleave', 'onpointercancel', 'ongotpointercapture', 'onlostpointercapture',
-      'ontouchstart', 'ontouchend', 'ontouchmove', 'ontouchcancel',
-      'onanimationstart', 'onanimationend', 'onanimationiteration',
-      'ontransitionstart', 'ontransitionend', 'ontransitionrun', 'ontransitioncancel'
-    ];
 
     ed.onPreInit.add(function () {
       ed.serializer.addAttributeFilter('data-mce-caret', function (nodes) {
@@ -49838,46 +49913,7 @@
 
       });
 
-      var dataEventAttrs = tinymce.map(eventAttrs, function (name) {
-        return 'data-mce-' + name;
-      });
-
-      if (ed.settings.allow_event_attributes) {
-        ed.serializer.addAttributeFilter(dataEventAttrs, function (nodes, name) {
-          var i = nodes.length;
-
-          while (i--) {
-            nodes[i].attr(name.slice(9), nodes[i].attr(name));
-            nodes[i].attr(name, null);
-          }
-        });
-      }
-
-      function removeEventAttributes() {
-        each(ed.schema.elements, function (elm) {
-          if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
-            return true;
-          }
-
-          each(elm.attributes, function (obj, name) {
-            if (name.indexOf('on') === 0) {
-              delete elm.attributes[name];
-
-              var idx = tinymce.inArray(elm.attributesOrder, name);
-
-              if (idx !== -1) {
-                elm.attributesOrder.splice(idx, 1);
-              }
-            }
-          });
-        });
-      }
-
       if (ed.settings.verify_html !== false) {
-        if (!ed.settings.allow_event_attributes) {
-          removeEventAttributes();
-        }
-
         var elements = ed.schema.elements;
 
         each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
@@ -49944,44 +49980,8 @@
       o.content = convertFromGeshi(o.content);
       o.content = padding.paddEmptyTags(o.content);
 
-      o.content = processAttributes(ed, o.content);
-
-      // content loaded from the element is external, so it can never carry the internal namespace
-      var stripInternal = !!o.load && /data-mce-/i.test(o.content);
-
-      if (stripInternal || /data-mce-on|\son[a-z]+\s*=/i.test(o.content)) {
-        var doc = document.implementation.createHTMLDocument('');
-        var div = doc.createElement('div');
-        div.innerHTML = o.content;
-
-        each(div.querySelectorAll('*'), function (node) {
-          var attrs = node.attributes, names = [], i;
-
-          for (i = attrs.length - 1; i >= 0; i--) {
-            names.push(attrs[i].name.toLowerCase());
-          }
-
-          // the whole internal namespace on load, protected event attributes on every path
-          each(names, function (name) {
-            if (name.indexOf(stripInternal ? 'data-mce-' : 'data-mce-on') === 0) {
-              node.removeAttribute(name);
-            }
-          });
-
-          if (!ed.settings.allow_event_attributes) {
-            return;
-          }
-
-          each(names, function (name) {
-            if (name.indexOf('on') === 0) {
-              node.setAttribute('data-mce-' + name, node.getAttribute(name));
-              node.removeAttribute(name);
-            }
-          });
-        });
-
-        o.content = div.innerHTML;
-      }
+      // only content loaded off the element may be stripped of the internal namespace
+      o.content = processAttributes(ed, o.content, !!o.load);
     });
 
     ed.onPostProcess.add(function (ed, o) {
@@ -51298,7 +51298,7 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -51310,146 +51310,43 @@
 
       // Register plugin
       tinymce.PluginManager.add('effects', function (ed, url) {
-          function cleanEventAttribute(val) {
-              val = tinymce.trim(val);
-
-              if (!val) {
-                  return '';
-              }
-
-              // unwrap to the url, trimming any space inside the quotes
-              val = tinymce.trim(val.replace(/^this\.src\s*=\s*'([^']+)';?$/, '$1'));
-
-              if (/['"<>\\]/.test(val)) {
-                  return '';
-              }
-
-              return val;
+          // a rollover is an onmouseover handler, so it only applies when the profile allows them
+          if (!ed.settings.allow_event_attributes) {
+              return;
           }
 
-          // a src swap, the value is trimmed by the caller
-          function isSrcSwap(val) {
-              return /^this\.src\s*=/.test(val);
+          // the editor stores an event attribute as data-mce-on* while editing and restores it on
+          // save, so a rollover is held in that form and the plugin only has to read the url from it
+
+          function getSrcSwapUrl(value) {
+              var match = /^\s*this\.src\s*=\s*'([^']+)';?\s*$/.exec(tinymce.trim(value));
+
+              return match ? tinymce.trim(match[1]) : '';
           }
 
-          // read / write an attribute on a dom node
-          function domAttr(node) {
-              return function (name, value) {
-                  if (arguments.length === 1) {
-                      return node.getAttribute(name);
+          function bindMouseoverEvent(ed) {
+              each(ed.dom.select('img'), function (elm) {
+                  var src = elm.getAttribute('src');
+
+                  // always clear, so an image that has lost its rollover stops swapping
+                  elm.onmouseover = elm.onmouseout = null;
+
+                  if (!src || !getSrcSwapUrl(elm.getAttribute('data-mce-onmouseover'))) {
+                      return true;
                   }
 
-                  if (value === null) {
-                      node.removeAttribute(name);
-                  } else {
-                      node.setAttribute(name, value);
-                  }
-              };
-          }
+                  // read at event time, so a value changed since binding is picked up
+                  elm.onmouseover = function () {
+                      elm.setAttribute('src', getSrcSwapUrl(elm.getAttribute('data-mce-onmouseover')));
+                  };
 
-          // read / write an attribute on a parser node
-          function parserAttr(node) {
-              return function (name, value) {
-                  return arguments.length === 1 ? node.attr(name) : node.attr(name, value);
-              };
-          }
-
-          // convert an image mouseover / mouseout event attribute pair to data attributes
-          function convertEventAttributes(attr) {
-              var mouseover = tinymce.trim(attr('onmouseover')), mouseout = tinymce.trim(attr('onmouseout'));
-
-              if (!isSrcSwap(mouseover)) {
-                  return;
-              }
-
-              mouseover = cleanEventAttribute(mouseover);
-
-              attr('onmouseover', null);
-
-              if (!mouseover) {
-                  return;
-              }
-
-              attr('data-mce-mouseover', mouseover);
-
-              if (!isSrcSwap(mouseout)) {
-                  return;
-              }
-
-              mouseout = cleanEventAttribute(mouseout);
-
-              attr('onmouseout', null);
-
-              if (mouseout) {
-                  attr('data-mce-mouseout', mouseout);
-              }
+                  elm.onmouseout = function () {
+                      elm.setAttribute('src', getSrcSwapUrl(elm.getAttribute('data-mce-onmouseout')) || src);
+                  };
+              });
           }
 
           ed.onPreInit.add(function () {
-              // stale data-mce-* attributes in loaded content are removed by the cleanup plugin
-              ed.onBeforeSetContent.add(function (ed, o) {
-                  if (!/onmouseover\s*=/i.test(o.content)) {
-                      return;
-                  }
-
-                  var doc = document.implementation.createHTMLDocument('');
-                  var div = doc.createElement('div');
-                  div.innerHTML = o.content;
-
-                  each(div.querySelectorAll('img[onmouseover]'), function (node) {
-                      convertEventAttributes(domAttr(node));
-                  });
-
-                  o.content = div.innerHTML;
-              });
-
-              // update event effects
-              ed.parser.addAttributeFilter('onmouseover', function (nodes) {
-                  var i = nodes.length;
-
-                  while (i--) {
-                      var node = nodes[i];
-
-                      if (node.name !== 'img') {
-                          continue;
-                      }
-
-                      convertEventAttributes(parserAttr(node));
-                  }
-              });
-
-              ed.serializer.addAttributeFilter('data-mce-mouseover', function (nodes) {
-                  var i = nodes.length;
-
-                  while (i--) {
-                      var node = nodes[i];
-
-                      if (node.name !== 'img') {
-                          continue;
-                      }
-
-                      var mouseover = node.attr('data-mce-mouseover'), mouseout = node.attr('data-mce-mouseout');
-
-                      mouseover = cleanEventAttribute(mouseover);
-
-                      node.attr('data-mce-mouseover', null);
-                      node.attr('data-mce-mouseout', null);
-
-                      if (!mouseover) {
-                          continue;
-                      }
-
-                      node.attr('onmouseover', "this.src='" + mouseover + "';");
-
-                      mouseout = cleanEventAttribute(mouseout);
-
-                      if (mouseout) {
-                          node.attr('onmouseout', "this.src='" + mouseout + "';");
-                      }
-                  }
-              });
-
-              // update events when content is set
               ed.onSetContent.add(function () {
                   bindMouseoverEvent(ed);
               });
@@ -51461,43 +51358,17 @@
                       return;
                   }
 
-                  each(ed.dom.select('img[data-mce-mouseover]'), function (elm) {
-                      var mouseover = elm.getAttribute('data-mce-mouseover'), mouseout = elm.getAttribute('data-mce-mouseout');
-
-                      if (!mouseover) {
-                          return true;
-                      }
-
-                      if (mouseover == o.before) {
-                          elm.setAttribute('data-mce-mouseover', o.after);
-                      }
-
-                      if (mouseout == o.before) {
-                          elm.setAttribute('data-mce-mouseout', o.after);
-                      }
+                  each(ed.dom.select('img[data-mce-onmouseover]'), function (elm) {
+                      each(['data-mce-onmouseover', 'data-mce-onmouseout'], function (name) {
+                          if (getSrcSwapUrl(elm.getAttribute(name)) === o.before) {
+                              elm.setAttribute(name, "this.src='" + o.after + "';");
+                          }
+                      });
                   });
               });
           });
 
-          function bindMouseoverEvent(ed) {
-              each(ed.dom.select('img'), function (elm) {
-                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mce-mouseover');
-
-                  elm.onmouseover = elm.onmouseout = null;
-
-                  if (!src || !mouseover) {
-                      return true;
-                  }
-
-                  elm.onmouseover = function () {
-                      elm.setAttribute('src', elm.getAttribute('data-mce-mouseover'));
-                  };
-
-                  elm.onmouseout = function () {
-                      elm.setAttribute('src', elm.getAttribute('data-mce-mouseout') || src);
-                  };
-              });
-          }
+          this.getSrcSwapUrl = getSrcSwapUrl;
       });
   })();
 
