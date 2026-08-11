@@ -21,55 +21,60 @@
 	</params-->
     <fields name="joomlalinks">
         <fieldset name="links.joomlalinks">
-            <field name="content" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_CONTENT" description="WF_LINKS_JOOMLALINKS_PARAM_CONTENT_DESC">
+            <field name="enable" type="yesno" default="1" label="WF_LABEL_EXTENSION_ENABLE" description="WF_LABEL_EXTENSION_ENABLE_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="article_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS_DESC">
+            
+            <field name="content" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_CONTENT" description="WF_LINKS_JOOMLALINKS_PARAM_CONTENT_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="article_unpublished" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_UNPUBLISHED" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_UNPUBLISHED_DESC">
+            <field name="article_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_ALIAS_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="static" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_UNCATEGORIZED" description="WF_LINKS_JOOMLALINKS_PARAM_UNCATEGORIZED_DESC">
+            <field name="article_unpublished" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_UNPUBLISHED" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_UNPUBLISHED_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="contacts" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_CONTACT" description="WF_LINKS_JOOMLALINKS_PARAM_CONTACT_DESC">
+            <field name="static" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_UNCATEGORIZED" description="WF_LINKS_JOOMLALINKS_PARAM_UNCATEGORIZED_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="weblinks" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS" description="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_DESC">
+            <field name="contacts" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_CONTACT" description="WF_LINKS_JOOMLALINKS_PARAM_CONTACT_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="weblinks_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS_DESC">
+            <field name="weblinks" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS" description="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="menu" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_MENU" description="WF_LINKS_JOOMLALINKS_PARAM_MENU_DESC">
+            <field name="weblinks_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_WEBLINKS_ALIAS_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="menu_resolve_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_MENU_LINK" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_MENU_LINK_DESC">
+            <field name="menu" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_MENU" description="WF_LINKS_JOOMLALINKS_PARAM_MENU_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="tags" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_DESC">
+            <field name="menu_resolve_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_MENU_LINK" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_MENU_LINK_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="tags_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS_DESC">
+            <field name="tags" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="itemid" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_ITEMID" description="WF_LINKS_JOOMLALINKS_ITEMID_DESC">
+            <field name="tags_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_ALIAS_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="sef_url" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_SEF_URL" description="WF_LINKS_JOOMLALINKS_SEF_URL_DESC">
+            <field name="itemid" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_ITEMID" description="WF_LINKS_JOOMLALINKS_ITEMID_DESC" showon="enable:1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="sef_url" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_SEF_URL" description="WF_LINKS_JOOMLALINKS_SEF_URL_DESC" showon="enable:1">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>

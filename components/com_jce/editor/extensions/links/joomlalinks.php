@@ -27,6 +27,10 @@ class WFLinkBrowser_Joomlalinks
      */
     public function __construct($options = array())
     {
+        if (!$this->isEnabled()) {
+            return;
+        }
+    
         $wf = WFEditorPlugin::getInstance();
 
         $path = __DIR__ . '/joomlalinks';
