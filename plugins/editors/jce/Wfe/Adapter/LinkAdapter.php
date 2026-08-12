@@ -34,7 +34,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
     protected static $links = array();
 
     /**
-     * Constructor activating the default information of the class.
+     * Activate the default information of the class.
      */
     public function __construct($container, $config = array())
     {
@@ -56,10 +56,22 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         }
 
         $request = Request::getInstance();
-        $request->setRequest(array($this, 'getLinks'));
-        $request->setRequest(array($this, 'doSearch'));
+
+        if ($this->isEnabled('links')) {
+            $request->setRequest(array($this, 'getLinks'));
+        }
+
+        if ($this->isEnabled('search')) {
+            $request->setRequest(array($this, 'doSearch'));
+        }
     }
 
+    /**
+     * Check if an adapter task is enabled
+     * @param string $task Task to check, eg: 'links'
+     * 
+     * @return bool 
+     */
     protected function isEnabled($task)
     {
         return (bool) $this->getParam('links.' . $task . '.enable', 1);
