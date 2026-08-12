@@ -20,11 +20,12 @@ class AbstractLink extends \Wfe\Adapter\Plugin\AbstractPlugin
     public function display() {}
 
     /**
-     * Category function used by many extensions.
+     * Get a link category
+     * @param string $section The section for which to get the category
+     * @param int    $parent  The parent category ID
      *
-     * @return Category list object
-     *
-     * @since    1.5
+     * @return object[] List of category objects
+     * 
      */
     public function getCategory($section, $parent = 1)
     {
@@ -75,7 +76,7 @@ class AbstractLink extends \Wfe\Adapter\Plugin\AbstractPlugin
      * @param string $option
      * @param array  $needles
      *
-     * @return Category list object
+     * @return string link itemid
      */
     public function getItemId($option, $needles = array())
     {
@@ -104,6 +105,11 @@ class AbstractLink extends \Wfe\Adapter\Plugin\AbstractPlugin
         return $match ? '&Itemid=' . $match : '';
     }
 
+    /**
+     * Get the search areas for the plugin.
+     *
+     * @return array List of search areas
+     */
     public function getSearchAreas()
     {
         return [];
