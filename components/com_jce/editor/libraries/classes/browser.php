@@ -2180,7 +2180,7 @@ class WFFileBrowser extends CMSObject
 
         // check for feature access
         if (!$this->checkFeature('upload')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $app = Factory::getApplication();
@@ -2352,7 +2352,7 @@ class WFFileBrowser extends CMSObject
 
         if ($filesystem->is_file($item)) {
             if ($this->checkFeature($action, 'file') === false) {
-                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
             }
 
             $this->checkFileName($item, $error);
@@ -2361,7 +2361,7 @@ class WFFileBrowser extends CMSObject
             $path = WFUtility::mb_dirname($item);
         } elseif ($filesystem->is_dir($item)) {
             if ($this->checkFeature($action, 'folder') === false) {
-                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
             }
 
             $path = $item;
@@ -2389,7 +2389,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('delete', 'folder') && !$this->checkFeature('delete', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $filesystem = $this->getFileSystem();
@@ -2432,7 +2432,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('rename', 'folder') && !$this->checkFeature('rename', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // the source is resolved below, after the destination name has been validated
@@ -2500,7 +2500,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $filesystem = $this->getFileSystem();
@@ -2599,7 +2599,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $filesystem = $this->getFileSystem();
@@ -2686,7 +2686,7 @@ class WFFileBrowser extends CMSObject
     {
         // check if the user has access to create a folder
         if ($this->checkFeature('create', 'folder') === false) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // a folder cannot be created in the primary directory tree
