@@ -14,6 +14,8 @@ namespace Wfe\Editor\Plugin\Manager;
 \defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 
 use Wfe\Http\Request;
 use Wfe\Utility\Utility;
@@ -21,12 +23,37 @@ use Wfe\Application\Browser as FileBrowser;
 use Wfe\Adapter\FilesystemAdapter;
 use Wfe\Helper\ArrayHelper;
 
+/**
+ * Base class for "manager" type editor plugins, eg: Image Manager, File Manager.
+ *
+ * Provides a shared File Browser instance, filesystem configuration and the
+ * File Browser options passed to the client.
+ */
 class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
 {
+    /**
+     * File Browser instances, keyed by plugin name (and caller, if set).
+     *
+     * @var \Wfe\Application\Browser[]
+     */
     protected static $browser = array();
 
+    /**
+     * Default list of allowed file extensions, used when the plugin has no
+     * `extensions` parameter set.
+     *
+     * @var string
+     */
     protected $filetypes = 'jpg,jpeg,png,gif';
 
+    /**
+     * Constructor.
+     *
+     * Applies the "manager" layout and view paths as defaults, creates the File
+     * Browser instance and registers the plugin XHR callbacks.
+     *
+     * @param array $config Plugin configuration values.
+     */
     public function __construct($config = array())
     {
         // use the full "manager" layout by default
@@ -54,9 +81,12 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
     }
 
     /**
-     * Get the File Browser instance.
+     * Get the File Browser instance for this plugin, creating it if required.
      *
-     * @return object Wfe\Adapter\FileBrowser
+     * Instances are cached statically against the plugin name, and the caller
+     * name where one is set, eg: "imgmanager.article".
+     *
+     * @return \Wfe\Application\Browser The File Browser instance.
      */
     public function getFileBrowser()
     {
@@ -78,28 +108,92 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         return self::$browser[$name];
     }
 
+    /**
+     * Add an action to the File Browser toolbar.
+     *
+     * @param string $name    Action name.
+     * @param array  $options Action options, eg: icon, title, multiple.
+     *
+     * @return void
+     */
     protected function addFileBrowserAction($name, $options = array())
     {
         $this->getFileBrowser()->addAction($name, $options);
     }
 
+    /**
+     * Add a button to the File Browser.
+     *
+     * @param string $type    Button type, eg: file, folder.
+     * @param string $name    Button name.
+     * @param array  $options Button options, eg: icon, title, multiple.
+     *
+     * @return void
+     */
     protected function addFileBrowserButton($type, $name, $options = array())
     {
         $this->getFileBrowser()->addButton($type, $name, $options);
     }
 
+    /**
+     * Add an event callback to the File Browser.
+     *
+     * @param string         $name     Event name.
+     * @param array|callable $function Callback to invoke for the event.
+     *
+     * @return void
+     */
     protected function addFileBrowserEvent($name, $function = array())
     {
         $this->getFileBrowser()->addEvent($name, $function);
     }
 
+    /**
+     * Get the File Browser instance.
+     *
+     * @return \Wfe\Application\Browser The File Browser instance.
+     */
     public function getBrowser()
     {
         return $this->getFileBrowser();
     }
 
     /**
-     * Display the plugin.
+     * Execute a plugin task.
+     *
+     * When the plugin is running as a "basic dialog", only the inline upload XHR
+     * task is permitted, and only if uploading and inline uploading are enabled.
+     *
+     * @param string $task The task to execute.
+     *
+     * @return void
+     *
+     * @throws \Exception If the task is not allowed in a basic dialog.
+     */
+    public function execute($task)
+    {
+        $app = Factory::getApplication();
+
+        if ((int) $this->getParam('basic_dialog', 0) === 1) {
+
+            // allow xhr task if uploading is allowed, eg: inline uploading
+            if ($task === 'xhr' && $app->input->getWord('method') === 'upload') {
+                if ((int) $this->getParam('upload', 1) && (int) $this->getParam('inline_upload', 1)) {
+                    return parent::execute($task);
+                }
+            }
+
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
+        parent::execute($task);
+    }
+
+    /**
+     * Display the plugin, rendering the File Browser and passing its
+     * configuration to the client as `FileBrowser.options`.
+     *
+     * @return void
      */
     public function display()
     {
@@ -117,25 +211,66 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
     }
 
+    /**
+     * Get the list of allowed file types.
+     *
+     * @param string $format Return format, eg: "array" or "list".
+     * @param string $list   Optional file type list to format instead of the
+     *                       File Browser value.
+     *
+     * @return array|string The file types in the requested format.
+     */
     public function getFileTypes($format = 'array', $list = '')
     {
         return $this->getFileBrowser()->getFileTypes($format, $list);
     }
 
+    /**
+     * Set the list of allowed file types on the File Browser.
+     *
+     * @param array|string $filetypes The file types to allow.
+     *
+     * @return void
+     */
     protected function setFileTypes($filetypes)
     {
         return $this->getFileBrowser()->setFileTypes($filetypes);
     }
 
+    /**
+     * Event fired before a file is uploaded, allowing the plugin to modify the
+     * upload before it is written.
+     *
+     * @param object $file The uploaded file data, passed by reference.
+     * @param string $dir  The target directory, passed by reference.
+     * @param string $name The target file name, passed by reference.
+     *
+     * @return void
+     */
     public function onBeforeUpload(&$file, &$dir, &$name) {}
 
+    /**
+     * Event fired after a file has been uploaded.
+     *
+     * @param string $file     The absolute path to the uploaded file.
+     * @param string $relative The path to the uploaded file, relative to the
+     *                         filesystem root.
+     *
+     * @return void
+     */
     public function onUpload($file, $relative = '') {}
 
     /**
      * Get the dimensions of an image file.
      *
+     * Raster images are measured by the File Browser, which validates the path.
+     * SVG files are parsed for a `viewBox` attribute, with the DOCTYPE stripped
+     * and network access disabled to prevent entity based XXE.
+     *
      * @param string $file Relative path to the image file.
-     * @return array Array with 'width' and 'height' keys.
+     *
+     * @return array Array with `width` and `height` keys, or an empty array if
+     *               the dimensions could not be determined.
      */
     public function getDimensions($file)
     {
@@ -189,8 +324,9 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
     /**
      * Get the filesystem definition from parameters (with static caching).
      *
-     * Reads the `filesystem` parameter to determine the active filesystem name
-     * (defaults to "joomla") and returns an object with:
+     * Reads the plugin `filesystem` parameter to determine the active filesystem
+     * name, falling back to the global `editor.filesystem` parameter when the
+     * plugin value has no name set, and returns an object with:
      *  - name (string): The active filesystem name.
      *  - properties (Registry): Configuration for that filesystem.
      *
@@ -238,6 +374,18 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         return $filesystem;
     }
 
+    /**
+     * Get the filesystem adapter instance for the active filesystem.
+     *
+     * The passed configuration is merged over the filesystem properties from
+     * {@see self::getFileSystemConfig()}, and instances are cached statically
+     * against a signature of the resulting configuration.
+     *
+     * @param array $config Additional configuration values, eg: filetypes,
+     *                      upload_conflict.
+     *
+     * @return \Wfe\Adapter\FilesystemAdapter The filesystem adapter instance.
+     */
     private function getFilesystem($config = array())
     {
         static $instances = array();
@@ -269,10 +417,11 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
      * - Normalize string $dir to array format.
      * - Only add a default "images" entry when there are no usable (non-blank) paths,
      *   and only if allow_root is false. Otherwise, ignore blank rows.
-     * 
-     * @param  WFFileSystem $filesystem The filesystem instance to use.
+     * - Label each entry with the folder basename where no label is set.
      *
-     * @return array        Associative array keyed by md5(path) => ['path' => ..., 'label' => ...]
+     * @param \Wfe\Adapter\FilesystemAdapter $filesystem The filesystem instance to use.
+     *
+     * @return array Associative array keyed by md5(path) => ['path' => ..., 'label' => ...]
      */
     protected function buildDirectoryStoreFromParams($filesystem): array
     {
@@ -379,6 +528,15 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         return $dirStore;
     }
 
+    /**
+     * Build the File Browser feature map from the plugin parameters.
+     *
+     * All features are disabled when the filesystem is read only.
+     *
+     * @param \Wfe\Adapter\FilesystemAdapter $filesystem The filesystem instance to use.
+     *
+     * @return array Feature map with `help`, `upload`, `folder` and `file` keys.
+     */
     private function getFeatures($filesystem)
     {
         $isReadOnly = $filesystem->getConfig('readonly', false);
@@ -407,9 +565,15 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
     }
 
     /**
-     * Get the Media Manager configuration.
+     * Build the File Browser configuration from the plugin and global editor
+     * parameters, eg: directories, file types, upload limits and websafe naming.
      *
-     * @return array
+     * Legacy parameter values, eg: a comma separated directory filter or a
+     * numeric websafe spaces value, are converted to their current format.
+     *
+     * @param array $config Configuration values to merge over the defaults.
+     *
+     * @return array The File Browser configuration.
      */
     protected function getFileBrowserConfig($config = array())
     {
