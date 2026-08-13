@@ -12,153 +12,43 @@
 
     // Register plugin
     ibis.PluginManager.add('effects', function (ed, url) {
-        function cleanEventAttribute(val) {
-            val = ibis.trim(val);
-
-            if (!val) {
-                return '';
-            }
-
-            // unwrap to the url, trimming any space inside the quotes
-            val = ibis.trim(val.replace(/^this\.src\s*=\s*'([^']+)';?$/, '$1'));
-
-            // the value is written back into an event attribute, so it must not be able to break out of it
-            if (/['"<>\\]/.test(val)) {
-                return '';
-            }
-
-            return val;
+        // a rollover is an onmouseover handler, so it only applies when the profile allows them
+        if (!ed.settings.allow_event_attributes) {
+            return;
         }
 
-        // read / write an attribute on a dom node
-        function domAttr(node) {
-            return function (name, value) {
-                if (arguments.length === 1) {
-                    return node.getAttribute(name);
+        // the editor stores an event attribute as data-mce-on* while editing and restores it on
+        // save, so a rollover is held in that form and the plugin only has to read the url from it
+
+        function getSrcSwapUrl(value) {
+            var match = /^\s*this\.src\s*=\s*'([^']+)';?\s*$/.exec(ibis.trim(value));
+
+            return match ? ibis.trim(match[1]) : '';
+        }
+
+        function bindMouseoverEvent(ed) {
+            each(ed.dom.select('img'), function (elm) {
+                var src = elm.getAttribute('src');
+
+                // always clear, so an image that has lost its rollover stops swapping
+                elm.onmouseover = elm.onmouseout = null;
+
+                if (!src || !getSrcSwapUrl(elm.getAttribute('data-mce-onmouseover'))) {
+                    return true;
                 }
 
-                if (value === null) {
-                    node.removeAttribute(name);
-                } else {
-                    node.setAttribute(name, value);
-                }
-            };
-        }
+                // read at event time, so a value changed since binding is picked up
+                elm.onmouseover = function () {
+                    elm.setAttribute('src', getSrcSwapUrl(elm.getAttribute('data-mce-onmouseover')));
+                };
 
-        // read / write an attribute on a parser node
-        function parserAttr(node) {
-            return function (name, value) {
-                return arguments.length === 1 ? node.attr(name) : node.attr(name, value);
-            };
-        }
-
-        // a src swap, the value is trimmed by the caller
-        function isSrcSwap(val) {
-            return /^this\.src\s*=/.test(val);
-        }
-
-        // convert an image mouseover / mouseout event attribute pair to data attributes
-        function convertEventAttributes(attr) {
-            var mouseover = ibis.trim(attr('onmouseover')), mouseout = ibis.trim(attr('onmouseout'));
-
-            if (!isSrcSwap(mouseover)) {
-                return;
-            }
-
-            mouseover = cleanEventAttribute(mouseover);
-
-            attr('onmouseover', null);
-
-            if (!mouseover) {
-                return;
-            }
-
-            attr('data-mce-mouseover', mouseover);
-
-            if (!isSrcSwap(mouseout)) {
-                return;
-            }
-
-            mouseout = cleanEventAttribute(mouseout);
-
-            attr('onmouseout', null);
-
-            if (mouseout) {
-                attr('data-mce-mouseout', mouseout);
-            }
+                elm.onmouseout = function () {
+                    elm.setAttribute('src', getSrcSwapUrl(elm.getAttribute('data-mce-onmouseout')) || src);
+                };
+            });
         }
 
         ed.onPreInit.add(function () {
-            // stale data-mce-* attributes in loaded content are removed by the cleanup plugin
-            ed.onBeforeSetContent.add(function (ed, o) {
-                if (!/onmouseover\s*=/i.test(o.content)) {
-                    return;
-                }
-
-                var doc = document.implementation.createHTMLDocument('');
-                var div = doc.createElement('div');
-                div.innerHTML = o.content;
-
-                each(div.querySelectorAll('img[onmouseover]'), function (node) {
-                    convertEventAttributes(domAttr(node));
-                });
-
-                o.content = div.innerHTML;
-            });
-
-            // update event effects
-            ed.parser.addAttributeFilter('onmouseover', function (nodes) {
-                var i = nodes.length;
-
-                while (i--) {
-                    var node = nodes[i];
-
-                    if (node.name !== 'img') {
-                        continue;
-                    }
-
-                    convertEventAttributes(parserAttr(node));
-                }
-            });
-
-            ed.serializer.addAttributeFilter('data-mce-mouseover', function (nodes) {
-                var i = nodes.length;
-
-                while (i--) {
-                    var node = nodes[i];
-
-                    if (node.name !== 'img') {
-                        continue;
-                    }
-
-                    var mouseover = node.attr('data-mce-mouseover'), mouseout = node.attr('data-mce-mouseout');
-
-                    // cleanEventAttribute discards a value that could break out of the event attribute
-                    mouseover = cleanEventAttribute(mouseover);
-
-                    node.attr('data-mce-mouseover', null);
-                    node.attr('data-mce-mouseout', null);
-
-                    if (!mouseover) {
-                        continue;
-                    }
-
-                    node.attr('onmouseover', "this.src='" + mouseover + "';");
-
-                    mouseout = cleanEventAttribute(mouseout);
-
-                    if (mouseout) {
-                        node.attr('onmouseout', "this.src='" + mouseout + "';");
-                    }
-                }
-            });
-
-            // update events when content is inserted
-            /*ed.selection.onSetContent.add(function () {
-                bindMouseoverEvent(ed);
-            });*/
-
-            // update events when content is set
             ed.onSetContent.add(function () {
                 bindMouseoverEvent(ed);
             });
@@ -170,42 +60,16 @@
                     return;
                 }
 
-                each(ed.dom.select('img[data-mce-mouseover]'), function (elm) {
-                    var mouseover = elm.getAttribute('data-mce-mouseover'), mouseout = elm.getAttribute('data-mce-mouseout');
-
-                    if (!mouseover) {
-                        return true;
-                    }
-
-                    if (mouseover == o.before) {
-                        elm.setAttribute('data-mce-mouseover', o.after);
-                    }
-
-                    if (mouseout == o.before) {
-                        elm.setAttribute('data-mce-mouseout', o.after);
-                    }
+                each(ed.dom.select('img[data-mce-onmouseover]'), function (elm) {
+                    each(['data-mce-onmouseover', 'data-mce-onmouseout'], function (name) {
+                        if (getSrcSwapUrl(elm.getAttribute(name)) === o.before) {
+                            elm.setAttribute(name, "this.src='" + o.after + "';");
+                        }
+                    });
                 });
             });
         });
 
-        function bindMouseoverEvent(ed) {
-            each(ed.dom.select('img'), function (elm) {
-                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mce-mouseover');
-
-                elm.onmouseover = elm.onmouseout = null;
-
-                if (!src || !mouseover) {
-                    return true;
-                }
-
-                elm.onmouseover = function () {
-                    elm.setAttribute('src', elm.getAttribute('data-mce-mouseover'));
-                };
-
-                elm.onmouseout = function () {
-                    elm.setAttribute('src', elm.getAttribute('data-mce-mouseout') || src);
-                };
-            });
-        }
+        this.getSrcSwapUrl = getSrcSwapUrl;
     });
 })();

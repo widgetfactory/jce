@@ -26,9 +26,13 @@
         validate: true
       });
 
+      var parser = ed.createParser(settings);
+
+      // this content is not entering the editor, so event attributes are neither stored nor restored
+      parser.sanitizer.mode = null;
+
       ed.contentValidator = {
-        // createParser applies the rules that must hold for any content entering the editor
-        parser: ed.createParser(settings),
+        parser: parser,
         serializer: new HtmlSerializer(settings, ed.schema)
       };
     }
