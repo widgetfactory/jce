@@ -79,7 +79,7 @@
             <name>Markdown</name>
             <description>Sample Markdown Profile</description>
             <users></users>
-            <types>3,4,5,6,7,8</types>
+            <types>5,6,7,8</types>
             <components></components>
             <area>0</area>
             <device>desktop,tablet,phone</device>
