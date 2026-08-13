@@ -32,9 +32,6 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         // Setup plugin XHR callback functions
         $request->setRequest(array($engine, 'checkWords'));
         $request->setRequest(array($engine, 'getSuggestions'));
-        $request->setRequest(array($engine, 'ignoreWord'));
-        $request->setRequest(array($engine, 'ignoreWords'));
-        $request->setRequest(array($engine, 'learnWord'));
     }
 
     private function getPSpellConfig()
