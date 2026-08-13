@@ -10,7 +10,6 @@
  */
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
@@ -319,10 +318,6 @@ class pkg_jceInstallerScript
                 if (strpos($item->Type, 'unsigned') === false) {
                     $state = false;
                 }
-
-                if (strpos($item->Type, 'unsigned') === false) {
-                    $state = false;
-                }
             }
 
             if ($item->Field == 'checked_out_time') {
@@ -344,13 +339,18 @@ class pkg_jceInstallerScript
             return true;
         }
 
-        $app = Factory::getApplication();
         $extension = Table::getInstance('extension');
         $parent = $installer->getParent();
 
         $db = Factory::getDBO();
 
         Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
+
+        // remove legacy files and folders. Run before anything that can fail so cleanup is never skipped
+        try {
+            $this->cleanupInstall();
+        } catch (Throwable $e) {
+        }
 
         // remove legacy jcefilebrowser quickicon plugin
         $plugins = [
@@ -410,8 +410,8 @@ class pkg_jceInstallerScript
                 $theme = 'modern';
             }
 
-            // update toolbar_theme for 2.7.x
-            if (version_compare($current_version, '2.8', 'lt')) {
+            // update toolbar_theme for 2.7.x. Skip if the current version could not be determined
+            if ($current_version && version_compare($current_version, '2.8', 'lt')) {
                 $theme = 'default';
             }
 
@@ -513,8 +513,6 @@ class pkg_jceInstallerScript
                     }
                 }
             }
-
-            $this->cleanupInstall($installer);
         }
 
         // Borrowed from the script.ats.php file from Akeeba Ticket System
@@ -551,13 +549,15 @@ class pkg_jceInstallerScript
         }
     }
 
-    protected static function cleanupInstall($installer)
+    /**
+     * Remove files and folders left behind by earlier releases.
+     *
+     * The lists are cumulative and are not gated by version. Every entry is checked for existence
+     * on each run, so a cleanup that was missed on one upgrade path is still picked up on the next.
+     * Nothing listed here is shipped by the current package.
+     */
+    private function cleanupInstall()
     {
-        $app = Factory::getApplication();
-
-        $parent = $installer->getParent();
-        $current_version = self::$current_version; //$parent->get('current_version');
-
         $admin = JPATH_ADMINISTRATOR . '/components/com_jce';
         $site = JPATH_SITE . '/components/com_jce';
         $media = JPATH_SITE . '/media/com_jce';
@@ -565,7 +565,8 @@ class pkg_jceInstallerScript
         $folders = array();
         $files = array();
 
-        $folders['2.6.38'] = array(
+        // 2.6.38
+        $folders[] = array(
             // admin
             $admin . '/classes',
             $admin . '/elements',
@@ -579,40 +580,38 @@ class pkg_jceInstallerScript
             $site . '/editor/extensions/popups/window'
         );
 
-        // remove flexicontent
-        if (!ComponentHelper::isInstalled('com_flexicontent')) {
-            $files['2.7.0'] = array(
-                $site . '/editor/extensions/links/flexicontentlinks.php',
-                $site . '/editor/extensions/links/flexicontentlinks.xml',
-            );
+        // 2.7.0 - remove flexicontent
+        $files[] = array(
+            $site . '/editor/extensions/links/flexicontentlinks.php',
+            $site . '/editor/extensions/links/flexicontentlinks.xml',
+        );
 
-            $folders['2.7.0'] = array(
-                $site . '/editor/extensions/links/flexicontentlinks',
-            );
-        }
+        $folders[] = array(
+            $site . '/editor/extensions/links/flexicontentlinks',
+        );
 
-        // remove help files
-        $folders['2.8.6'] = array(
+        // 2.8.6 - remove help files
+        $folders[] = array(
             $admin . '/views/help',
         );
 
-        // remove mediaplayer
-        $folders['2.8.11'] = array(
+        // 2.8.11 - remove mediaplayer
+        $folders[] = array(
             $site . '/editor/libraries/mediaplayer',
         );
 
-        // remove fields folder
-        $folders['2.9.7'] = array(
+        // 2.9.7 - remove fields folder
+        $folders[] = array(
             JPATH_PLUGINS . '/system/jce/fields',
         );
 
-        // remove media folder
-        $folders['2.9.17'] = array(
+        // 2.9.17 - remove media folder
+        $folders[] = array(
             $admin . '/media',
         );
 
-        // remove folders moved to media/com_jce
-        $folders['2.9.50'] = array(
+        // 2.9.50 - remove folders moved to media/com_jce
+        $folders[] = array(
             $site . '/editor/tiny_mce',
             $site . '/editor/libraries/css',
             $site . '/editor/libraries/fonts',
@@ -628,18 +627,18 @@ class pkg_jceInstallerScript
             $media . '/js'
         );
 
-        // clean up editor folder
-        $folders['2.9.60'] = array(
+        // 2.9.60 - clean up editor folder
+        $folders[] = array(
             JPATH_PLUGINS . '/editors/jce/src/Provider'
         );
 
-        // remove old layout file
-        $files['2.9.60'] = array(
+        // 2.9.60 - remove old layout file
+        $files[] = array(
             JPATH_PLUGINS . '/editors/jce/layouts/editor/textarea.php'
         );
 
-        // remove pro plugins
-        $folders['2.9.70'] = array(
+        // 2.9.70 - remove pro plugins
+        $folders[] = array(
             $site . '/editor/plugins/caption',
             $site . '/editor/plugins/columns',
             $site . '/editor/plugins/iframe',
@@ -651,43 +650,48 @@ class pkg_jceInstallerScript
             $site . '/editor/plugins/textpattern'
         );
 
-        // clean up editor vendor libraries
-        $folders['2.9.96'] = array(
+        // 2.9.70 - remove extendedmedia.php
+        $files[] = array(
+            JPATH_SITE . '/plugins/fields/mediajce/fields/extendedmedia.php'
+        );
+
+        // 2.9.96 - clean up editor vendor libraries
+        $folders[] = array(
             $site . '/editor/libraries/vendor',
             $site . '/editor/libraries/pro'
         );
 
-        // remove jQuery UI Touch
-        $files['2.9.96'] = array(
+        // 2.9.96 - remove jQuery UI Touch
+        $files[] = array(
             $media . '/editor/vendor/jquery/js/jquery-ui.touch.min.js'
         );
 
-        // remove MobileDetect
-        $folders['2.9.98'] = array(
+        // 2.9.98 - remove MobileDetect
+        $folders[] = array(
             $site . '/editor/libraries/classes/vendor/MobileDetect'
         );
 
-        $folders['2.9.99'] = array(
+        // 2.9.99
+        $folders[] = array(
             $site . '/views'
         );
 
-        // remove profile manifiests
-        $files['2.9.99.7'] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: [];
+        // 2.9.99.7 - remove exported profile manifests
+        $files[] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: array();
 
-        // remove editor.php in pro
-        $files['2.9.99.10'] = array(
+        // 2.9.99.10 - remove editor.php in pro
+        $files[] = array(
             JPATH_SITE . '/plugins/system/jcepro/editor/libraries/classes/editor.php'
         );
 
-        // remove pro source plugin
-        $files['2.9.70'] = array(
+        // 2.9.70 - remove pro source plugin
+        $files[] = array(
             $site . '/editor/plugins/source/config.php',
-            $site . '/editor/plugins/source/source.php',
-            // mediafield files
-            JPATH_PLUGINS . '/fields/mediajce/fields/extendedmedia.php'
+            $site . '/editor/plugins/source/source.php'
         );
 
-        $files['2.6.38'] = array(
+        // 2.6.38
+        $files[] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',
             // controller
@@ -730,22 +734,18 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/classes/token.php'
         );
 
-        // remove help files
-        $files['2.8.6'] = array(
+        // 2.8.6 - remove help files
+        $files[] = array(
             $admin . '/controller/help.php',
             $admin . '/models/help.php',
         );
 
-        $files['2.8.11'] = array(
+        // 2.8.11
+        $files[] = array(
             $admin . '/views/cpanel/default_pro.php',
         );
 
-        foreach ($folders as $version => $list) {
-            // version check
-            if (version_compare($version, $current_version, 'lt')) {
-                continue;
-            }
-
+        foreach ($folders as $list) {
             foreach ($list as $folder) {
                 if (!@is_dir($folder)) {
                     continue;
@@ -782,12 +782,7 @@ class pkg_jceInstallerScript
             }
         }
 
-        foreach ($files as $version => $list) {
-            // version check
-            if (version_compare($version, $current_version, 'lt')) {
-                continue;
-            }
-
+        foreach ($files as $list) {
             foreach ($list as $file) {
                 if (!@file_exists($file)) {
                     continue;
