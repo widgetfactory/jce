@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package     Wfx.JCE
+ * @package     com_jce
  * @subpackage  JCE Admin
  *
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
