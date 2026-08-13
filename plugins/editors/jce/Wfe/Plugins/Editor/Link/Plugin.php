@@ -12,6 +12,7 @@ namespace Wfe\Plugins\Editor\Link;
 
 \defined('_JEXEC') or die;
 
+use Joomla\CMS\Language\Text;
 
 // Link Plugin Controller
 class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
@@ -30,6 +31,15 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         parent::__construct();
 
         $this->getLinkAdapter();
+    }
+
+    public function execute($task)
+    {
+        if ((int) $this->getParam('basic_dialog', 0) === 1) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
+        parent::execute($task);
     }
 
     public function display()
