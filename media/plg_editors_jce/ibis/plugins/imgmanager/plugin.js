@@ -29,7 +29,7 @@
 
         if (data && data.filetypes) {
             if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
-                return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image';
+                return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.xhr&plugin=image';
             }
         }
 

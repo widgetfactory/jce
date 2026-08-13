@@ -1917,7 +1917,9 @@
 
                             // Initialize uploader
                             $('#upload-queue').uploader($.extend({
-                                url: document.location.href,
+                                // the dialog was loaded with task=plugin.display, an upload is an
+                                // xhr request, so post it to the xhr task (see Wf.JSON.request)
+                                url: document.location.href.replace(/task=plugin\.display/, 'task=plugin.xhr'),
                                 field: $('input[type="file"]:first'),
                                 websafe_mode: self.options.websafe_mode,
                                 websafe_spaces: self.options.websafe_spaces,
