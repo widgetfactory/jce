@@ -28,31 +28,35 @@ use Wfe\Document\View;
 use Wfe\Registry\ConfigurationTrait;
 
 /**
- * JCE class.
+ * Base class for editor plugins.
+ *
+ * Resolves the plugin name and caller from the request, sets up the document,
+ * tabs and view, and provides parameter, default value and access helpers to
+ * the plugin implementation.
  */
 class AbstractPlugin
 {
     use ConfigurationTrait;
 
-    /** 
+    /**
      * Application instance
      * @var    \Wfe\Application\Application
      */
     protected $application;
 
-    /** 
+    /**
      * Document instance
      * @var    \Wfe\Document\Document
      */
     protected $document;
 
-    /** 
+    /**
      * Tabs instance
      * @var    \Wfe\Document\Tabs
      */
     protected $tabs;
 
-    /** 
+    /**
      * Plugin name
      * @var    string
      */
@@ -60,6 +64,14 @@ class AbstractPlugin
 
     /**
      * Constructor activating the default information of the class.
+     *
+     * The plugin name is taken from the `plugin` request variable, falling back
+     * to the class default. A "name.caller" value sets the caller, but only when
+     * the caller is a plugin assigned to the active profile. Base, view and
+     * template paths are derived from the plugin name where not passed in.
+     *
+     * @param array $config Plugin configuration values, eg: base_path, layout,
+     *                      view_path, template_path.
      */
     public function __construct($config = array())
     {
@@ -117,25 +129,44 @@ class AbstractPlugin
         $this->setConfiguration($config);
     }
 
+    /**
+     * Get the application instance.
+     *
+     * @return \Wfe\Application\Application
+     */
     public function getApplication()
     {
         return $this->application;
     }
 
+    /**
+     * Get the document instance.
+     *
+     * Only available once {@see self::initialize()} has run.
+     *
+     * @return \Wfe\Document\Document|null
+     */
     public function getDocument()
     {
         return $this->document;
     }
 
+    /**
+     * Get the tabs instance.
+     *
+     * Only available once {@see self::initialize()} has run.
+     *
+     * @return \Wfe\Document\Tabs|null
+     */
     public function getTabs()
     {
         return $this->tabs;
     }
 
     /**
-     * Get plugin View.
+     * Get plugin View, creating it on first call.
      *
-     * @return \Wfe\Document\View
+     * @return \Wfe\Document\View The plugin view.
      */
     public function getView()
     {
@@ -157,11 +188,24 @@ class AbstractPlugin
         return $view;
     }
 
+    /**
+     * Get the editor version, used for asset cache busting.
+     *
+     * @return string
+     */
     protected function getVersion()
     {
         return $this->getApplication()->getVersion();
     }
 
+    /**
+     * Get the active profile for the current user and context.
+     *
+     * @param string $plugin Optional plugin name to check the profile against.
+     *                       Defaults to the active profile for any plugin.
+     *
+     * @return object|null The profile object, or null if none is assigned.
+     */
     protected function getProfile($plugin = '')
     {
         $wf = $this->getApplication();
@@ -174,6 +218,14 @@ class AbstractPlugin
         return $wf->getActiveProfile($options);
     }
 
+    /**
+     * Get a version hash for the plugin, derived from its manifest file.
+     *
+     * Appended to the editor version so that plugin assets are re-cached when
+     * the plugin manifest changes.
+     *
+     * @return string The manifest hash, or an empty string if there is no manifest.
+     */
     protected function getPluginVersion()
     {
         $manifest = $this->getConfig('base_path') . '/' . $this->getName() . '.xml';
@@ -187,6 +239,14 @@ class AbstractPlugin
         return $version;
     }
 
+    /**
+     * Check whether the plugin should render right to left.
+     *
+     * Only true when the editor language matches the Joomla language, as the
+     * editor may be displayed in a different language to the site.
+     *
+     * @return bool
+     */
     protected function isRtl()
     {
         $language = Factory::getApplication()->getLanguage();
@@ -198,6 +258,12 @@ class AbstractPlugin
         return false;
     }
 
+    /**
+     * Create and register the document and tabs instances for the plugin, then
+     * fire the `onWfPluginInit` event.
+     *
+     * @return void
+     */
     protected function initialize()
     {
         $wf = $this->getApplication();
@@ -259,8 +325,23 @@ class AbstractPlugin
         Factory::getApplication()->getDispatcher()->dispatch('onWfPluginInit', $event);
     }
 
+    /**
+     * Execute a plugin task.
+     *
+     * Validates the session token, initializes the plugin, processes any XHR
+     * request, then renders the document.
+     *
+     * @param string $task The task to execute, eg: loadlanguages.
+     *
+     * @return void
+     *
+     * @throws \Exception If the plugin is running as a basic dialog.
+     */
     public function execute($task)
     {
+        // check session on get request
+        Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
+    
         if ($task == 'loadlanguages') {
             return $this->loadlanguages();
         }
@@ -298,6 +379,13 @@ class AbstractPlugin
         $document->render();
     }
 
+    /**
+     * Parse and output the plugin language strings as a javascript file.
+     *
+     * Ends the request, as the parser sends the response directly.
+     *
+     * @return void
+     */
     protected function loadlanguages()
     {
         $name = $this->getName();
@@ -314,12 +402,21 @@ class AbstractPlugin
     }
 
     /**
-     * Display plugin.
+     * Display the plugin, adding the core plugin scripts and stylesheets and
+     * firing the `onWfPluginDisplay` event.
+     *
+     * @return void
+     *
+     * @throws \Exception If the plugin is running as a basic dialog.
      */
     public function display()
     {
         // check session on get request
         Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
+    
+        if ((int) $this->getParam('basic_dialog', 0) === 1) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
         $this->initialize();
 
@@ -358,9 +455,10 @@ class AbstractPlugin
     }
 
     /**
-     * Return the plugin name.
+     * Return the calling plugin name, eg: the plugin that opened this one in a
+     * dialog.
      *
-     * @return string
+     * @return string The caller name, or an empty value if there is no caller.
      */
     public function getCaller()
     {
@@ -369,11 +467,19 @@ class AbstractPlugin
 
     /**
      * Get default values for a plugin.
+     *
      * Key / Value pairs will be retrieved from the profile or plugin manifest.
+     * Custom attributes set on the plugin are validated and appended, with
+     * invalid attribute names skipped and values escaped.
      *
-     * @param array $defaults
+     * @param string $fieldset The manifest fieldset to read defaults from.
+     * @param array  $options  Optional values:
+     *                          - defaults (array): Base values to merge into.
+     *                          - exclude (array): Field names to skip.
+     *                          - group (string): Parameter sub-group.
+     *                          - manifest (string): Alternative manifest path.
      *
-     * @return array
+     * @return array Associative array of default values.
      */
     public function getDefaults($fieldset = 'defaults', $options = array())
     {
@@ -493,6 +599,17 @@ class AbstractPlugin
         return $defaults;
     }
 
+    /**
+     * Convert the plugin defaults into html attributes and inline styles.
+     *
+     * Layout values, eg: align, border and margin, are mapped to css properties
+     * and returned under a `styles` key, with px units added to numeric values.
+     * Remaining values are returned as attributes, with `direction` mapped to
+     * `dir` and `classes` to `class`.
+     *
+     * @return array Attribute name / value pairs, with a nested `styles` array
+     *               where any style values are set.
+     */
     public function getDefaultAttributes()
     {
         $defaults = $this->getDefaults();
@@ -573,10 +690,14 @@ class AbstractPlugin
     }
 
     /**
-     * Check the user is in an authorized group
-     * Check the users group is authorized to use the plugin.
+     * Check that a plugin is installed and available to the current user.
      *
-     * @return bool
+     * Verifies the plugin directory exists and that the plugin is assigned to a
+     * profile the user has access to.
+     *
+     * @param string|null $plugin The plugin name to check.
+     *
+     * @return bool True if the plugin is installed and authorized.
      */
     public function checkPlugin($plugin = null)
     {
@@ -596,9 +717,14 @@ class AbstractPlugin
     /**
      * Add an alert array to the stack.
      *
-     * @param string $class Alert classname
+     * Alerts are stored in the plugin configuration and passed to the client by
+     * {@see self::getSettings()}.
+     *
+     * @param string $class Alert classname, eg: info, warning, error
      * @param string $title Alert title
      * @param string $text  Alert text
+     *
+     * @return void
      */
     protected function addAlert($class = 'info', $title = '', $text = '')
     {
@@ -651,9 +777,9 @@ class AbstractPlugin
     /**
      * Compile plugin settings from defaults and alerts.
      *
-     * @param array $settings
+     * @param array $settings Additional settings, merged over the defaults.
      *
-     * @return array
+     * @return array The compiled settings, passed to the client.
      */
     public function getSettings($settings = array())
     {
@@ -667,6 +793,13 @@ class AbstractPlugin
         return $settings;
     }
 
+    /**
+     * Get the editor parameters.
+     *
+     * @param array $options Options passed to the application, eg: key, default.
+     *
+     * @return mixed The parameter values.
+     */
     public function getParams($options = array())
     {
         $wf = $this->application;
@@ -677,12 +810,17 @@ class AbstractPlugin
     /**
      * Get a parameter by key.
      *
+     * Keys rooted on "editor", the plugin name or the caller name are read
+     * directly. An unrooted key is treated as a shared parameter and resolved
+     * through a fallback chain: the editor value, then the plugin value, then
+     * the caller value where a caller is set, so the most specific value wins.
+     *
      * @param string $key        Parameter key eg: editor.width
      * @param mixed  $fallback   Fallback value
      * @param mixed  $default    Default value
      * @param string $type       Variable type eg: string, boolean, integer, array
      *
-     * @return mixed
+     * @return mixed The parameter value.
      */
     public function getParam($key, $fallback = '', $default = '', $type = 'string')
     {
@@ -732,6 +870,12 @@ class AbstractPlugin
         return (bool) $this->getParam($option, $default);
     }
 
+    /**
+     * Check whether javascript event attributes, eg: onclick, are allowed in
+     * plugin output.
+     *
+     * @return bool
+     */
     protected function allowEvents()
     {
         if ((bool) $this->getParam('editor.allow_javascript')) {
