@@ -326,7 +326,7 @@
 
                 // process remaining attributes
                 $.each(attribs, function (key, val) {
-                    if (key === 'data-mce-mouseover' || key === 'data-mce-mouseout' || key.indexOf('on') === 0) {
+                    if (key.indexOf('data-mce-on') === 0 || key.indexOf('on') === 0) {
                         return true;
                     }
 

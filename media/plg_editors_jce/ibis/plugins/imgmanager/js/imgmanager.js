@@ -11,6 +11,13 @@
 /* global Wf, jQuery, ibisPopup */
 
 (function ($) {
+
+    function toSrcSwap(ed, value) {
+        value = ed.convertURL(value);
+
+        return /['"<>\\]/.test(value) ? '' : "this.src='" + value + "';";
+    }
+
     function getAttributes(ed, node) {
         var i, attrs = node.attributes, attribs = {};
 
@@ -190,8 +197,8 @@
                 $('#longdesc').val(ed.convertURL(ed.dom.getAttrib(n, 'longdesc')));
 
                 $.each(['mouseover', 'mouseout'], function (i, key) {
-                    // get value from data-* attributes
-                    var val = ed.dom.getAttrib(n, 'data-' + key);
+                    // the rollover is held as a stored event attribute, eg: data-mce-onmouseover
+                    var val = ed.dom.getAttrib(n, 'data-mce-on' + key);
                     // trim whitespace
                     val = val.trim();
                     // clean url
@@ -218,7 +225,7 @@
 
                 // process remaining attributes
                 $.each(attribs, function (key, val) {
-                    if (key === 'data-mce-mouseover' || key === 'data-mce-mouseout' || key.indexOf('on') === 0) {
+                    if (key.indexOf('data-mce-on') === 0 || key.indexOf('on') === 0) {
                         return true;
                     }
 
@@ -371,8 +378,8 @@
             }
             
             args = $.extend(args, {
-                'data-mce-mouseover': over ? ed.convertURL(over) : '',
-                'data-mce-mouseout': out ? ed.convertURL(out) : ''
+                'data-mce-onmouseover': over ? toSrcSwap(ed, over) : '',
+                'data-mce-onmouseout': out ? toSrcSwap(ed, out) : ''
             });
 
             el = ed.selection.getNode();
