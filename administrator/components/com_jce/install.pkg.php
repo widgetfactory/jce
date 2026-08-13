@@ -317,10 +317,6 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
                 if (strpos($item->Type, 'unsigned') === false) {
                     $state = false;
                 }
-
-                if (strpos($item->Type, 'unsigned') === false) {
-                    $state = false;
-                }
             }
 
             if ($item->Field == 'checked_out_time') {
@@ -346,6 +342,12 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $db = $this->getDatabase();
         $extension = new ExtensionTable($db);
         $parent = $installer->getParent();
+
+        // remove legacy files and folders. Run before anything that can fail so cleanup is never skipped
+        try {
+            $this->cleanupInstall();
+        } catch (Throwable $e) {
+        }
 
         // remove legacy jcefilebrowser quickicon plugin
         $plugins = [
@@ -409,8 +411,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
                 $theme = 'modern';
             }
 
-            // update toolbar_theme for 2.7.x
-            if (version_compare($current_version, '2.8', 'lt')) {
+            // update toolbar_theme for 2.7.x. Skip if the current version could not be determined
+            if ($current_version && version_compare($current_version, '2.8', 'lt')) {
                 $theme = 'default';
             }
 
@@ -492,8 +494,6 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
                 $db->setQuery($query);
                 $db->execute();
             }
-
-            $this->cleanupInstall();
         }
 
         // Rebuild the extension namespace map so autoloading picks up new classes immediately.
@@ -504,10 +504,15 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         }
     }
 
-    protected static function cleanupInstall()
+    /**
+     * Remove files and folders left behind by earlier releases.
+     *
+     * The lists are cumulative and are not gated by version. Every entry is checked for existence
+     * on each run, so a cleanup that was missed on one upgrade path is still picked up on the next.
+     * Nothing listed here is shipped by the current package.
+     */
+    private function cleanupInstall()
     {
-        $current_version = self::$current_version;
-
         $admin = JPATH_ADMINISTRATOR . '/components/com_jce';
         $site = JPATH_SITE . '/components/com_jce';
         $media = JPATH_SITE . '/media/com_jce';
@@ -516,7 +521,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $files = array();
 
         // J4 -> J5: remove legacy non-namespaced MVC structure replaced by src/ and clean up
-        $folders['3.0.0'] = array(
+        $folders[] = array(
             // remove fields folder
             JPATH_PLUGINS . '/system/jce/fields',
             JPATH_PLUGINS . '/editors/jce/src/Provider',
@@ -547,10 +552,10 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $media . '/tinymce'
         );
 
-        // remove profile manifiests
-        $files['2.9.99.7'] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: [];
+        // remove exported profile manifests
+        $files[] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: array();
 
-        $files['3.0.0'] = array(
+        $files[] = array(
             $admin . '/controller.php',
             $admin . '/jce.php',
             $admin . '/includes/classmap.php',
@@ -558,12 +563,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $site  . '/jce.php',
         );
 
-        foreach ($folders as $version => $list) {
-            // version check
-            if (version_compare($version, $current_version, 'lt')) {
-                continue;
-            }
-
+        foreach ($folders as $list) {
             foreach ($list as $folder) {
                 if (!@is_dir($folder)) {
                     continue;
@@ -597,12 +597,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             }
         }
 
-        foreach ($files as $version => $list) {
-            // version check
-            if (version_compare($version, $current_version, 'lt')) {
-                continue;
-            }
-
+        foreach ($files as $list) {
             foreach ($list as $file) {
                 if (!@file_exists($file)) {
                     continue;
