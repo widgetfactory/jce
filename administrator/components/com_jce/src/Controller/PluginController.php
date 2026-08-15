@@ -26,6 +26,8 @@ use Joomla\Filesystem\Path;
  */
 class PluginController extends BaseController
 {
+    private const ALLOWED_TASKS = ['display', 'xhr', 'loadlanguages'];
+
     private function mapPluginName($name)
     {
         $map = array(
@@ -107,6 +109,11 @@ class PluginController extends BaseController
     {
         // Check for session token
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
+
+        // validate the task against allowed tasks 
+        if (!in_array($task, self::ALLOWED_TASKS, true)) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
 
         $wf = \Wfe\Factory::getApplication();
 

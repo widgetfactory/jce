@@ -22,6 +22,8 @@ use Joomla\CMS\Session\Session;
  */
 class EditorController extends BaseController
 {
+    private const ALLOWED_TASKS = ['loadlanguages', 'pack', 'compileless'];
+
     public function execute($task)
     {
         // check for session token
@@ -39,7 +41,7 @@ class EditorController extends BaseController
             [, $task] = explode('.', $task);
         }
 
-        if (in_array($task, ['loadlanguages', 'pack', 'compileless'])) {
+        if (in_array($task, self::ALLOWED_TASKS, true)) {
             if ($task === 'pack') {
                 $type = $this->input->getWord('type', 'javascript');
 
