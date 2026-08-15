@@ -15,10 +15,11 @@ require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/applicat
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\Factory;
 
 class JceControllerEditor extends BaseController
 {
+    private const ALLOWED_TASKS = ['loadlanguages', 'pack', 'compileless'];
+
     public function execute($task)
     {
         // check for session token
@@ -36,7 +37,15 @@ class JceControllerEditor extends BaseController
             list($name, $task) = explode('.', $task);
         }
 
-        if (in_array($task, array('loadlanguages', 'pack', 'compileless'), true)) {
+        if (in_array($task, self::ALLOWED_TASKS, true)) {
+            if ($task === 'pack') {
+                $type = $this->input->getWord('type', 'javascript');
+
+                if (!in_array($type, ['javascript', 'css', 'language'], true)) {
+                    jexit();
+                }
+            }
+
             if (method_exists($editor, $task)) {
                 $editor->$task();
             }

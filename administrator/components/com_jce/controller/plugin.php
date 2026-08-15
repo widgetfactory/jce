@@ -20,6 +20,8 @@ use Joomla\Filesystem\Path;
 
 class JceControllerPlugin extends BaseController
 {
+    private const ALLOWED_TASKS = ['display', 'xhr', 'loadlanguages'];
+
     private static $map = array(
         'image' => 'imgmanager',
         'imagepro' => 'imgmanager_ext',
@@ -44,8 +46,9 @@ class JceControllerPlugin extends BaseController
         // check for session token
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
 
-        if (!in_array($task, ['display', 'xhr'], true)) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        // validate the task against allowed tasks 
+        if (!in_array($task, self::ALLOWED_TASKS, true)) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
         
         $wf = WFApplication::getInstance();
