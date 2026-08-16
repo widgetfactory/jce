@@ -20,7 +20,7 @@ use Joomla\Filesystem\Path;
 
 class JceControllerPlugin extends BaseController
 {
-    private const ALLOWED_TASKS = ['display', 'xhr', 'loadlanguages'];
+    private const ALLOWED_TASKS = ['display', 'xhr', 'loadlanguages', 'pack'];
 
     private static $map = array(
         'image' => 'imgmanager',
