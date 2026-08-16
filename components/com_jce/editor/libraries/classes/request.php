@@ -17,11 +17,39 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
 
+/**
+ * Dispatcher for editor XHR requests.
+ *
+ * Plugins register the methods they expose with setRequest(), and process() resolves the
+ * incoming request to one of them and returns the result as a JSON-RPC response. A request
+ * arrives either as a JSON-RPC body (raw "application/json", or a form encoded "json" field)
+ * or as a plain "method" request variable, which returns markup rather than json.
+ *
+ * The request body is decoded once and cached, so getJson(), getMethod() and getId() may be
+ * called before process() to determine what is being requested, eg: to authorise it.
+ */
 final class WFRequest extends CMSObject
 {
+    /**
+     * Singleton instance.
+     *
+     * @var WFRequest
+     */
     protected static $instance;
 
+    /**
+     * Registered request methods, keyed by method name.
+     *
+     * @var array
+     */
     protected $requests = array();
+
+    /**
+     * Decoded json request data. False until the request body has been read.
+     *
+     * @var object|null|false
+     */
+    protected $json = false;
 
     /**
      * Constructor activating the default information of the class.
@@ -32,12 +60,9 @@ final class WFRequest extends CMSObject
     }
 
     /**
-     * Returns a reference to a WFRequest object.
+     * Get the singleton WFRequest instance.
      *
-     * This method must be invoked as:
-     *    <pre>  $request = WFRequest::getInstance();</pre>
-     *
-     * @return object WFRequest
+     * @return WFRequest
      */
     public static function getInstance()
     {
@@ -49,9 +74,12 @@ final class WFRequest extends CMSObject
     }
 
     /**
-     * Set Request function.
+     * Register a method that may be called by a request.
      *
-     * @param array $function An array containing the function and object
+     * @param array|string $function Either array($object, 'method'), or the name of a
+     *                               callable function
+     *
+     * @return void
      */
     public function register($function)
     {
@@ -71,15 +99,27 @@ final class WFRequest extends CMSObject
         }
     }
 
+    /**
+     * Check whether a method has been registered.
+     *
+     * Registration is conditional in most plugins, so this answers "is this method
+     * available to the current user", not "does this method exist".
+     *
+     * @param string $function The method name
+     *
+     * @return bool
+     */
     private function isRegistered($function)
     {
         return array_key_exists($function, $this->requests);
     }
 
     /**
-     * Get a request function.
+     * Get a registered method.
      *
-     * @param string $function
+     * @param string $function The method name, which must be registered
+     *
+     * @return stdClass Object with "fn" (method name) and, for an object method, "ref"
      */
     public function getFunction($function)
     {
@@ -87,9 +127,9 @@ final class WFRequest extends CMSObject
     }
 
     /**
-     * Check if the HTTP Request is a WFRequest.
+     * Check whether the HTTP request is an editor XHR request.
      *
-     * @return bool
+     * @return bool True for an XMLHttpRequest, or a multipart or json body
      */
     private function isRequest()
     {
@@ -97,15 +137,27 @@ final class WFRequest extends CMSObject
         return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || strpos($contentType, 'multipart') !== false || strpos($contentType, 'application/json') !== false;
     }
 
+    /**
+     * Register a method that may be called by a request.
+     *
+     * @param array|string $request Either array($object, 'method'), or the name of a
+     *                              callable function
+     *
+     * @return void
+     */
     public function setRequest($request)
     {
         return $this->register($request);
     }
 
     /**
-     * Check a request query for bad stuff (null-byte injection).
+     * Check request parameters for null bytes, recursing into nested values.
      *
-     * @param mixed $query
+     * @param mixed $query A scalar, array or object of request parameters
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If a key or value contains a null byte
      */
     private function checkQuery($query)
     {
@@ -134,9 +186,157 @@ final class WFRequest extends CMSObject
     }
 
     /**
-     * Process an ajax call and return result.
+     * Check whether the request body is json rather than form encoded.
      *
-     * @return string
+     * @return bool
+     */
+    private function isJsonBody()
+    {
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+        return stripos($contentType, 'application/json') !== false;
+    }
+
+    /**
+     * Read and decode the request body.
+     *
+     * Use getJson() instead, which caches the result. A json body is read from the raw
+     * input, otherwise the form encoded "json" field is used. A multipart request, eg: an
+     * upload, has neither and decodes to null.
+     *
+     * @return object|null The decoded data, or null if there is none or it is not valid json
+     */
+    private function decode()
+    {
+        // json passed as a form encoded field
+        if ($this->isJsonBody() === false) {
+            $raw = Factory::getApplication()->input->getVar('json', '', 'POST', 'STRING', 2);
+
+            return $raw ? json_decode($raw, false, 32) : null;
+        }
+
+        // Reject oversized bodies up front rather than truncating (which corrupts the JSON)
+        if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 65536) {
+            jexit('Invalid Content');
+        }
+
+        $raw = file_get_contents('php://input');
+
+        return ($raw !== '' && $raw !== false) ? json_decode($raw, false, 32) : null;
+    }
+
+    /**
+     * Get the decoded json data for the current request.
+     *
+     * The body is read and decoded only once, so this is safe to call before the request
+     * is processed, and safe to call more than once.
+     *
+     * @return object|null The decoded data, or null if there is none or it is not valid json
+     */
+    public function getJson()
+    {
+        if ($this->json === false) {
+            $this->json = $this->decode();
+        }
+
+        return $this->json;
+    }
+
+    /**
+     * Get the method name for the current request.
+     *
+     * The name is returned whether it was passed in a json body or as a request variable.
+     * No check is made that the method is registered, so this can be called before any
+     * methods have been registered, and returns the name even when it is not permitted.
+     *
+     * @return string The method name, or an empty string if there is none
+     */
+    public function getMethod()
+    {
+        $json = $this->getJson();
+
+        if (is_object($json) && isset($json->method)) {
+            return InputFilter::getInstance()->clean($json->method, 'cmd');
+        }
+
+        return Factory::getApplication()->input->getWord('method', '');
+    }
+
+    /**
+     * Get the id for the current request.
+     *
+     * The id is echoed back in the response so the client can match it to the call it made.
+     *
+     * @return string The id from the json body, falling back to the "id" request variable
+     */
+    public function getId()
+    {
+        $json = $this->getJson();
+
+        return empty($json->id) ? Factory::getApplication()->input->getWord('id') : $json->id;
+    }
+
+    /**
+     * Resolve the current request into a registered method name and its arguments.
+     *
+     * The arguments come from the json "params" value: an array is spread across the
+     * method's arguments, anything else is passed as a single argument.
+     *
+     * @return array array($fn, $args), the method name and its arguments
+     *
+     * @throws InvalidArgumentException With a JSON-RPC code as the exception code: -32600
+     *                                  if the json body has no method, -32601 if the method
+     *                                  is missing or not registered, or 403 from checkQuery()
+     */
+    private function getRequest()
+    {
+        $json = $this->getJson();
+        $fn = $this->getMethod();
+        $args = array();
+
+        // check if valid json object
+        if (is_object($json)) {
+            // no function call
+            if (isset($json->method) === false) {
+                throw new InvalidArgumentException('Invalid Request', -32600);
+            }
+
+            // pass params to input and flatten
+            if (empty($json->params)) {
+                $json->params = "";
+            }
+
+            // check query
+            $this->checkQuery($json->params);
+
+            // merge array with args
+            if (is_array($json->params)) {
+                $args = array_merge($args, $json->params);
+                // pass through string or object
+            } else {
+                $args[] = $json->params;
+            }
+        }
+
+        if (empty($fn) || $this->isRegistered($fn) === false) {
+            throw new InvalidArgumentException('Method not found', -32601);
+        }
+
+        return array($fn, $args);
+    }
+
+    /**
+     * Process the current request and send the response.
+     *
+     * Resolves the request to a registered method, calls it, and sends the result. This
+     * does not return for a valid request: the response is sent and execution ends. Errors
+     * are sent as a JSON-RPC error response rather than thrown.
+     *
+     * @param bool $array Unused
+     *
+     * @return bool False if this is not an editor XHR request, otherwise does not return
+     *
+     * @throws InvalidArgumentException If the request has neither a method nor a json body
      */
     public function process($array = false)
     {
@@ -149,23 +349,12 @@ final class WFRequest extends CMSObject
 
         $app = Factory::getApplication();
 
-        // empty arguments
-        $args = array();
-
         $method = $app->input->getWord('method');
 
-        // Read JSON body: either application/json (raw body) or urlencoded json= field
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        // read the request body
+        $json = $this->getJson();
 
-        if (stripos($contentType, 'application/json') !== false) {
-            // Reject oversized bodies up front rather than truncating (which corrupts the JSON)
-            if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 65536) {
-                jexit('Invalid Content');
-            }
-
-            $raw  = file_get_contents('php://input');
-            $json = ($raw !== '' && $raw !== false) ? json_decode($raw, false, 32) : null;
-
+        if ($this->isJsonBody()) {
             // The body is pure JSON, so the "data" payload (read by handlers such as createTemplate
             // via $app->input->post) is not in $_POST. Surface it to the POST input so those handlers
             // keep working, matching the urlencoded path where it arrives as a POST field. Only "data"
@@ -173,9 +362,6 @@ final class WFRequest extends CMSObject
             if (is_object($json) && isset($json->data) && is_scalar($json->data)) {
                 $app->input->post->set('data', $json->data);
             }
-        } else {
-            $raw  = $app->input->getVar('json', '', 'POST', 'STRING', 2);
-            $json = $raw ? json_decode($raw, false, 32) : null;
         }
 
         if (!$method && !$json) {
@@ -183,7 +369,7 @@ final class WFRequest extends CMSObject
         }
 
         // get current request id
-        $id = empty($json->id) ? $app->input->getWord('id') : $json->id;
+        $id = $this->getId();
 
         // create response
         $response = new WFResponse($id);
@@ -192,45 +378,18 @@ final class WFRequest extends CMSObject
             // set request flag
             define('JCE_REQUEST', 1);
 
-            // check if valid json object
-            if (is_object($json)) {
-                // no function call
-                if (isset($json->method) === false) {
-                    $response->setError(array('code' => -32600, 'message' => 'Invalid Request'))->send();
-                }
-
-                // get function call
-                $fn = $json->method;
-
-                // clean function
-                $fn = InputFilter::getInstance()->clean($fn, 'cmd');
-
-                // pass params to input and flatten
-                if (empty($json->params)) {
-                    $json->params = "";
-                }
-
-                try {
-                    // check query
-                    $this->checkQuery($json->params);
-                } catch (Exception $e) {
-                    $response->setError(array('code' => $e->getCode(), 'message' => $e->getMessage()))->send();
-                }
-
-                // merge array with args
-                if (is_array($json->params)) {
-                    $args = array_merge($args, $json->params);
-                    // pass through string or object
-                } else {
-                    $args[] = $json->params;
-                }
-            } else {
-                $fn = $method;
+            // a plain method call returns markup rather than json
+            if (!is_object($json)) {
                 $response->setHeaders(array('Content-type' => 'text/html;charset=UTF-8'));
             }
 
-            if (empty($fn) || $this->isRegistered($fn) === false) {
-                $response->setError(array('code' => -32601, 'message' => 'Method not found'))->send();
+            $fn = '';
+            $args = array();
+
+            try {
+                list($fn, $args) = $this->getRequest();
+            } catch (Exception $e) {
+                $response->setError(array('code' => $e->getCode(), 'message' => $e->getMessage()))->send();
             }
 
             // get method
