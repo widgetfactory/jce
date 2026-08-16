@@ -29,6 +29,11 @@ class WFLinkPlugin extends WFEditorPlugin
         $this->getSearch('link');
     }
 
+    protected function isBasicDialog()
+    {
+        return (int) $this->getParam('basic_dialog', 0) === 1;
+    }
+
     public function display()
     {
         parent::display();

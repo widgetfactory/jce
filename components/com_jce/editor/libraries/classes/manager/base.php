@@ -87,6 +87,46 @@ class WFMediaManagerBase extends WFEditorPlugin
         return $this->getFileBrowser();
     }
 
+    protected function isBasicDialog()
+    {
+        if ((int) $this->getParam('basic_dialog', 0) === 0) {
+            return false;
+        }
+
+        // the file browser is a dialog in its own right, and may still be allowed
+        if ((string) $this->getName() === 'browser') {
+            $caller = (string) $this->get('caller');
+
+            if ($caller) {
+                // Image Manager etc.
+                if ((int) $this->getParam($caller . '.basic_dialog_filebrowser', 0) === 1) {
+                    return false;
+                }
+
+                // Link
+                if ($caller === 'link') {
+                    if ((int) $this->getParam($caller . '.file_browser', 1) === 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    protected function getCoreMethods()
+    {
+        $methods = parent::getCoreMethods();
+
+        // allow uploading if it is enabled, eg: inline uploading
+        if ((int) $this->getParam('upload', 1) && (int) $this->getParam('inline_upload', 0)) {
+            $methods[] = 'upload';
+        }
+
+        return $methods;
+    }
+
     /**
      * Display the plugin.
      */
