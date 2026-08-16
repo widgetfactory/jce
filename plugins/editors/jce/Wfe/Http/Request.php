@@ -26,6 +26,13 @@ final class Request
     protected $requests = array();
 
     /**
+     * Decoded json request data. False until the request body has been read.
+     *
+     * @var object|null|false
+     */
+    protected $json = false;
+
+    /**
      * Returns a reference to a WFRequest object.
      *
      * This method must be invoked as:
@@ -129,6 +136,135 @@ final class Request
     }
 
     /**
+     * Check whether the request body is json rather than form encoded.
+     *
+     * @return bool
+     */
+    private function isJsonBody()
+    {
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+
+        return stripos($contentType, 'application/json') !== false;
+    }
+
+    /**
+     * Read and decode the request body.
+     *
+     * @return object|null
+     */
+    private function decode()
+    {
+        // json passed as a form encoded field
+        if ($this->isJsonBody() === false) {
+            $raw = Factory::getApplication()->input->getVar('json', '', 'POST', 'STRING', 2);
+
+            return $raw ? json_decode($raw, false, 32) : null;
+        }
+
+        // Reject oversized bodies up front rather than truncating (which corrupts the JSON)
+        if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 65536) {
+            jexit(Text::_('JINVALID_TOKEN'));
+        }
+
+        $raw = file_get_contents('php://input');
+
+        return ($raw !== '' && $raw !== false) ? json_decode($raw, false, 32) : null;
+    }
+
+    /**
+     * Get the decoded json data for the current request.
+     *
+     * The body is read and decoded only once, so this is safe to call before the
+     * request is processed.
+     *
+     * @return object|null
+     */
+    public function getJson()
+    {
+        if ($this->json === false) {
+            $this->json = $this->decode();
+        }
+
+        return $this->json;
+    }
+
+    /**
+     * Get the method name for the current request.
+     *
+     * The name is returned whether it was passed as a query variable or in a json
+     * body. No check is made that the method is registered, so this can be called
+     * before any request handlers have been set.
+     *
+     * @return string The method name, or an empty string if there is none
+     */
+    public function getMethod()
+    {
+        $json = $this->getJson();
+
+        if (is_object($json) && isset($json->method)) {
+            return InputFilter::getInstance()->clean($json->method, 'cmd');
+        }
+
+        return Factory::getApplication()->input->getWord('method', '');
+    }
+
+    /**
+     * Get the id for the current request.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        $json = $this->getJson();
+
+        return empty($json->id) ? Factory::getApplication()->input->getWord('id') : $json->id;
+    }
+
+    /**
+     * Resolve the current request into a registered method name and its arguments.
+     *
+     * @return array array($fn, $args)
+     *
+     * @throws \InvalidArgumentException with a JSON-RPC error code
+     */
+    private function getRequest()
+    {
+        $json = $this->getJson();
+        $fn = $this->getMethod();
+        $args = array();
+
+        // check if valid json object
+        if (is_object($json)) {
+            // no function call
+            if (isset($json->method) === false) {
+                throw new \InvalidArgumentException('Invalid Request', -32600);
+            }
+
+            // pass params to input and flatten
+            if (empty($json->params)) {
+                $json->params = "";
+            }
+
+            // check query
+            $this->checkQuery($json->params);
+
+            // merge array with args
+            if (is_array($json->params)) {
+                $args = array_merge($args, $json->params);
+                // pass through string or object
+            } else {
+                $args[] = $json->params;
+            }
+        }
+
+        if (empty($fn) || $this->isRegistered($fn) === false) {
+            throw new \InvalidArgumentException('Method not found', -32601);
+        }
+
+        return array($fn, $args);
+    }
+
+    /**
      * Process an ajax call and return result.
      *
      * @return string
@@ -144,23 +280,12 @@ final class Request
 
         $app = Factory::getApplication();
 
-        // empty arguments
-        $args = array();
-
         $method = $app->input->getWord('method');
 
-        // Read JSON body: either application/json (raw body) or urlencoded json= field
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        // read the request body
+        $json = $this->getJson();
 
-        if (stripos($contentType, 'application/json') !== false) {
-            // Reject oversized bodies up front rather than truncating (which corrupts the JSON)
-            if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 65536) {
-                jexit(Text::_('JINVALID_TOKEN'));
-            }
-
-            $raw  = file_get_contents('php://input');
-            $json = ($raw !== '' && $raw !== false) ? json_decode($raw, false, 32) : null;
-
+        if ($this->isJsonBody()) {
             // The body is pure JSON, so the "data" payload (read by handlers such as createTemplate
             // via $app->input->post) is not in $_POST. Surface it to the POST input so those handlers
             // keep working, matching the urlencoded path where it arrives as a POST field. Only "data"
@@ -168,9 +293,6 @@ final class Request
             if (is_object($json) && isset($json->data) && is_scalar($json->data)) {
                 $app->input->post->set('data', $json->data);
             }
-        } else {
-            $raw  = $app->input->getVar('json', '', 'POST', 'STRING', 2);
-            $json = $raw ? json_decode($raw, false, 32) : null;
         }
 
         if (!$method && !$json) {
@@ -178,7 +300,7 @@ final class Request
         }
 
         // get current request id
-        $id = empty($json->id) ? $app->input->getWord('id') : $json->id;
+        $id = $this->getId();
 
         // create response
         $response = new Response($id);
@@ -187,45 +309,18 @@ final class Request
             // set request flag
             define('JCE_REQUEST', 1);
 
-            // check if valid json object
-            if (is_object($json)) {
-                // no function call
-                if (isset($json->method) === false) {
-                    $response->setError(array('code' => -32600, 'message' => 'Invalid Request'))->send();
-                }
-
-                // get function call
-                $fn = $json->method;
-
-                // clean function
-                $fn = InputFilter::getInstance()->clean($fn, 'cmd');
-
-                // pass params to input and flatten
-                if (empty($json->params)) {
-                    $json->params = "";
-                }
-
-                try {
-                    // check query
-                    $this->checkQuery($json->params);
-                } catch (\Exception $e) {
-                    $response->setError(array('code' => $e->getCode(), 'message' => $e->getMessage()))->send();
-                }
-
-                // merge array with args
-                if (is_array($json->params)) {
-                    $args = array_merge($args, $json->params);
-                    // pass through string or object
-                } else {
-                    $args[] = $json->params;
-                }
-            } else {
-                $fn = $method;
+            // a plain method call returns markup rather than json
+            if (!is_object($json)) {
                 $response->setHeaders(array('Content-type' => 'text/html;charset=UTF-8'));
             }
 
-            if (empty($fn) || $this->isRegistered($fn) === false) {
-                $response->setError(array('code' => -32601, 'message' => 'Method not found'))->send();
+            $fn = '';
+            $args = array();
+
+            try {
+                list($fn, $args) = $this->getRequest();
+            } catch (\Exception $e) {
+                $response->setError(array('code' => $e->getCode(), 'message' => $e->getMessage()))->send();
             }
 
             // get method
