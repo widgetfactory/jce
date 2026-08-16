@@ -63,6 +63,13 @@ class AbstractPlugin
     protected $name = '';
 
     /**
+     * Request methods allowed when the plugin is restricted to a basic dialog.
+     *
+     * @var array
+     */
+    protected $core_methods = array();
+
+    /**
      * Constructor activating the default information of the class.
      *
      * The plugin name is taken from the `plugin` request variable, falling back
@@ -337,11 +344,57 @@ class AbstractPlugin
      *
      * @throws \Exception If the plugin is running as a basic dialog.
      */
+    /**
+     * Check whether this plugin instance is restricted to a basic dialog.
+     *
+     * A basic dialog is rendered by the editor itself, so the plugin's own dialog and
+     * request methods are not used. Plugins opt in by overriding this method, and list
+     * the methods that remain available in getCoreMethods().
+     *
+     * @return bool
+     */
+    protected function isBasicDialog()
+    {
+        return false;
+    }
+
+    /**
+     * Get the request methods allowed when restricted to a basic dialog.
+     *
+     * @return array
+     */
+    protected function getCoreMethods()
+    {
+        return $this->core_methods;
+    }
+
+    /**
+     * Restrict a basic dialog to its allowed request methods.
+     *
+     * @throws \Exception If the requested method is not allowed
+     */
+    private function checkBasicDialog()
+    {
+        if ($this->isBasicDialog() === false) {
+            return;
+        }
+
+        $method = Request::getInstance()->getMethod();
+
+        // a task with no method, eg: display, is never available in a basic dialog
+        if (!in_array($method, $this->getCoreMethods(), true)) {
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+    }
+
     public function execute($task)
     {
         // check session on get request
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
-    
+
+        // a basic dialog only allows the methods it declares
+        $this->checkBasicDialog();
+
         if ($task == 'loadlanguages') {
             return $this->loadlanguages();
         }
@@ -413,10 +466,6 @@ class AbstractPlugin
     {
         // check session on get request
         Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
-    
-        if ((int) $this->getParam('basic_dialog', 0) === 1) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-        }
 
         $this->initialize();
 

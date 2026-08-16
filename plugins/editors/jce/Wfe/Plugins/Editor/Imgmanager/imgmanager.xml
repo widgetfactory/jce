@@ -238,7 +238,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="inline_upload" type="yesno" default="1" label="WF_PARAM_INLINE_UPLOAD" description="WF_PARAM_INLINE_UPLOAD_DESC">
+            <field name="inline_upload" type="yesno" default="0" label="WF_PARAM_INLINE_UPLOAD" description="WF_PARAM_INLINE_UPLOAD_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>

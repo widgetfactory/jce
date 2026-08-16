@@ -14,8 +14,6 @@ namespace Wfe\Editor\Plugin\Manager;
 \defined('_JEXEC') or die;
 
 use Joomla\Registry\Registry;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 
 use Wfe\Http\Request;
 use Wfe\Utility\Utility;
@@ -158,35 +156,44 @@ class AbstractManager extends \Wfe\Editor\Plugin\AbstractPlugin
         return $this->getFileBrowser();
     }
 
-    /**
-     * Execute a plugin task.
-     *
-     * When the plugin is running as a "basic dialog", only the inline upload XHR
-     * task is permitted, and only if uploading and inline uploading are enabled.
-     *
-     * @param string $task The task to execute.
-     *
-     * @return void
-     *
-     * @throws \Exception If the task is not allowed in a basic dialog.
-     */
-    public function execute($task)
+    protected function isBasicDialog()
     {
-        $app = Factory::getApplication();
-
-        if ((int) $this->getParam('basic_dialog', 0) === 1) {
-
-            // allow xhr task if uploading is allowed, eg: inline uploading
-            if ($task === 'xhr' && $app->input->getWord('method') === 'upload') {
-                if ((int) $this->getParam('upload', 1) && (int) $this->getParam('inline_upload', 1)) {
-                    return parent::execute($task);
-                }
-            }
-
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        if ((int) $this->getParam('basic_dialog', 0) === 0) {
+            return false;
         }
 
-        parent::execute($task);
+        // the file browser is a dialog in its own right, and may still be allowed
+        if ((string) $this->getName() === 'browser') {
+            $caller = (string) $this->getConfig('caller');
+
+            if ($caller) {
+                // Image Manager etc.
+                if ((int) $this->getParam($caller . '.basic_dialog_filebrowser', 0) === 1) {
+                    return false;
+                }
+
+                // Link
+                if ($caller === 'link') {
+                    if ((int) $this->getParam($caller . '.file_browser', 1) === 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    protected function getCoreMethods()
+    {
+        $methods = parent::getCoreMethods();
+
+        // allow uploading if it is enabled, eg: inline uploading
+        if ((int) $this->getParam('upload', 1) && (int) $this->getParam('inline_upload', 0)) {
+            $methods[] = 'upload';
+        }
+
+        return $methods;
     }
 
     /**
