@@ -26,7 +26,7 @@ use Joomla\Filesystem\Path;
  */
 class PluginController extends BaseController
 {
-    private const ALLOWED_TASKS = ['display', 'xhr', 'loadlanguages'];
+    private const ALLOWED_TASKS = ['display', 'xhr', 'loadlanguages', 'pack'];
 
     private function mapPluginName($name)
     {
