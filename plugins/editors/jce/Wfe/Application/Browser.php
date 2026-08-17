@@ -2371,7 +2371,7 @@ class Browser
 
         $this->checkItemAccess($source, 'rename', 'Rename Failed');
 
-        $result = $filesystem->rename($source, $destination, $args);
+        $result = $filesystem->rename($source, $destination);
 
         if ($result instanceof FilesystemResult) {
             if (!$result->state) {
@@ -2450,7 +2450,7 @@ class Browser
 
             $item = $this->resolvePath($item);
 
-            $this->checkItemAccess($item, 'move', 'Copy Failed');
+            $this->checkItemAccess($item, 'move', 'Copy Failed', 'source');
 
             $target = Utility::makePath($destination, Utility::mb_basename($item));
 
@@ -2596,7 +2596,7 @@ class Browser
     {
         // check if the user has access to create a folder
         if ($this->checkFeature('create', 'folder') === false) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // a folder cannot be created in the primary directory tree
@@ -2619,7 +2619,7 @@ class Browser
 
         // check for extension in destination name
         if (Utility::validateFileName($name) === false) {
-            throw new \InvalidArgumentException('Action Failed: The file name is invalid.');
+            throw new \InvalidArgumentException('Action Failed: The folder name is invalid.');
         }
 
         $name = Utility::makeSafe($name, $this->getConfig('websafe_mode'), $this->getConfig('websafe_spaces'), $this->getConfig('websafe_textcase'));
@@ -2629,7 +2629,7 @@ class Browser
 
         // check for extension in destination name
         if (Utility::validateFileName($name) === false) {
-            throw new \InvalidArgumentException('Action Failed: The file name is invalid.');
+            throw new \InvalidArgumentException('Action Failed: The folder name is invalid.');
         }
 
         $result = $filesystem->createFolder($target, $name);
@@ -2639,15 +2639,15 @@ class Browser
                 if ($result->message) {
                     $this->setResult($result->message, 'error');
                 } else {
-                    $this->setResult(Text::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', Utility::mb_basename($new)), 'error');
+                    $this->setResult(Text::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', Utility::mb_basename($name)), 'error');
                 }
             } else {
                 $data = array(
-                    'name'  => Utility::mb_basename($new),
-                    'id'    => Utility::mb_basename($new),
+                    'name'  => Utility::mb_basename($name),
+                    'id'    => Utility::mb_basename($name),
                 );
 
-                $event = $this->fireEvent('onFolderNew', array($new));
+                $event = $this->fireEvent('onFolderNew', array($name));
 
                 // merge event data with default values
                 $data = array_merge($data, $event);
