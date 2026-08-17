@@ -122,7 +122,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
         parent::__construct($config);
 
         if (!$this->hasFileBrowser()) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $standalone = $app->input->getInt('standalone');
