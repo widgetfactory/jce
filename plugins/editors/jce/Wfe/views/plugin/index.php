@@ -10,7 +10,13 @@
 
 \defined('_JEXEC') or die;
 
-$theme = $this->getConfig('theme');
+$theme 	= $this->getConfig('theme');
+$caller = $this->getConfig('caller');
+$name   = $this->getConfig('name');
+
+if ($caller) {
+	$name .= '.' . $caller;
+}
 
 ?>
 <!DOCTYPE html>
@@ -20,7 +26,7 @@ $theme = $this->getConfig('theme');
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<!-- [head] -->
 	</head>
-	<body lang="<?php echo $this->language; ?>" id="jce" class="uk-jce <?php echo $theme; ?> uk-form uk-form-horizontal" data-plugin="<?php echo $this->name; ?>">
+	<body lang="<?php echo $this->language; ?>" id="jce" class="uk-jce <?php echo $theme; ?> uk-form uk-form-horizontal" data-plugin="<?php echo $name; ?>">
 		<!-- [body] -->
 	</body>
 </html>
