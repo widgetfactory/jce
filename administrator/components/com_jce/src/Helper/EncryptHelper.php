@@ -15,8 +15,6 @@ use Defuse\Crypto\Key;
 use Defuse\Crypto\Encoding;
 use Defuse\Crypto\Crypto;
 
-use Joomla\Component\Jce\Administrator\Helper\Encrypt\AesEncryptUtility;
-
 /**
  * Implements decryption of legacy encrypted profile params.
  */
@@ -46,7 +44,7 @@ class EncryptHelper
             try {
                 $keyAscii = Encoding::hexToBin(WF_SERVERKEY);
                 $key = Key::loadFromAsciiSafeString($keyAscii);
-            } catch (Defuse\Crypto\Exception\BadFormatException $ex) {
+            } catch (\Defuse\Crypto\Exception\BadFormatException $ex) {
                 return "";
             }
 
@@ -67,22 +65,9 @@ class EncryptHelper
     {
         $mode = substr($encrypted, 0, 12);
 
+        // Legacy AES / CTR encrypted content is no longer supported
         if ($mode == '###AES128###' || $mode == '###CTR128###') {
-            $encrypted = substr($encrypted, 12);
-            $key = self::getKey(true);
-
-            switch ($mode) {
-                case '###AES128###':
-                    $encrypted = base64_decode($encrypted);
-                    $decrypted = @AesEncryptUtility::AESDecryptCBC($encrypted, $key, 128);
-                    break;
-
-                case '###CTR128###':
-                    $decrypted = @AesEncryptUtility::AESDecryptCtr($encrypted, $key, 128);
-                    break;
-            }
-
-            return rtrim($decrypted ?? '', "\0");
+            return "";
         }
 
         if ($mode == '###DEFUSE###') {
@@ -96,7 +81,7 @@ class EncryptHelper
 
             try {
                 $decrypted = Crypto::decrypt($decoded, $key);
-            } catch (Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $ex) {
+            } catch (\Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $ex) {
                 return '';
             }
 
