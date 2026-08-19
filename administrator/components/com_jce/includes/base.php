@@ -14,14 +14,12 @@ defined('_JEXEC') or die;
 require_once __DIR__ . '/constants.php';
 
 // Core namespace
-\JLoader::registerNamespace('Wfe', JPATH_PLUGINS . '/editors/jce/Wfe', false, false, 'psr4');
-
-// Defuse
-JLoader::registerNamespace('Defuse\\Crypto', WF_ADMINISTRATOR . '/vendor/Defuse/Crypto', false, false, 'psr4');
+\JLoader::registerNamespace('Wfe', JPATH_PLUGINS . '/editors/jce/Wfe', false, false);
 
 // CssMin
-JLoader::registerNamespace('tubalmartin\CssMin', WF_EDITOR . '/vendor/cssmin/src', false, false, 'psr4');
+JLoader::registerNamespace('tubalmartin\CssMin', WF_EDITOR . '/vendor/cssmin/src', false, false);
 
+// Legacy namespace registration
 JLoader::registerAlias('WFApplication', 'Wfe\\Compat\\WFApplication');
 JLoader::registerAlias('WFFileSystem', 'Wfe\\Compat\\WFFileSystem');
 JLoader::registerAlias('WFEditorPlugin', 'Wfe\\Compat\\WFEditorPlugin');
