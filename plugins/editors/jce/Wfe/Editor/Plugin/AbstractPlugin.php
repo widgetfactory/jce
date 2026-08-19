@@ -63,7 +63,7 @@ class AbstractPlugin
     protected $name = '';
 
     /**
-     * Request methods allowed when the plugin is restricted to a basic dialog.
+     * Request methods that remain available when the plugin is restricted.
      *
      * @var array
      */
@@ -333,33 +333,21 @@ class AbstractPlugin
     }
 
     /**
-     * Execute a plugin task.
+     * Check whether this plugin instance is restricted.
      *
-     * Validates the session token, initializes the plugin, processes any XHR
-     * request, then renders the document.
-     *
-     * @param string $task The task to execute, eg: loadlanguages.
-     *
-     * @return void
-     *
-     * @throws \Exception If the plugin is running as a basic dialog.
-     */
-    /**
-     * Check whether this plugin instance is restricted to a basic dialog.
-     *
-     * A basic dialog is rendered by the editor itself, so the plugin's own dialog and
-     * request methods are not used. Plugins opt in by overriding this method, and list
-     * the methods that remain available in getCoreMethods().
+     * A plugin is restricted when its own dialog is not used: replaced by one the editor
+     * renders itself, eg: a basic dialog, or not shown at all. Only the methods listed in
+     * getCoreMethods() remain available. Plugins opt in by overriding this method.
      *
      * @return bool
      */
-    protected function isBasicDialog()
+    protected function isRestricted()
     {
         return false;
     }
 
     /**
-     * Get the request methods allowed when restricted to a basic dialog.
+     * Get the request methods that remain available when the plugin is restricted.
      *
      * @return array
      */
@@ -369,31 +357,45 @@ class AbstractPlugin
     }
 
     /**
-     * Restrict a basic dialog to its allowed request methods.
+     * Restrict the request to the plugin's core methods.
+     *
+     * @return void
      *
      * @throws \Exception If the requested method is not allowed
      */
-    private function checkBasicDialog()
+    private function checkRestricted()
     {
-        if ($this->isBasicDialog() === false) {
+        if ($this->isRestricted() === false) {
             return;
         }
 
         $method = Request::getInstance()->getMethod();
 
-        // a task with no method, eg: display, is never available in a basic dialog
+        // a task with no method, eg: display, is never available when restricted
         if (!in_array($method, $this->getCoreMethods(), true)) {
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
     }
 
+    /**
+     * Execute a plugin task.
+     *
+     * Validates the session token, initializes the plugin, processes any XHR
+     * request, then renders the document.
+     *
+     * @param string $task The task to execute, eg: loadlanguages.
+     *
+     * @return void
+     *
+     * @throws \Exception If the plugin is restricted and the method is not allowed.
+     */
     public function execute($task)
     {
         // check session on get request
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
 
-        // a basic dialog only allows the methods it declares
-        $this->checkBasicDialog();
+        // a restricted plugin only allows the methods it declares
+        $this->checkRestricted();
 
         if ($task == 'loadlanguages') {
             return $this->loadlanguages();
@@ -459,8 +461,6 @@ class AbstractPlugin
      * firing the `onWfPluginDisplay` event.
      *
      * @return void
-     *
-     * @throws \Exception If the plugin is running as a basic dialog.
      */
     public function display()
     {

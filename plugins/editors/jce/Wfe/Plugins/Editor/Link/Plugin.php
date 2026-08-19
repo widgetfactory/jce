@@ -31,7 +31,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         $this->getLinkAdapter();
     }
 
-    protected function isBasicDialog()
+    protected function isRestricted()
     {
         return (int) $this->getParam('basic_dialog', 0) === 1;
     }
