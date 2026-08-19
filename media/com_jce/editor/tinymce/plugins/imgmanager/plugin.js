@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2026 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -29,7 +29,7 @@
 
         if (data && data.filetypes) {
             if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
-                return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image';
+                return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.xhr&plugin=image';
             }
         }
 

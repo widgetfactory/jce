@@ -1487,9 +1487,9 @@
                         for (var j = 0; j < params.length; j++) {
                             var param = params[j];
 
-                            // legacy <param movie="url" /> or standard <param name="movie" value="url" />
-                            if (param.attr('movie') || param.attr('name') === 'movie') {
-                                src = param.attr('movie') || param.attr('value');
+                            // <param name="movie" value="url" />
+                            if (param.attr('name') === 'movie') {
+                                src = param.attr('value');
                             }
                         }
                     }

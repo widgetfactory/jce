@@ -1919,9 +1919,11 @@
                                 return true;
                             }
 
+                            var uploadUrl = document.location.href.replace(/task=plugin\.display/, 'task=plugin.xhr');
+
                             // Initialize uploader
                             $('#upload-queue').uploader($.extend({
-                                url: document.location.href,
+                                url: uploadUrl,
                                 field: $('input[type="file"]:first'),
                                 websafe_mode: self.options.websafe_mode,
                                 websafe_spaces: self.options.websafe_spaces,
