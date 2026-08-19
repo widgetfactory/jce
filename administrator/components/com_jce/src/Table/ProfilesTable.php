@@ -9,12 +9,7 @@
 
 namespace Joomla\Component\Jce\Administrator\Table;
 
-use Joomla\CMS\Application\ApplicationHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\ParameterType;
-use Joomla\String\StringHelper;
 
 use Joomla\Component\Jce\Administrator\Helper\EncryptHelper;
 
