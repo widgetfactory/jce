@@ -578,8 +578,6 @@ class WFFileBrowser extends CMSObject
      * @param string $path    The raw path from the request.
      * @param bool   $resolve Whether to resolve the path to the directory store.
      *
-     * Public so the media manager plugins can validate a path before using it.
-     *
      * @return string The decoded, validated path.
      *
      * @throws InvalidArgumentException If the path fails validation.

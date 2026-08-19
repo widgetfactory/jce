@@ -87,7 +87,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         return $this->getFileBrowser();
     }
 
-    protected function isBasicDialog()
+    protected function isRestricted()
     {
         if ((int) $this->getParam('basic_dialog', 0) === 0) {
             return false;
@@ -120,7 +120,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         $methods = parent::getCoreMethods();
 
         // allow uploading if it is enabled, eg: inline uploading
-        if ((int) $this->getParam('upload', 1) && (int) $this->getParam('inline_upload', 0)) {
+        if ((int) $this->getParam('upload', 1) && (int) $this->getParam('inline_upload', 1)) {
             $methods[] = 'upload';
         }
 
