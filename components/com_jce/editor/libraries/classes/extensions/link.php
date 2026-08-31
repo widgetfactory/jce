@@ -66,8 +66,10 @@ class WFLinkExtension extends WFExtension
             }
         }
 
-        $request = WFRequest::getInstance();
-        $request->setRequest(array($this, 'getLinks'));
+        if (!empty($this->extensions)) {
+            $request = WFRequest::getInstance();
+            $request->setRequest(array($this, 'getLinks'));
+        }
     }
 
     /**

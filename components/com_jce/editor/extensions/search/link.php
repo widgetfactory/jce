@@ -142,10 +142,12 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         PluginHelper::importPlugin('jce');
 
-        $request = WFRequest::getInstance();
+        if (!empty($this->adapters)) {
+            $request = WFRequest::getInstance();
 
-        $request->setRequest(array($this, 'doSearch'));
-        $request->setRequest(array($this, 'getAreas'));
+            $request->setRequest(array($this, 'doSearch'));
+            $request->setRequest(array($this, 'getAreas'));
+        }
     }
 
     /**
