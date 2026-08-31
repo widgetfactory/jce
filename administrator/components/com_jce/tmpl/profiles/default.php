@@ -77,9 +77,9 @@ if ($saveOrder) {
                        endif; ?>>
                 <?php foreach ($this->items as $i => $item) :
                     $ordering   = ($listOrder == 'ordering');
-                    $canEdit    = $user->authorise('core.edit', 'com_jce');
+                    $canEdit    = $user->authorise('jce.profiles', 'com_jce');
                     $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->get('id') || is_null($item->checked_out);
-                    $canChange  = $user->authorise('core.edit.state', 'com_jce') && $canCheckin;
+                    $canChange  = $canEdit && $canCheckin;
                     ?>
                     <tr class="row<?php echo $i % 2; ?>">
                         <td class="text-center">

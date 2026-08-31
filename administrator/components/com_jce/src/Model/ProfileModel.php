@@ -26,6 +26,7 @@ use Wfe\Utility\Utility as WfeUtility;
 
 use Joomla\Component\Jce\Administrator\Helper\PluginsHelper;
 use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
+use Joomla\Component\Jce\Administrator\Traits\AuthoriseTrait;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -38,6 +39,8 @@ use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
  */
 class ProfileModel extends AdminModel
 {
+    use AuthoriseTrait;
+
     /**
      * The type alias for this content type.
      *
@@ -55,6 +58,30 @@ class ProfileModel extends AdminModel
      * @since  1.6
      */
     protected $text_prefix = 'COM_JCE';
+
+    /**
+     * Method to test whether a record can be deleted.
+     *
+     * @param   object  $record  A record object.
+     *
+     * @return  bool
+     */
+    protected function canDelete($record)
+    {
+        return $this->getCurrentUser()->authorise('jce.profiles', 'com_jce');
+    }
+
+    /**
+     * Method to test whether a record state can be changed.
+     *
+     * @param   object  $record  A record object.
+     *
+     * @return  bool
+     */
+    protected function canEditState($record)
+    {
+        return $this->getCurrentUser()->authorise('jce.profiles', 'com_jce');
+    }
 
     /**
      * Returns a Table object, always creating it.
@@ -141,7 +168,7 @@ class ProfileModel extends AdminModel
                         $legacy = $value['links']['joomlalinks'];
 
                         // Carry over flat keys (renamed or unchanged)
-                        $joomla = array_intersect_key($legacy, array_flip(['itemid', 'article_unpublished']));
+                        $joomla = array_intersect_key($legacy, array_flip(['itemid']));
 
                         if (isset($legacy['article_alias'])) {
                             $joomla['alias'] = $legacy['article_alias'];
@@ -149,17 +176,25 @@ class ProfileModel extends AdminModel
 
                         $list = [];
 
+                        if (isset($legacy['article_unpublished'])) {
+                            $list['article_unpublished'] = $legacy['article_unpublished'];
+                        }
+
+                        $providers = [];
+
                         // Group adapter keys under 'list'
                         foreach (['content', 'contacts', 'weblinks', 'menu', 'tags'] as $listKey) {
                             if (isset($legacy[$listKey]) && (int) $legacy[$listKey] === 1) {
-                                $list[] = $listKey;
+                                $providers[] = $listKey;
                             }
                         }
 
+                        if (!empty($providers)) {
+                            $list['providers'] = $providers;
+                        }
+
                         if (!empty($list)) {
-                            $joomla['list'] = [
-                                'providers' => $list
-                            ];
+                            $joomla['list'] = $list;
                         }
 
                         // Merge legacy search providers into joomla config
@@ -182,7 +217,26 @@ class ProfileModel extends AdminModel
                             }
                         }
 
-                        $value['links']['joomla'] = $joomla;
+                        // current values always win, legacy values only fill the gaps
+                        $current = [];
+
+                        if (isset($value['links']['joomla']) && is_array($value['links']['joomla'])) {
+                            $current = $value['links']['joomla'];
+                        }
+
+                        foreach ($joomla as $key => $val) {
+                            if (!isset($current[$key])) {
+                                $current[$key] = $val;
+                                continue;
+                            }
+
+                            // merge nested groups, eg: list, search
+                            if (is_array($val) && is_array($current[$key])) {
+                                $current[$key] = array_merge($val, $current[$key]);
+                            }
+                        }
+
+                        $value['links']['joomla'] = $current;
                         unset($value['links']['joomlalinks']);
                     }
                 }
@@ -420,7 +474,7 @@ class ProfileModel extends AdminModel
      *
      * @return  array  Keyed by item name
      */
-    public function getButtons()
+    protected function getButtons()
     {
         $commands = $this->getCommands();
         $plugins = $this->getPlugins();
@@ -434,7 +488,7 @@ class ProfileModel extends AdminModel
      *
      * @return  array  Keyed by command name
      */
-    public function getCommands()
+    protected function getCommands()
     {
         static $commands;
 
@@ -996,6 +1050,8 @@ class ProfileModel extends AdminModel
      */
     public function copy($ids)
     {
+        $this->assertAuthorised('jce.profiles');
+
         $table = $this->getTable();
 
         foreach ($ids as $id) {
@@ -1038,6 +1094,8 @@ class ProfileModel extends AdminModel
      */
     public function export($ids)
     {
+        $this->assertAuthorised('jce.profiles');
+
         $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
@@ -1129,6 +1187,8 @@ class ProfileModel extends AdminModel
      */
     public function import()
     {
+        $this->assertAuthorised('jce.profiles');
+
         $app = Factory::getApplication();
 
         $file = $app->input->files->get('profile_file', null, 'raw');
@@ -1198,7 +1258,7 @@ class ProfileModel extends AdminModel
      *
      * @return  int|false  Number of profiles imported, or false on failure
      */
-    public function processImport($file)
+    protected function processImport($file)
     {
         $n = 0;
 

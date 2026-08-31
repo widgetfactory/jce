@@ -11,9 +11,10 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Router\Route;
+
+use Joomla\Component\Jce\Administrator\Traits\AuthoriseTrait;
 
 /**
  * Releases Main Controller
@@ -22,6 +23,8 @@ use Joomla\CMS\Router\Route;
  */
 class MediaboxController extends FormController
 {
+	use AuthoriseTrait;
+
 	/**
 	 * The default view.
 	 *
@@ -40,21 +43,19 @@ class MediaboxController extends FormController
 
 	public function display($cachable = false, $urlparams = [])
 	{
-		if (!$this->app->getIdentity()->authorise('jce.mediabox', 'com_jce')) {
-			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-		}
+		$this->assertAuthorised('jce.mediabox');
 
 		parent::display($cachable, $urlparams);
 	}
 
 	protected function allowAdd($data = [])
 	{
-		return $this->app->getIdentity()->authorise('jce.config', 'com_jce');
+		return $this->app->getIdentity()->authorise('jce.mediabox', 'com_jce');
 	}
 
 	protected function allowEdit($data = [], $key = 'id')
 	{
-		return $this->app->getIdentity()->authorise('jce.config', 'com_jce');
+		return $this->app->getIdentity()->authorise('jce.mediabox', 'com_jce');
 	}
 
 	public function cancel($id = null)

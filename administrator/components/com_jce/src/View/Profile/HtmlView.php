@@ -115,8 +115,7 @@ class HtmlView extends BaseHtmlView
 
 		$user = $app->getIdentity();
 
-		// Since we don't track these assets at the item level, use the category id.
-		$canEdit = $user->authorise('core.create', 'com_jce');
+		$canEdit = $user->authorise('jce.profiles', 'com_jce');
 
 		ToolbarHelper::title(Text::_('WF_PROFILES_EDIT'), 'user');
 

@@ -16,13 +16,17 @@ use Joomla\CMS\MVC\Controller\AdminController;
 use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Router\Route;
 
+use Joomla\Component\Jce\Administrator\Traits\AuthoriseTrait;
+
 /**
  * Profiles list controller class.
  *
  * @since  1.6
  */
 class ProfilesController extends AdminController
-{	
+{
+	use AuthoriseTrait;
+
 	/**
 	 * Proxy for getModel
 	 *
@@ -39,6 +43,51 @@ class ProfilesController extends AdminController
 		return parent::getModel($name, $prefix, $config);
 	}
 
+    public function publish()
+    {
+        $this->checkToken();
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::publish();
+    }
+
+    public function delete()
+    {
+        $this->checkToken();
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::delete();
+    }
+
+    public function saveorder()
+    {
+        $this->checkToken();
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::saveorder();
+    }
+
+    public function reorder()
+    {
+        $this->checkToken();
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::reorder();
+    }
+
+    public function checkin()
+    {
+        $this->checkToken();
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::checkin();
+    }
+
 	/**
      * Method to import profile data from an XML file.
      *
@@ -49,9 +98,7 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-        }
+        $this->assertAuthorised('jce.profiles');
 
         $model = $this->getModel();
 
@@ -78,11 +125,10 @@ class ProfilesController extends AdminController
 
     public function repair()
     {
-        $this->checkToken();
+        // Check for request forgeries using "get"
+        $this->checkToken('get');
 
-        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-        }
+        $this->assertAuthorised('jce.profiles');
 
         $model = $this->getModel('Profiles');
 
@@ -106,9 +152,7 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-        }
+        $this->assertAuthorised('jce.profiles');
 
         $cid = $this->input->get('cid', [], 'array');
 
@@ -140,9 +184,7 @@ class ProfilesController extends AdminController
         // Check for request forgeries
         $this->checkToken();
 
-        if (!$this->app->getIdentity()->authorise('jce.profiles', 'com_jce')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-        }
+        $this->assertAuthorised('jce.profiles');
 
         $ids = $this->input->get('cid', [], 'array');
 

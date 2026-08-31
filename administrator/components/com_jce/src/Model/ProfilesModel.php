@@ -14,6 +14,7 @@ use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
+use Joomla\Component\Jce\Administrator\Traits\AuthoriseTrait;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -26,6 +27,8 @@ use Joomla\Component\Jce\Administrator\Helper\ProfilesHelper;
  */
 class ProfilesModel extends ListModel
 {
+    use AuthoriseTrait;
+
     /**
      * Constructor.
      *
@@ -214,6 +217,8 @@ class ProfilesModel extends ListModel
 
     public function repair()
     {
+        $this->assertAuthorised('jce.profiles');
+
         $file = JPATH_ADMINISTRATOR . '/components/com_jce/data/profiles.xml';
 
         if (!is_file($file)) {

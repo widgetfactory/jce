@@ -12,6 +12,7 @@ namespace Joomla\Component\Jce\Administrator\View\Profiles;
 defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\MVC\View\GenericDataException;
@@ -71,6 +72,8 @@ class HtmlView extends BaseHtmlView
      */
     public function display($tpl = null)
     {
+        $app = Factory::getApplication();
+    
         $model = $this->getModel();
 
         $this->items         = $model->getItems();
@@ -86,7 +89,7 @@ class HtmlView extends BaseHtmlView
 
         if (!\count($this->items)) {
             $link = HTMLHelper::link(Route::_('index.php?option=com_jce&task=profiles.repair&' . Session::getFormToken() . '=1'), Text::_('WF_DB_CREATE_RESTORE'), ['class' => 'wf-profiles-repair']);
-            $this->app->enqueueMessage(Text::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
+            $app->enqueueMessage(Text::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
         }
 
         // We don't need toolbar in the modal layout.
@@ -116,7 +119,7 @@ class HtmlView extends BaseHtmlView
             $toolbar->addNew('profile.add');
             ToolbarHelper::custom('profiles.copy', 'copy', 'copy', 'WF_PROFILES_COPY', true);
 
-            // Instantiate a new JLayoutFile instance and render the layout
+            // Instantiate a new FileLayout instance and render the layout
             $layout = new FileLayout('toolbar.uploadprofile');
             $toolbar->appendButton('Custom', $layout->render([]), 'upload');
 

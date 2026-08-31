@@ -11,9 +11,10 @@ namespace Joomla\Component\Jce\Administrator\Controller;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Router\Route;
+
+use Joomla\Component\Jce\Administrator\Traits\AuthoriseTrait;
 
 /**
  * Releases Main Controller
@@ -22,6 +23,8 @@ use Joomla\CMS\Router\Route;
  */
 class FilebrowserController extends BaseController
 {
+	use AuthoriseTrait;
+
 	/**
 	 * The default view.
 	 *
@@ -32,9 +35,7 @@ class FilebrowserController extends BaseController
 
 	public function display($cachable = false, $urlparams = [])
 	{
-		if (!$this->app->getIdentity()->authorise('jce.browser', 'com_jce')) {
-			throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-		}
+		$this->assertAuthorised('jce.browser');
 
 		parent::display($cachable, $urlparams);
 	}

@@ -14,7 +14,8 @@ defined('_JEXEC') or die;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Versioning\VersionableControllerTrait;
+
+use Joomla\Component\Jce\Administrator\Traits\AuthoriseTrait;
 
 /**
  * Profile controller class.
@@ -23,7 +24,7 @@ use Joomla\CMS\Versioning\VersionableControllerTrait;
  */
 class ProfileController extends FormController
 {
-	use VersionableControllerTrait;
+	use AuthoriseTrait;
 
 	/**
 	 * The default view.
@@ -33,26 +34,20 @@ class ProfileController extends FormController
 	 */
 	protected $view_list = 'profiles';
 
-	/**
-	 * Method to run batch operations.
-	 *
-	 * @param   object  $model  The model.
-	 *
-	 * @return  boolean   True if successful, false otherwise and internal error is set.
-	 *
-	 * @since   1.7
-	 */
-	public function batch($model = null)
+	public function save($key = null, $urlVar = null)
 	{
 		$this->checkToken();
 
-		// Set the model
-		$model = $this->getModel('Profile', 'Administrator', array());
+		$this->assertAuthorised('jce.profiles');
 
-		// Preset the redirect
-		$this->setRedirect(Route::_('index.php?option=com_jce&view=profiles' . $this->getRedirectToListAppend(), false));
+		return parent::save($key, $urlVar);
+	}
 
-		return parent::batch($model);
+	public function edit($key = null, $urlVar = null)
+	{
+		$this->assertAuthorised('jce.profiles');
+
+		return parent::edit($key, $urlVar);
 	}
 
 	/**
