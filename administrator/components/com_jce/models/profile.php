@@ -54,6 +54,30 @@ class JceModelProfile extends AdminModel
     protected $text_prefix = 'COM_JCE';
 
     /**
+     * Method to test whether a record can be deleted.
+     *
+     * @param object $record A record object
+     *
+     * @return bool
+     */
+    protected function canDelete($record)
+    {
+        return Factory::getUser()->authorise('jce.profiles', 'com_jce');
+    }
+
+    /**
+     * Method to test whether a record state can be changed.
+     *
+     * @param object $record A record object
+     *
+     * @return bool
+     */
+    protected function canEditState($record)
+    {
+        return Factory::getUser()->authorise('jce.profiles', 'com_jce');
+    }
+
+    /**
      * Constructor. Wires up the event dispatcher when running on Joomla 4+.
      *
      * @param   array  $config  Configuration array for the model

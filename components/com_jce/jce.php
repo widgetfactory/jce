@@ -33,5 +33,8 @@ require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 // their own independent security (CSRF token, profile check, task allowlist).
 // The fallback JceController handles anything that slips past the above gate.
 $controller = BaseController::getInstance('Jce', ['base_path' => JPATH_COMPONENT]);
-$controller->execute($task);
+
+// Re-read the task rather than reusing the $task captured above: getInstance() rewrites
+// the input to the bare task, and the controllers expect that form, not "controller.task".
+$controller->execute($app->input->getCmd('task'));
 $controller->redirect();

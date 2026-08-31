@@ -46,7 +46,13 @@ class JceControllerPlugin extends BaseController
         // check for session token
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
 
-        // validate the task against allowed tasks 
+        // accept the "controller.task" form too, in case the caller has not stripped the
+        // prefix, as JceControllerEditor::execute() already does
+        if (strpos($task, '.') !== false) {
+            list($name, $task) = explode('.', $task);
+        }
+
+        // validate the task against allowed tasks
         if (!in_array($task, self::ALLOWED_TASKS, true)) {
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }

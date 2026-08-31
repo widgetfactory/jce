@@ -17,10 +17,10 @@ define('WF_ADMIN', __DIR__);
 
 $app = Factory::getApplication();
 
-// throw exception for legacy task
-if ($app->input->getCmd('task') === 'plugin') {
-    throw new Exception('Restricted', 403);
-}
+// reject any task that is not explicitly allowed, before a controller is instantiated
+require_once __DIR__ . '/includes/dispatcher.php';
+
+JceDispatcher::checkAccess();
 
 // constants and autoload
 require_once __DIR__ . '/includes/base.php';

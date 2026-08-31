@@ -24,6 +24,30 @@ use Joomla\CMS\Uri\Uri;
 class JceController extends BaseController
 {
     /**
+     * Permission required to open each view.
+     *
+     * Every screen is linked task-less as &view=x, which routes here rather than to the
+     * matching controller, so the view is what has to be gated - not the controller name.
+     * A null value means no jce.* permission of its own.
+     *
+     * The action is stated per view rather than derived from the view name: "profile"
+     * needs jce.profiles, so a derived name would be wrong.
+     *
+     * This mirrors DisplayController::ALLOWED_VIEWS in 3.0. Delta: 3.0 names the browser
+     * view "filebrowser" and accepts "browser" as an alias for it.
+     *
+     * @var array
+     */
+    private const ALLOWED_VIEWS = array(
+        'cpanel' => null,
+        'config' => 'jce.config',
+        'profiles' => 'jce.profiles',
+        'profile' => 'jce.profiles',
+        'mediabox' => 'jce.mediabox',
+        'browser' => 'jce.browser',
+    );
+
+    /**
      * @var string The extension for which the categories apply
      *
      * @since  1.6
@@ -54,7 +78,7 @@ class JceController extends BaseController
      * @param bool  $cachable  If true, the view output will be cached
      * @param array $urlparams An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}
      *
-     * @return JController This object to support chaining
+     * @return BaseController This object to support chaining
      *
      * @since   1.5
      */
@@ -85,9 +109,29 @@ class JceController extends BaseController
             return $this;
         }
 
+        $vName = strtolower($vName);
+
+        // An empty value means "the default view"; Input::get() returns it rather than
+        // falling back to the default above.
+        if ($vName === '') {
+            $vName = 'cpanel';
+        }
+
+        if (!array_key_exists($vName, self::ALLOWED_VIEWS)) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
+        // The admin screens additionally require component management rights. In 3.0 this
+        // check applies to the whole component, from ComponentDispatcher::checkAccess().
         $adminViews = array('config', 'profiles', 'profile', 'mediabox');
 
-        if (in_array($vName, $adminViews) && !$user->authorise('core.manage', 'com_jce')) {
+        if (in_array($vName, $adminViews, true) && !$user->authorise('core.manage', 'com_jce')) {
+            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+        }
+
+        $action = self::ALLOWED_VIEWS[$vName];
+
+        if ($action !== null && !$user->authorise($action, 'com_jce')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
@@ -96,18 +140,6 @@ class JceController extends BaseController
 
         // Get and render the view.
         if ($view) {
-
-            if ($vName != "cpanel") {
-                // use "profiles" for validating "profile" view
-                if ($vName == "profile") {
-                    $vName = "profiles";
-                }
-
-                if (!$user->authorise('jce.' . $vName, 'com_jce')) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
-                }
-            }
-            
             // reset view name
             $vName = $view->getName();
 
