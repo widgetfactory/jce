@@ -1,14 +1,10 @@
 /**
- * Popup.js
- *
- * Copyright, Moxiecode Systems AB
- * Released under LGPL License.
- *
- * License: http://www.tinymce.com/license - Inactive
- * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
- * Contributing: http://www.tinymce.com/contributing - Inactive
+ * Source: https://github.com/widgetfactory/corvus
+ * Copyright, Moxiecode Systems AB. All rights reserved. 
+ * Copyright (c) 2009 - 2026 Ryan Demmer. All rights reserved. 
+ * For a detailed history of modifications, refer to the Git commit history. 
+ * Licensed under the GNU/LGPL 2.1 or later: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html 
  */
-
 // Some global instances
 var tinymce;
 

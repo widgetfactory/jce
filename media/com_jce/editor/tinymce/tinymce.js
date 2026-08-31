@@ -2,7 +2,7 @@
 /* 
  * This file includes original and modified code from various versions of Tinymce. 
  * 
- * Source: https://github.com/widgetfactory/tinymce-muon 
+ * Source: https://github.com/widgetfactory/corvus 
  * Copyright (c) Tiny Technologies, Inc. All rights reserved. 
  * Copyright (c) 1999-2015 Ephox Corp. All rights reserved. 
  * Copyright, Moxiecode Systems AB. All rights reserved. 
@@ -28732,7 +28732,8 @@
       htmlParser.addAttributeFilter(
         'data-mce-src,data-mce-href,data-mce-style,' +
         'data-mce-selected,data-mce-expando,data-mce-block,' +
-        'data-mce-type,data-mce-resize,data-mce-placeholder',
+        'data-mce-type,data-mce-resize,data-mce-placeholder,' +
+        'data-mce-contenteditable',
 
         function (nodes, name) {
           var i = nodes.length;
@@ -44364,10 +44365,6 @@
         return !!ed.schema.getShortEndedElements()[node.nodeName.toLowerCase()];
       }
 
-      function isTableCell(node) {
-        return /^(TH|TD)$/.test(node.nodeName);
-      }
-
       function isInlineBlock(node) {
         return node && /^(IMG)$/.test(node.nodeName);
       }
@@ -44957,7 +44954,18 @@
             function process(node) {
               var nodeName, parentName, found, hasContentEditableState, lastContentEditable;
 
-              if (isBogusBr(node) || isBookmarkNode(node)) {
+              if (isBogusBr(node)) {
+                return;
+              }
+
+              // Move bookmarks into the wrapper that is being built rather than skipping
+              // them, otherwise the content after a bookmark is appended to the same
+              // wrapper and ends up moved in front of it. Never start a wrapper for one.
+              if (isBookmarkNode(node)) {
+                if (currentWrapElm) {
+                  currentWrapElm.appendChild(node);
+                }
+
                 return;
               }
 
@@ -45406,35 +45414,28 @@
                 endContainer = endContainer.firstChild || endContainer;
               }
 
-              if (dom.isChildOf(startContainer, endContainer) && !isBlock(endContainer) &&
-                !isTableCell(startContainer) && !isTableCell(endContainer)) {
-                startContainer = wrap(startContainer, 'span', {
-                  id: '_start',
-                  'data-mce-type': 'bookmark'
-                });
-                splitToFormatRoot(startContainer);
-                startContainer = unwrap(TRUE);
-              } else {
-                // Wrap start/end nodes in span element since these might be cloned/moved
-                startContainer = wrap(startContainer, 'span', {
-                  id: '_start',
-                  'data-mce-type': 'bookmark'
-                });
+              // Wrap start/end nodes in span element since these might be cloned/moved.
+              // Both ends must be wrapped, even when the start is a descendant of the end,
+              // since splitting the start removes its format root from the DOM. If that
+              // format root is the end container, the range end would point at a detached
+              // node and the walk below would run to the end of the document.
+              startContainer = wrap(startContainer, 'span', {
+                id: '_start',
+                'data-mce-type': 'bookmark'
+              });
 
-                endContainer = wrap(endContainer, 'span', {
-                  id: '_end',
-                  'data-mce-type': 'bookmark'
-                });
+              endContainer = wrap(endContainer, 'span', {
+                id: '_end',
+                'data-mce-type': 'bookmark'
+              });
 
-                // Split start/end
-                splitToFormatRoot(startContainer);
-                splitToFormatRoot(endContainer);
+              // Split start/end
+              splitToFormatRoot(startContainer);
+              splitToFormatRoot(endContainer);
 
-                // Unwrap start/end to get real elements again
-                startContainer = unwrap(TRUE);
-                endContainer = unwrap();
-              }
-
+              // Unwrap start/end to get real elements again
+              startContainer = unwrap(TRUE);
+              endContainer = unwrap();
             } else {
               startContainer = endContainer = splitToFormatRoot(startContainer);
             }

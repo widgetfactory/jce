@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import '../../../../../tinymce-muon-retina/tinymce/index.js';
+import 'corvus';
 
 import './plugins/core/plugin.js';
 import './plugins/cleanup/plugin.js';
