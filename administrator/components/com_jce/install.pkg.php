@@ -10,6 +10,8 @@
  */
 \defined('_JEXEC') or die;
 
+use Joomla\CMS\Access\Access;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Folder;
@@ -352,6 +354,12 @@ class pkg_jceInstallerScript
         } catch (Throwable $e) {
         }
 
+        // turn off any profile assigned to a guest user group unless guest access is enabled
+        try {
+            $this->unpublishGuestProfiles();
+        } catch (Throwable $e) {
+        }
+
         // remove legacy jcefilebrowser quickicon plugin
         $plugins = [
             'jcefilebrowser' => 'quickicon'
@@ -547,6 +555,104 @@ class pkg_jceInstallerScript
                 Factory::getApplication()->createExtensionNamespaceMap();
             }
         }
+    }
+
+    /**
+     * Unpublish every published profile assigned to a guest user group.
+     *
+     * The editor is not loaded for unauthenticated users unless the "allow_profile_guests"
+     * parameter is enabled, so a profile assigned to a guest group is configuration that
+     * cannot work as intended. This brings the stored profiles in line with that rule.
+     *
+     * @return void
+     */
+    private function unpublishGuestProfiles()
+    {
+        // nothing to do if guest access has been deliberately enabled
+        if (ComponentHelper::getParams('com_jce')->get('allow_profile_guests', 0)) {
+            return;
+        }
+
+        // the groups a guest is a member of, eg: Public and the configured Guest group
+        $guestGroups = array_map('intval', (array) Access::getGroupsByUser(0, true));
+
+        if (empty($guestGroups)) {
+            return;
+        }
+
+        $db = Factory::getDBO();
+
+        $query = $db->getQuery(true);
+        $query->select(array('id', 'name', 'types'))->from('#__wf_profiles')->where('published = 1');
+
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+
+        if (empty($rows)) {
+            return;
+        }
+
+        $ids = array();
+        $names = array();
+
+        foreach ($rows as $row) {
+            // a profile without groups is assigned to specific users only
+            if (empty($row->types)) {
+                continue;
+            }
+
+            $types = array_map('intval', explode(',', $row->types));
+
+            if (array_intersect($guestGroups, $types)) {
+                $ids[] = (int) $row->id;
+                $names[] = $row->name;
+            }
+        }
+
+        if (empty($ids)) {
+            return;
+        }
+
+        $query = $db->getQuery(true);
+        $query->update('#__wf_profiles')->set('published = 0')->where('id IN (' . implode(',', $ids) . ')');
+
+        $db->setQuery($query);
+        $db->execute();
+
+        $this->enqueueGuestProfilesMessage($names);
+    }
+
+    /**
+     * Report the profiles unpublished by unpublishGuestProfiles().
+     *
+     * The list can be long on a site that was compromised by the profile import vulnerability in
+     * 2.9.99.4 and earlier, so only the first few names are shown and the rest are counted. Names
+     * are escaped as they are stored values that may contain markup on such a site.
+     *
+     * @param array $names Profile names.
+     *
+     * @return void
+     */
+    private function enqueueGuestProfilesMessage($names)
+    {
+        $total = count($names);
+        $limit = 5;
+
+        $list = array_slice($names, 0, $limit);
+
+        foreach ($list as &$name) {
+            $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        }
+
+        unset($name);
+
+        $text = implode(', ', $list);
+
+        if ($total > $limit) {
+            $text = Text::sprintf('COM_JCE_INSTALL_GUEST_PROFILES_UNPUBLISHED_MORE', $text, $total - $limit);
+        }
+
+        Factory::getApplication()->enqueueMessage(Text::sprintf('COM_JCE_INSTALL_GUEST_PROFILES_UNPUBLISHED', $total, $text), 'warning');
     }
 
     /**
