@@ -31,8 +31,6 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
      */
     protected $path = __DIR__;
 
-    protected static $links = array();
-
     /**
      * Activate the default information of the class.
      */
@@ -41,6 +39,10 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         parent::__construct($container, $config);
 
         $plugins = AdapterHelper::getPlugins('links', false, $config);
+
+        if (empty($plugins)) {
+            return;
+        }
 
         foreach ($plugins as $plugin) {
             $instance = AdapterHelper::createPlugin($plugin, $config, $container);
@@ -74,7 +76,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
      */
     protected function isEnabled($task)
     {
-        return (bool) $this->getParam('links.' . $task . '.enable', 1);
+        return (int) $this->getParam('links.' . $task . '.enable', 1) === 1;
     }
 
     public function display()
@@ -82,6 +84,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         parent::display();
 
         $document = $this->getDocument();
+
         $document->addStyleSheet(
             array('links'),
             'adapters.links.css'
@@ -97,7 +100,7 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         if (!$this->isEnabled('list')) {
             return '';
         }
-    
+
         $list = $this->getLinkList();
 
         if (empty($list)) {
@@ -120,8 +123,12 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
     {
         $list = array();
 
-        foreach ($this->plugins as $plugin) {
+        foreach ($this->plugins as $name => $plugin) {
             if (!method_exists($plugin, 'getList')) {
+                continue;
+            }
+
+            if (!$this->isEnabled($name . '.list')) {
                 continue;
             }
 
@@ -145,13 +152,17 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
 
         $items = array();
 
-        foreach ($this->plugins as $plugin) {
+        foreach ($this->plugins as $name => $plugin) {
             if (!method_exists($plugin, 'getLinks')) {
                 continue;
             }
-        
+
+            if (!$this->isEnabled($name . '.list')) {
+                continue;
+            }
+
             if (in_array($args->option, $plugin->getOption())) {
-                $items = $plugin->getLinks($args);
+                $items = array_merge($items, $plugin->getLinks($args));
             }
         }
 
@@ -184,6 +195,8 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
 
     /**
      * Method to get the search areas.
+     * 
+     * @return array The search areas
      */
     public function getSearchAreas()
     {
@@ -194,8 +207,12 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
                 continue;
             }
 
+            if (!$this->isEnabled($name . '.search')) {
+                continue;
+            }
+
             $areas = $plugin->getSearchAreas();
-        
+
             $results = array_merge($results, $areas);
         }
 
@@ -210,10 +227,15 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         return $results;
     }
 
-    /*
+    /**
      * Truncate search text
      * This method uses portions of components/com_finder/views/search/tmpl/default_result.php
      * @copyright Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+     * 
+     * @param string $text The text to truncate
+     * @param string $searchword The search word around which to truncate
+     * 
+     * @return string The truncated text
      */
     private function truncateText($text, $searchword)
     {
@@ -242,10 +264,15 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
         return $text;
     }
 
-    /*
-     * Prepare search content by clean and truncating
+    /**
+     * Prepare search content by cleaning and truncating
      * This method uses portions of SearchHelper::prepareSearchContent from administrator/components/com_search/helpers/search.php
      * @copyright Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+     * 
+     * @param string $text The text to prepare
+     * @param string $searchword The search word around which to prepare the content
+     * 
+     * @return string The cleaned and truncated search content
      */
     public function prepareSearchContent($text, $searchword)
     {

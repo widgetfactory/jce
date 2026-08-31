@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension>
+    <fields name="list">
+        <fieldset name="list">
+            <field name="enable" type="yesno" default="1" label="WF_LINKS_LIST_ENABLE" description="WF_LINKS_LIST_ENABLE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+        </fieldset>
+    </fields>
+    <fields name="search">
+        <fieldset name="search">
+            <field name="enable" type="yesno" default="1" label="WF_LINKS_SEARCH_ENABLE" description="WF_LINKS_SEARCH_ENABLE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+        </fieldset>
+    </fields>
+</extension>

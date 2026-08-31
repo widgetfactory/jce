@@ -125,6 +125,10 @@ class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
 
     public function getLinks($args)
     {
+        if ((int) $this->getParam('links.joomla.list.enable', 1) === 0) {
+            return [];
+        }
+    
         foreach ($this->providers as $provider) {
             if ($provider->getOption() == $args->option) {
 
@@ -142,6 +146,10 @@ class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
     public function getSearchAreas()
     {
         $results = array();
+
+        if ((int) $this->getParam('links.joomla.search.enable', 1) === 0) {
+            return $results;
+        }
 
         foreach ($this->providers as $provider) {
             $option = $provider->getOption();
@@ -161,6 +169,10 @@ class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
     public function doSearch(string $text, ?string $phrase = '', ?string $ordering = '', ?array $areas = null): array
     {
         $results = array();
+
+        if ((int) $this->getParam('links.joomla.search.enable', 1) === 0) {
+            return $results;
+        }
 
         $options = new Registry([
             'text' => $text,

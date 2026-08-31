@@ -70,8 +70,8 @@
             </field>
 
             <field name="alias" type="yesno" default="0" label="WF_LINKS_JOOMLA_ALIAS" description="WF_LINKS_JOOMLA_ALIAS_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
             </field>
         </fields>
 
