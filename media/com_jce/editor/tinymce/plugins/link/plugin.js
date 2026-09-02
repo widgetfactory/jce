@@ -88,17 +88,50 @@
         return trimCaretContainers(text);
     };
 
-    var updateTextContent = function (elm, text) {
-        tinymce.each(elm.childNodes, function (node) {
-            // If it's a text node and has non-whitespace content
+    // collect all non-empty text nodes in an element, including nested ones
+    var getTextNodes = function (elm) {
+        var nodes = [], node = elm.firstChild;
+
+        if (!node) {
+            return nodes;
+        }
+
+        var walker = new tinymce.dom.TreeWalker(node, elm);
+
+        while (node) {
             if (node.nodeType == 3 && node.nodeValue.trim() !== "") {
-                node.textContent = text;
+                nodes.push(node);
             }
+
+            node = walker.next();
+        }
+
+        return nodes;
+    };
+
+    var updateTextContent = function (elm, text) {
+        // leave the existing markup alone if the text has not changed
+        if (getAnchorText(null, elm) === text) {
+            return;
+        }
+
+        var nodes = getTextNodes(elm);
+
+        // nothing to update, eg: an image link
+        if (!nodes.length) {
+            return;
+        }
+
+        // set the text on the first node only, so it is not repeated for each nested element
+        nodes[0].nodeValue = text;
+
+        tinymce.each(nodes.slice(1), function (node) {
+            node.nodeValue = '';
         });
     };
 
     function createLink(ed, data) {
-        var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'a[href]'), params = ed.getParam('link', {});
+        var node = ed.selection.getNode(), params = ed.getParam('link', {});
 
         if (typeof data === 'string') {
             data = { url: data, text: data };
@@ -146,17 +179,16 @@
 
             ed.execCommand('mceInsertLink', false, args);
 
-            if (isAnchor(anchor)) {
-                updateTextContent(node, data.text);
-            }
-
             var elms = ed.dom.select('[data-mce-tmp="1"]');
 
             each(elms, function (elm) {
                 // remove tmp attribute
                 elm.removeAttribute('data-mce-tmp');
 
-                updateTextContent(elm, data.text);
+                // the text cannot be shared across multiple links, so only update a single link
+                if (elms.length === 1) {
+                    updateTextContent(elm, data.text);
+                }
             });
         }
 

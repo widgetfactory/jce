@@ -572,7 +572,8 @@
                         ed.dom.setAttrib(elm, 'id', '');
                     }
 
-                    if (txt) {
+                    // the text cannot be shared across multiple links, so only update a single link
+                    if (txt && elms.length === 1) {
                         // update the text on the selected node, not the anchor
                         api.updateTextContent(elm, txt);
                     }
