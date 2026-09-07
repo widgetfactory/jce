@@ -31,11 +31,6 @@ class Dispatcher extends ComponentDispatcher
      * FormController — including any a future Joomla release adds — stay unreachable
      * unless named explicitly.
      *
-     * The action is stated per controller rather than derived from the controller name:
-     * "profile" needs jce.profiles and "filebrowser" needs jce.browser, so a derived
-     * name would be wrong for two of the five. A null action means the task needs no
-     * permission beyond the core.manage check the parent already applies.
-     *
      * Keys and task names are lowercase; the request is normalised before comparison.
      *
      * @var array
@@ -68,8 +63,7 @@ class Dispatcher extends ComponentDispatcher
             'action' => 'jce.browser',
             'tasks' => ['display', 'cancel'],
         ],
-        // The editor and plugin controllers authorise per profile and per plugin in
-        // their own execute(), which core.manage alone cannot express.
+        // The editor and plugin controllers authorise per profile and per plugin in their own execute()
         'editor' => [
             'action' => null,
             'tasks' => ['loadlanguages', 'pack', 'compileless'],
