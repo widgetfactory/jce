@@ -1,4 +1,4 @@
-/* global jQuery, ActiveXObject */
+/* global jQuery */
 (function ($) {
     // create HTML5 elements for IE8
     document.createElement('main');
@@ -26,32 +26,7 @@
      */
     $.support.pdf = (function () {
         try {
-            // Old IE
-            if (!$.support.cssFloat) {
-                var control = null;
-
-                //
-                // load the activeX control
-                //
-                try {
-                    // AcroPDF.PDF is used by version 7 and later
-                    control = new ActiveXObject('AcroPDF.PDF');
-                } catch (e) { 
-                    // error
-                }
-
-                if (!control) {
-                    try {
-                        // PDF.PdfCtrl is used by version 6 and earlier
-                        control = new ActiveXObject('PDF.PdfCtrl');
-                    } catch (e) {
-                        // error
-                    }
-                }
-
-                return control ? true : false;
-
-            } else if (navigator.plugins) {
+            if (navigator.plugins) {
                 for (var n in navigator.plugins) {
                     if (n == 'Adobe Acrobat') {
                         return true;
@@ -61,7 +36,9 @@
                         return true;
                     }
                 }
-            } else if (navigator.mimeTypes) {
+            }
+
+            if (navigator.mimeTypes) {
                 // from PDFObject - https://github.com/pipwerks/PDFObject
                 var mime = navigator.mimeTypes["application/pdf"];
 

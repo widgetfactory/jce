@@ -210,11 +210,7 @@
 			var pos = $(el).position() || {top: 0};
 			var top = $(options.list).scrollTop();
 
-			$(options.list).css('overflow', 'hidden').animate({
-				scrollTop: pos.top + top
-			}, 1000, function () {
-				$(options.list).css('overflow', 'auto');
-			});
+			$(options.list).animateScroll($(options.list).scrollLeft(), pos.top + top, 1000);
 		}
 
 		function sort(x) {

@@ -226,7 +226,7 @@
 
             // if json string return object
             if (/^{[\w\W]+}$/.test(s)) {
-                return $.parseJSON(trim(s));
+                return JSON.parse(trim(s));
             }
 
             // parameter format eg: title[title]
