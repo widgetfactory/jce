@@ -60,7 +60,6 @@
             <folder>sql</folder>
             <folder>src</folder>
             <folder>tmpl</folder>
-            <folder>vendor</folder>
             <file>access.xml</file>
             <file>config.xml</file>
             <file>index.html</file>
