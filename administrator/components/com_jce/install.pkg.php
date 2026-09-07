@@ -351,9 +351,9 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         } catch (Throwable $e) {
         }
 
-        // turn off any profile assigned to a guest user group unless guest access is enabled
+        // remove any guest user group assignment unless guest access is enabled
         try {
-            $this->unpublishGuestProfiles();
+            $this->removeGuestProfileAccess();
         } catch (Throwable $e) {
         }
 
@@ -513,15 +513,20 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
     }
 
     /**
-     * Unpublish every published profile assigned to a guest user group.
+     * Remove the guest user group from every published profile assigned to one.
      *
      * The editor is not loaded for unauthenticated users unless the "allow_profile_guests"
-     * parameter is enabled, so a profile assigned to a guest group is configuration that
-     * cannot work as intended. This brings the stored profiles in line with that rule.
+     * parameter is enabled, so a guest group assignment cannot work as intended. Only that
+     * group is removed: unpublishing the whole profile would drop its other groups through
+     * to the next profile in the ordering, which may be more permissive than the one they
+     * were assigned.
+     *
+     * A profile left with no groups and no users cannot match anyone, so that is unpublished
+     * instead, with its group assignment intact so it can be restored.
      *
      * @return void
      */
-    private function unpublishGuestProfiles()
+    private function removeGuestProfileAccess()
     {
         // nothing to do if guest access has been deliberately enabled
         if (ComponentHelper::getParams('com_jce')->get('allow_profile_guests', 0)) {
@@ -538,7 +543,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
         $db = $this->getDatabase();
 
         $query = $db->getQuery(true);
-        $query->select(array('id', 'name', 'types'))->from('#__wf_profiles')->where('published = 1');
+        $query->select(array('id', 'name', 'types', 'users'))->from('#__wf_profiles')->where('published = 1');
 
         $db->setQuery($query);
         $rows = $db->loadObjectList();
@@ -547,8 +552,8 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             return;
         }
 
-        $ids = array();
-        $names = array();
+        $unpublished = array();
+        $modified = array();
 
         foreach ($rows as $row) {
             // a profile without groups is assigned to specific users only
@@ -558,37 +563,68 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
 
             $types = array_map('intval', explode(',', $row->types));
 
-            if (array_intersect($guestGroups, $types)) {
-                $ids[] = (int) $row->id;
-                $names[] = $row->name;
+            if (!array_intersect($guestGroups, $types)) {
+                continue;
             }
+
+            $remaining = array_values(array_diff($types, $guestGroups));
+
+            $query = $db->getQuery(true);
+            $query->update('#__wf_profiles')->where('id = ' . (int) $row->id);
+
+            if (empty($remaining) && empty($row->users)) {
+                // nothing left to match, so the profile cannot apply to anyone. The group
+                // assignment is left in place so the profile can simply be published again.
+                $query->set('published = 0');
+
+                $unpublished[] = $row->name;
+            } else {
+                // the profile still applies to its remaining groups or assigned users
+                $query->set('types = ' . $db->quote(implode(',', $remaining)));
+
+                $modified[] = $row->name;
+            }
+
+            $db->setQuery($query);
+            $db->execute();
         }
 
-        if (empty($ids)) {
-            return;
-        }
-
-        $query = $db->getQuery(true);
-        $query->update('#__wf_profiles')->set('published = 0')->where('id IN (' . implode(',', $ids) . ')');
-
-        $db->setQuery($query);
-        $db->execute();
-
-        $this->enqueueGuestProfilesMessage($names);
+        $this->enqueueGuestProfilesMessage($unpublished, $modified);
     }
 
     /**
-     * Report the profiles unpublished by unpublishGuestProfiles().
+     * Report the profiles changed by removeGuestProfileAccess().
      *
-     * The list can be long on a site that was compromised by the profile import vulnerability in
-     * 2.9.99.4 and earlier, so only the first few names are shown and the rest are counted. Names
-     * are escaped as they are stored values that may contain markup on such a site.
-     *
-     * @param array $names Profile names.
+     * @param array $unpublished Names of profiles that were unpublished.
+     * @param array $modified    Names of profiles that had the guest group removed.
      *
      * @return void
      */
-    private function enqueueGuestProfilesMessage($names)
+    private function enqueueGuestProfilesMessage($unpublished, $modified)
+    {
+        $app = Factory::getApplication();
+
+        if (!empty($unpublished)) {
+            $app->enqueueMessage(Text::sprintf('COM_JCE_INSTALL_GUEST_PROFILES_UNPUBLISHED', count($unpublished), $this->formatProfileNames($unpublished)), 'warning');
+        }
+
+        if (!empty($modified)) {
+            $app->enqueueMessage(Text::sprintf('COM_JCE_INSTALL_GUEST_PROFILES_MODIFIED', count($modified), $this->formatProfileNames($modified)), 'warning');
+        }
+    }
+
+    /**
+     * Format a list of profile names for display.
+     *
+     * The list can be long on a site that was compromised by the profile import vulnerability
+     * in 2.9.99.4 and earlier, so only the first few names are shown and the rest are counted.
+     * Names are escaped as they are stored values that may contain markup on such a site.
+     *
+     * @param array $names Profile names.
+     *
+     * @return string
+     */
+    private function formatProfileNames($names)
     {
         $total = count($names);
         $limit = 5;
@@ -607,7 +643,7 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
             $text = Text::sprintf('COM_JCE_INSTALL_GUEST_PROFILES_UNPUBLISHED_MORE', $text, $total - $limit);
         }
 
-        Factory::getApplication()->enqueueMessage(Text::sprintf('COM_JCE_INSTALL_GUEST_PROFILES_UNPUBLISHED', $total, $text), 'warning');
+        return $text;
     }
 
     /**
