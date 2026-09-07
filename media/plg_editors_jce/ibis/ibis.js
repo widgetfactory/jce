@@ -11696,7 +11696,6 @@
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
 
-
   /**
    * Copyright (c) 2025 Ryan Demmer
    * Licensed under the GNU General Public License v2.0 or later
@@ -17471,6 +17470,9 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
+        if (predicate && predicate(node)) {
+          break;
+        }
 
         parents.push(node);
       }
@@ -20482,7 +20484,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20527,11 +20528,11 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    clearData: clearData,
+    hasData: hasData,
     getData: getData$1,
     getTimestamp: getTimestamp,
-    hasData: hasData,
-    setData: setData
+    setData: setData,
+    clearData: clearData
   });
 
   /**
@@ -20543,7 +20544,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var noop = function () { };
 
@@ -20764,7 +20764,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {};
+    var div = DOM.create('div', {}, content), styles = {}, css = '';
 
     styles = ibis.extend(styles, parseCSS(content));
 
@@ -20784,10 +20784,16 @@
         return true;
       }
       
-      {
+      if (!embed_stylesheet) {
         DOM.setStyles(DOM.select(selector, div), value.styles);
+      } else {
+        css += value.text;
       }
     });
+
+    if (css) {
+      div.prepend(DOM.create('style', { type: 'text/css' }, css));
+    }
 
     content = div.innerHTML;
 
@@ -20971,7 +20977,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$5 = ibis.each;
 
@@ -21344,7 +21349,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$4 = ibis.each,
       Schema = ibis.html.Schema,
@@ -22283,7 +22287,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   var each$3 = ibis.each;
   var isIE$1 = ibis.isIE || ibis.isIE12;
 
@@ -22706,7 +22709,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var each$2 = ibis.each,
       VK = ibis.VK,
@@ -23393,7 +23395,6 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
-
   var RangeUtils = ibis.dom.RangeUtils, Delay = ibis.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23774,7 +23775,6 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
-
 
   var Dispatcher = ibis.util.Dispatcher;
 
@@ -24425,7 +24425,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, 0);
+        }, time || 0);
       };
 
       func.stop = function () {
@@ -26660,7 +26660,8 @@
       htmlParser.addAttributeFilter(
         'data-mce-src,data-mce-href,data-mce-style,' +
         'data-mce-selected,data-mce-expando,data-mce-block,' +
-        'data-mce-type,data-mce-resize,data-mce-placeholder',
+        'data-mce-type,data-mce-resize,data-mce-placeholder,' + 
+        'data-mce-contenteditable',
 
         function (nodes, name) {
           var i = nodes.length;
@@ -43134,10 +43135,6 @@
         return !!ed.schema.getShortEndedElements()[node.nodeName.toLowerCase()];
       }
 
-      function isTableCell(node) {
-        return /^(TH|TD)$/.test(node.nodeName);
-      }
-
       function isInlineBlock(node) {
         return node && /^(IMG)$/.test(node.nodeName);
       }
@@ -43727,7 +43724,18 @@
             function process(node) {
               var nodeName, parentName, found, hasContentEditableState, lastContentEditable;
 
-              if (isBogusBr(node) || isBookmarkNode(node)) {
+              if (isBogusBr(node)) {
+                return;
+              }
+
+              // Move bookmarks into the wrapper that is being built rather than skipping
+              // them, otherwise the content after a bookmark is appended to the same
+              // wrapper and ends up moved in front of it. Never start a wrapper for one.
+              if (isBookmarkNode(node)) {
+                if (currentWrapElm) {
+                  currentWrapElm.appendChild(node);
+                }
+
                 return;
               }
 
@@ -44107,7 +44115,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if ((!format.mixed || !isBlock(formatRoot))) {
+            if (split && (!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -44122,7 +44130,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container);
+          return wrapAndSplit(findFormatRoot(container), container, container, true);
         }
 
         function unwrap(start) {
@@ -44176,35 +44184,28 @@
                 endContainer = endContainer.firstChild || endContainer;
               }
 
-              if (dom.isChildOf(startContainer, endContainer) && !isBlock(endContainer) &&
-                !isTableCell(startContainer) && !isTableCell(endContainer)) {
-                startContainer = wrap(startContainer, 'span', {
-                  id: '_start',
-                  'data-mce-type': 'bookmark'
-                });
-                splitToFormatRoot(startContainer);
-                startContainer = unwrap(TRUE);
-              } else {
-                // Wrap start/end nodes in span element since these might be cloned/moved
-                startContainer = wrap(startContainer, 'span', {
-                  id: '_start',
-                  'data-mce-type': 'bookmark'
-                });
+              // Wrap start/end nodes in span element since these might be cloned/moved.
+              // Both ends must be wrapped, even when the start is a descendant of the end,
+              // since splitting the start removes its format root from the DOM. If that
+              // format root is the end container, the range end would point at a detached
+              // node and the walk below would run to the end of the document.
+              startContainer = wrap(startContainer, 'span', {
+                id: '_start',
+                'data-mce-type': 'bookmark'
+              });
 
-                endContainer = wrap(endContainer, 'span', {
-                  id: '_end',
-                  'data-mce-type': 'bookmark'
-                });
+              endContainer = wrap(endContainer, 'span', {
+                id: '_end',
+                'data-mce-type': 'bookmark'
+              });
 
-                // Split start/end
-                splitToFormatRoot(startContainer);
-                splitToFormatRoot(endContainer);
+              // Split start/end
+              splitToFormatRoot(startContainer);
+              splitToFormatRoot(endContainer);
 
-                // Unwrap start/end to get real elements again
-                startContainer = unwrap(TRUE);
-                endContainer = unwrap();
-              }
-
+              // Unwrap start/end to get real elements again
+              startContainer = unwrap(TRUE);
+              endContainer = unwrap();
             } else {
               startContainer = endContainer = splitToFormatRoot(startContainer);
             }
@@ -48595,7 +48596,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(',');
+      return (str || '').split(delim || ',');
   }
 
   // list of HTML tags
@@ -53137,7 +53138,7 @@
       var count = 0;
 
       function uniqueId(prefix) {
-          return ('blobid') + (count++);
+          return (prefix || 'blobid') + (count++);
       }
 
       function isSupportedImage(value) {
