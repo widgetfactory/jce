@@ -1441,7 +1441,7 @@
             picker_icon: 'image',
             onpick: function () {
                 ed.execCommand('mceFileBrowser', true, {
-                    caller: 'imagepro',
+                    caller: 'table',
                     callback: function (selected, data) {
                         if (data.length) {
                             ctrl.value(data[0].url);
