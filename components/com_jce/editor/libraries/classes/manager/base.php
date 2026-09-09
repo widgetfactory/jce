@@ -98,8 +98,8 @@ class WFMediaManagerBase extends WFEditorPlugin
             $caller = (string) $this->get('caller');
 
             if ($caller) {
-                // Image Manager etc.
-                if ((int) $this->getParam($caller . '.basic_dialog_filebrowser', 0) === 1) {
+                // Image Manager etc. - enabled by default, as the manifest and config
+                if ((int) $this->getParam($caller . '.basic_dialog_filebrowser', 1) === 1) {
                     return false;
                 }
 
