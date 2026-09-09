@@ -48,31 +48,6 @@ class JceController extends BaseController
     );
 
     /**
-     * @var string The extension for which the categories apply
-     *
-     * @since  1.6
-     */
-    protected $extension;
-
-    /**
-     * Constructor.
-     *
-     * @param array $config An optional associative array of configuration settings
-     *
-     * @see     JController
-     * @since   1.5
-     */
-    public function __construct($config = array())
-    {
-        parent::__construct($config);
-
-        // Guess the JText message prefix. Defaults to the option.
-        if (empty($this->extension)) {
-            $this->extension = $this->input->get('extension', 'com_jce');
-        }
-    }
-
-    /**
      * Method to display a view.
      *
      * @param bool  $cachable  If true, the view output will be cached
@@ -94,20 +69,7 @@ class JceController extends BaseController
         // Set the default view name and format from the Request.
         $vName = $app->input->get('view', 'cpanel');
         $vFormat = $document->getType();
-        $lName = $app->input->get('layout', 'default');
-
-        // legacy front-end popup view
-        if ($vName === "popup") {
-            // add a view path
-            $this->addViewPath(JPATH_SITE . '/components/com_jce/views');
-            $view = $this->getView($vName, $vFormat);
-
-            if ($view) {
-                $view->display();
-            }
-
-            return $this;
-        }
+        $lName = $app->input->getWord('layout', 'default');
 
         $vName = strtolower($vName);
 
@@ -123,7 +85,7 @@ class JceController extends BaseController
 
         // The admin screens additionally require component management rights. In 3.0 this
         // check applies to the whole component, from ComponentDispatcher::checkAccess().
-        $adminViews = array('config', 'profiles', 'profile', 'mediabox');
+        $adminViews = array('cpanel', 'config', 'profiles', 'profile', 'mediabox');
 
         if (in_array($vName, $adminViews, true) && !$user->authorise('core.manage', 'com_jce')) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);

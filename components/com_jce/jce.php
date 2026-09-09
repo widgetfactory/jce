@@ -15,7 +15,14 @@ use Joomla\CMS\MVC\Controller\BaseController;
 
 $app = Factory::getApplication();
 
-$task = $app->input->getCmd('task', '');
+// The task value should only ever be a string
+if (!is_string($app->input->get('task', '', 'raw'))) {
+    throw new \Exception('Restricted', 403);
+}
+
+// the cmd filter does not lowercase, so normalise before matching
+$task = strtolower($app->input->getCmd('task', ''));
+
 $ctrl = strpos($task, '.') !== false ? strstr($task, '.', true) : '';
 
 // Hard allowlist: runs before MVC dispatch, independent of class loading and
@@ -27,6 +34,10 @@ if (!in_array($ctrl, ['plugin', 'editor'], true)) {
 
 // constants and autoload — only reached for permitted controllers
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
+
+// write the normalised task back so the dispatch below resolves the controller that
+// was actually gated, not the raw mixed-case value
+$app->input->set('task', $task);
 
 // Dispatch using the frontend controller path only.
 // The controller stubs in controller/ load the admin classes, which carry

@@ -41,6 +41,54 @@ class JceControllerPlugin extends BaseController
         return $className;
     }
 
+    /**
+     * Check that a resolved plugin file is a php file inside a directory plugins live in.
+     *
+     * The path can come from an onWfPluginExecute handler, which is free to set anything,
+     * so it is confined here rather than trusted. Roots are permitted in full: any third
+     * party serving its own file from its own plugin folder is allowed.
+     *
+     * @param string $filepath The resolved plugin file path
+     *
+     * @return bool
+     */
+    private function isPluginPath($filepath)
+    {
+        // normalise separators without resolving symlinks
+        $filepath = Path::clean($filepath);
+
+        if (strpos($filepath, '..') !== false || !is_file($filepath)) {
+            return false;
+        }
+
+        if (strtolower(pathinfo($filepath, PATHINFO_EXTENSION)) !== 'php') {
+            return false;
+        }
+
+        $roots = array(JPATH_PLUGINS, WF_EDITOR_PLUGINS);
+
+        // only defined when the pro plugin is installed
+        if (defined('WF_EDITOR_PRO_PLUGINS')) {
+            $roots[] = WF_EDITOR_PRO_PLUGINS;
+        }
+
+        $realpath = realpath($filepath);
+
+        foreach ($roots as $root) {
+            if (strpos($filepath, Path::clean($root . '/')) === 0) {
+                return true;
+            }
+
+            $realroot = realpath($root);
+
+            if ($realroot && $realpath && strpos($realpath, Path::clean($realroot . '/')) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function execute($task)
     {
         // check for session token
@@ -132,7 +180,8 @@ class JceControllerPlugin extends BaseController
             );
         }
 
-        if (false === $filepath) {
+        // an event handler can set any path, so confine it before including
+        if (false === $filepath || !$this->isPluginPath($filepath)) {
             throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
