@@ -28,7 +28,8 @@ class Config
             );
         }
 
-        if ((int) $plugin->getParam('basic_dialog_filebrowser', 1) == 0) {
+        // the file browser is a plugin in its own right, and may not be enabled
+        if (!in_array('browser', $settings['plugins']) || (int) $plugin->getParam('basic_dialog_filebrowser', 1) == 0) {
             $config['basic_dialog_filebrowser'] = false;
         }
 
