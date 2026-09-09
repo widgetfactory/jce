@@ -28,6 +28,8 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
      *
      * @param mixed $container The container object.
      * @param array $config An optional array of configuration settings.
+     * 
+     * @return void
      */
     public function __construct($container, $config = array())
     {
@@ -40,7 +42,11 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         $config['default'] = $this->getParam('popups.default', '');
 
         foreach ($plugins as $plugin) {
-            $this->plugins[] = AdapterHelper::createPlugin($plugin, $config, $container);
+            $instance = AdapterHelper::createPlugin($plugin, $config, $container);
+
+            if ($instance && $instance->isEnabled()) {
+                $this->plugins[] = $instance;
+            }
         }
     }
 
@@ -59,19 +65,17 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
 
         // Create instances only to check enabled + get params
         foreach ($this->plugins as $plugin) {
-            if ($plugin->isEnabled()) {
-                $count++;
+            $count++;
 
-                $params = $plugin->getParams();
+            $params = $plugin->getParams();
 
-                if (!empty($params)) {
-                    $document->addScriptDeclaration(
-                        'WfLightboxAdapter.setParams("' . $plugin->getName() . '",' . json_encode($params) . ');'
-                    );
-                }
-
-                $plugin->display();
+            if (!empty($params)) {
+                $document->addScriptDeclaration(
+                    'WfLightboxAdapter.setParams("' . $plugin->getName() . '",' . json_encode($params) . ');'
+                );
             }
+
+            $plugin->display();
         }
 
         if ($count) {
