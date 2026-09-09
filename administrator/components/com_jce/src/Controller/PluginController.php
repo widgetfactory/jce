@@ -72,6 +72,51 @@ class PluginController extends BaseController
      *
      * @return object|null An instance of the class, or null if not found.
      */
+    /**
+     * Check that a plugin file is a php file inside a directory plugins live in.
+     *
+     * @param   string  $filepath  The resolved plugin file path
+     *
+     * @return  boolean
+     */
+    private function isPluginPath($filepath)
+    {
+        // normalise separators without resolving symlinks
+        $filepath = Path::clean($filepath);
+
+        if (strpos($filepath, '..') !== false || !is_file($filepath)) {
+            return false;
+        }
+
+        if (strtolower(pathinfo($filepath, PATHINFO_EXTENSION)) !== 'php') {
+            return false;
+        }
+
+        $roots = [JPATH_PLUGINS, WF_EDITOR_PLUGINS];
+
+        // only defined when the pro plugin is installed
+        if (\defined('WF_EDITOR_PRO_PLUGINS')) {
+            $roots[] = WF_EDITOR_PRO_PLUGINS;
+        }
+
+        $realpath = realpath($filepath);
+
+        foreach ($roots as $root) {
+            if (strpos($filepath, Path::clean($root . '/')) === 0) {
+                return true;
+            }
+
+            $realroot = realpath($root);
+
+            // Path::find resolves symlinks in the path it returns
+            if ($realroot && $realpath && strpos($realpath, Path::clean($realroot . '/')) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function loadPluginClass($info, $plugin = null)
     {
         if (!isset($info->path, $info->namespace)) {
@@ -207,7 +252,8 @@ class PluginController extends BaseController
             $namespace = 'Wfe\\Plugins\\Editor\\' . ucfirst($plugin) . '\\';
         }
 
-        if ($filepath === false) {
+        // an event handler can set any path, so confine it before loading
+        if ($filepath === false || !$this->isPluginPath($filepath)) {
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 

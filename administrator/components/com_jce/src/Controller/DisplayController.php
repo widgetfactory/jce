@@ -27,8 +27,9 @@ class DisplayController extends BaseController
 	 *
 	 * Every screen is linked task-less as &view=x, which routes here rather than to the
 	 * matching controller, so the view is what has to be gated - not the controller name.
-	 * A null value means no jce.* permission of its own; the component-wide core.manage
-	 * check has already run in the dispatcher.
+	 * A null value means no jce.* permission of its own; core.manage has already run in
+	 * the dispatcher for every view except filebrowser, which jce.browser grants on its
+	 * own - see Dispatcher::isSelfAuthorising().
 	 *
 	 * The action is stated per view rather than derived from the view name: "profile"
 	 * needs jce.profiles and "filebrowser" needs jce.browser, so a derived name would be

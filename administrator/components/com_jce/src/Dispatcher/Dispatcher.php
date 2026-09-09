@@ -83,10 +83,12 @@ class Dispatcher extends ComponentDispatcher
     }
 
     /**
-     * Check the component access permission, then the requested task.
+     * Check the requested task, then the component access permission.
      *
-     * This gate lives in checkAccess() rather than dispatch() so the parent's core.manage
-     * denial still takes precedence, and so nothing is instantiated before it runs.
+     * This gate lives in checkAccess() rather than dispatch() so nothing is instantiated
+     * before it runs. The parent's core.manage check is applied per route rather than up
+     * front - see isSelfAuthorising() - so it cannot deny a route that is meant to be
+     * reachable without it. Every route still ends in a permission check either way.
      *
      * @return  void
      *
@@ -94,17 +96,47 @@ class Dispatcher extends ComponentDispatcher
      */
     protected function checkAccess()
     {
-        parent::checkAccess();
-
         [$controller, $task] = $this->parseCommand();
 
         if (!isset(self::ALLOWED_TASKS[$controller]) || !\in_array($task, self::ALLOWED_TASKS[$controller]['tasks'], true)) {
             throw new NotAllowed($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
+        if (!$this->isSelfAuthorising($controller)) {
+            parent::checkAccess();
+        }
+
         // A task-less request lands on DisplayController, which gates on the view instead;
         // see DisplayController::ALLOWED_VIEWS.
         $this->authorise(self::ALLOWED_TASKS[$controller]['action']);
+    }
+
+    /**
+     * Whether the resolved route carries its own authorisation instead of core.manage.
+     *
+     * The editor and plugin controllers authorise per profile, so editor dialogs keep
+     * working for authors who do not manage the component. The file browser authorises on
+     * jce.browser, which the quickicon grants on its own - requiring core.manage as well
+     * would deny the icon it displays.
+     *
+     * @param   string  $controller  The resolved controller name, lowercase
+     *
+     * @return  boolean
+     */
+    private function isSelfAuthorising($controller)
+    {
+        if (\in_array($controller, ['editor', 'plugin', 'filebrowser'], true)) {
+            return true;
+        }
+
+        // the file browser is linked task-less as &view=browser, which resolves here
+        if ($controller === 'display') {
+            $view = strtolower($this->app->getInput()->getCmd('view', ''));
+
+            return \in_array($view, ['browser', 'filebrowser'], true);
+        }
+
+        return false;
     }
 
     /**
@@ -141,11 +173,9 @@ class Dispatcher extends ComponentDispatcher
     {
         $input = $this->app->getInput();
 
-        // The array form of the task variable (?task[x]=1) is a legacy shape that
-        // ComponentDispatcher does not support. Reject it here rather than let it reach
-        // strtolower() as an array and raise a TypeError.
+        // The task value should only ever be a string
         if (!\is_string($input->get('task', 'display', 'raw'))) {
-            return ['', ''];
+            throw new NotAllowed($this->app->getLanguage()->_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $command = strtolower($input->getCmd('task', 'display'));

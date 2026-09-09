@@ -23,12 +23,26 @@ class Dispatcher extends ComponentDispatcher
 
     public function dispatch(): void
     {
-        $task = $this->app->getInput()->getCmd('task', '');
+        $input = $this->app->getInput();
+
+        // The array form of the task variable (?task[x]=1) is a legacy shape that
+        // ComponentDispatcher does not support. Reject it here rather than let it reach
+        // strpos() as an array and raise a TypeError.
+        if (!\is_string($input->get('task', '', 'raw'))) {
+            throw new NotAllowed('Access denied', 403);
+        }
+
+        // the cmd filter does not lowercase, so normalise before matching
+        $task = strtolower($input->getCmd('task', ''));
         $ctrl = strpos($task, '.') !== false ? strstr($task, '.', true) : '';
 
         if (!in_array($ctrl, self::ALLOWED_CONTROLLERS, true)) {
             throw new NotAllowed('Access denied', 403);
         }
+
+        // write the normalised task back so the parent resolves the controller that was
+        // actually gated, not the raw mixed-case value
+        $input->set('task', $task);
 
         parent::dispatch();
     }
