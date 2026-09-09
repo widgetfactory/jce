@@ -412,8 +412,7 @@ class AbstractPlugin
 
         $query = array(
             'task' => 'plugin.loadlanguages',
-            'lang' => Language::getCode(),
-            'plugin' => $this->name,
+            'lang' => Language::getCode()
         );
 
         // ini language
