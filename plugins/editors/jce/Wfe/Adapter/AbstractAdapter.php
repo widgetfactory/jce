@@ -25,6 +25,14 @@ class AbstractAdapter
     // An array of adapter plugins
     protected $plugins = array();
 
+    /**
+     * Constructor.
+     *
+     * @param mixed $container The container object.
+     * @param array $config An optional array of configuration settings.
+     * 
+     * @return void
+     */
     public function __construct($container, $config = array())
     {
         $this->setContainer($container);

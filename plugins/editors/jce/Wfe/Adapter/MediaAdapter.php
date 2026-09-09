@@ -17,6 +17,14 @@ use Wfe\Helper\AdapterHelper;
 
 class MediaAdapter extends \Wfe\Adapter\AbstractAdapter
 {
+    /**
+     * Constructor.
+     *
+     * @param mixed $container The container object.
+     * @param array $config An optional array of configuration settings.
+     * 
+     * @return void
+     */
     public function __construct($container, $config = array())
     {
         parent::__construct($container, $config);
@@ -45,9 +53,11 @@ class MediaAdapter extends \Wfe\Adapter\AbstractAdapter
     }
 
     /**
-     * @param object $player
+     * Load a media template file.
      *
-     * @return string
+     * @param string $name The name of the media plugin.
+     * @param string $tpl  The template to load.
+     * @return string The rendered template output.
      */
     public function loadTemplate($name, $tpl = '')
     {

@@ -32,7 +32,12 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
     protected $path = __DIR__;
 
     /**
-     * Activate the default information of the class.
+     * Constructor.
+     *
+     * @param mixed $container The container object.
+     * @param array $config An optional array of configuration settings.
+     * 
+     * @return void
      */
     public function __construct($container, $config = array())
     {
