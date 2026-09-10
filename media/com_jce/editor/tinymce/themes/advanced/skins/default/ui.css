@@ -2652,6 +2652,16 @@ select.mceNativeListBox {
     z-index: 700001;
 }
 
+/* without an overlay the editor behind the dialog must remain interactive */
+.mceModal:not(:has(.mceModalOverlay)),
+.mceModal:not(:has(.mceModalOverlay)) .mceModalFrame {
+    pointer-events: none;
+}
+
+.mceModal:not(:has(.mceModalOverlay)) .mceModalBody {
+    pointer-events: auto;
+}
+
 .mceModal .mceModalFrame {
     box-sizing: border-box;
     height: 100%;
