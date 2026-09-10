@@ -41,6 +41,19 @@
         z-index: 700001;
     }
 
+    /* without an overlay the editor behind the dialog must remain interactive */
+    &:not(:has(.mceModalOverlay)) {
+        pointer-events: none;
+
+        .mceModalFrame {
+            pointer-events: none;
+        }
+
+        .mceModalBody {
+            pointer-events: auto;
+        }
+    }
+
     .mceModalFrame {
         box-sizing: border-box;
         height: 100%;
