@@ -35,8 +35,12 @@
 
         if (selectedCell) {
             startPos = getPos(selectedCell);
-            endPos = findEndPos();
-            selectedCell = getCell(startPos.x, startPos.y);
+
+            // the cell may not be part of this table, eg: an invalid structure
+            if (startPos) {
+                endPos = findEndPos();
+                selectedCell = getCell(startPos.x, startPos.y);
+            }
         }
 
         function cloneNode(node, children) {
@@ -58,7 +62,7 @@
                 each(rows, function (tr, y) {
                     y += startY;
 
-                    each(dom.select('> td, > th', tr), function (td, x) {
+                    each(Array.from(tr.cells), function (td, x) {
                         var x2, y2, rowspan, colspan;
 
                         // Skip over existing cells produced by rowspan
