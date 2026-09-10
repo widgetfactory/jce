@@ -6,7 +6,7 @@
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-namespace Wfe\Plugins\Media;
+namespace Wfe\Plugins\Editor\Media;
 
 \defined('_JEXEC') or die;
 
@@ -99,7 +99,7 @@ class Config
             }
         }
 
-        $settings['strict_media_embeds'] = (bool) $wf->getParam('media.strict_media_embeds', 1);
+        $settings['media_strict_embed'] = (bool) $wf->getParam('media.strict_media_embeds', 1);
 
         // allow all elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));

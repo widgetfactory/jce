@@ -6,7 +6,7 @@
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-namespace Wfe\Plugins\Reference;
+namespace Wfe\Plugins\Editor\Reference;
 
 \defined('_JEXEC') or die;
 
