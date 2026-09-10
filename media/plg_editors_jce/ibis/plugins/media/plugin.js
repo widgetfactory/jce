@@ -1258,9 +1258,34 @@
         return previewWrapper;
     };
 
+    /**
+     * Find the media element within a preview wrapper. It is normally the first child, but may be nested
+     * if the wrapper content has been wrapped in another element, eg: an inline format span
+     * @param {ibis/html/Node} parent
+     * @param {String} tag
+     * @returns {ibis/html/Node|null}
+     */
+    function findMediaNode(parent, tag) {
+        if (!parent || !tag) {
+            return null;
+        }
+
+        tag = tag.toLowerCase();
+
+        if (parent.firstChild && parent.firstChild.name === tag) {
+            return parent.firstChild;
+        }
+
+        return parent.getAll(tag)[0] || null;
+    }
+
     var previewToPlaceholder = function (editor, node) {
         var obj = new ibis.html.DomParser({}, editor.schema).parse(node.innerHTML);
-        var ifr = obj.firstChild;
+        var ifr = findMediaNode(obj, node.getAttribute('data-mce-object')) || obj.firstChild;
+
+        if (!ifr) {
+            return node;
+        }
 
         var placeholder = createPlaceholderNode(editor, ifr);
 
@@ -1332,8 +1357,12 @@
 
         attribs = processNodeAttributes(editor, tag, node);
 
-        if (/\s*mce-object-preview\s*/.test(node.attr('class')) && node.firstChild && node.firstChild.name === tag) {
-            node = node.firstChild;
+        if (/\s*mce-object-preview\s*/.test(node.attr('class'))) {
+            var media = findMediaNode(node, tag);
+
+            if (media) {
+                node = media;
+            }
         }
 
         attribs = extend(attribs, processNodeAttributes(editor, tag, node));
