@@ -418,7 +418,7 @@
         }
 
         function insertRow(before) {
-            var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell, rowSpan;
+            var posY, cell, lastCell, lastExpandedCell, x, rowElm, newRow, newCell, otherCell, rowSpan;
 
             // Find first/last row
             each$4(grid, function (row, y) {
@@ -452,33 +452,42 @@
 
                 cell = grid[posY][x].elm;
 
-                if (cell != lastCell) {
-                    if (!before) {
-                        rowSpan = getSpanVal(cell, 'rowspan');
+                // a cell with a colspan occupies more than one grid column, so only process it once
+                if (cell == lastCell) {
+                    continue;
+                }
+
+                lastCell = cell;
+
+                if (!before) {
+                    rowSpan = getSpanVal(cell, 'rowspan');
+                    if (rowSpan > 1) {
+                        setSpanVal(cell, 'rowSpan', rowSpan + 1);
+                        continue;
+                    }
+                } else {
+                    // Check if cell above can be expanded
+                    if (posY > 0 && grid[posY - 1][x]) {
+                        otherCell = grid[posY - 1][x].elm;
+                        rowSpan = getSpanVal(otherCell, 'rowSpan');
+
                         if (rowSpan > 1) {
-                            setSpanVal(cell, 'rowSpan', rowSpan + 1);
+                            // the cell above may span several columns, so only expand it once
+                            if (otherCell != lastExpandedCell) {
+                                setSpanVal(otherCell, 'rowSpan', rowSpan + 1);
+                                lastExpandedCell = otherCell;
+                            }
+
                             continue;
                         }
-                    } else {
-                        // Check if cell above can be expanded
-                        if (posY > 0 && grid[posY - 1][x]) {
-                            otherCell = grid[posY - 1][x].elm;
-                            rowSpan = getSpanVal(otherCell, 'rowSpan');
-                            if (rowSpan > 1) {
-                                setSpanVal(otherCell, 'rowSpan', rowSpan + 1);
-                                continue;
-                            }
-                        }
                     }
-
-                    // Insert new cell into new row
-                    newCell = cloneCell(cell);
-                    setSpanVal(newCell, 'colSpan', cell.colSpan);
-
-                    newRow.appendChild(newCell);
-
-                    lastCell = cell;
                 }
+
+                // Insert new cell into new row
+                newCell = cloneCell(cell);
+                setSpanVal(newCell, 'colSpan', cell.colSpan);
+
+                newRow.appendChild(newCell);
             }
 
             if (newRow.hasChildNodes()) {
