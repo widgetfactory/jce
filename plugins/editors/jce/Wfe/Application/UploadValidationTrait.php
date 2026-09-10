@@ -20,9 +20,10 @@ trait UploadValidationTrait
      * Validate an uploaded file: presence, name safety, content safety, size, and MIME type.
      * Throws \InvalidArgumentException on any failure; deletes the temp file before throwing.
      *
-     * @param array $file $_FILES entry
+     * @param array $file   $_FILES entry
+     * @param array $upload Upload settings from the File Browser configuration
      */
-    public function validateUploadedFile($file)
+    public function validateUploadedFile($file, $upload = array())
     {
         if (empty($file) || empty($file['tmp_name'])) {
             throw new \InvalidArgumentException('Upload Failed: No data');
@@ -32,7 +33,7 @@ trait UploadValidationTrait
             throw new \InvalidArgumentException('Upload Failed: Not an uploaded file');
         }
 
-        $upload = $this->getConfig('upload');
+        $upload = (array) $upload;
 
         if (strpos($file['name'], "\x00") !== false) {
             @unlink($file['tmp_name']);
@@ -66,7 +67,7 @@ trait UploadValidationTrait
             throw new \InvalidArgumentException(Text::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
         }
 
-        if ($upload['validate_mimetype']) {
+        if (!empty($upload['validate_mimetype'])) {
             if (MimeType::check($file['name'], $file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
                 throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_MIME_ERROR'));

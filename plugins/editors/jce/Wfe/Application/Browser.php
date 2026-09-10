@@ -2099,8 +2099,10 @@ class Browser
         // get uploaded file
         $file = $app->input->files->get('file', array(), 'raw');
 
+        $upload = (array) $this->getConfig('upload', array());
+
         // validate file
-        $this->validateUploadedFile($file);
+        $this->validateUploadedFile($file, $upload);
 
         $allowed = (array) $this->getFileTypes('array');
 
@@ -2144,9 +2146,7 @@ class Browser
             throw new \InvalidArgumentException('Upload Failed: The file name is invalid.');
         }
 
-        $upload = $this->getConfig('upload');
-
-        if ($upload['add_random']) {
+        if (!empty($upload['add_random'])) {
             // the length of the random string in characters, restricted to the supported values
             $length = isset($upload['random_length']) ? (int) $upload['random_length'] : 16;
 
