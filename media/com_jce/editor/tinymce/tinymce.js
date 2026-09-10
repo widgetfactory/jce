@@ -42265,6 +42265,19 @@
         return !!ed.schema.getTextBlockElements()[name.toLowerCase()];
       }
 
+      // Elements that must never be wrapped in an inline format, or have their children wrapped, eg: <span style="font-family:x"><iframe></iframe></span>
+      var formatExcludeSelector = ed.settings.format_exclude_selector !== undef ?
+        ed.settings.format_exclude_selector :
+        '[data-mce-object],iframe,object,embed,video,audio,applet,map,svg';
+
+      function isFormatExcluded(node) {
+        if (node.nodeType !== 1 || !formatExcludeSelector) {
+          return false;
+        }
+
+        return dom.is(node, formatExcludeSelector);
+      }
+
       function isShortEnded(node) {
         return !!ed.schema.getShortEndedElements()[node.nodeName.toLowerCase()];
       }
@@ -42870,6 +42883,12 @@
                   currentWrapElm.appendChild(node);
                 }
 
+                return;
+              }
+
+              // Never apply an inline format to media objects, and never descend into them, eg: <span style="font-family:x"><iframe></iframe></span>
+              if (format.inline && isFormatExcluded(node)) {
+                currentWrapElm = 0;
                 return;
               }
 
