@@ -29,11 +29,6 @@ class WFApplication extends \Wfe\Application\Application
      */
     public static function getInstance($config = array())
     {
-        trigger_error(
-            'WFApplication::getInstance() is deprecated. Use dependency injection instead.',
-            E_USER_DEPRECATED
-        );
-
         return \Wfe\Factory::getApplication();
     }
 }

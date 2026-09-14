@@ -29,11 +29,6 @@ class WFEditorPlugin extends \Wfe\Editor\Plugin\AbstractPlugin
      */
     public static function getInstance($config = array())
     {
-        trigger_error(
-            'WFEditorPlugin::getInstance() is deprecated. Use dependency injection instead.',
-            E_USER_DEPRECATED
-        );
-
         return \Wfe\Factory::getEditorPlugin();
     }
 }
