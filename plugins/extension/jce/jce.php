@@ -111,7 +111,6 @@ class PlgExtensionJce extends CMSPlugin
 
             if ($type == 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
-                $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
             } else {
                 $plugin->type = 'extension';
@@ -159,22 +158,20 @@ class PlgExtensionJce extends CMSPlugin
 
             $basename = basename($installer->getPath('extension_root'));
 
-            if (strpos($basename, '-') === false) {
+            // must be a valid plugin, same pattern as onExtensionAfterInstall
+            if (!preg_match('/^(editor|filesystem|links|popups)[-_]/', $basename)) {
                 return false;
             }
 
             require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
 
-            $parts = explode('-', $basename);
-            $type = $parts[0];
-            $name = $parts[1];
+            [$type, $name] = preg_split('/[-_]/', $basename, 2);
 
             $plugin = new StdClass();
             $plugin->name = $name;
 
             if ($type === 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
-                $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
             }
 

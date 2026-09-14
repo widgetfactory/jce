@@ -401,8 +401,10 @@ abstract class JcePluginsHelper
     {
         $db = Factory::getDBO();
 
-        // load the plugin and enable
-        if (isset($plugin->row) && $plugin->row > 0) {
+        // add or remove editor plugins from the Default profile. Plugins with an icon are also added to or removed from the toolbar rows, see addToProfile() and removeFromProfile()
+        if (isset($plugin->type) && $plugin->type === 'plugin') {
+            $plugin->icon = isset($plugin->icon) ? (string) $plugin->icon : '';
+
             $query = $db->getQuery(true);
 
             $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
