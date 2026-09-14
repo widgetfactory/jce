@@ -426,21 +426,19 @@ abstract class PluginsHelper
                 $profile->plugins = implode(',', array_values($plugins));
             }
 
-            if ($plugin->icon) {
-                // check if its in the profile
-                if (in_array($plugin->name, preg_split('/[;,]+/', $profile->rows))) {
-                    $lists = array();
-                    foreach (explode(';', $profile->rows) as $list) {
-                        $icons = explode(',', $list);
-                        foreach ($icons as $k => $v) {
-                            if ($plugin->name == $v) {
-                                unset($icons[$k]);
-                            }
+            // remove from the layout rows if it's in the profile, eg: added manually to the layout
+            if (in_array($plugin->name, preg_split('/[;,]+/', (string) $profile->rows))) {
+                $lists = array();
+                foreach (explode(';', $profile->rows) as $list) {
+                    $icons = explode(',', $list);
+                    foreach ($icons as $k => $v) {
+                        if ($plugin->name == $v) {
+                            unset($icons[$k]);
                         }
-                        $lists[] = implode(',', $icons);
                     }
-                    $profile->rows = implode(';', $lists);
+                    $lists[] = implode(',', $icons);
                 }
+                $profile->rows = implode(';', $lists);
             }
 
             // store changes
@@ -486,10 +484,8 @@ abstract class PluginsHelper
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-        // add or remove editor plugins from the Default profile. Plugins with an icon are also added to or removed from the toolbar rows, see addToProfile() and removeFromProfile()
-        if (isset($plugin->type) && $plugin->type === 'plugin') {
-            $plugin->icon = isset($plugin->icon) ? (string) $plugin->icon : '';
-
+        // only add to the Default profile if the plugin manifest sets a toolbar "row", otherwise plugins must be added to a profile manually
+        if ($route == 'install' && isset($plugin->row) && $plugin->row > 0) {
             $query = $db->getQuery(true);
 
             $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
@@ -498,13 +494,25 @@ abstract class PluginsHelper
             $id = $db->loadResult();
 
             if ($id) {
-                if ($route == 'install') {
-                    // add to profile
-                    self::addToProfile($id, $plugin);
-                } else {
-                    // remove from profile
-                    self::removeFromProfile($id, $plugin);
-                }
+                // add to profile
+                self::addToProfile($id, $plugin);
+            }
+        }
+
+        // remove an uninstalled editor plugin from every profile it was added to, automatically or manually
+        if ($route == 'uninstall' && isset($plugin->type) && $plugin->type === 'plugin') {
+            $search = $db->quote('%' . $db->escape($plugin->name, true) . '%', false);
+
+            $query = $db->getQuery(true)
+                ->select($db->quoteName('id'))
+                ->from($db->quoteName('#__wf_profiles'))
+                ->where('(' . $db->quoteName('plugins') . ' LIKE ' . $search . ' OR ' . $db->quoteName('rows') . ' LIKE ' . $search . ')');
+
+            $db->setQuery($query);
+
+            // removeFromProfile() only removes exact name matches
+            foreach ($db->loadColumn() as $id) {
+                self::removeFromProfile((int) $id, $plugin);
             }
         }
 

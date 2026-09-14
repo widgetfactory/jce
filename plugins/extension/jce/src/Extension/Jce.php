@@ -171,6 +171,7 @@ final class Jce extends CMSPlugin implements SubscriberInterface
 
             if ($type == 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
+                $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
             } else {
                 $plugin->type = 'extension';
@@ -232,6 +233,7 @@ final class Jce extends CMSPlugin implements SubscriberInterface
 
             if ($type === 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
+                $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
             }
 
