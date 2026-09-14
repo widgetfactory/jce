@@ -111,6 +111,7 @@ class PlgExtensionJce extends CMSPlugin
 
             if ($type == 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
+                $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
             } else {
                 $plugin->type = 'extension';
@@ -172,6 +173,7 @@ class PlgExtensionJce extends CMSPlugin
 
             if ($type === 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
+                $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
             }
 
