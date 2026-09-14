@@ -15,9 +15,10 @@ namespace Joomla\Plugin\Installer\Jce\Extension;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseAwareTrait;
+use Joomla\Event\SubscriberInterface;
 use Joomla\Plugin\Installer\Jce\PluginTraits\EventsTrait;
 
-class Jce extends CMSPlugin
+final class Jce extends CMSPlugin implements SubscriberInterface
 {
     use EventsTrait;
     use DatabaseAwareTrait;
@@ -28,6 +29,20 @@ class Jce extends CMSPlugin
      * @var    boolean
      */
     protected $autoloadLanguage = true;
+
+    /**
+     * Returns an array of events this subscriber will listen to.
+     *
+     * @return  array
+     *
+     * @since   3.1
+     */
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'onInstallerBeforePackageDownload' => 'onInstallerBeforePackageDownload',
+        ];
+    }
 
     private function getDownloadKeyFromUpdateSites()
     {

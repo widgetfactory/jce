@@ -10,9 +10,9 @@
 
 namespace Joomla\Plugin\Installer\Jce\PluginTraits;
 
-defined('_JEXEC') or die;
+\defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
+use Joomla\CMS\Event\Installer\BeforePackageDownloadEvent;
 use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
@@ -32,7 +32,7 @@ trait EventsTrait
         if (empty($file)) {
             return false;
         }
-        
+
         // jce pro requires a key
         if (strpos($file, 'pkg_jce_pro_') !== false) {
             return true;
@@ -55,29 +55,28 @@ trait EventsTrait
 
         return false;
     }
-    
+
     /**
      * Handle adding credentials to package download request.
      *
-     * @param string $url     url from which package is going to be downloaded
-     * @param array  $headers headers to be sent along the download request (key => value format)
+     * @param   BeforePackageDownloadEvent  $event  The event object
      *
-     * @return bool true if credentials have been added to request or not our business, false otherwise (credentials not set by user)
+     * @return  void
      *
      * @since   3.0
      */
-    public function onInstallerBeforePackageDownload(&$url, &$headers)
+    public function onInstallerBeforePackageDownload(BeforePackageDownloadEvent $event): void
     {
-        $app = Factory::getApplication();
+        $app = $this->getApplication();
 
-        $uri = Uri::getInstance($url);
-        $host = $uri->getHost();
+        // use a new instance, Uri::getInstance() caches by url and setVar() would modify the cached object
+        $uri = new Uri($event->getUrl());
 
-        if ($host !== 'www.joomlacontenteditor.net') {
-            return true;
+        if ($uri->getHost() !== 'www.joomlacontenteditor.net') {
+            return;
         }
 
-        // check if the key has already been set via the dlid field. This will only be available in Joomla 4.x and later
+        // check if the key has already been set via the dlid field
         $key = $uri->getVar('key', '');
 
         // get the key from the component params or Update Sites (in the case of plugin updates)
@@ -88,12 +87,12 @@ trait EventsTrait
         // if no key is set...
         if (empty($key)) {
             $query = $uri->getQuery(true);
-            
+
             // if we are attempting to update JCE Pro or JCE Plugins, display a notice message
             if ($this->checkIfKeyRequired($query) === true) {
                 $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
 
-                return true;
+                return;
             }
         }
 
@@ -102,31 +101,30 @@ trait EventsTrait
             $uri->setVar('key', $key);
         }
 
-        // create the url string
-        $url = $uri->toString();
+        $event->updateUrl($uri->toString());
 
         // check validity of the key and display a message if it is invalid / expired
         try {
             $tmpUri = clone $uri;
             $tmpUri->setVar('task', 'update.validate');
 
-            $tmpUrl = $tmpUri->toString();
-            $response = HttpFactory::getHttp()->get($tmpUrl, array());
+            $response = HttpFactory::getHttp()->get($tmpUri->toString(), []);
         } catch (\RuntimeException $exception) {
             $app->enqueueMessage($exception->getMessage(), 'notice');
-            return true;
+
+            return;
         }
 
+        $code = $response->getStatusCode();
+
         // invalid key, display a notice message
-        if (403 == $response->code || 401 == $response->code) {
+        if ($code === 403 || $code === 401) {
             $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
 
         // update limit exceeded
-        if (498 === $response->code) {
+        if ($code === 498) {
             $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_LIMIT'), 'notice');
         }
-
-        return true;
     }
 }

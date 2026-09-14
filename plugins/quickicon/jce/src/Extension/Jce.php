@@ -2,7 +2,7 @@
 
 /**
  * @package     JCE
- * @subpackage  Installer.Jce
+ * @subpackage  Quickicon.Jce
  *
  * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved
  * @copyright   Copyright (c) 2023-2026 Ryan Demmer. All rights reserved
@@ -14,48 +14,69 @@ namespace Joomla\Plugin\Quickicon\Jce\Extension;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
+use Joomla\Module\Quickicon\Administrator\Event\QuickIconsEvent;
 
-class Jce extends CMSPlugin
+final class Jce extends CMSPlugin implements SubscriberInterface
 {
-    public function __construct(&$subject, $config)
+    /**
+     * Load the language file on instantiation.
+     *
+     * @var    boolean
+     * @since  3.1
+     */
+    protected $autoloadLanguage = true;
+
+    /**
+     * Returns an array of events this subscriber will listen to.
+     *
+     * @return  array
+     *
+     * @since   3.1
+     */
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $config);
-
-        $app = $this->getApplication();
-
-        // only in Admin and only if the component is enabled
-        if ($app->getClientId() !== 1 || ComponentHelper::getComponent('com_jce', true)->enabled === false) {
-            return;
-        }
-
-        $this->loadLanguage();
+        return [
+            'onGetIcons' => 'onGetIcons',
+        ];
     }
 
-    public function onGetIcons($context)
+    /**
+     * Add the JCE File Browser icon to the quickicon module
+     *
+     * @param   QuickIconsEvent  $event  The event object
+     *
+     * @return  void
+     */
+    public function onGetIcons(QuickIconsEvent $event): void
     {
-        if ($context != $this->params->get('context', 'mod_quickicon')) {
+        if ($event->getContext() !== $this->params->get('context', 'mod_quickicon')) {
             return;
         }
 
-        $app = $this->getApplication();
-
-        $user = $app->getIdentity();
-
-        if (!$user->authorise('jce.browser', 'com_jce')) {
+        // only if the component is enabled
+        if (!ComponentHelper::isEnabled('com_jce')) {
             return;
         }
 
-        $language = $app->getLanguage();
-        $language->load('com_jce', JPATH_ADMINISTRATOR);
+        if (!$this->getApplication()->getIdentity()->authorise('jce.browser', 'com_jce')) {
+            return;
+        }
 
-        return array(array(
-            'link'      => 'index.php?option=com_jce&view=browser',
-            'image'     => 'picture fa fa-image',
-            'access'    => array('jce.browser', 'com_jce'),
-            'text'      => Text::_('PLG_QUICKICON_JCE_TITLE'),
-            'id'        => 'plg_quickicon_jce',
-        ));
+        $result = $event->getArgument('result', []);
+
+        $result[] = [
+            [
+                'link'   => 'index.php?option=com_jce&view=browser',
+                'image'  => 'icon-images',
+                'access' => ['jce.browser', 'com_jce'],
+                'text'   => Text::_('PLG_QUICKICON_JCE_TITLE'),
+                'id'     => 'plg_quickicon_jce',
+            ],
+        ];
+
+        $event->setArgument('result', $result);
     }
 }

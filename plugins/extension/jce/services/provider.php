@@ -37,6 +37,7 @@ return new class() implements ServiceProviderInterface
             function (Container $container) {
                 $dispatcher = $container->get(DispatcherInterface::class);
 
+                /** @disregard P1005 Passing the dispatcher is required for Joomla 5.0 - 5.3 */
                 $plugin = new Jce(
                     $dispatcher,
                     (array) PluginHelper::getPlugin('extension', 'jce')

@@ -15,9 +15,9 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Factory;
 use Joomla\Event\Event;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Event\CustomFields\PrepareDomEvent;
+use Joomla\Event\SubscriberInterface;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -28,7 +28,7 @@ use Joomla\CMS\Event\CustomFields\PrepareDomEvent;
  *
  * @since 1.5
  */
-final class Jce extends CMSPlugin
+final class Jce extends CMSPlugin implements SubscriberInterface
 {
     /**
      * Affects constructor behavior. If true, language files will be loaded automatically.
@@ -249,6 +249,11 @@ final class Jce extends CMSPlugin
     public function onWfEditorBeforeProfileItem(Event $event): void
     {
         $item = $event->getArgument('item');
+
+        // the item may have been cancelled by another listener, eg: JCE Pro custom query
+        if (!\is_object($item) || !isset($item->plugins)) {
+            return;
+        }
 
         $plugins = explode(',', $item->plugins);
 

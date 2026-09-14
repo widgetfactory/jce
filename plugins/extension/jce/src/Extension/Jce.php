@@ -61,7 +61,7 @@ final class Jce extends CMSPlugin implements SubscriberInterface
     /**
      * Check the installer is for a valid plugin group.
      *
-     * @param Joomla\CMS\Installer\Installer $installer Installer object
+     * @param \Joomla\CMS\Installer\Installer $installer Installer object
      *
      * @return bool
      *
@@ -86,8 +86,8 @@ final class Jce extends CMSPlugin implements SubscriberInterface
 
         if ((string) $type === "file") {
 
-            // get a reference to the current installer
-            $manifestPath = $event->getManifest();
+            // the event manifest is a SimpleXMLElement, so get the package manifest path from the current installer
+            $manifestPath = Installer::getInstance()->getPath('manifest');
 
             if (empty($manifestPath)) {
                 return;
@@ -131,10 +131,9 @@ final class Jce extends CMSPlugin implements SubscriberInterface
     /**
      * Handle post extension install update sites.
      *
-     * @param JInstaller $installer Installer object
-     * @param int        $eid       Extension Identifier
-     *
-     * @since   2.6
+     * @param AfterInstallEvent $event Event object containing installer and extension ID
+     * 
+     * @return void
      */
     public function onExtensionAfterInstall(AfterInstallEvent $event): void
     {
@@ -204,12 +203,10 @@ final class Jce extends CMSPlugin implements SubscriberInterface
 
     /**
      * Handle extension uninstall.
+     * 
+     * @param AfterUninstallEvent $event Event object containing installer and extension ID
      *
-     * @param JInstaller $installer Installer instance
-     * @param int        $eid       Extension id
-     * @param int        $result    Installation result
-     *
-     * @since   1.6
+     * @return void
      */
     public function onExtensionAfterUninstall(AfterUninstallEvent $event): void
     {
@@ -224,13 +221,12 @@ final class Jce extends CMSPlugin implements SubscriberInterface
 
             $basename = basename($installer->getPath('extension_root'));
 
-            if (strpos($basename, '-') === false) {
+            // must be a valid plugin, same pattern as onExtensionAfterInstall
+            if (!preg_match('/^(editor|filesystem|links|popups|lightbox)[-_]/', $basename)) {
                 return;
             }
 
-            $parts = explode('-', $basename);
-            $type = $parts[0];
-            $name = $parts[1];
+            [$type, $name] = preg_split('/[-_]/', $basename, 2);
 
             $plugin = new \StdClass();
             $plugin->name = $name;

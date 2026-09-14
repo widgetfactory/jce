@@ -35,6 +35,7 @@ return new class () implements ServiceProviderInterface {
             PluginInterface::class,
             function (Container $container) {
                 $dispatcher = $container->get(DispatcherInterface::class);
+                /** @disregard P1005 Passing the dispatcher is required for Joomla 5.0 - 5.3 */
                 $plugin     = new MediaJce(
                     $dispatcher,
                     (array) PluginHelper::getPlugin('fields', 'mediajce')

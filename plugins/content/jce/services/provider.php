@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     JCE
- * @subpackage  System.Jce
+ * @subpackage  Content.Jce
  *
  * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved.
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
@@ -16,7 +16,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Plugin\System\Jce\Extension\Jce;
+use Joomla\Plugin\Content\Jce\Extension\Jce;
 
 return new class() implements ServiceProviderInterface
 {
@@ -36,6 +36,7 @@ return new class() implements ServiceProviderInterface
             function (Container $container) {
                 $dispatcher = $container->get(DispatcherInterface::class);
 
+                /** @disregard P1005 Passing the dispatcher is required for Joomla 5.0 - 5.3 */
                 $plugin = new Jce(
                     $dispatcher,
                     (array) PluginHelper::getPlugin('content', 'jce')
