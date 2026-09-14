@@ -171,6 +171,8 @@ abstract class BrowserHelper
 
         $app->getDispatcher()->dispatch('onWfMediaFieldGetOptions', $event);
 
+        $options = $event->getArgument('options', $options);
+
         return $options;
     }
 }
