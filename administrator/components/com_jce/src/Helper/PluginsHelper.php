@@ -389,10 +389,10 @@ abstract class PluginsHelper
 
             // store changes
             $query = $db->getQuery(true);
-            $query->update('#__wf_profiles')
-                ->set('plugins = ' . $db->quote($profile->plugins))
-                ->set('rows = ' . $db->quote($profile->rows))
-                ->where('id = ' . (int) $profile->id);
+            $query->update($db->quoteName('#__wf_profiles'))
+                ->set($db->quoteName('plugins') . ' = ' . $db->quote($profile->plugins))
+                ->set($db->quoteName('rows') . ' = ' . $db->quote($profile->rows))
+                ->where($db->quoteName('id') . ' = ' . (int) $profile->id);
 
             $db->setQuery($query);
 
@@ -445,10 +445,11 @@ abstract class PluginsHelper
 
             // store changes
             $query = $db->getQuery(true);
-            $query->update('#__wf_profiles')
-                ->set('plugins = ' . $db->quote($profile->plugins))
-                ->set('rows = ' . $db->quote($profile->rows))
-                ->where('id = ' . (int) $profile->id);
+            // "rows" is a reserved word in MySQL 8 / MariaDB 10.2.4+ so column names must be quoted
+            $query->update($db->quoteName('#__wf_profiles'))
+                ->set($db->quoteName('plugins') . ' = ' . $db->quote($profile->plugins))
+                ->set($db->quoteName('rows') . ' = ' . $db->quote($profile->rows))
+                ->where($db->quoteName('id') . ' = ' . (int) $profile->id);
 
             $db->setQuery($query);
 
@@ -485,8 +486,10 @@ abstract class PluginsHelper
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-        // load the plugin and enable
-        if (isset($plugin->row) && $plugin->row > 0) {
+        // add or remove editor plugins from the Default profile. Plugins with an icon are also added to or removed from the toolbar rows, see addToProfile() and removeFromProfile()
+        if (isset($plugin->type) && $plugin->type === 'plugin') {
+            $plugin->icon = isset($plugin->icon) ? (string) $plugin->icon : '';
+
             $query = $db->getQuery(true);
 
             $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');

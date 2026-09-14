@@ -1003,6 +1003,9 @@ class ProfileModel extends AdminModel
             // add "editor"
             $items[] = 'editor';
 
+            // add "setup" for setup parameters (via plugins, eg: jcepro)
+            $items[] = 'setup';
+
             // make sure we have a params value
             if (empty($data['params'])) {
                 $data['params'] = [];
