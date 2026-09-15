@@ -3,7 +3,7 @@
 	<name>WF_FULLSCREEN_TITLE</name>
 	<version>@@version@@</version>
 	<creationDate>@@date@@</creationDate>
-	<author>Ryan Demmer</author>
+	<author>@@author@@</author>
 	<authorEmail>@@e-mail@@</authorEmail>
 	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
 	<copyright>@@copyright@@</copyright>

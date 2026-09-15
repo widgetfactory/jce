@@ -3,7 +3,7 @@
   <name>plg_content_jce</name>
   <version>@@version@@</version>
   <creationDate>@@date@@</creationDate>
-  <author>Ryan Demmer</author>
+  <author>@@author@@</author>
   <authorEmail>@@email@@</authorEmail>
   <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
   <copyright>@@copyright@@</copyright>
