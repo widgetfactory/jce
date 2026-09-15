@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="package" method="upgrade">
     <name>PKG_JCE</name>
-    <author>Ryan Demmer</author>
+    <author>@@author@@</author>
     <creationDate>@@date@@</creationDate>
+    <copyright>@@copyright@@</copyright>
     <packagename>jce</packagename>
     <version>@@version@@</version>
     <url>https://www.joomlacontenteditor.net</url>
-    <packager>Widget Factory Limited</packager>
+    <packager>Widget Factory (Pty) Ltd</packager>
     <packagerurl>https://www.joomlacontenteditor.net</packagerurl>
     <description>PKG_JCE_XML_DESCRIPTION</description>
     <updateservers>
