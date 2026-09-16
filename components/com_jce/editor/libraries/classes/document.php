@@ -488,6 +488,9 @@ class WFDocument extends CMSObject
         // set standalone mode (for File Browser etc)
         $query['standalone'] = $this->get('standalone', 0);
 
+        // set media field mode (for File Browser asset requests)
+        $query['mediafield'] = $this->get('mediafield', 0);
+
         // set context id
         $query['context'] = $app->input->getInt('context', 0);
 
