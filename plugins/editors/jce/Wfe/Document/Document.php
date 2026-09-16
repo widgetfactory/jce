@@ -547,6 +547,9 @@ class Document
         // get profile custom query variables
         $query['profile_custom'] = $app->input->get('profile_custom', array(), 'array');
 
+        // set media field mode (for File Browser asset requests)
+        $query['mediafield'] = $this->getConfig('mediafield', 0);
+
         // get token
         $token = Session::getFormToken();
 

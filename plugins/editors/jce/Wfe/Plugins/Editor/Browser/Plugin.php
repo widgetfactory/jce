@@ -32,6 +32,12 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
     private function isMediaField()
     {
         $app = Factory::getApplication();
+
+        // asset requests from a media field only carry the mediafield flag
+        if ($app->input->getInt('mediafield') && in_array($app->input->getCmd('task'), array('pack', 'loadlanguages'), true)) {
+            return true;
+        }
+
         return $app->input->getString('mediatype') && $app->input->getCmd('fieldid', $app->input->getCmd('element', ''));
     }
 
@@ -435,6 +441,11 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
         $document->setTitle(Text::_('WF_BROWSER_TITLE'));
 
         if ($document->getConfig('standalone') == 1) {
+            // flag media field mode so asset request urls pass the access check
+            if ($this->isMediaField()) {
+                $document->setConfig('mediafield', 1);
+            }
+        
             if ($slot === 'plugin') {
                 $document->addScript(array('window.min'));
 
