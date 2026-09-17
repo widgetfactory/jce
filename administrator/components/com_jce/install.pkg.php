@@ -350,6 +350,9 @@ class pkg_jceInstallerScript
         } catch (Throwable $e) {
         }
 
+        // reset opcache so stale bytecode doesn't require files removed by the upgrade
+        $this->resetOpcache();
+
         // remove legacy jcefilebrowser quickicon plugin
         $plugins = [
             'jcefilebrowser' => 'quickicon'
@@ -502,6 +505,24 @@ class pkg_jceInstallerScript
 
         if (method_exists($app, 'createExtensionNamespaceMap')) {
             $app->createExtensionNamespaceMap();
+        }
+    }
+
+    private function resetOpcache()
+    {
+        if (!\function_exists('opcache_reset') || !\ini_get('opcache.enable')) {
+            return;
+        }
+
+        $restrict = (string) \ini_get('opcache.restrict_api');
+
+        if ($restrict !== '' && stripos((string) realpath($_SERVER['SCRIPT_FILENAME']), $restrict) !== 0) {
+            return;
+        }
+
+        try {
+            @opcache_reset();
+        } catch (Throwable $e) {
         }
     }
 
