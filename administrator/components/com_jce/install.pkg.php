@@ -230,14 +230,14 @@ class pkg_jceInstallerScript
 
         $requirements = '<a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" title="Editor Requirements" target="_blank" rel="noopener">https://www.joomlacontenteditor.net/support/documentation/editor/requirements</a>';
 
-        // php version check
-        if (version_compare(PHP_VERSION, '8.0', 'lt')) {
-            throw new RuntimeException('JCE requires PHP 8.0 or later - ' . $requirements);
-        }
-
         // joomla version check
         if (version_compare(JVERSION, '5.0', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 5.0 or later - ' . $requirements);
+            throw new RuntimeException('JCE 3.0 requires Joomla 5.0 or later - ' . $requirements);
+        }
+        
+        // php version check
+        if (version_compare(PHP_VERSION, '8.0', 'lt')) {
+            throw new RuntimeException('JCE 3.0 requires PHP 8.0 or later - ' . $requirements);
         }
 
         // set current package version and variant
