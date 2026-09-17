@@ -17,14 +17,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Extension as ExtensionTable;
-use Joomla\Database\DatabaseAwareInterface;
-use Joomla\Database\DatabaseAwareTrait;
+use Joomla\Database\DatabaseInterface;
 
-
-class pkg_jceInstallerScript implements DatabaseAwareInterface
+class pkg_jceInstallerScript
 {
-	use DatabaseAwareTrait;
-
     /**
      * The current installed version
      * @var string
@@ -37,7 +33,12 @@ class pkg_jceInstallerScript implements DatabaseAwareInterface
      * @var string
      */
     private static $current_variant = 'core';
-    
+
+    private function getDatabase()
+    {
+        return Factory::getContainer()->get(DatabaseInterface::class);
+    }
+
     private function addIndexfiles($paths)
     {
         // get the base file
