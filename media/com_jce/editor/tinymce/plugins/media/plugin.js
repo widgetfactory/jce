@@ -630,28 +630,18 @@
         type = (type || '').toLowerCase();
 
         // Extension-based type groups
-        var audioExts = ['mp3', 'ogg', 'webm', 'wav', 'm4a', 'aiff'];
-        var videoExts = ['mp4', 'ogv', 'ogg', 'webm', 'mov', 'qt', 'mpg', 'mpeg', 'divx'];
+        var audioExts = ['mp3', 'ogg', 'oga', 'opus', 'webm', 'wav', 'm4a', 'aac', 'flac', 'aiff'];
+        var videoExts = ['mp4', 'm4v', 'ogv', 'ogg', 'webm', 'mov', 'qt', 'mpg', 'mpeg', 'divx'];
         var objectExts = ['swf', 'pdf'];
         var objectTypes = ['application/x-shockwave-flash', 'application/pdf'];
 
-        // Strict MIME-type match if provided
+        // a declared audio or video mime type decides the element, whatever the extension
         if (type.startsWith('audio/')) {
-            if (!audioExts.includes(ext)) {
-                return false;
-            }
-            if (isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
-                return 'audio';
-            }
+            return isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url) ? 'audio' : false;
         }
 
         if (type.startsWith('video/')) {
-            if (!videoExts.includes(ext)) {
-                return false;
-            }
-            if (isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
-                return 'video';
-            }
+            return isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url) ? 'video' : false;
         }
 
         // object types are matched on mime alone, as the url may have no file extension
