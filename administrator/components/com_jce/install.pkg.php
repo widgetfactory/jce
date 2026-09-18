@@ -259,6 +259,9 @@ class pkg_jceInstallerScript
             return true;
         }
 
+        // rename files before the package files are copied
+        $this->cleanupRenamedFiles();
+
         $extension = new ExtensionTable($this->getDatabase());
 
         // disable content, system and quickicon plugins. This is to prevent errors if the install fails and some core files are missing
@@ -636,6 +639,35 @@ class pkg_jceInstallerScript
                     File::delete($file);
                 } catch (Exception $e) {}
             }
+        }
+    }
+
+    /**
+     * Rename files whose name no longer matches the class they declare.
+     *
+     * Must run before the package files are copied. A case-insensitive filesystem is case
+     * preserving, so writing MediaHelper.php over an existing Mediahelper.php keeps the old
+     * name with the new content, and a cleanup after the copy cannot tell the two apart.
+     *
+     * These are renamed rather than deleted so the class stays loadable if the install does
+     * not complete. The old files already declare the new class name, so the rename alone is
+     * enough. Where both names exist the copy overwrites the result, so nothing is lost.
+     */
+    private function cleanupRenamedFiles()
+    {
+        $files = array(
+            JPATH_PLUGINS . '/fields/mediajce/src/Helper/Mediahelper.php' => 'MediaHelper.php',
+            JPATH_PLUGINS . '/system/jcepro/Wfe/Plugins/Editor/Templatemanager/Fields/Templates.php' => 'TemplatesField.php',
+            JPATH_PLUGINS . '/system/jcepro/Wfe/Plugins/Editor/Templatemanager/Fields/Code.php' => 'CodeField.php',
+        );
+
+        foreach ($files as $file => $name) {
+            if (!@is_file($file)) {
+                continue;
+            }
+
+            // leave the file in place if it cannot be renamed, it still loads on a case-insensitive filesystem
+            @rename($file, dirname($file) . '/' . $name);
         }
     }
 }
