@@ -351,7 +351,9 @@ class pkg_jceInstallerScript
         }
 
         // reset opcache so stale bytecode doesn't require files removed by the upgrade
-        $this->resetOpcache();
+        if ($route === 'update') {
+            $this->resetOpcache();
+        }
 
         // remove legacy jcefilebrowser quickicon plugin
         $plugins = [
