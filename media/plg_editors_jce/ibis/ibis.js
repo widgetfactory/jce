@@ -11849,6 +11849,13 @@
                   return;
               }
 
+              // iframe fallback content is never rendered, and markup in it makes the sanitizer remove the whole iframe
+              if (node.nodeName === 'IFRAME' && (node.firstElementChild || /<[\/\w!]/.test(node.textContent))) {
+                  while (node.firstChild) {
+                      node.removeChild(node.firstChild);
+                  }
+              }
+
               var rule = schema.getElementRule(tag);
 
               if (settings.validate && !rule) {
@@ -12600,7 +12607,8 @@
 
           body = Sanitizer.sanitize(body, mimeType);
 
-          return isSpecialRoot ? body.firstChild : body;
+          // the sanitizer may have removed the wrapper, so fall back to the empty body
+          return isSpecialRoot ? (body.firstChild || body) : body;
         }
 
         /**
