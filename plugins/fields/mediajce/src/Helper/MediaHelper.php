@@ -4,6 +4,7 @@ namespace Joomla\Plugin\Fields\MediaJce\Helper;
 final class MediaHelper {
     /**
      * An array of supported embed types and their mime types
+     * @var array An array of supported embed types and their mime types
      */
     private static $embedMimes = array(
         "doc"=> "application/msword",
@@ -33,6 +34,7 @@ final class MediaHelper {
 
     /**
      * An array of supported media layout types and their file extensions
+     * @var array An array of supported media layout types and their file extensions
      */
     private static $allowable = array(
         'image'     => 'jpg,jpeg,png,gif',
@@ -45,8 +47,8 @@ final class MediaHelper {
     /**
      * Get the embed type from the file extension
      *
-     * @param [string] $extension File extension
-     * @return Mime type or false
+     * @param string $extension File extension
+     * @return mixed Mime type or false
      */
     public static function getMimeType($extension) {
         if (array_key_exists($extension, self::$embedMimes)) {
@@ -58,8 +60,8 @@ final class MediaHelper {
     /**
      * Get the media layout from the file extension
      *
-     * @param [type] $extension File extension
-     * @return Layout type
+     * @param string $extension File extension
+     * @return string Layout type
      */
     public static function getLayoutFromExtension($extension) {
         $layout = 'link';
@@ -76,8 +78,8 @@ final class MediaHelper {
     /**
      * Determine whether the value is an image
      *
-     * @param [string] $value
-     * @return boolean
+     * @param string $value File path or URL of the media file
+     * @return boolean True if the file is an image, false otherwise
      */
     public static function isImage($value) {
         $extension = pathinfo($value, PATHINFO_EXTENSION);
