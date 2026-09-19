@@ -652,9 +652,17 @@ class pkg_jceInstallerScript
      * These are renamed rather than deleted so the class stays loadable if the install does
      * not complete. The old files already declare the new class name, so the rename alone is
      * enough. Where both names exist the copy overwrites the result, so nothing is lost.
+     *
+     * Only 3.0 shipped these names, so this can be removed once 3.1 is the oldest supported
+     * upgrade path.
      */
     private function cleanupRenamedFiles()
     {
+        // only 3.0 shipped these names, 2.x never had the files at all
+        if (version_compare(self::$current_version, '3.0', 'lt') || version_compare(self::$current_version, '3.1', 'ge')) {
+            return;
+        }
+
         $files = array(
             JPATH_PLUGINS . '/fields/mediajce/src/Helper/Mediahelper.php' => 'MediaHelper.php',
             JPATH_PLUGINS . '/system/jcepro/Wfe/Plugins/Editor/Templatemanager/Fields/Templates.php' => 'TemplatesField.php',
