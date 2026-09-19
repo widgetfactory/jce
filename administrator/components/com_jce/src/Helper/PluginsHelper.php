@@ -205,6 +205,11 @@ abstract class PluginsHelper
                             $attribs->url = 'media/plg_jce_' . $snake_case_name;
                         }
 
+                        // skip legacy plugins without a plugin.js file
+                        if (!is_file(JPATH_SITE . '/' . $attribs->url . '/plugin.js')) {
+                            continue;
+                        }
+
                         $attribs->type = 'plugin';
 
                         $plugins[$name] = $attribs;
