@@ -215,13 +215,20 @@ class PluginController extends BaseController
             $path = JPATH_PLUGINS . '/jce/' . $plugin;
             $filepath = $path . '/' . $plugin . '.php';
 
-            // Check for alternate PSR-4-style path
             if (is_dir($path . '/src')) {
                 $name = substr($plugin, 7);
-                $filepath = $path . '/src/' . ucfirst($name) . '.php';
 
-                // Update namespace
-                $namespace = 'Wfe\\Plugins\\Editor\\' . ucfirst($name) . '\\';
+                // Check for alternate path in src/. 2.9 used the lowercase name, so check
+                // both spellings - on a case-sensitive filesystem only one of them exists
+                foreach ([ucfirst($name), $name] as $file) {
+                    if (file_exists($path . '/src/' . $file . '.php')) {
+                        $filepath = $path . '/src/' . $file . '.php';
+
+                        // Update namespace
+                        $namespace = 'Wfe\\Plugins\\Editor\\' . ucfirst($name) . '\\';
+                        break;
+                    }
+                }
             }
 
             if (!file_exists($filepath)) {
