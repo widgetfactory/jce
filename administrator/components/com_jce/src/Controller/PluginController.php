@@ -179,24 +179,33 @@ class PluginController extends BaseController
             list($plugin, $caller) = explode('.', $plugin);
         }
 
-        // map plugin name to internal / legacy name
-        $mapped = $this->mapPluginName($plugin);
-
-        if ($mapped !== $plugin) {
-            // If the plugin name was mapped, update the input
-            if (!empty($caller)) {
-                $mapped = $mapped . '.' . $caller;
-            }
-
-            $this->input->set('plugin', $mapped);
-
-            $plugin = $mapped;
-        }
+        // map plugin name to internal / legacy name if any
+        $plugin = $this->mapPluginName($plugin);
 
         // check this is a valid plugin
         if (!$wf->isValidPlugin($plugin)) {
             throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
+
+        // map caller name to internal / legacy name if any
+        if ($caller) {
+            $caller = $this->mapPluginName($caller);
+
+            // check this is a valid caller
+            if (!$wf->isValidPlugin($caller)) {
+                throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+            }
+        }
+
+        // store the name before adding back
+        $pluginName = $plugin;
+
+        // update the input in case the plugin name or caller name was mapped
+        if (!empty($caller)) {
+            $pluginName = $pluginName . '.' . $caller;
+        }
+
+        $this->input->set('plugin', $pluginName);
 
         // check a valid profile exists
         if (!$wf->checkProfile($plugin)) {

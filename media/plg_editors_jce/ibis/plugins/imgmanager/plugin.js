@@ -180,7 +180,8 @@
                     picker_icon: 'image',
                     onpick: function () {
                         ed.execCommand('mceFileBrowser', true, {
-                            caller: 'imgmanager',
+                            // use the mapped name
+                            caller: 'image',
                             callback: function (selected, data) {
                                 if (data.length) {
                                     var src = data[0].url, title = data[0].title;

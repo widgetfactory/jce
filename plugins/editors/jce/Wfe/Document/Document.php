@@ -514,6 +514,21 @@ class Document
     }
     
     /**
+     * Map an internal plugin name to the name used in a query string
+     *
+     * @param string $name The internal plugin name
+     * @return string The query string name
+     */
+    private function mapQueryName($name)
+    {
+        if (isset(self::$queryMap[$name])) {
+            return self::$queryMap[$name];
+        }
+
+        return $name;
+    }
+
+    /**
      * Build a query string
      *
      * @param array $query The query parameters
@@ -525,11 +540,11 @@ class Document
 
         // get plugin name and assign to query
         if (!isset($query['plugin'])) {
-            $name = $this->getConfig('name');
+            $name = $this->mapQueryName($this->getConfig('name'));
             $caller = $this->getConfig('caller');
 
             if ($caller) {
-                $name .= '.' . $caller;
+                $name .= '.' . $this->mapQueryName($caller);
             }
 
             $query['plugin'] = $name;
