@@ -621,17 +621,18 @@
         return true;
     }
 
-    function isSupportedMedia(editor, url, type) {
+    function isSupportedMedia(editor, url, type, name) {
         url = url || '';
 
         // Remove query string from URL
         url = stripQuery(url);
         var ext = url.split('.').pop().toLowerCase();
         type = (type || '').toLowerCase();
+        name = (name || '').toLowerCase();
 
         // Extension-based type groups
         var audioExts = ['mp3', 'ogg', 'oga', 'opus', 'webm', 'wav', 'm4a', 'aac', 'flac', 'aiff'];
-        var videoExts = ['mp4', 'm4v', 'ogv', 'ogg', 'webm', 'mov', 'qt', 'mpg', 'mpeg', 'divx'];
+        var videoExts = ['mp4', 'm4v', 'ogg', 'ogv', 'webm', 'mov', 'qt', 'mpg', 'mpeg', 'divx'];
         var objectExts = ['swf', 'pdf'];
         var objectTypes = ['application/x-shockwave-flash', 'application/pdf'];
 
@@ -647,6 +648,15 @@
         // object types are matched on mime alone, as the url may have no file extension
         if (objectTypes.includes(type) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
             return 'object';
+        }
+
+        // some extensions, eg: ogg and webm, are valid for both audio and video, so keep the existing element
+        if (name === 'audio' && audioExts.includes(ext) && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
+            return 'audio';
+        }
+
+        if (name === 'video' && videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
+            return 'video';
         }
 
         // Fallback to extension if no usable MIME type
@@ -1535,7 +1545,7 @@
             }
 
             if (strict_embed) {
-                var newName = isSupportedMedia(editor, src, type);
+                var newName = isSupportedMedia(editor, src, type, node.name);
 
                 // not supported
                 if (!newName) {
