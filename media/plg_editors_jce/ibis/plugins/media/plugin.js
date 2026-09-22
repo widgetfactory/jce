@@ -651,12 +651,13 @@
         return true;
     }
 
-    function isSupportedMedia(editor, url, type) {
+    function isSupportedMedia(editor, url, type, name) {
         url = url || '';
 
         url = stripQuery(url);
         var ext = url.split('.').pop().toLowerCase();
         type = (type || '').toLowerCase();
+        name = (name || '').toLowerCase();
 
         var audioExts = ['mp3', 'ogg', 'oga', 'opus', 'webm', 'wav', 'm4a', 'aac', 'flac', 'aiff'];
         var videoExts = ['mp4', 'm4v', 'mov', 'ogv', 'ogg', 'webm', 'mpg', 'mpeg'];
@@ -675,6 +676,15 @@
         // object types are matched on mime alone, as the url may have no file extension
         if (objectTypes.includes(type) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
             return 'object';
+        }
+
+        // some extensions, eg: ogg and webm, are valid for both audio and video, so keep the existing element
+        if (name === 'audio' && audioExts.includes(ext) && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
+            return 'audio';
+        }
+
+        if (name === 'video' && videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
+            return 'video';
         }
 
         if (videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
@@ -1532,7 +1542,7 @@
             }
 
             if (strict_embed) {
-                var newName = isSupportedMedia(editor, src, type);
+                var newName = isSupportedMedia(editor, src, type, node.name);
 
                 if (!newName) {
                     node.remove();

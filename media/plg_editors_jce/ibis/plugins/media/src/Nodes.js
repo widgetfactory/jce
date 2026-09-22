@@ -821,7 +821,7 @@ var convertMediaToPlaceholder = function (editor, node) {
         }
 
         if (strict_embed) {
-            var newName = isSupportedMedia(editor, src, type);
+            var newName = isSupportedMedia(editor, src, type, node.name);
 
             if (!newName) {
                 node.remove();
