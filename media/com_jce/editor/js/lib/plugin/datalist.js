@@ -72,6 +72,9 @@
                     $item = $('<li class="uk-nav-header" tabindex="-1">' + option.text + '</li>');
                 } else {
                     $item = $('<li title="' + option.text + '" data-value="' + option.value + '" role="option"><a href="#" role="presentation">' + option.text + '</a></li>');
+
+                    // store the original option so a selected value is not added again as a new option
+                    options.push(option);
                 }
 
                 $.each(['style', 'class'], function (i, attr) {
@@ -127,6 +130,8 @@
                     $('option', select).each(function () {
                         if (this.value === data.value) {
                             data.text = $(this).attr('label') || $(this).text();
+                            // use the first match, as a duplicate option will not have a label
+                            return false;
                         }
                     });
                 }
