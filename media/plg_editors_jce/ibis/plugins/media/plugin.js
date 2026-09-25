@@ -505,7 +505,7 @@
             return;
         }
 
-        var provider = isSupportedMedia(editor, src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
+        var provider = isSupportedMedia(editor, src, '', node.name), defaultAttributes = getMediaProps(editor, { src: src }, provider);
 
         if (defaultAttributes.sandbox === false) {
             node.attr('sandbox', null);
@@ -664,6 +664,11 @@
         var objectExts = ['pdf'];
         var objectTypes = ['application/pdf'];
 
+        // an extension valid for both audio and video is decided by the existing element, not the declared mime type
+        if ((name === 'audio' || name === 'video') && audioExts.includes(ext) && videoExts.includes(ext)) {
+            return isValidElement(editor, name) && isSupportedUrl(editor, name, url) ? name : false;
+        }
+
         // a declared audio or video mime type decides the element, whatever the extension
         if (type.startsWith('audio/')) {
             return isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url) ? 'audio' : false;
@@ -676,15 +681,6 @@
         // object types are matched on mime alone, as the url may have no file extension
         if (objectTypes.includes(type) && isValidElement(editor, 'object') && isSupportedUrl(editor, 'object', url)) {
             return 'object';
-        }
-
-        // some extensions, eg: ogg and webm, are valid for both audio and video, so keep the existing element
-        if (name === 'audio' && audioExts.includes(ext) && isValidElement(editor, 'audio') && isSupportedUrl(editor, 'audio', url)) {
-            return 'audio';
-        }
-
-        if (name === 'video' && videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
-            return 'video';
         }
 
         if (videoExts.includes(ext) && isValidElement(editor, 'video') && isSupportedUrl(editor, 'video', url)) {
@@ -817,7 +813,8 @@
         var src = sourceNode.attr('src');
 
         if (src) {
-            var provider = isSupportedMedia(editor, src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
+            // the element name decides the type, as an existing element may use an extension valid for more than one
+            var provider = isSupportedMedia(editor, src, '', sourceNode.name), defaultAttributes = getMediaProps(editor, { src: src }, provider);
 
             each(defaultAttributes, function (val, name) {
                 if (!ibis.is(sourceNode.attr(name)) && !(name in boolAttrs)) {
