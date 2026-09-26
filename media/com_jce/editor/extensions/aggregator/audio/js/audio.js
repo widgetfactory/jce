@@ -77,7 +77,7 @@ WFAggregator.add('audio', {
         // remove any query string
         v = v.split('?')[0];
 
-        if (/\.(mp3|oga|webm|wav|m4a|aiff)$/.test(v)) {
+        if (/\.(mp3|ogg|oga|opus|webm|wav|m4a|aac|flac|aiff)$/.test(v)) {
             return 'audio';
         }
 
