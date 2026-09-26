@@ -51,6 +51,15 @@
                     }
                 }
             });
+
+            // reset to the default color when no color is set
+            if (!fc) {
+                updateColor('forecolor');
+            }
+
+            if (!bc) {
+                updateColor('backcolor');
+            }
         });
 
         this.createControl = function (n) {
@@ -88,13 +97,14 @@
             o.title = 'advanced.forecolor_desc';
 
             var applyColor = function (color) {
+                // match any color value, not just the one in the format definition
                 if (!color) {
-                    return ed.formatter.remove('forecolor');
+                    ed.formatter.remove('forecolor', { 'value': null }, null, true);
+                } else {
+                    ed.formatter.apply('forecolor', {
+                        'value': color
+                    });
                 }
-
-                ed.formatter.apply('forecolor', {
-                    'value': color
-                });
 
                 ed.undoManager.add();
                 ed.nodeChanged();
@@ -140,13 +150,14 @@
             o.title = 'advanced.backcolor_desc';
 
             var applyColor = function (color) {
+                // match any color value, not just the one in the format definition
                 if (!color) {
-                    return ed.formatter.remove('hilitecolor');
+                    ed.formatter.remove('hilitecolor', { 'value': null }, null, true);
+                } else {
+                    ed.formatter.apply('hilitecolor', {
+                        'value': color
+                    });
                 }
-
-                ed.formatter.apply('hilitecolor', {
-                    'value': color
-                });
 
                 ed.undoManager.add();
                 ed.nodeChanged();
