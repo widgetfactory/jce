@@ -39,6 +39,16 @@ class pkg_jceInstallerScript
         return Factory::getContainer()->get(DatabaseInterface::class);
     }
 
+    // the psr4 map is built at application boot, so it does not know the component namespace during its own installation
+    private function registerNamespace()
+    {
+        $path = JPATH_ADMINISTRATOR . '/components/com_jce/src';
+
+        if (is_dir($path)) {
+            \JLoader::registerNamespace('Joomla\\Component\\Jce\\Administrator', $path);
+        }
+    }
+
     private function addIndexfiles($paths)
     {
         // get the base file
@@ -60,7 +70,7 @@ class pkg_jceInstallerScript
 
     private function installProfiles()
     {
-        include_once JPATH_ADMINISTRATOR . '/components/com_jce/src/Helper/ProfilesHelper.php';
+        $this->registerNamespace();
 
         // publish the "Default" profile if successful
         if (\Joomla\Component\Jce\Administrator\Helper\ProfilesHelper::installProfiles()) {
@@ -343,6 +353,8 @@ class pkg_jceInstallerScript
 			return true;
 		}
         
+        $this->registerNamespace();
+
         $db = $this->getDatabase();
         $extension = new ExtensionTable($db);
         $parent = $installer->getParent();
