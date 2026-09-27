@@ -39,8 +39,6 @@
     var ImageManagerDialog = {
         settings: {},
         init: function () {
-            ibisPopup.restoreSelection();
-
             var ed = ibisPopup.editor,
                 n = ed.selection.getNode(),
                 self = this,
@@ -326,8 +324,6 @@
                 el, br = '';
 
             Wf.updateStyles();
-
-            ibisPopup.restoreSelection();
 
             // Fixes crash in Safari
             if (ibis.isWebKit) {

@@ -72,25 +72,12 @@ var ibisPopup = {
         return this.editor.getLang(name, defaultValue);
     },
 
-    // Execute a command on the parent editor, restoring selection first
+    // Execute a command on the parent editor
     execCommand: function (cmd, ui, val, args) {
         args = args || {};
         args.skip_focus = 1;
 
-        this.restoreSelection();
         return this.editor.execCommand(cmd, ui, val, args);
-    },
-
-    // Bookmark the current editor selection so it can be restored after focus leaves the editor
-    storeSelection: function () {
-        this.editor.windowManager.bookmark = ibisPopup.editor.selection.getBookmark(1);
-    },
-
-    // Restore a previously stored editor selection
-    restoreSelection: function () {
-        if (!this.isWindow) {
-            this.editor.selection.moveToBookmark(this.editor.windowManager.bookmark);
-        }
     },
 
     // Open the colour picker and write the chosen value back to the given element
@@ -113,7 +100,6 @@ var ibisPopup = {
 
     // Open the file browser and write the selected value back via the callback
     openBrowser: function (args) {
-        ibisPopup.restoreSelection();
         this.editor.execCallback('file_browser_callback', args, window);
     },
 
@@ -135,23 +121,12 @@ var ibisPopup = {
         }
     },
 
-    // Restore selection when a submit/button input is clicked
-    restoreSelectionOnClick: function (evt) {
-        var target = evt && evt.target;
-
-        if (target.nodeName == 'INPUT' && (target.type == 'submit' || target.type == 'button')) {
-            ibisPopup.restoreSelection();
-        }
-    },
-
     // Set up the document body, title, focus, and fire onInit listeners once the DOM is ready
     onDOMLoaded: function () {
         var editor = this.editor,
             title = document.title;
 
         document.body.style.display = '';
-
-        this.restoreSelection();
 
         if (!this.isWindow) {
             editor.windowManager.setTitle(window, title);

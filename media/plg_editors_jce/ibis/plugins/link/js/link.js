@@ -77,8 +77,6 @@
 
             var params = ed.getParam('link', {});
 
-            ibisPopup.restoreSelection();
-
             $('button#insert').on('click', function (e) {
                 self.insert();
                 e.preventDefault();
@@ -258,16 +256,6 @@
             if (api.isAnchor(anchorElm)) {
                 // select the anchor node so it is updated correctly
                 se.select(anchorElm);
-
-                // reset node in IE if the link is the first element
-                if (ibis.isIE) {
-                    var start = se.getStart(),
-                        end = se.getEnd();
-
-                    if (start === end && start.nodeName === "A") {
-                        anchorElm = start;
-                    }
-                }
 
                 // allow editing of File Manager text
                 if (api.hasFileSpan(anchorElm)) {
@@ -452,8 +440,6 @@
         },
 
         insert: function () {
-            ibisPopup.restoreSelection();
-
             var ed = ibisPopup.editor;
 
             if ($('#href').val() == '') {
@@ -479,8 +465,6 @@
             return this.checkPrefix($('#href'));
         },
         insertAndClose: function () {
-            ibisPopup.restoreSelection();
-
             var ed = ibisPopup.editor,
                 se = ed.selection,
                 node = se.getNode(),
@@ -528,8 +512,11 @@
 
             var txt = $('#text').val();
 
-            // no selection
-            if (se.isCollapsed()) {
+            // the link being edited, whether or not it is fully selected
+            var link = api.isAnchor(node) ? node : ed.dom.getParent(node, 'a[href]');
+
+            // no selection and no link to update
+            if (!link && se.isCollapsed()) {
                 ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" id="__mce_tmp">' + txt + '</a>', {
                     skip_undo: 1
                 });
@@ -541,8 +528,8 @@
                 // create link on selection or update existing link
             } else {
                 // update link
-                if (api.isAnchor(node)) {
-                    ed.dom.setAttribs(node, {
+                if (link) {
+                    ed.dom.setAttribs(link, {
                         'href': args.href,
                         'data-mce-tmp': '1'
                     });

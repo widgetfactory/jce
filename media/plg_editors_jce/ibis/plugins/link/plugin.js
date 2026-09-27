@@ -345,16 +345,6 @@
                             label = ed.getLang('update', 'Update');
                         }
 
-                        // reset node in IE if the link is the first element
-                        if (ibis.isIE) {
-                            var start = ed.selection.getStart(),
-                                end = ed.selection.getEnd();
-
-                            if (start === end && start.nodeName === "A") {
-                                anchorNode = start;
-                            }
-                        }
-
                         // allow editing of File Manager text
                         if (hasFileSpan(anchorNode)) {
                             state = true;
@@ -427,12 +417,6 @@
 
         // Register commands
         ed.addCommand('mceLink', function () {
-            var se = ed.selection, n = se.getNode();
-
-            if (n.nodeName == 'A' && !isAnchor(n)) {
-                se.select(n);
-            }
-
             ed.windowManager.open({
                 file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=link',
                 size: 'mce-modal-square-xlarge'
