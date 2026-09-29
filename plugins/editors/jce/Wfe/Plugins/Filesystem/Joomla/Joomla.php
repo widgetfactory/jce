@@ -1050,9 +1050,14 @@ class Joomla extends \Wfe\Adapter\Plugin\Filesystem\AbstractFilesystem
 
         $object_file = $event->getItem();
 
-        if (File::upload($src, $dest, false)) {
-            $result->state = true;
-            $result->path = $dest;
+        // run the Joomla safe file scan, with its content checks limited to the same file types as Utility::isSafeFile
+        try {
+            if (File::upload($src, $dest, false, false, Utility::getSafeFileOptions($dest))) {
+                $result->state = true;
+                $result->path = $dest;
+            }
+        } catch (\RuntimeException $e) {
+            $result->state = false;
         }
 
         $event = new Event('onWfFileSystemAfterUpload', array(

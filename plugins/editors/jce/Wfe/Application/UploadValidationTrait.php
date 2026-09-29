@@ -67,7 +67,8 @@ trait UploadValidationTrait
             throw new \InvalidArgumentException(Text::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
         }
 
-        if (!empty($upload['validate_mimetype'])) {
+        // validate mimetype, on unless explicitly disabled
+        if (!isset($upload['validate_mimetype']) || !empty($upload['validate_mimetype'])) {
             if (MimeType::check($file['name'], $file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
                 throw new \InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
