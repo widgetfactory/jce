@@ -1173,6 +1173,38 @@ abstract class WFUtility
     }
 
     /**
+     * Text-based file types that are scanned for PHP content.
+     *
+     * @var array
+     */
+    private static $textExtensions = array('svg', 'html', 'htm', 'xml', 'xhtml', 'txt');
+
+    /**
+     * Get the options for the Joomla safe file scan run by File::upload, limiting its
+     * PHP content checks to the same file types as isSafeFile.
+     *
+     * @param string $name The file name or path.
+     * @return array Options for Joomla\Filesystem\File::isSafeFile.
+     */
+    public static function getSafeFileOptions($name)
+    {
+        $extension = self::getExtension($name, true);
+
+        $options = array(
+            // archives are never extracted, and their compressed bytes can match an executable extension
+            'fobidden_ext_in_content' => false,
+        );
+
+        // binary files can contain <?php or __HALT_COMPILER() as coincidental byte sequences
+        if (!in_array($extension, self::$textExtensions, true)) {
+            $options['php_tag_in_content'] = false;
+            $options['phar_stub_in_content'] = false;
+        }
+
+        return $options;
+    }
+
+    /**
      * Defence-in-depth upload guard. The primary control is the extension allow-list;
      * this function adds secondary checks for known-dangerous content patterns and image validity.
      *
@@ -1200,9 +1232,7 @@ abstract class WFUtility
 
         // PHP content scan applies to text-based formats only. Binary formats (images, pdf, office
         // documents etc.) can contain <?php or __HALT_COMPILER() as coincidental byte sequences.
-        $textExtensions = ['svg', 'html', 'htm', 'xml', 'xhtml', 'txt'];
-
-        if (in_array($extension, $textExtensions, true)) {
+        if (in_array($extension, self::$textExtensions, true)) {
             $fp = @fopen($file['tmp_name'], 'r');
 
             if ($fp === false) {
@@ -1419,14 +1449,14 @@ abstract class WFUtility
         // category for readability; the checks below treat the list as flat.
         $executable = array(
             // PHP, covering every handler mapping seen in the wild
-            'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'pht', 'phtm', 'phtml', 'phps', 'phpt', 'phar', 'pgif',
+            'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'php8', 'php9', 'pht', 'phtm', 'phtml', 'phps', 'phpt', 'phar', 'pgif',
             // other server-side languages and script hosts
-            'asp', 'aspx', 'asa', 'asax', 'cer', 'jsp', 'jspx', 'cgi', 'pl', 'perl', 'py', 'java', 'go', 'js', 'jse',
+            'asp', 'aspx', 'asa', 'asax', 'cer', 'jsp', 'jspx', 'cgi', 'fcgi', 'pl', 'perl', 'py', 'java', 'jar', 'go', 'js', 'jse',
             'vb', 'vbe', 'vbs', 'wsc', 'wsf', 'wsh', 'sct', 'inc',
             // server-parsed pages / SSI
-            'shtml', 'shtm', 'stm',
+            'shtml', 'shtm', 'sht', 'stm',
             // native executables and libraries
-            'exe', 'dll', 'com', 'bat', 'cmd', 'scr', 'pif', 'cpl', 'msc', 'msp', 'mst', 'hta', 'chm', 'sys', 'vxd',
+            'exe', 'dll', 'com', 'bat', 'cmd', 'scr', 'pif', 'cpl', 'msc', 'msi', 'msp', 'mst', 'hta', 'chm', 'sys', 'vxd',
             'lib', 'shb', 'ade', 'adp', 'ins', 'isp', 'mde',
             // server configuration
             'htaccess', 'htpasswd', 'ini',

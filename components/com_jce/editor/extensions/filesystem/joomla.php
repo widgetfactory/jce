@@ -968,9 +968,14 @@ class WFJoomlaFileSystem extends WFFileSystem
         // trigger Joomla event before upload
         $app->triggerEvent('onContentBeforeSave', $vars);
 
-        if (File::upload($src, $dest)) {
-            $result->state = true;
-            $result->path = $dest;
+        // run the Joomla safe file scan, with its content checks limited to the same file types as WFUtility::isSafeFile
+        try {
+            if (File::upload($src, $dest, false, false, WFUtility::getSafeFileOptions($dest))) {
+                $result->state = true;
+                $result->path = $dest;
+            }
+        } catch (\RuntimeException $e) {
+            $result->state = false;
         }
 
         $app->triggerEvent('onWfFileSystemAfterUpload', array(&$result));
