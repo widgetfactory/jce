@@ -191,6 +191,14 @@ class pkg_jceInstallerScript
 
     public function uninstall()
     {
+        // no longer listed in a manifest, so remove it here
+        if (is_dir(JPATH_SITE . '/media/jce/icons')) {
+            try {
+                Folder::delete(JPATH_SITE . '/media/jce/icons');
+            } catch (Throwable $e) {
+            }
+        }
+
         $db = $this->getDatabase();
 
         if ($this->checkTable() === false) {
