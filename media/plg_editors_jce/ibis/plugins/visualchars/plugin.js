@@ -17,8 +17,8 @@
 
         function toggleVisualChars(state, o) {
 
-            var node, nodeList, i, body = o || ed.getBody(),
-                nodeValue, div;
+            var nodeList, i, body = o || ed.getBody(),
+                rng, caretNode, caretOffset, caret;
             var charMap, visualCharsRegExp;
 
             charMap = {
@@ -26,8 +26,55 @@
                 '\u00ad': 'shy'
             };
 
-            function wrapCharWithSpan(value) {
-                return '<span data-mce-bogus="1" class="mce-item-' + charMap[value] + '">' + value + '</span>';
+            function wrapTextNode(textNode, offset) {
+                var value = textNode.nodeValue, doc = textNode.ownerDocument, frag = doc.createDocumentFragment();
+                var last = 0, wrapped = false, pos = null, match, span;
+
+                function addText(start, end) {
+                    var text = doc.createTextNode(value.substring(start, end));
+
+                    frag.appendChild(text);
+
+                    if (offset >= start && offset <= end && !pos) {
+                        pos = { node: text, offset: offset - start };
+                    }
+                }
+
+                visualCharsRegExp.lastIndex = 0;
+
+                while ((match = visualCharsRegExp.exec(value))) {
+                    // skip the char directly before the caret, the browser may still normalize it to a space
+                    if (match.index === offset - 1) {
+                        continue;
+                    }
+
+                    if (match.index > last) {
+                        addText(last, match.index);
+                    }
+
+                    span = ed.dom.create('span', { 'data-mce-bogus': '1', 'class': 'mce-item-' + charMap[match[0]] }, match[0]);
+                    frag.appendChild(span);
+
+                    // caret at the start of a node that begins with a wrapped char
+                    if (offset === 0 && !pos) {
+                        pos = { before: span };
+                    }
+
+                    last = match.index + 1;
+                    wrapped = true;
+                }
+
+                if (!wrapped) {
+                    return null;
+                }
+
+                if (last < value.length) {
+                    addText(last, value.length);
+                }
+
+                textNode.parentNode.replaceChild(frag, textNode);
+
+                return pos;
             }
 
             function compileCharMapToRegExp() {
@@ -63,23 +110,42 @@
             if (state) {
                 nodeList = [];
                 ibis.walk(body, function (n) {
+                    visualCharsRegExp.lastIndex = 0;
+
                     if (isNode(n) && n.nodeValue && visualCharsRegExp.test(n.nodeValue)) {
                         nodeList.push(n);
                     }
                 }, 'childNodes');
 
+                // only track the caret when working on the live editor body
+                if (!o && ed.selection) {
+                    rng = ed.selection.getRng(true);
+
+                    if (rng && rng.collapsed && rng.startContainer.nodeType === 3) {
+                        caretNode = rng.startContainer;
+                        caretOffset = rng.startOffset;
+                    }
+                }
+
                 for (i = 0; i < nodeList.length; i++) {
-                    nodeValue = nodeList[i].nodeValue;
-                    nodeValue = ed.dom.encode(nodeValue);
-                    nodeValue = nodeValue.replace(visualCharsRegExp, wrapCharWithSpan);
+                    if (nodeList[i] === caretNode) {
+                        caret = wrapTextNode(nodeList[i], caretOffset);
+                    } else {
+                        wrapTextNode(nodeList[i], -1);
+                    }
+                }
 
-                    div = ed.dom.create('div', null, nodeValue);
+                if (caret) {
+                    rng = ed.dom.createRng();
 
-                    while ((node = div.lastChild)) {
-                        ed.dom.insertAfter(node, nodeList[i]);
+                    if (caret.before) {
+                        rng.setStartBefore(caret.before);
+                    } else {
+                        rng.setStart(caret.node, caret.offset);
                     }
 
-                    ed.dom.remove(nodeList[i]);
+                    rng.collapse(true);
+                    ed.selection.setRng(rng);
                 }
             } else {
                 nodeList = ed.dom.select(compileCharMapToCssSelector(), body);
@@ -132,7 +198,8 @@
 
         ed.onKeyUp.add(function (ed, e) {
             if (state) {
-                if (e.keyCode == 13) {
+                // on enter or space
+                if (e.keyCode == 13 || e.keyCode == 32) {
                     toggleVisualChars(state);
                 }
             }
