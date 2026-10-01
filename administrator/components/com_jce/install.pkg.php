@@ -687,6 +687,7 @@ class pkg_jceInstallerScript
             JPATH_PLUGINS . '/fields/mediajce/src/Helper/Mediahelper.php' => 'MediaHelper.php',
             JPATH_PLUGINS . '/system/jcepro/Wfe/Plugins/Editor/Templatemanager/Fields/Templates.php' => 'TemplatesField.php',
             JPATH_PLUGINS . '/system/jcepro/Wfe/Plugins/Editor/Templatemanager/Fields/Code.php' => 'CodeField.php',
+            JPATH_PLUGINS . '/system/jcepro/Wfe/Plugins/Editor/Templatemanager/layouts/form/field/Code.php' => 'code.php',
         );
 
         foreach ($files as $file => $name) {
