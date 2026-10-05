@@ -118,7 +118,7 @@
                 }, 'childNodes');
 
                 // only track the caret when working on the live editor body
-                if (!o && ed.selection) {
+                if (ed.selection && ed.getBody().contains(body)) {
                     rng = ed.selection.getRng(true);
 
                     if (rng && rng.collapsed && rng.startContainer.nodeType === 3) {
@@ -196,12 +196,74 @@
             }
         }, self);
 
-        ed.onKeyUp.add(function (ed, e) {
-            if (state) {
-                // on enter or space
-                if (e.keyCode == 13 || e.keyCode == 32) {
-                    toggleVisualChars(state);
+        // unwrap nbsp spans in the current block so the browser can normalize whitespace
+        function unwrapNbsp() {
+            var rng = ed.selection.getRng(true), start = rng.startContainer, caret = null, parents = [], span;
+            var block = ed.dom.getParent(start, ed.dom.isBlock) || ed.getBody();
+            var spans = ed.dom.select('span.mce-item-nbsp', block);
+
+            if (!spans.length) {
+                return;
+            }
+
+            // caret inside a span, track its text node as it is moved out
+            span = ed.dom.getParent(start, 'span.mce-item-nbsp');
+
+            if (span && rng.collapsed && span.firstChild) {
+                if (start === span) {
+                    caret = { node: span.firstChild, offset: rng.startOffset ? span.firstChild.nodeValue.length : 0 };
+                } else {
+                    caret = { node: start, offset: rng.startOffset };
                 }
+            }
+
+            ibis.each(spans, function (span) {
+                var parent = span.parentNode;
+
+                while (span.firstChild) {
+                    parent.insertBefore(span.firstChild, span);
+                }
+
+                parent.removeChild(span);
+
+                if (ibis.inArray(parents, parent) === -1) {
+                    parents.push(parent);
+                }
+            });
+
+            if (caret) {
+                rng = ed.dom.createRng();
+                rng.setStart(caret.node, caret.offset);
+                rng.collapse(true);
+                ed.selection.setRng(rng);
+            }
+
+            // merging text nodes updates the live selection range
+            ibis.each(parents, function (parent) {
+                parent.normalize();
+            });
+        }
+
+        ed.onKeyDown.add(function (ed, e) {
+            // space, backspace or delete
+            if (state && (e.keyCode == 32 || e.keyCode == 8 || e.keyCode == 46)) {
+                unwrapNbsp();
+            }
+        });
+
+        ed.onKeyUp.add(function (ed, e) {
+            if (!state) {
+                return;
+            }
+
+            // enter, the previous block may still have an unwrapped char
+            if (e.keyCode == 13) {
+                toggleVisualChars(state);
+            }
+
+            // space, backspace or delete only change the current block
+            if (e.keyCode == 32 || e.keyCode == 8 || e.keyCode == 46) {
+                toggleVisualChars(state, ed.dom.getParent(ed.selection.getNode(), ed.dom.isBlock) || ed.getBody());
             }
         });
 
