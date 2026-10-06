@@ -194,12 +194,17 @@ function init() {
                 dataToggle(e);
             }
     
+            let elm = e.target;
+
+            // the media field fires its bubbling change event on the custom element, not the input
+            if (elm.matches('joomla-field-media')) {
+                elm = elm.querySelector('input[name]') || elm;
+            }
+
             // only process submittable form elements
-            if (!e.target.matches('input[name],select[name],textarea[name]')) {
+            if (!elm.matches('input[name],select[name],textarea[name]')) {
                 return;
             }
-    
-            const elm = e.target;
     
             // Skip name values that are not submittable
             if (elm.name.indexOf('jform[config]') === -1) {
