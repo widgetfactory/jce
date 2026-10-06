@@ -25300,14 +25300,17 @@
         // create fragment to return
         var nodes = document.createDocumentFragment();
 
-        // clone each parent node, adding fragment
+        // wrap the fragment in each parent, innermost first
+        var wrapped = frag;
+
         each(elms, function (elm) {
           var n = dom.clone(elm);
 
-          n.appendChild(frag);
-
-          nodes.appendChild(n);
+          n.appendChild(wrapped);
+          wrapped = n;
         });
+
+        nodes.appendChild(wrapped);
 
         return nodes;
       },
