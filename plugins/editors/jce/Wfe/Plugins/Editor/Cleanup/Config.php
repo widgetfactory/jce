@@ -38,7 +38,7 @@ class Config
 
         // get verify html (default is true)
         $settings['verify_html'] = $wf->getParam('editor.verify_html', 1, 1, 'boolean', false);
-        
+
         // get sanitize html (default is true)
         $settings['sanitize_html'] = $wf->getParam('editor.sanitize_html', 1, 1, 'boolean', false);
 
@@ -54,21 +54,19 @@ class Config
         $settings['validate_styles'] = $wf->getParam('editor.validate_styles', 1, 1, 'boolean', false);
 
         // Get Extended elements
-        $settings['extended_valid_elements'] = $wf->getParam('editor.extended_elements', '', '');
+        $settings['extended_valid_elements'] = self::processValue($wf->getParam('editor.extended_elements', ''));
 
         // Configuration list of invalid elements as array
-        $settings['invalid_elements'] = explode(',', preg_replace('#\s+#', '', $wf->getParam('editor.invalid_elements', '', '')));
+        $settings['invalid_elements'] = self::processValue($wf->getParam('editor.invalid_elements', ''));
 
         // Add elements to invalid list (removed by plugin)
-        $settings['invalid_elements'] = array_unique(array_merge($settings['invalid_elements'], self::$invalid_elements));
+        $settings['invalid_elements'] = self::normalizeList(
+            array_merge($settings['invalid_elements'], self::$invalid_elements)
+        );
 
         // process extended_valid_elements
         if ($settings['extended_valid_elements']) {
-            $extended_elements =  $settings['extended_valid_elements'];
-
-            if (!is_array($extended_elements)) {
-                $extended_elements = explode(',', $extended_elements);
-            }
+            $extended_elements = $settings['extended_valid_elements'];
 
             $elements = array();
 
@@ -92,25 +90,18 @@ class Config
             }
 
             // restore settings to array
-            $settings['extended_valid_elements'] = implode(',', $extended_elements);
+            $settings['extended_valid_elements'] = $extended_elements;
 
             if (!empty($elements)) {
                 $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $elements);
             }
         }
 
-        // clean invalid_elements
-        $settings['invalid_elements'] = array_filter($settings['invalid_elements'], function ($value) {
-            return $value !== '';
-        });
+        // Final cleanup + reindex
+        $settings['invalid_elements'] = self::normalizeList($settings['invalid_elements']);
 
-        // remove it if it is the same as the default
-        if ($settings['invalid_elements'] === self::$invalid_elements) {
-            $settings['invalid_elements'] = array();
-        }
-
-        $settings['invalid_attributes'] = $wf->getParam('editor.invalid_attributes', 'dynsrc,lowsrc', 'dynsrc,lowsrc', 'string', true);
-        $settings['invalid_attribute_values'] = $wf->getParam('editor.invalid_attribute_values', '', '', 'string', true);
+        $settings['invalid_attributes'] = self::processValue($wf->getParam('editor.invalid_attributes', 'dynsrc,lowsrc'));
+        $settings['invalid_attribute_values'] = self::processValue($wf->getParam('editor.invalid_attribute_values'));
 
         $allow_script = $wf->getParam('editor.allow_javascript', 0, 0, 'boolean');
 
@@ -118,5 +109,57 @@ class Config
         if ($allow_script || (bool) $wf->getParam('editor.allow_event_attributes')) {
             $settings['allow_event_attributes'] = true;
         }
+    }
+
+    private static function normalizeList($values)
+    {
+        $values = array_map('trim', (array) $values);
+        $values = array_filter($values, 'strlen');      // removes '' and whitespace-only
+        $values = array_values(array_unique($values));  // reindex + unique
+        // optional, but helps stable comparisons:
+        // sort($values, SORT_STRING);
+
+        return $values;
+    }
+
+    /**
+     * Normalise a value or set of values into a flat array.
+     *
+     * Accepts a string, an array, or a mixed array containing delimited strings,
+     * and converts the input into a single, flattened array of trimmed values.
+     *
+     * Examples:
+     * - "one,two"               -> ["one", "two"]
+     * - ["one", "two"]          -> ["one", "two"]
+     * - ["one", "two,three"]    -> ["one", "two", "three"]
+     *
+     * Empty values are removed and all values are trimmed.
+     *
+     * @param  string|array  $values     A delimited string, an array of values,
+     *                                   or an array containing delimited strings.
+     * @param  string        $seperator  The value separator to split on.
+     *
+     * @return array                    A flat array of normalised values.
+     */
+    public static function processValue($values, $seperator = ',')
+    {
+        if (is_string($values)) {
+            $values = [$values];
+        }
+
+        if (!is_array($values)) {
+            return [];
+        }
+
+        $items = [];
+
+        foreach ($values as $value) {
+            // skip nested arrays / objects
+            if (is_scalar($value)) {
+                $items = array_merge($items, explode($seperator, (string) $value));
+            }
+        }
+
+        return array_values(array_filter(array_map('trim', $items), 'strlen'));
     }
 }
