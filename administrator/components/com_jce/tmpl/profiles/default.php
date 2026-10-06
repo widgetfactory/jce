@@ -68,7 +68,7 @@ if ($saveOrder) {
 							<?php echo Text::_('JGLOBAL_DESCRIPTION'); ?>
                         </th>
                         <th scope="col" class="w-5 d-none d-md-table-cell">
-                            <?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'extension_id', $listDirn, $listOrder); ?>
+                            <?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
                         </th>
                     </tr>
                 </thead>
@@ -81,7 +81,7 @@ if ($saveOrder) {
                     $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->get('id') || is_null($item->checked_out);
                     $canChange  = $canEdit && $canCheckin;
                     ?>
-                    <tr class="row<?php echo $i % 2; ?>">
+                    <tr class="row<?php echo $i % 2; ?>" data-draggable-group="0">
                         <td class="text-center">
                             <?php echo HTMLHelper::_('grid.id', $i, $item->id, false, 'cid', 'cb', $item->name); ?>
                         </td>

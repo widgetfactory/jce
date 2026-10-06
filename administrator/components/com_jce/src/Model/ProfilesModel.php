@@ -70,7 +70,7 @@ class ProfilesModel extends ListModel
      *
      * @throws  Exception
      */
-    protected function populateState($ordering = null, $direction = null)
+    protected function populateState($ordering = 'ordering', $direction = 'asc')
     {
         // Load the parameters.
         $params = ComponentHelper::getParams('com_jce');

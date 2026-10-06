@@ -70,6 +70,15 @@ class ProfilesController extends AdminController
         return parent::saveorder();
     }
 
+    public function saveOrderAjax()
+    {
+        $this->checkToken();
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::saveOrderAjax();
+    }
+
     public function reorder()
     {
         $this->checkToken();
