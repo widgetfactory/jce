@@ -48779,18 +48779,78 @@
       return false;
   }
 
+  function removeInternalAttributes(root) {
+      var nodes = root.querySelectorAll('*');
+      var i = nodes.length;
+
+      while (i--) {
+          var attributes = nodes[i].attributes;
+          var x = attributes.length;
+
+          while (x--) {
+              if (attributes[x].name.toLowerCase().indexOf('data-mce-') === 0) {
+                  nodes[i].removeAttribute(attributes[x].name);
+              }
+          }
+
+          // template content is a separate fragment that querySelectorAll does not reach
+          if (nodes[i].content && nodes[i].nodeName === 'TEMPLATE') {
+              removeInternalAttributes(nodes[i].content);
+          }
+      }
+  }
+
+  /**
+   * Remove data-mce-* attributes from content loaded off the element, before any plugin adds its own
+   * @param {String} content
+   */
+  function stripInternalAttributes(content) {
+      if (!/data-mce-/i.test(content)) {
+          return content;
+      }
+
+      // protect php from the dom round trip, where it would become a comment
+      var php = [];
+      var token = '__ibis_php_' + Math.random().toString(36).slice(2) + '_';
+
+      content = content.replace(/<\?(php)?[\s\S]*?\?>/gi, function (match) {
+          // the browser ends a <? comment at the first >, so php must not shield markup from the strip
+          if (/data-mce-/i.test(match)) {
+              return match;
+          }
+
+          php.push(match);
+          return token + (php.length - 1) + '__';
+      });
+
+      var inert = document.implementation.createHTMLDocument('');
+      var doc = inert.createElement('div');
+      doc.innerHTML = content;
+
+      removeInternalAttributes(doc);
+
+      content = doc.innerHTML;
+
+      if (php.length) {
+          // a token used as an attribute name is serialized with an empty value
+          content = content.replace(new RegExp(token + '(\\d+)__(="")?', 'g'), function (match, index) {
+              index = parseInt(index, 10);
+              return index < php.length ? php[index] : match;
+          });
+      }
+
+      return content;
+  }
+
   /**
    * @param {ibis/Editor} editor
    * @param {String} content
-   * @param {Boolean} stripInternal Remove data-mce-* attributes, for content loaded off the element
-   *                                only. Internal attributes are legitimate everywhere else, eg: an
-   *                                undo level restoring media placeholders.
    */
-  function processAttributes(editor, content, stripInternal) {
+  function processAttributes(editor, content) {
       var invalidAttribRules = editor.getParam('invalid_attributes', '');
       var invalidAttribValueRules = editor.getParam('invalid_attribute_values', '');
 
-      if (!stripInternal && !invalidAttribRules && !invalidAttribValueRules) {
+      if (!invalidAttribRules && !invalidAttribValueRules) {
           return content;
       }
 
@@ -48828,12 +48888,6 @@
 
               attrName = attr.name.toLowerCase();
               attrValue = node.getAttribute(attrName);
-
-              // remove all internal attributes
-              if (stripInternal && attrName.indexOf('data-mce-') === 0) {
-                  node.removeAttribute(attrName);
-                  continue;
-              }
 
               if (isInvalidAttribute(attrName, attrRules) ||
                   isInvalidAttributeValue(nodeName, attrName, attrValue, valueRules)) {
@@ -48878,6 +48932,13 @@
     var padding = createPadding(Node$1);
 
     ed.onPreInit.add(function () {
+      // registered after every plugin, so loaded content is stripped of the internal namespace before any plugin adds to it
+      ed.onBeforeSetContent.addToTop(function (ed, o) {
+        if (o.load) {
+          o.content = stripInternalAttributes(o.content);
+        }
+      });
+
       ed.serializer.addAttributeFilter('data-mce-caret', function (nodes) {
         var i = nodes.length;
 
@@ -48990,8 +49051,7 @@
       o.content = convertFromGeshi(o.content);
       o.content = padding.paddEmptyTags(o.content);
 
-      // only content loaded off the element may be stripped of the internal namespace
-      o.content = processAttributes(ed, o.content, !!o.load);
+      o.content = processAttributes(ed, o.content);
     });
 
     ed.onPostProcess.add(function (ed, o) {
