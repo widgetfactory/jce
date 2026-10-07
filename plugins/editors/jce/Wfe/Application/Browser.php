@@ -790,9 +790,6 @@ class Browser
             // get the first group
             $group_id = array_shift($groups);
 
-            // get the first group
-            $group_id = array_shift($groups);
-
             if (is_int($group_id)) {
                 // usergroup table
                 $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -2089,7 +2086,7 @@ class Browser
 
         // check for feature access
         if (!$this->checkFeature('upload')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $app = Factory::getApplication();
@@ -2261,7 +2258,7 @@ class Browser
 
         if ($filesystem->is_file($item)) {
             if ($this->checkFeature($action, 'file') === false) {
-                throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
             }
 
             $this->checkFileName($item, $error);
@@ -2270,7 +2267,7 @@ class Browser
             $path = Utility::mb_dirname($item);
         } elseif ($filesystem->is_dir($item)) {
             if ($this->checkFeature($action, 'folder') === false) {
-                throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
             }
 
             $path = $item;
@@ -2298,7 +2295,7 @@ class Browser
     {
         // check for feature access
         if (!$this->checkFeature('delete', 'folder') && !$this->checkFeature('delete', 'file')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $filesystem = $this->getFileSystem();
@@ -2341,7 +2338,7 @@ class Browser
     {
         // check for feature access
         if (!$this->checkFeature('rename', 'folder') && !$this->checkFeature('rename', 'file')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // the source is resolved below, after the destination name has been validated
@@ -2410,7 +2407,7 @@ class Browser
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $filesystem = $this->getFileSystem();
@@ -2509,7 +2506,7 @@ class Browser
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new \Exception(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         $filesystem = $this->getFileSystem();
