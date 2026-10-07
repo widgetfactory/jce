@@ -1,7 +1,7 @@
 import split from './src/utils/split';
 import { TAGS, PADDED_RX } from './src/constants';
 import createPadding from './src/filters/padding';
-import { processAttributes } from './src/filters/processAttributes';
+import { processAttributes, stripInternalAttributes } from './src/filters/processAttributes';
 import { convertFromGeshi, convertToGeshi } from './src/geshi';
 
 var each = tinymce.each;
@@ -15,6 +15,13 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
   var padding = createPadding(Node);
 
   ed.onPreInit.add(function () {
+    // registered after every plugin, so loaded content is stripped of the internal namespace before any plugin adds to it
+    ed.onBeforeSetContent.addToTop(function (ed, o) {
+      if (o.load) {
+        o.content = stripInternalAttributes(o.content);
+      }
+    });
+
     ed.serializer.addAttributeFilter('data-mce-caret', function (nodes) {
       var i = nodes.length;
 
@@ -131,8 +138,7 @@ tinymce.PluginManager.add('cleanup', function (ed, url) {
     o.content = convertFromGeshi(o.content);
     o.content = padding.paddEmptyTags(o.content);
 
-    // only content loaded off the element may be stripped of the internal namespace
-    o.content = processAttributes(ed, o.content, !!o.load);
+    o.content = processAttributes(ed, o.content);
   });
 
   ed.onPostProcess.add(function (ed, o) {
