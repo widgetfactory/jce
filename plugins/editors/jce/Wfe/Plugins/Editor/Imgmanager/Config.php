@@ -46,7 +46,8 @@ class Config
         }
 
         $config['attributes'] = $plugin->getDefaultAttributes();
-        $config['custom_classes'] = $plugin->getParam('custom_classes', []);
+        $custom_classes = (array) $plugin->getParam('custom_classes', []);
+        $config['custom_classes'] = array_values(array_filter($custom_classes));
 
         $settings['imgmanager'] = $config;
     }

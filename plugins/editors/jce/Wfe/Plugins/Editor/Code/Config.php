@@ -39,6 +39,7 @@ class Config
 
         if ($settings['code_allow_style']) {
             $remove[] = 'style';
+            $remove[] = 'link';
         }
 
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $remove);
