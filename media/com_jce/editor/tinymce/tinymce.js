@@ -35814,6 +35814,8 @@
         self.forceBlocks = new tinymce.ForceBlocks(self);
         self.enterKey = new tinymce.EnterKey(self);
         // internal with no external interface
+        self._normalizeSpace = new tinymce.NormalizeSpace(self);
+        // internal with no external interface
         self._nodeChangeDispatcher = new tinymce.NodeChange(self);
         self.editorCommands = new tinymce.EditorCommands(self);
         // internal with no external interface
@@ -45807,6 +45809,140 @@
   })(tinymce);
 
   /**
+   * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+   *
+   * Licensed under the GNU General Public License version 2 or later (GPL v2+):
+   * https://www.gnu.org/licenses/gpl-2.0.html
+   */
+
+
+  (function (tinymce) {
+    var TreeWalker = tinymce.dom.TreeWalker;
+
+    /**
+     * Replaces an nbsp inserted by the browser for a typed space with a normal space when it sits between two non-whitespace chars.
+     */
+    tinymce.NormalizeSpace = function (editor) {
+      var dom = editor.dom, selection = editor.selection, pending = null;
+
+      function isWhiteSpace(chr) {
+        return /[\s ]/.test(chr);
+      }
+
+      // stop at blocks, br, embedded content and non-editable content
+      function isBoundary(node) {
+        if (dom.getContentEditableParent(node.nodeType === 3 ? node.parentNode : node) === 'false') {
+          return true;
+        }
+
+        return node.nodeType === 1 && (dom.isBlock(node) || /^(BR|IMG|HR|INPUT|SELECT|TEXTAREA|IFRAME|VIDEO|AUDIO|OBJECT|EMBED|SVG)$/i.test(node.nodeName));
+      }
+
+      // nearest char before or after a text position, through inline elements within the block
+      function adjacentChar(textNode, offset, forward) {
+        var value, block, walker, node, chr;
+
+        chr = forward ? textNode.nodeValue.substring(offset).replace(/​/g, '').charAt(0) : textNode.nodeValue.substring(0, offset).replace(/​/g, '').slice(-1);
+
+        if (chr) {
+          return chr;
+        }
+
+        block = dom.getParent(textNode, dom.isBlock) || editor.getBody();
+        walker = new TreeWalker(textNode, block);
+
+        while ((node = forward ? walker.next() : walker.prev2())) {
+          if (isBoundary(node)) {
+            return null;
+          }
+
+          if (node.nodeType === 3) {
+            value = node.nodeValue.replace(/​/g, '');
+
+            if (value) {
+              return forward ? value.charAt(0) : value.charAt(value.length - 1);
+            }
+          }
+        }
+
+        return null;
+      }
+
+      // returns false if there is no following char yet so the check can be repeated
+      function normalize(textNode, index) {
+        var before, after, rng, container, offset;
+
+        if (!textNode.parentNode || textNode.nodeValue.charAt(index) !== ' ') {
+          return true;
+        }
+
+        after = adjacentChar(textNode, index + 1, true);
+
+        if (after === null) {
+          return false;
+        }
+
+        before = adjacentChar(textNode, index, false);
+
+        if (!before || isWhiteSpace(before) || isWhiteSpace(after)) {
+          return true;
+        }
+
+        rng = selection.getRng(true);
+        container = rng.startContainer;
+        offset = rng.startOffset;
+
+        textNode.replaceData(index, 1, ' ');
+
+        // replaceData moves a caret inside the replaced range, length is unchanged so restore it
+        if (container === textNode) {
+          rng = dom.createRng();
+          rng.setStart(container, offset);
+          rng.collapse(true);
+          selection.setRng(rng);
+        }
+
+        return true;
+      }
+
+      if (!editor.getParam('normalize_space', true)) {
+        return;
+      }
+
+      editor.onKeyDown.add(function (ed, e) {
+        // plain space only, not modified space (nbsp shortcut) or IME composition
+        if (e.keyCode === 32 && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && !e.isComposing) {
+          pending = { space: true };
+        }
+      });
+
+      editor.onKeyUp.add(function (ed, e) {
+        var rng = selection.getRng(true), node = rng.startContainer, offset = rng.startOffset, current = pending;
+
+        pending = null;
+
+        if (!current || !rng.collapsed || node.nodeType !== 3) {
+          return;
+        }
+
+        // space just typed, the nbsp is directly before the caret
+        if (current.space) {
+          if (!normalize(node, offset - 1)) {
+            pending = { node: node, index: offset - 1 };
+          }
+
+          return;
+        }
+
+        // next char typed after a space that had nothing following it
+        if (current.node === node && offset === current.index + 2) {
+          normalize(node, current.index);
+        }
+      });
+    };
+  })(tinymce);
+
+  /**
    * Copyright (c) Moxiecode Systems AB. All rights reserved.
    * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
    * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
@@ -48203,6 +48339,21 @@
           return editor.schema.isValid(tag, attr);
       }
 
+      var urlAttributes = ['href', 'src', 'xlink:href', 'action', 'formaction', 'poster', 'data'];
+
+      /**
+       * Check for a script url, ignoring the whitespace and control characters browsers skip
+       * @param {String} name
+       * @param {String} value
+       */
+      function isScriptUrl(name, value) {
+          if (urlAttributes.indexOf(name.toLowerCase()) === -1) {
+              return false;
+          }
+
+          return /^(javascript|vbscript|data(?!:image\/)):/i.test(String(value).replace(/[\s\u0000-\u001f]+/g, ''));
+      }
+
       /**
        * Recursively sanitize a DOM node to a string, filtering invalid tags/attributes and event handlers.
        * @param {Object} editor
@@ -48238,6 +48389,10 @@
                           continue;
                       }
 
+                      if (!editor.settings.allow_script_urls && isScriptUrl(name, value)) {
+                          continue;
+                      }
+
                       if (getState(editor).booleanAttributes[name]) {
                           if (value === '' || value === 'true' || value === name) {
                               html.push(' ', name);
@@ -48258,7 +48413,7 @@
                       html.push('>');
 
                       for (let child of Array.from(node.childNodes)) {
-                          html.push(sanitizeNode(editor, child));
+                          html.push(sanitizeNode(editor, child, raw));
                       }
 
                       html.push('</', tagName, '>');
@@ -48269,7 +48424,7 @@
 
               case 3: {
                   var text = node.nodeValue;
-                  text = text ;
+                  text = raw ? text : editor.dom.encode(text, true);
                   html.push(text);
                   break;
               }
@@ -48302,7 +48457,8 @@
               return null;
           }
 
-          return sanitizeNode(editor, doc.documentElement);
+          // text is encoded, otherwise an entity such as &lt;img&gt; becomes markup
+          return sanitizeNode(editor, doc.documentElement, false);
       }
 
       /**
@@ -48472,8 +48628,8 @@
        * @param {String} value
        * @param {Node} node
        */
-      function processOnInsert(editor, value, _node) {
-          if (/\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
+      function processOnInsert(editor, value, _node, skipShortcode) {
+          if (!skipShortcode && /\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
               var tagName;
               value = processShortcode(editor, value, tagName);
           }
@@ -48518,7 +48674,8 @@
           processOnInsert,
           processShortcode,
           processPhp,
-          processXML
+          processXML,
+          validateXml
       };
 
       const each = tinymce.each,
@@ -48571,6 +48728,24 @@
 
               if (editor.getParam('code_allow_' + type)) {
                   return true;
+              }
+
+              return false;
+          }
+
+          // the data-mce-code marker can be forged, so a block is only output as code when its type is allowed
+          function isAllowedCode(type) {
+              switch (type) {
+                  case 'shortcode':
+                      return !!editor.settings.code_protect_shortcode;
+                  case 'php':
+                  case 'script':
+                  case 'style':
+                      return canKeepCode(type);
+                  case 'link':
+                      return canKeepCode('style');
+                  case 'xml':
+                      return canKeepCode('custom_xml');
               }
 
               return false;
@@ -49033,6 +49208,17 @@
 
                       var type = node.attr(name);
 
+                      if (!isAllowedCode(type)) {
+                          // a placeholder holds raw code, so it cannot be kept
+                          if (node.name === 'img' || node.isEmpty()) {
+                              node.remove();
+                          } else {
+                              node.attr(name, null);
+                          }
+
+                          continue;
+                      }
+
                       if (node.name === 'img') {
                           var elm = new Node(type, 1);
 
@@ -49071,8 +49257,24 @@
                           continue;
                       }
 
-                      // skip xml
+                      // validate xml again, as the block may not have come through processXML
                       if (type === 'xml') {
+                          if (editor.settings.code_validate_xml !== false) {
+                              var xml = '';
+
+                              for (child = node.firstChild; child; child = child.next) {
+                                  xml += child.name === 'br' ? '\n' : (child.value || '');
+                              }
+
+                              var validated = Process.validateXml(editor, xml);
+
+                              if (validated === null) {
+                                  node.attr(name, null);
+                              } else {
+                                  node.empty().append(Content.createTextNode(validated, false));
+                              }
+                          }
+
                           continue;
                       }
 
@@ -49221,10 +49423,37 @@
               }
           });
 
+          // code copied as text, eg: from a code editor, is inserted as code blocks
+          editor.onPaste.addToTop(function (ed, e) {
+              var clipboardData = e.clipboardData;
+
+              if (!clipboardData) {
+                  return;
+              }
+
+              var text = tinymce.trim(clipboardData.getData('text/plain') || '');
+              var node = ed.selection.getNode();
+
+              // don't process into PRE tags
+              if (!text || (node && node.nodeName === 'PRE')) {
+                  return;
+              }
+
+              // shortcodes alone are left to the html paste, which processes them on insert
+              var value = Process.processOnInsert(ed, text, node, true);
+
+              if (value !== text) {
+                  e.preventDefault();
+                  ed.execCommand('mceInsertContent', false, value);
+              }
+          });
+
           editor.onPostProcess.add(function (ed, o) {
               if (o.get) {
-                  // Process converted php
-                  if (/(data-mce-php|__php_start__)/.test(o.content)) {
+                  // php markers can be forged, so they are only converted where php is allowed
+                  if (!canKeepCode('php')) {
+                      o.content = o.content.replace(/\sdata-mce-php="[^"]*"/g, '');
+                  } else if (/(data-mce-php|__php_start__)/.test(o.content)) {
                       // attribute value
                       o.content = o.content.replace(/({source})?__php_start__(.*?)__php_end__/g, function (match, pre, code) {
                           return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';

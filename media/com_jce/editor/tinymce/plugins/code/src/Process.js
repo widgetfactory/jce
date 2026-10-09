@@ -82,6 +82,21 @@ function isValid(editor, tag, attr) {
     return editor.schema.isValid(tag, attr);
 }
 
+var urlAttributes = ['href', 'src', 'xlink:href', 'action', 'formaction', 'poster', 'data'];
+
+/**
+ * Check for a script url, ignoring the whitespace and control characters browsers skip
+ * @param {String} name
+ * @param {String} value
+ */
+function isScriptUrl(name, value) {
+    if (urlAttributes.indexOf(name.toLowerCase()) === -1) {
+        return false;
+    }
+
+    return /^(javascript|vbscript|data(?!:image\/)):/i.test(String(value).replace(/[\s\u0000-\u001f]+/g, ''));
+}
+
 /**
  * Recursively sanitize a DOM node to a string, filtering invalid tags/attributes and event handlers.
  * @param {Object} editor
@@ -114,6 +129,10 @@ function sanitizeNode(editor, node, raw) {
                 }
 
                 if (!editor.settings.allow_event_attributes && name.startsWith('on')) {
+                    continue;
+                }
+
+                if (!editor.settings.allow_script_urls && isScriptUrl(name, value)) {
                     continue;
                 }
 
@@ -181,7 +200,8 @@ function validateXml(editor, xml) {
         return null;
     }
 
-    return sanitizeNode(editor, doc.documentElement, true);
+    // text is encoded, otherwise an entity such as &lt;img&gt; becomes markup
+    return sanitizeNode(editor, doc.documentElement, false);
 }
 
 /**
@@ -351,8 +371,8 @@ function processPhp(editor, content) {
  * @param {String} value
  * @param {Node} node
  */
-function processOnInsert(editor, value, _node) {
-    if (/\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
+function processOnInsert(editor, value, _node, skipShortcode) {
+    if (!skipShortcode && /\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
         var tagName;
         value = processShortcode(editor, value, tagName);
     }
@@ -397,5 +417,6 @@ export default {
     processOnInsert,
     processShortcode,
     processPhp,
-    processXML
+    processXML,
+    validateXml
 };
