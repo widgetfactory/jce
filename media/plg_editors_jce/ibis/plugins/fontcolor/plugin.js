@@ -16,20 +16,20 @@
 
     ibis.PluginManager.add('fontcolor', function (ed, url) {
 
-        ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
-            var c;
+        function updateColor(controlId, color) {
+            var c = ed.controlManager.get(controlId);
 
-            function updateColor(controlId, color) {
-                if ((c = cm.get(controlId))) {
-                    if (!color) {
-                        color = c.settings.default_color;
-                    }
-                    if (color !== c.value) {
-                        c.displayColor(color);
-                    }
+            if (c) {
+                if (!color) {
+                    color = c.settings.default_color;
+                }
+                if (color !== c.value) {
+                    c.displayColor(color);
                 }
             }
+        }
 
+        ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
             var fc, bc;
 
             each(o.parents, function (n) {
@@ -51,15 +51,6 @@
                     }
                 }
             });
-
-            // reset to the default color when no color is set
-            if (!fc) {
-                updateColor('forecolor');
-            }
-
-            if (!bc) {
-                updateColor('backcolor');
-            }
         });
 
         this.createControl = function (n) {
@@ -100,8 +91,10 @@
                 // match any color value, not just the one in the format definition
                 if (!color) {
                     ed.formatter.remove('forecolor', { 'value': null }, null, true);
+                    // reset to the default color
+                    updateColor('forecolor');
                 } else {
-                    ed.formatter.apply('forecolor', {
+                    ed.formatter.toggle('forecolor', {
                         'value': color
                     });
                 }
@@ -153,8 +146,10 @@
                 // match any color value, not just the one in the format definition
                 if (!color) {
                     ed.formatter.remove('hilitecolor', { 'value': null }, null, true);
+                    // reset to the default color
+                    updateColor('backcolor');
                 } else {
-                    ed.formatter.apply('hilitecolor', {
+                    ed.formatter.toggle('hilitecolor', {
                         'value': color
                     });
                 }
