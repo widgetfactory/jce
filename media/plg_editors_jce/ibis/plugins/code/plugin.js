@@ -150,6 +150,21 @@
         return editor.schema.isValid(tag, attr);
     }
 
+    var urlAttributes = ['href', 'src', 'xlink:href', 'action', 'formaction', 'poster', 'data'];
+
+    /**
+     * Check for a script url, ignoring the whitespace and control characters browsers skip
+     * @param {String} name
+     * @param {String} value
+     */
+    function isScriptUrl(name, value) {
+        if (urlAttributes.indexOf(name.toLowerCase()) === -1) {
+            return false;
+        }
+
+        return /^(javascript|vbscript|data(?!:image\/)):/i.test(String(value).replace(/[\s\u0000-\u001f]+/g, ''));
+    }
+
     /**
      * Recursively sanitize a DOM node to a string, filtering invalid tags/attributes and event handlers.
      * @param {Object} editor
@@ -185,6 +200,10 @@
                         continue;
                     }
 
+                    if (!editor.settings.allow_script_urls && isScriptUrl(name, value)) {
+                        continue;
+                    }
+
                     if (getState(editor).booleanAttributes[name]) {
                         if (value === '' || value === 'true' || value === name) {
                             html.push(' ', name);
@@ -216,7 +235,7 @@
 
             case 3: {
                 var text = node.nodeValue;
-                text = text ;
+                text = editor.dom.encode(text, true);
                 html.push(text);
                 break;
             }
@@ -249,6 +268,7 @@
             return null;
         }
 
+        // text is encoded, otherwise an entity such as &lt;img&gt; becomes markup
         return sanitizeNode(editor, doc.documentElement);
     }
 
@@ -419,8 +439,8 @@
      * @param {String} value
      * @param {Node} node
      */
-    function processOnInsert(editor, value, _node) {
-        if (/\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
+    function processOnInsert(editor, value, _node, skipShortcode) {
+        if (!skipShortcode && /\{.+\}/gi.test(value) && editor.settings.code_protect_shortcode) {
             var tagName;
             value = processShortcode(editor, value, tagName);
         }
@@ -465,7 +485,8 @@
         processOnInsert,
         processShortcode,
         processPhp,
-        processXML
+        processXML,
+        validateXml
     };
 
     const each = ibis.each,
@@ -518,6 +539,24 @@
 
             if (editor.getParam('code_allow_' + type)) {
                 return true;
+            }
+
+            return false;
+        }
+
+        // a block is only output as code when its type is allowed
+        function isAllowedCode(type) {
+            switch (type) {
+                case 'shortcode':
+                    return !!editor.settings.code_protect_shortcode;
+                case 'php':
+                case 'script':
+                case 'style':
+                    return canKeepCode(type);
+                case 'link':
+                    return canKeepCode('style');
+                case 'xml':
+                    return canKeepCode('custom_xml');
             }
 
             return false;
@@ -980,6 +1019,17 @@
 
                     var type = node.attr(name);
 
+                    if (!isAllowedCode(type)) {
+                        // a placeholder holds raw code, so it cannot be kept
+                        if (node.name === 'img' || node.isEmpty()) {
+                            node.remove();
+                        } else {
+                            node.attr(name, null);
+                        }
+
+                        continue;
+                    }
+
                     if (node.name === 'img') {
                         var elm = new Node(type, 1);
 
@@ -1018,8 +1068,24 @@
                         continue;
                     }
 
-                    // skip xml
+                    // validate xml again
                     if (type === 'xml') {
+                        if (editor.settings.code_validate_xml !== false) {
+                            var xml = '';
+
+                            for (child = node.firstChild; child; child = child.next) {
+                                xml += child.name === 'br' ? '\n' : (child.value || '');
+                            }
+
+                            var validated = Process.validateXml(editor, xml);
+
+                            if (validated === null) {
+                                node.attr(name, null);
+                            } else {
+                                node.empty().append(Content.createTextNode(validated, false));
+                            }
+                        }
+
                         continue;
                     }
 
@@ -1168,10 +1234,37 @@
             }
         });
 
+        // code copied as text, eg: from a code editor, is inserted as code blocks
+        editor.onPaste.addToTop(function (ed, e) {
+            var clipboardData = e.clipboardData;
+
+            if (!clipboardData) {
+                return;
+            }
+
+            var text = ibis.trim(clipboardData.getData('text/plain') || '');
+            var node = ed.selection.getNode();
+
+            // don't process into PRE tags
+            if (!text || (node && node.nodeName === 'PRE')) {
+                return;
+            }
+
+            // shortcodes alone are left to the html paste, which processes them on insert
+            var value = Process.processOnInsert(ed, text, node, true);
+
+            if (value !== text) {
+                e.preventDefault();
+                ed.execCommand('mceInsertContent', false, value);
+            }
+        });
+
         editor.onPostProcess.add(function (ed, o) {
             if (o.get) {
-                // Process converted php
-                if (/(data-mce-php|__php_start__)/.test(o.content)) {
+                // only convert when php is allowed
+                if (!canKeepCode('php')) {
+                    o.content = o.content.replace(/\sdata-mce-php="[^"]*"/g, '');
+                } else if (/(data-mce-php|__php_start__)/.test(o.content)) {
                     // attribute value
                     o.content = o.content.replace(/({source})?__php_start__(.*?)__php_end__/g, function (match, pre, code) {
                         return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
