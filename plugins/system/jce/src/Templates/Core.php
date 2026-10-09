@@ -21,34 +21,54 @@ class Core extends CMSPlugin implements SubscriberInterface
             'onWfGetTemplateStylesheets' => 'onWfGetTemplateStylesheets'
         ];
     }
-    
+
+    private function findFile($template, $name)
+    {
+        // search for file using Path
+        $file = Path::find(array(
+            JPATH_SITE . '/templates/' . $template . '/css',
+            JPATH_SITE . '/media/templates/site/' . $template . '/css'
+        ), $name);
+
+        if (!$file) {
+            return false;
+        }
+
+        // make relative
+        $file = str_replace(JPATH_SITE, '', $file);
+
+        // remove leading slash
+        return trim($file, '/');
+    }
+
     public function onWfGetTemplateStylesheets(Event $event) : void
-    {                        
+    {
         $files = $event->getArgument('files');
         $template = $event->getArgument('template');
-        
+
         // already processed by a framework
         if (!empty($files)) {
             return;
         }
 
-        // search for template.css file using JPath
-        $file = Path::find(array(
-            JPATH_SITE . '/templates/' . $template->name . '/css',
-            JPATH_SITE . '/media/templates/site/' . $template->name . '/css'
-        ), 'template.css');
-                
-        if (!$file) {
-            return;
+        // parent template stylesheets, eg: child template of cassiopeia
+        if (!empty($template->parent)) {
+            foreach (array('template.css', 'user.css') as $name) {
+                $file = $this->findFile($template->parent, $name);
+
+                if ($file) {
+                    $files[] = $file;
+                }
+            }
         }
 
-        // make relative
-        $file = str_replace(JPATH_SITE, '', $file);
-        
-        // remove leading slash
-        $file = trim($file, '/');
+        foreach (array('template.css', 'user.css') as $name) {
+            $file = $this->findFile($template->name, $name);
 
-        $files[] = $file;
+            if ($file) {
+                $files[] = $file;
+            }
+        }
 
         $event->setArgument('files', $files);
     }
