@@ -348,13 +348,14 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
      * Process search.
      *
      * @param  string $query Search query
+     * @param  object|array|null $options Search options, eg: searchphrase, ordering, areas
      * @return array  Search Results
      *
      * This method uses portions of SearchController::search from components/com_search/controller.php
      *
      * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved
      */
-    public function doSearch($query)
+    public function doSearch($query, $options = null)
     {
         $results = array();
 
@@ -370,10 +371,13 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
 
         // query using a specific plugin
         if (strpos($query, ':') !== false) {
-            preg_match('#^(' . implode('|', $areas) . ')\:(.+)#', $query, $matches);
+            preg_match('#^(' . implode('|', array_map(function ($value) {
+                return preg_quote((string) $value, '#');
+            }, $areas)) . ')\:(.+)#', $query, $matches);
 
             if ($matches) {
-                $area = array($matches[1]);
+                $key = array_search($matches[1], $areas);
+                $area = array($key !== false ? $key : $matches[1]);
                 $query = $matches[2];
             }
         }
@@ -395,13 +399,29 @@ class LinkAdapter extends \Wfe\Adapter\AbstractAdapter
             $searchphrase = 'exact';
         }
 
-        $searchphrase = $app->input->post->getWord('searchphrase', $searchphrase);
+        $options = (array) $options;
 
-        // get passed through ordering
-        $ordering = $app->input->post->getWord('ordering', $ordering);
+        // a quoted query is always an exact match
+        if ($searchphrase !== 'exact' && isset($options['searchphrase']) && in_array($options['searchphrase'], ['all', 'any', 'exact'], true)) {
+            $searchphrase = $options['searchphrase'];
+        }
 
-        // get passed through area
-        $area = $app->input->post->getCmd('areas', (array) $area);
+        if (isset($options['ordering']) && in_array($options['ordering'], ['newest', 'oldest', 'popular', 'alpha', 'category'], true)) {
+            $ordering = $options['ordering'];
+        }
+
+        // selected areas, limited to the available areas
+        if (!empty($options['areas'])) {
+            $selected = array_map(function ($value) use ($filter) {
+                return $filter->clean((string) $value, 'cmd');
+            }, array_filter((array) $options['areas'], 'is_scalar'));
+
+            $selected = array_values(array_intersect($selected, array_map('strval', array_keys($areas))));
+
+            if (!empty($selected)) {
+                $area = $selected;
+            }
+        }
 
         if (empty($area)) {
             $area = null;

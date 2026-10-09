@@ -58,6 +58,8 @@
 
 #search-options {
     top: 2.5em;
+    z-index: 10000;
+    border: 1px solid #ddd;
 }
 
 #search-options .controls {
@@ -93,6 +95,8 @@
     overflow: auto;
     overflow-x: hidden;
     margin: 2px 0;
+
+    border: 1px solid #ddd;
 }
 
 #search-result dl {

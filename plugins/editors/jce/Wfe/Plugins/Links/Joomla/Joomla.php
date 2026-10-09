@@ -14,11 +14,15 @@ namespace Wfe\Plugins\Links;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
 
 class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
 {
     protected $providers = array();
+
+    protected $searchProviders = null;
 
     public function __construct($options = array())
     {
@@ -49,6 +53,91 @@ class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
                 $this->providers[$name] = new $classname($this);
             }
         }
+    }
+
+    /**
+     * Load the search providers, core and legacy "search" plugins, from the profile.
+     *
+     * @return array
+     */
+    protected function getSearchProviders()
+    {
+        if (is_array($this->searchProviders)) {
+            return $this->searchProviders;
+        }
+
+        $this->searchProviders = array();
+
+        $names = $this->getParam('links.joomla.search.providers');
+
+        // check legacy parameter
+        if (empty($names)) {
+            $names = $this->getParam('search.link.plugins');
+        }
+
+        if (empty($names)) {
+            $names = ['categories', 'contacts', 'content', 'weblinks', 'tags'];
+        }
+
+        if (is_string($names)) {
+            $names = explode(',', $names);
+        }
+
+        // core search providers
+        $core = [
+            'categories'    => 'Categories',
+            'contacts'      => 'Contact',
+            'content'       => 'Content',
+            'weblinks'      => 'Weblinks',
+            'tags'          => 'Tags',
+        ];
+
+        $app = Factory::getApplication();
+
+        foreach (array_unique($names) as $name) {
+            $name = (string) $name;
+
+            if (isset($core[$name])) {
+                $component = ($name == 'contacts') ? 'com_contact' : 'com_' . $name;
+
+                if (!ComponentHelper::isEnabled($component)) {
+                    continue;
+                }
+
+                $option = $core[$name];
+
+                require_once __DIR__ . '/Provider/' . $option . '.php';
+
+                $classname = '\\Wfe\\Plugins\\Links\\Joomla\\Provider\\' . $option;
+
+                $this->searchProviders[$name] = new $classname($this);
+
+                continue;
+            }
+
+            // legacy search plugin, must be enabled and accessible
+            if ($name === '' || !PluginHelper::isEnabled('search', $name)) {
+                continue;
+            }
+
+            try {
+                $plugin = $app->bootPlugin($name, 'search');
+            } catch (\Throwable $e) {
+                continue;
+            }
+
+            if (!method_exists($plugin, 'onContentSearch')) {
+                continue;
+            }
+
+            $app->getLanguage()->load('plg_search_' . $name, JPATH_ADMINISTRATOR);
+
+            require_once __DIR__ . '/Provider/SearchPlugin.php';
+
+            $this->searchProviders[$name] = new \Wfe\Plugins\Links\Joomla\Provider\SearchPlugin($this, $plugin);
+        }
+
+        return $this->searchProviders;
     }
 
     public function getParam($key, $default = '')
@@ -151,16 +240,8 @@ class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
             return $results;
         }
 
-        foreach ($this->providers as $provider) {
-            $option = $provider->getOption();
-
-            if (!$this->checkOptionAccess($option)) {
-                continue;
-            }
-
-            $areas = $provider->getSearchAreas();
-
-            $results = array_merge($results, $areas);
+        foreach ($this->getSearchProviders() as $provider) {
+            $results = array_merge($results, $provider->getSearchAreas());
         }
 
         return $results;
@@ -181,18 +262,31 @@ class Joomla extends \Wfe\Adapter\Plugin\Links\AbstractLink
             'areas' => $areas
         ]);
 
-        foreach ($this->providers as $provider) {
-            $option = $provider->getOption();
+        foreach ($this->getSearchProviders() as $provider) {
+            $providerAreas = $provider->getSearchAreas();
 
-            if (!$this->checkOptionAccess($option)) {
+            if (empty($providerAreas)) {
                 continue;
             }
 
-            if (!empty($areas) && !in_array($option, $areas)) {
+            if (!empty($areas) && !array_intersect($areas, array_keys($providerAreas))) {
                 continue;
             }
 
-            $results[$option] = $provider->doSearch($options);
+            $rows = (array) $provider->doSearch($options);
+
+            // core providers are grouped by area, eg: com_content
+            if (!$provider instanceof \Wfe\Plugins\Links\Joomla\Provider\SearchPlugin) {
+                $results[key($providerAreas)] = $rows;
+                continue;
+            }
+
+            // legacy plugins are grouped by result section, falling back to the area name
+            foreach ($rows as $row) {
+                $group = !empty($row->section) ? $row->section : reset($providerAreas);
+
+                $results[$group][] = $row;
+            }
         }
 
         return $results;

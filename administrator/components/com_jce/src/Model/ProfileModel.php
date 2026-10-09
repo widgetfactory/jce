@@ -203,8 +203,15 @@ class ProfileModel extends AdminModel
                             $searchList = [];
 
                             if (isset($searchLegacy['plugins'])) {
-                                foreach (['content', 'categories', 'contacts', 'weblinks', 'menu', 'tags'] as $listKey) {
-                                    if (in_array($listKey, $searchLegacy['plugins'])) {
+                                $plugins = $searchLegacy['plugins'];
+
+                                if (is_string($plugins)) {
+                                    $plugins = explode(',', $plugins);
+                                }
+
+                                // keep core and legacy "search" plugin names, except newsfeeds
+                                foreach ((array) $plugins as $listKey) {
+                                    if (is_string($listKey) && $listKey !== '' && $listKey !== 'newsfeeds') {
                                         $searchList[] = $listKey;
                                     }
                                 }

@@ -46,7 +46,7 @@
                     <option value="0">JNO</option>
                 </field>
 
-                <field name="providers" type="providerlist" multiple="true" label="WF_LINKS_JOOMLA_SEARCH_PROVIDERS" description="WF_LINKS_JOOMLA_SEARCH_PROVIDERS_DESC" default="categories,contacts,content,weblinks,tags" layout="joomla.form.field.list-fancy-select">
+                <field name="providers" type="providerlist" multiple="true" label="WF_LINKS_JOOMLA_SEARCH_PROVIDERS" description="WF_LINKS_JOOMLA_SEARCH_PROVIDERS_DESC" default="categories,contacts,content,weblinks,tags" plugins="search" layout="joomla.form.field.list-fancy-select">
                     <option value="categories">Categories</option>
                     <option value="contacts">Contacts</option>
                     <option value="content">Content</option>

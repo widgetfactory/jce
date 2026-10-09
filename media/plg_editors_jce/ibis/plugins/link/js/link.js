@@ -725,8 +725,16 @@
             // clean query
             query = query.replace(/[\///<>#]/g, '').trim();
 
+            var options = {
+                'searchphrase': $('input[name="searchphrase"]:checked', '#search-options').val() || 'all',
+                'ordering': $('select[name="ordering"]', '#search-options').val() || '',
+                'areas': $('input[name="areas[]"]:checked', '#search-options').map(function () {
+                    return this.value;
+                }).get()
+            };
+
             Wf.JSON.request('doSearch', {
-                'json': [query]
+                'json': [query, options]
             }, function (results) {
                 if (results && !results.error) {
 

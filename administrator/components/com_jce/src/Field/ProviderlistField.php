@@ -4,10 +4,10 @@ namespace Joomla\Component\Jce\Administrator\Field;
 
 defined('JPATH_SITE') or die;
 
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Form\Field\ListField;
+use Joomla\CMS\Form\Field\PluginsField;
 
-class ProviderlistField extends ListField
+class ProviderlistField extends PluginsField
 {
 	/**
 	 * The form field type.
@@ -38,7 +38,14 @@ class ProviderlistField extends ListField
 			$value = explode(',', $value);
 		}
 
-		return parent::setup($element, $value, $group);
+		$return = parent::setup($element, $value, $group);
+
+		if ($return && (string) $this->element['plugins']) {
+			$this->folder = (string) $this->element['plugins'];
+			$this->element['useaccess'] = 'true';
+		}
+
+		return $return;
 	}
 
 	/**
@@ -50,14 +57,29 @@ class ProviderlistField extends ListField
 	 */
 	protected function getOptions()
 	{
-		$options = array();
-		$default = explode(',', $this->default);
+		// no plugin folder, so only the xml options
+		if (empty($this->folder)) {
+			return ListField::getOptions();
+		}
 
+		$options = array();
+		$values = array();
+
+		// xml options come first, so drop plugins that duplicate them
 		foreach (parent::getOptions() as $item) {
+			if (in_array($item->value, $values)) {
+				continue;
+			}
+
+			// skip "newsfeeds"
+			if ($item->value == 'newsfeeds') {
+				continue;
+			}
+
+			$values[] = $item->value;
 			$options[] = $item;
 		}
 
-		// Merge any additional options in the XML definition.
 		return $options;
 	}
 }
