@@ -37,7 +37,7 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         $section = $app->input->getWord('section');
         $category = $app->input->getWord('category');
         $article = $app->input->getWord('article');
-        $language = $app->input->getWord('lang');
+        $language = \Wfe\Language\Language::getCode();
 
         $params = ComponentHelper::getParams('com_jce');
 

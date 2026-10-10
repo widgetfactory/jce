@@ -412,7 +412,8 @@ class AbstractPlugin
 
         $query = array(
             'task' => 'plugin.loadlanguages',
-            'lang' => Language::getCode()
+            // not "lang", which the Language Filter treats as its own
+            'wf_lang' => Language::getCode()
         );
 
         // ini language
