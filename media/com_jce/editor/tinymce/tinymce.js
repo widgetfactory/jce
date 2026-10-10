@@ -48413,7 +48413,7 @@
                       html.push('>');
 
                       for (let child of Array.from(node.childNodes)) {
-                          html.push(sanitizeNode(editor, child, raw));
+                          html.push(sanitizeNode(editor, child));
                       }
 
                       html.push('</', tagName, '>');
@@ -48424,7 +48424,7 @@
 
               case 3: {
                   var text = node.nodeValue;
-                  text = raw ? text : editor.dom.encode(text, true);
+                  text = editor.dom.encode(text, true);
                   html.push(text);
                   break;
               }
@@ -48458,7 +48458,7 @@
           }
 
           // text is encoded, otherwise an entity such as &lt;img&gt; becomes markup
-          return sanitizeNode(editor, doc.documentElement, false);
+          return sanitizeNode(editor, doc.documentElement);
       }
 
       /**
@@ -49613,7 +49613,7 @@
       ed.addCommand('mceHelp', function () {
         ed.windowManager.open({
           title: ed.getLang('dlg.help', 'Help'),
-          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
+          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&section=editor&category=editor&article=about',
           size: 'mce-modal-landscape-full'
         });
       });
