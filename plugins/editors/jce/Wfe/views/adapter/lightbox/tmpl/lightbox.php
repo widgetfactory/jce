@@ -16,7 +16,7 @@ $lightbox = $this->get('lightbox');
 
 ?>
 <div class="uk-form-row uk-grid uk-grid-small uk-margin-small-bottom">
-	<label for="popup_list" class="uk-form-label uk-width-1-5 hastip" title="<?php echo Text::_('WF_LIGHTBOX_TYPE_DESC'); ?>"><?php echo Text::_('WF_LIGHTBOX_TYPE'); ?></label>
+	<label for="lightbox_list" class="uk-form-label uk-width-1-5 hastip" title="<?php echo Text::_('WF_LIGHTBOX_TYPE_DESC'); ?>"><?php echo Text::_('WF_LIGHTBOX_TYPE'); ?></label>
 	<div class="uk-form-controls uk-width-2-5">
 		<?php echo $lightbox->getLightboxList(); ?>
 	</div>
@@ -24,10 +24,10 @@ $lightbox = $this->get('lightbox');
 
 <?php if ($lightbox->getConfig('text')): ?>
 
-<div class="uk-form-row uk-grid uk-grid-small uk-margin-small-bottom"">
-	<label for=" popup_text" class="hastip uk-form-label uk-width-1-5" title="<?php echo Text::_('WF_LIGHTBOX_TEXT_DESC'); ?>"><?php echo Text::_('WF_LIGHTBOX_TEXT'); ?></label>
+<div class="uk-form-row uk-grid uk-grid-small uk-margin-small-bottom">
+	<label for="lightbox_text" class="hastip uk-form-label uk-width-1-5" title="<?php echo Text::_('WF_LIGHTBOX_TEXT_DESC'); ?>"><?php echo Text::_('WF_LIGHTBOX_TEXT'); ?></label>
 	<div class="uk-form-controls uk-width-4-5">
-		<input id="popup_text" type="text" value="" />
+		<input id="lightbox_text" type="text" value="" />
 	</div>
 </div>
 
@@ -36,9 +36,9 @@ $lightbox = $this->get('lightbox');
 <?php if ($lightbox->getConfig('url')): ?>
 
 <div class="uk-form-row uk-margin-small-bottom uk-grid uk-grid-small">
-	<label for="popup_src" class="uk-form-label uk-width-1-5 hastip" title="<?php echo Text::_('WF_LABEL_URL_DESC'); ?>"><?php echo Text::_('WF_LABEL_URL'); ?></label>
+	<label for="lightbox_src" class="uk-form-label uk-width-1-5 hastip" title="<?php echo Text::_('WF_LABEL_URL_DESC'); ?>"><?php echo Text::_('WF_LABEL_URL'); ?></label>
 	<div class="uk-form-controls uk-width-4-5">
-		<input id="popup_src" type="text" value="" class="uk-input-multiple-disabled browser files" />
+		<input id="lightbox_src" type="text" value="" class="uk-input-multiple-disabled browser files" />
 	</div>
 </div>
 

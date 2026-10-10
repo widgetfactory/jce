@@ -287,7 +287,7 @@ var WfLightboxAdapter = {
             var se = ed.selection;
 
             if (se.isCollapsed()) {
-                ed.execCommand('mceInsertContent', false, '<a href="#" id="__mce_tmp">' + jQuery('#popup_text').val() + '</a>', { skip_undo: 1 });
+                ed.execCommand('mceInsertContent', false, '<a href="#" id="__mce_tmp">' + jQuery('#lightbox_text').val() + '</a>', { skip_undo: 1 });
             } else {
                 var linkNode = se.getNode();
                 ed.execCommand('mceInsertLink', false, { href: '#', id: '__mce_tmp' }, { skip_undo: 1 });

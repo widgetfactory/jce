@@ -38,8 +38,9 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
         // Load plugin definitions only (no instantiation here)
         $plugins = AdapterHelper::getPlugins('lightbox');
 
-        // set the default lightbox
-        $config['default'] = $this->getParam('popups.default', '');
+        // set the default lightbox, resolving <plugin>.lightbox.default and the legacy popups key
+        $config['default'] = $this->getConfig('default') ?: $this->getParam('popups.default', '');
+        $this->setConfig('default', $config['default']);
 
         foreach ($plugins as $plugin) {
             $instance = AdapterHelper::createPlugin($plugin, $config, $container);
@@ -132,18 +133,12 @@ class LightboxAdapter extends \Wfe\Adapter\AbstractAdapter
             $output .= $view->loadTemplate($template);
         }
 
-        // If you have a default / active adapter, render only that one.
-        $active = strtolower((string) $this->getConfig('default'));
-
+        // render all adapters, the selected one is shown by WfLightboxAdapter.selectLightbox
         foreach ($this->plugins as $plugin) {
             $path = $plugin->getPath();
             $name = $plugin->getName();
 
             $path = dirname($path);
-
-            if ($active && strtolower($name) !== $active) {
-                continue;
-            }
 
             if (!is_dir($path . '/tmpl')) {
                 continue;
