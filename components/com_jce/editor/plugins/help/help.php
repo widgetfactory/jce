@@ -37,7 +37,7 @@ class WFHelpPlugin extends WFEditorPlugin
         $section = $app->input->getWord('section');
         $category = $app->input->getWord('category');
         $article = $app->input->getWord('article');
-        $language = $app->input->getWord('lang');
+        $language = WFLanguage::getCode();
 
         $params = ComponentHelper::getParams('com_jce');
 
