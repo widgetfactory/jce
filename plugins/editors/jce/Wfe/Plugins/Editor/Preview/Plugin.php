@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -6,6 +7,7 @@
  * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 namespace Wfe\Plugins\Editor\Preview;
 
 \defined('_JEXEC') or die;
@@ -68,6 +70,11 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
 
         if ($extension->load($extension_id)) {
             $option = $extension->element;
+
+            // set a default value
+            if (empty($extension->params)) {
+                $extension->params = '{}';
+            }
 
             // process attribs (com_content etc.)
             $params->loadString($extension->params);
