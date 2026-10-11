@@ -92,6 +92,9 @@ final class Jce extends CMSPlugin implements SubscriberInterface
         // Core namespace
         \JLoader::registerNamespace('Wfe', JPATH_PLUGINS . '/editors/jce/Wfe', false, false);
 
+        // Legacy 2.9 browser helper used by third-party extensions
+        \JLoader::registerAlias('WfBrowserHelper', 'Joomla\\Component\\Jce\\Administrator\\Helper\\BrowserHelper');
+
         $app = $this->getApplication();
 
         if (!$app->isClient('site')) {
