@@ -35628,8 +35628,15 @@
   /**
    * Copyright (c) Moxiecode Systems AB. All rights reserved.
    * Copyright (c) 1999–2015 Ephox Corp. All rights reserved.
-   * Copyright (c) 2009–2025 Ryan Demmer. All rights reserved.
-   * @note    Forked or includes code from TinyMCE 3.x/4.x/5.x (originally under LGPL 2.1) and relicensed under GPL v2+ per LGPL 2.1 § 3.
+   * Copyright (c) Ephox Corporation DBA Tiny Technologies, Inc. All rights reserved.
+   * Copyright (c) 2009–2026 Ryan Demmer. All rights reserved.
+   *
+   * @note Forked from or includes code from TinyMCE 3.x/4.x/5.x (originally LGPL v2.1)
+   * and TinyMCE 8.x (GPL v2.0 or later).
+   *
+   * Code originally under LGPL v2.1 is relicensed under GPL v2.0 or later
+   * as permitted by Section 3 of the LGPL v2.1.
+   * Code originally under GPL v2.0 or later remains under GPL v2.0 or later.
    *
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
@@ -36051,7 +36058,7 @@
         var self = this,
           s = self.settings,
           w, h, mh, e = self.getElement(),
-          o, url, bi, bc, re, initializedPlugins = [];
+          o, bi, bc, re, initializedPlugins = [];
 
         ibis.add(self);
 
@@ -36217,11 +36224,6 @@
           return self.initContentBody();
         }
 
-        // User specified a document.domain value
-        if (document.domain && location.hostname != document.domain) {
-          ibis.relaxedDomain = document.domain;
-        }
-
         self.iframeHTML = s.doctype + '<html dir="' + s.directionality + '"><head xmlns="http://www.w3.org/1999/xhtml">';
 
         // We only need to override paths if we have to
@@ -36256,12 +36258,6 @@
 
         self.iframeHTML += '</head><body id="' + bi + '" class="mceContentBody ' + bc + '"><br></body></html>';
 
-        // Domain relaxing enabled, then set document domain
-        if (ibis.relaxedDomain) {
-          // We need to write the contents here in IE since multiple writes messes up refresh button and back button
-          url = 'javascript:(function(){document.open();document.domain="' + document.domain + '";var ed = window.parent.ibis.get("' + self.id + '");document.write(ed.iframeHTML);document.close();ed.initContentBody();})()';
-        }
-
         // Create iframe
         var ifr = DOM.add(o.iframeContainer, 'iframe', {
           id: self.id + "_ifr",
@@ -36278,9 +36274,6 @@
           self.onLoad.dispatch();
         };
 
-        // remove src attribute
-        //DOM.setAttrib(ifr, "src", url || '');
-
         self.contentAreaContainer = o.iframeContainer;
 
         if (o.editorContainer) {
@@ -36293,16 +36286,56 @@
         DOM.get(self.id).style.display = 'none';
         DOM.setAttrib(self.id, 'aria-hidden', true);
 
-        if (!ibis.relaxedDomain || !url) {
-          self.initContentBody();
-        }
+        self.setupIframeBody(ifr);
 
         e = o = null; // Cleanup
       },
 
       /**
+       * Loads iframeHTML into the iframe, then calls initContentBody (TinyMCE 8 InitIframe).
+       *
+       * @method setupIframeBody
+       * @param {HTMLIFrameElement} ifr Editor iframe.
+       */
+      setupIframeBody: function (ifr) {
+        var self = this;
+
+        function ready() {
+          // Editor was removed while the iframe was loading
+          if (self.removed) {
+            return;
+          }
+
+          // srcdoc replaces the initial about:blank document, so drop any cached reference
+          self.contentWindow = ifr.contentWindow;
+          self.contentDocument = ifr.contentDocument;
+
+          self.initContentBody();
+        }
+
+        // Firefox srcdoc doesn't send cookies, see https://bugzilla.mozilla.org/show_bug.cgi?id=1741489
+        if (self.getParam('init_content_sync', false) || ibis.isGecko) {
+          var doc = self.getDoc();
+
+          doc.open();
+          doc.write(self.iframeHTML);
+          doc.close();
+
+          ready();
+        } else {
+          var onLoad = function () {
+            ifr.removeEventListener('load', onLoad);
+            ready();
+          };
+
+          ifr.addEventListener('load', onLoad);
+          ifr.srcdoc = self.iframeHTML;
+        }
+      },
+
+      /**
        * This method get called by the init method ones the iframe is loaded.
-       * It will fill the iframe with contents, setups DOM and selection objects for the iframe.
+       * It will setup DOM and selection objects for the iframe.
        * This method should not be called directly.
        *
        * @method initContentBody
@@ -36313,17 +36346,6 @@
           targetElm = DOM.get(self.id),
           doc = self.getDoc(),
           body, contentCssText;
-
-        // Setup iframe body
-        if ((!isIE || !ibis.relaxedDomain) && !settings.content_editable) {
-          doc.open();
-          doc.write(self.iframeHTML);
-          doc.close();
-
-          if (ibis.relaxedDomain) {
-            doc.domain = ibis.relaxedDomain;
-          }
-        }
 
         if (settings.content_editable) {
           DOM.addClass(targetElm, 'mceContentBody');
