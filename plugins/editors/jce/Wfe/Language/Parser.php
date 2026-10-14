@@ -257,6 +257,9 @@ class Parser
         // get overrides
         $overrides = self::getOverrides();
 
+        // mark strings like Joomla's Debug Language, unmarked text is a javascript fallback for a missing key
+        $debug = (bool) Factory::getApplication()->get('debug_lang', 0);
+
         if (!empty($data)) {
             $x = 0;
 
@@ -277,7 +280,7 @@ class Parser
                         if (is_numeric($v)) {
                             $v = (float) $v;
                         } else {
-                            $v = '"' . $v . '"';
+                            $v = $debug ? '"**' . $v . '**"' : '"' . $v . '"';
                         }
 
                         // key to lowercase
@@ -313,7 +316,7 @@ class Parser
             // remove last comma
             $output = rtrim(trim($output), ',');
         }
-
+        
         return $output;
     }
 
