@@ -509,23 +509,26 @@
      * @license     GNU General Public License version 2 or later; see LICENSE.txt
      */
 
-
     var DOM = ibis.DOM,
         Event = ibis.dom.Event,
         each = ibis.each;
 
     var UNITS = ['px', 'em', 'rem', '%', 'pt', 'cm', 'mm', 'in', 'ex', 'vh', 'vw'];
     var BORDER_STYLES = ['none', 'solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset'];
+    var BORDER_WIDTHS = ['thin', 'medium', 'thick', '1px', '2px', '3px', '4px', '5px'];
+    var FONT_SIZES = ['9px', '10px', '12px', '14px', '16px', '18px', '24px', 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large', 'smaller', 'larger'];
+    var FONTS = 'Arial=Arial, Helvetica, sans-serif;Times New Roman=Times New Roman, Times, serif;Courier New=Courier New, Courier, mono;Georgia=Georgia, Times New Roman, Times, serif;Verdana=Verdana, Arial, Helvetica, sans-serif;Geneva=Geneva, Arial, Helvetica, sans-serif';
 
     function showStyleDialog(ed) {
         var cm = ed.controlManager;
 
         // ── Control helpers ──────────────────────────────────────────────────────
 
-        function listBox(id, name, label, values) {
+        function listBox(id, name, label, values, combobox) {
             var ctrl = cm.createListBox(id, {
                 label: ed.getLang('style.' + label, label),
                 name: name,
+                combobox: !!combobox,
                 onselect: function () { }
             });
 
@@ -547,6 +550,24 @@
                 units: UNITS,
                 default_unit: defaultUnit || 'px'
             });
+        }
+
+        function getFonts() {
+            var fonts = ed.getParam('fontselect_fonts') || FONTS, values = [];
+
+            if (typeof fonts === 'string') {
+                fonts = fonts.split(';');
+            }
+
+            each(fonts, function (font, title) {
+                var parts = typeof title === 'string' ? [title, font] : font.split('=');
+
+                if (parts[0]) {
+                    values.push({ title: parts[0].trim(), value: (parts[1] || parts[0]).trim() });
+                }
+            });
+
+            return values;
         }
 
         // Four-sided group: "Same for all" checkbox + top/right/bottom/left controls.
@@ -581,12 +602,9 @@
         // ── Tab 1: Text ──────────────────────────────────────────────────────────
         var textForm = cm.createForm('style_text_form');
 
-        textForm.add(cm.createTextBox('style_font_family', {
-            label: ed.getLang('style.font_family', 'Font Family'),
-            name: 'font_family'
-        }));
+        textForm.add(listBox('style_font_family', 'font_family', 'Font Family', getFonts(), true));
 
-        textForm.add(measureBox('style_font_size', 'font_size', 'Font Size'));
+        textForm.add(listBox('style_font_size', 'font_size', 'Font Size', FONT_SIZES, true));
 
         textForm.add(listBox('style_font_weight', 'font_weight', 'Font Weight',
             ['normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900']));
@@ -690,15 +708,9 @@
 
         bgForm.add(listBox('style_bg_attachment', 'background_attachment', 'Attachment', ['fixed', 'scroll']));
 
-        bgForm.add(cm.createTextBox('style_bg_pos_h', {
-            label: ed.getLang('style.background_position_h', 'Horizontal Position'),
-            name: 'background_position_h'
-        }));
+        bgForm.add(listBox('style_bg_pos_h', 'background_position_h', 'Horizontal Position', ['left', 'center', 'right'], true));
 
-        bgForm.add(cm.createTextBox('style_bg_pos_v', {
-            label: ed.getLang('style.background_position_v', 'Vertical Position'),
-            name: 'background_position_v'
-        }));
+        bgForm.add(listBox('style_bg_pos_v', 'background_position_v', 'Vertical Position', ['top', 'center', 'bottom'], true));
 
         // ── Tab 3: Block ─────────────────────────────────────────────────────────
         var blockForm = cm.createForm('style_block_form');
@@ -771,7 +783,7 @@
         });
 
         var borderWidth = fourSides('border_width', function (id, name, label) {
-            return measureBox(id, name, label);
+            return listBox(id, name, label, BORDER_WIDTHS, true);
         });
 
         addFourToForm(borderWidthForm, borderWidth);
@@ -918,8 +930,6 @@
                 var applyToBlocks = ed.selection.getSelectedBlocks().length > 1;
                 var nodes = applyToBlocks ? ed.selection.getSelectedBlocks() : ed.selection.getNode();
 
-                console.log(nodes, ed.dom.serializeStyle(newStyles));
-
                 ed.dom.setAttrib(nodes, 'style', ed.dom.serializeStyle(newStyles));
             }
 
@@ -1026,7 +1036,6 @@
      * @copyright   Copyright (c) 2009-2026 Ryan Demmer. All rights reserved
      * @license     GNU General Public License version 2 or later; see LICENSE.txt
      */
-
 
     ibis.PluginManager.add('style', function (ed, url) {
         var isMobile = window.matchMedia('(max-width: 600px)').matches;
