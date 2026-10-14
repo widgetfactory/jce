@@ -26,7 +26,6 @@
 
     <languages folder="language/en-GB">
         <language tag="en-GB">en-GB.com_jce.ini</language>
-        @@language-pro@@
     </languages>
 
     <!-- SQL query files to execute on installation -->

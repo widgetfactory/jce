@@ -334,19 +334,26 @@ class WFLanguageParser extends CMSObject
             $files[] = JPATH_SITE . '/language/en-GB/en-GB.com_jce.ini';
 
             // add pro language file
-            $files[] = JPATH_SITE . '/language/en-GB/en-GB.com_jce_pro.ini';
+            $files[] = JPATH_ADMINISTRATOR . '/language/en-GB/en-GB.plg_system_jcepro.ini';
 
             // non-english language
             if ($tag != 'en-GB') {
                 if (is_dir($path)) {
                     $core = $path . '/' . $tag . '.com_jce.ini';
-                    $pro = $path . '/' . $tag . '.com_jce_pro.ini';
+
+                    // legacy language packs first so the plugin language takes precedence
+                    $pro = array(
+                        $path . '/' . $tag . '.com_jce_pro.ini',
+                        JPATH_ADMINISTRATOR . '/language/' . $tag . '/' . $tag . '.plg_system_jcepro.ini',
+                    );
 
                     if (is_file($core)) {
                         $files[] = $core;
 
-                        if (is_file($pro)) {
-                            $files[] = $pro;
+                        foreach ($pro as $file) {
+                            if (is_file($file)) {
+                                $files[] = $file;
+                            }
                         }
                     } else {
                         $tag = 'en-GB';

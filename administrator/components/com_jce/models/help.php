@@ -124,7 +124,9 @@ class JceModelHelp extends BaseDatabaseModel
         $language = Factory::getLanguage();
 
         $language->load('com_jce', JPATH_SITE);
-        $language->load('com_jce_pro', JPATH_SITE);
+        // pro language, legacy language packs first so the plugin language takes precedence
+        $language->load('com_jce_pro', JPATH_SITE, null, false, false);
+        $language->load('plg_system_jcepro', JPATH_ADMINISTRATOR, null, true, false);
 
         $document->setTitle(Text::_('WF_HELP') . ' : ' . Text::_('WF_' . strtoupper($category) . '_TITLE'));
 
