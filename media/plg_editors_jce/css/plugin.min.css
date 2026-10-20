@@ -10314,6 +10314,7 @@ html {
 .uk-modal-prompt {
   display: flex;
   flex-direction: column;
+  border: 1px solid #ddd;
 }
 .uk-modal-alert .uk-modal-dialog,
 .uk-modal-confirm .uk-modal-dialog,
@@ -11866,6 +11867,21 @@ span.uk-slider {
 .mceColorRgb .mceForm .mceFormRow .mceFormControl {
   flex: 1;
 }
+.mceModalContent .mceColorPickerHex .mceFormRow label:first-child {
+  min-width: 2em;
+  flex: 0;
+  font-weight: bold;
+  text-align: center;
+  background: #eee;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  border-right: 0 none;
+  height: 32px;
+  margin-right: -1px;
+}
+.mceModalContent .mceColorPickerHex input[type="text"] {
+  width: 6em;
+}
 .mceColorValue {
   height: 32px;
   position: fixed;
@@ -11912,6 +11928,23 @@ span.uk-slider {
 .mceColorRgb .mceColorPicker-overlay1,
 .mceColorRgb .mceColorPicker-overlay2 {
   width: 100%;
+}
+.mceColorPickerHex .mceFormControl {
+  flex-direction: row;
+  gap: 0;
+}
+.mceColorPickerHex .mceFormControl input[type="text"] {
+  border-right-width: 0;
+  text-align: center;
+  width: 5em;
+}
+.mceColorPickerHex .mceFormControl .mceTextBoxDescription {
+  font-size: 0;
+  max-width: 2rem;
+  display: block;
+  height: 2rem;
+  border: 1px solid #ddd;
+  left: -1px;
 }
 #colorpicker {
   margin: 10px 0 0 0;
