@@ -127,13 +127,13 @@ final class Jce extends CMSPlugin implements SubscriberInterface
         $this->bootEditorPlugins();
 
         $event = new Event(
-            'onWfPluginBeforeDispatch',
+            'onWfPluginAfterDispatch',
             array(
                 'subject' => $this
             )
         );
 
-        $app->getDispatcher()->dispatch('onWfPluginBeforeDispatch', $event);
+        $app->getDispatcher()->dispatch('onWfPluginAfterDispatch', $event);
     }
 
     /**
