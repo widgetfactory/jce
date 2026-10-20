@@ -589,7 +589,11 @@ class ProfileModel extends AdminModel
                 // plugin extensions
                 $plugin->adapterPlugins = array();
 
+                // no manifest means no parameters, eg: joomla
                 if (!is_file($plugin->manifest)) {
+                    $plugin->form = false;
+                    $plugins[$name] = $plugin;
+
                     continue;
                 }
 
