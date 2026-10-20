@@ -51369,9 +51369,14 @@
             transferMarkerStyles(marker, elm);
           }
 
-          // the marker is selected, so it is replaced by the inserted content. An undo level must not
-          // be added here as it would store the marker and restore it on undo
-          ed.execCommand('mceInsertContent', false, ed.dom.getOuterHTML(elm));
+          // clean the html as mceInsertContent would, but only replace the marker, as mceInsertContent can remove the markers of files still uploading
+          var fragment = ed.parser.parse(ed.dom.getOuterHTML(elm), {
+            context: marker.parentNode.nodeName.toLowerCase()
+          });
+
+          ed.dom.setOuterHTML(marker, new tinymce.html.Serializer({
+            validate: ed.settings.validate
+          }, ed.schema).serialize(fragment));
         }
 
         ed.nodeChanged();
@@ -51510,6 +51515,11 @@
           }
 
           ed.setProgressState(false);
+
+          // add an undo level once the queue is empty, so that no markers are stored
+          if (!files.length) {
+            ed.undoManager.add();
+          }
         }
 
         uploadHandler(file, function (response) {
