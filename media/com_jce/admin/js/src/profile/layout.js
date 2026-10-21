@@ -164,8 +164,10 @@ function init(form) {
 
     // Resizing
     const resizingInput = form.querySelector('[name$="[editor][resizing]"]');
+
     if (resizingInput) {
         const handle = form.querySelector('.editor-layout .mce-ibis .mce-statusbar .mce-resizehandle');
+
         if (handle) {
             handle.hidden = !parseInt(resizingInput.value, 10);
         }
@@ -179,8 +181,10 @@ function init(form) {
         editorToggle.hidden = !parseInt(toggleInput.value, 10);
 
         const toggleLabelInput = form.querySelector('[name$="[editor][toggle_label]"]');
-        if (toggleLabelInput?.value) {
-            editorToggle.textContent = toggleLabelInput.value;
+        const toggleText = editorToggle.querySelector('.editor-toggle-text');
+
+        if (toggleLabelInput && toggleText) {
+            toggleText.textContent = toggleLabelInput.value;
         }
     }
 }
@@ -226,14 +230,17 @@ function triggerChange(e) {
 
     const editorToggle = document.getElementById('editor_toggle');
 
-    if (editorToggle && elm.matches('[name$="[editor][toggle]"]')) {
-        const value = parseInt(elm.value, 10);
-        editorToggle.hidden = !value;
-    }
+    if (editorToggle) {
+        if (elm.matches('[name$="[editor][toggle]"]')) {
+            editorToggle.hidden = !parseInt(elm.value, 10);
+        }
 
-    if (editorToggle && elm.matches('[name$="[editor][toggle_label]"]')) {
-        if (elm.value) {
-            editorToggle.textContent = elm.value;
+        if (elm.matches('[name$="[editor][toggle_label]"]')) {
+            const toggleText = editorToggle.querySelector('.editor-toggle-text');
+
+            if (toggleText) {
+                toggleText.textContent = elm.value;
+            }
         }
     }
 }

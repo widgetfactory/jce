@@ -1104,11 +1104,32 @@ html[dir="rtl"] .jce-ui .form-horizontal .control-label {
   position: relative;
 }
 #editor_toggle {
-  padding: 0 5px;
-  line-height: 20px;
   user-select: none;
   cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 2em;
+  border: 0 none;
+  background: none;
+  appearance: none;
+  line-height: 1;
+  color: inherit;
+}
+#editor_toggle[hidden] {
+  display: none;
+}
+#editor_toggle .wf-editor-toggle {
   display: block;
+  padding: 0.5em 0.75em;
+  text-align: center;
+  cursor: pointer;
+  min-height: 0.75em;
+  border: 0 none;
+  background: none;
+  appearance: none;
+  line-height: 1;
+  color: inherit;
 }
 .jce-ui .users-select {
   position: relative;

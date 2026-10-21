@@ -14,7 +14,7 @@ html {
     }
 }
 
-.jce-ui{
+.jce-ui {
     & .mce-ibis {
         box-sizing: content-box;
 
@@ -255,10 +255,32 @@ html[dir="rtl"] {
 }
 
 #editor_toggle {
-    padding: 0 5px;
-    line-height: 20px;
     user-select: none;
     cursor: default;
-    display: block;
-}
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 2em;
+    border: 0 none;
+    background: none;
+    appearance: none;
+    line-height: 1;
+    color: inherit;
 
+    &[hidden] {
+        display: none;
+    }
+
+    .wf-editor-toggle {
+        display: block;
+        padding: 0.5em 0.75em;
+        text-align: center;
+        cursor: pointer;
+        min-height: 0.75em;
+        border: 0 none;
+        background: none;
+        appearance: none;
+        line-height: 1;
+        color: inherit;
+    }
+}

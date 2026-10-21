@@ -209,11 +209,11 @@ field-wysiwygeditor {
     }
 
     .wf-editor-toggle {
-        display: block;
-        padding: 0.5em 0.75em;
+        display: flex;
+        padding: 0;
         text-align: center;
         cursor: pointer;
-        min-height: 0.75em;
+        height: 2em;
         position: absolute;
         left: 0;
         margin: 0;
@@ -223,6 +223,8 @@ field-wysiwygeditor {
         appearance: none;
         line-height: 1;
         color: inherit;
+        align-items: center;
+        gap: 5px;
 
         &:hover {
             color: inherit;
@@ -235,6 +237,7 @@ field-wysiwygeditor {
             width: 16px;
             height: 16px;
             vertical-align: middle;
+            padding: 0.75em;
         }
 
         &:hover>svg {
@@ -443,6 +446,7 @@ joomla-tab {
 }
 
 @media (prefers-color-scheme: dark) {
+
     .wf-editor-source,
     .wf-editor-preview {
         border-color: rgba(0, 0, 0, 0.15);

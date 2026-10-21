@@ -179,11 +179,11 @@ field-wysiwygeditor {
   color: var(--nav-tabs-link-active-color);
 }
 .wf-editor-header .wf-editor-toggle {
-  display: block;
-  padding: 0.5em 0.75em;
+  display: flex;
+  padding: 0;
   text-align: center;
   cursor: pointer;
-  min-height: 0.75em;
+  height: 2em;
   position: absolute;
   left: 0;
   margin: 0;
@@ -193,6 +193,8 @@ field-wysiwygeditor {
   appearance: none;
   line-height: 1;
   color: inherit;
+  align-items: center;
+  gap: 5px;
 }
 .wf-editor-header .wf-editor-toggle:hover {
   color: inherit;
@@ -204,6 +206,7 @@ field-wysiwygeditor {
   width: 16px;
   height: 16px;
   vertical-align: middle;
+  padding: 0.75em;
 }
 .wf-editor-header .wf-editor-toggle:hover > svg {
   fill: var(--nav-tabs-link-active-color);

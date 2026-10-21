@@ -31,7 +31,12 @@ if (is_numeric($height) && strpos('%', $height) === false) {
     <div class="controls">
         <div class="editor-layout">
             <!-- Editor Toggle -->
-            <span id="editor_toggle"><?php echo $data->get('toggle_label', '[Toggle Editor]'); ?></span>
+            <span id="editor_toggle">
+                <button class="wf-editor-toggle btn btn-link">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 448 448"><title></title><g id="wf-toggle-icon" stroke="none" stroke-width="1"></g><path d="M280 64.132v59.482c15.84 6.914 30.406 16.803 42.995 29.391 26.443 26.442 41.005 61.6 41.005 98.995s-14.563 72.552-41.005 98.995c-26.442 26.442-61.599 41.005-98.995 41.005s-72.552-14.563-98.995-41.005c-26.442-26.442-41.005-61.6-41.005-98.995s14.563-72.552 41.005-98.995c12.589-12.589 27.155-22.478 42.995-29.392v-59.481c-80.959 24.097-140 99.082-140 187.868 0 108.248 87.753 196 196 196s196-87.752 196-196c0-88.786-59.041-163.77-140-187.868zM196 0h56v224h-56z"></path></svg>
+                </button>
+                <span class="editor-toggle-text"><?php echo $data->get('toggle_label', ''); ?></span>
+            </span>
             <!-- Width Marker -->
             <div class="widthMarker border border border-dark-subtle border-bottom-0" style="width:<?php echo $width; ?>;">
                 <span class="badge bg-secondary"><?php echo $width; ?></span>
