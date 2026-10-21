@@ -11,8 +11,6 @@ namespace Joomla\Component\Jce\Administrator\Extension;
 
 defined('JPATH_SITE') or die;
 
-use Joomla\CMS\Component\Router\RouterServiceInterface;
-use Joomla\CMS\Component\Router\RouterServiceTrait;
 use Joomla\CMS\Extension\BootableExtensionInterface;
 use Joomla\CMS\Extension\MVCComponent;
 use Joomla\CMS\Factory;
@@ -27,10 +25,10 @@ use Joomla\Database\DatabaseAwareTrait;
  *
  * @since  4.0.0
  */
-class Jce extends MVCComponent implements RouterServiceInterface, BootableExtensionInterface, FieldsServiceInterface
+// no RouterServiceInterface: without a Site\Service\Router, Route::_() returns '' for com_jce links on the site
+class Jce extends MVCComponent implements BootableExtensionInterface, FieldsServiceInterface
 {
 	use HTMLRegistryAwareTrait;
-	use RouterServiceTrait;
 	use DatabaseAwareTrait;
 
 	/**
