@@ -527,6 +527,9 @@
                 ed.dom.setAttribs(el, args);
                 // create link on selection or update existing link
             } else {
+                // data-mce-style is not set for resizable styles, eg: width or left, so capture it first
+                var nodeStyle = ed.dom.getAttrib(node, 'style');
+
                 // update link
                 if (link) {
                     ed.dom.setAttribs(link, {
@@ -542,7 +545,7 @@
                 }
 
                 // restore styles
-                ed.dom.setAttrib(node, 'style', ed.dom.getAttrib(node, 'data-mce-style'));
+                ed.dom.setAttrib(node, 'style', nodeStyle);
 
                 // get link
                 var elms = ed.dom.select('a[data-mce-tmp]');

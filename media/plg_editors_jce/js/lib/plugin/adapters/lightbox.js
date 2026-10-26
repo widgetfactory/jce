@@ -290,9 +290,11 @@ var WfLightboxAdapter = {
                 ed.execCommand('mceInsertContent', false, '<a href="#" id="__mce_tmp">' + jQuery('#lightbox_text').val() + '</a>', { skip_undo: 1 });
             } else {
                 var linkNode = se.getNode();
+                // data-mce-style is not set for resizable styles, eg: width or left, so capture it first
+                var linkStyle = ed.dom.getAttrib(linkNode, 'style');
                 ed.execCommand('mceInsertLink', false, { href: '#', id: '__mce_tmp' }, { skip_undo: 1 });
                 // restore styles
-                ed.dom.setAttrib(linkNode, 'style', ed.dom.getAttrib(linkNode, 'data-mce-style'));
+                ed.dom.setAttrib(linkNode, 'style', linkStyle);
             }
 
             n = ed.dom.get('__mce_tmp');
