@@ -62,8 +62,14 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 
     public function onUpload($file, $relative = '')
     {
-        parent::onUpload($file, $relative);
-        
+        $upload = (array) parent::onUpload($file, $relative);
+
+        // the original is removed when every resize set made a suffixed copy
+        if (!empty($upload['path'])) {
+            $file = $upload['path'];
+            $relative = $upload['url'];
+        }
+
         $app = Factory::getApplication();
 
         // inline upload
@@ -87,7 +93,7 @@ class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
             return $result;
         }
 
-        return array();
+        return array('name' => Utility::mb_basename($file));
     }
 
     public function getSettings($settings = array())
