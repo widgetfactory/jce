@@ -495,7 +495,13 @@ class WFBrowserPlugin extends WFMediaManager
     {
         $app = Factory::getApplication();
 
-        parent::onUpload($file, $relative);
+        $upload = (array) parent::onUpload($file, $relative);
+
+        // the original is removed when every resize set made a suffixed copy
+        if (!empty($upload['path'])) {
+            $file = $upload['path'];
+            $relative = $upload['url'];
+        }
 
         // inline upload
         if ($app->input->getInt('inline', 0) === 1) {
@@ -507,6 +513,6 @@ class WFBrowserPlugin extends WFMediaManager
             return $result;
         }
 
-        return array();
+        return array('name' => WFUtility::mb_basename($file));
     }
 }

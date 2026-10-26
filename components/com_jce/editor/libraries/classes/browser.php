@@ -2313,9 +2313,12 @@ class WFFileBrowser extends CMSObject
                 $result->url = trim($result->url, '/');
 
                 // run events
-                $data = $this->fireEvent('onUpload', array($result->path, $result->url));
+                $data = (array) $this->fireEvent('onUpload', array($result->path, $result->url));
 
-                $data['name'] = $name;
+                // a plugin may return a different name, eg: if the original was replaced by a resized copy
+                if (empty($data['name'])) {
+                    $data['name'] = $name;
+                }
 
                 $this->setResult($data, 'files');
             } else {
