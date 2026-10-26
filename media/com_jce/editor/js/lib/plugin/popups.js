@@ -291,12 +291,15 @@ var WFPopups = WFExtensions.add('Popups', {
                 } else {
                     var n = n || se.getNode();
 
+                    // data-mce-style is not set for resizable styles, eg: width or left, so capture it first
+                    var nodeStyle = ed.dom.getAttrib(n, 'style');
+
                     ed.execCommand('mceInsertLink', false, { 'href': '#', 'id': '__mce_tmp' }, {
                         skip_undo: 1
                     });
 
                     // restore styles
-                    ed.dom.setAttrib(n, 'style', ed.dom.getAttrib(n, 'data-mce-style'));
+                    ed.dom.setAttrib(n, 'style', nodeStyle);
                 }
                 // get new link
                 n = ed.dom.get('__mce_tmp');
