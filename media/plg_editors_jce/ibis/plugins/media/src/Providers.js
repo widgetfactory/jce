@@ -28,7 +28,8 @@ var sandbox_iframes_exclusions = [
     'facebook.com',
     'instagram.com',
     'bandcamp.com',
-    'calendly.com'
+    'calendly.com',
+    'tiktok.com'
 ];
 
 function extendSandboxExclusions(items) {
@@ -50,7 +51,8 @@ var mediaProviders = {
     'facebook': /facebook\.com\/(.+)/,
     'instagram': /instagram\.com\/(.+)/,
     'bandcamp': /bandcamp\.com\/(.+)/,
-    'calendly': /calendly\.com\/(.+)/
+    'calendly': /calendly\.com\/(.+)/,
+    'tiktok': /tiktok\.com\/(.+)/
 };
 
 // Media types supported by this plugin
@@ -233,6 +235,16 @@ function getMediaProps(ed, data, provider) {
             'allowtransparency': true,
             'sandbox': false,
             'oembed': false
+        },
+        'tiktok': {
+            'src': '',
+            'width': 325,
+            'height': 575,
+            'frameborder': 0,
+            'allowfullscreen': "allowfullscreen",
+            'allow': "encrypted-media; fullscreen; picture-in-picture",
+            'sandbox': false,
+            'oembed': false
         }
     };
 
@@ -338,6 +350,14 @@ function getMediaProps(ed, data, provider) {
         value = value.replace(/\/$/, '');
 
         defaultValues[provider].src = value;
+    }
+
+    if (provider === 'tiktok') {
+        var m = /\/(?:video|embed\/v2|player\/v1)\/(\d+)/.exec(value);
+
+        if (m) {
+            defaultValues[provider].src = 'https://www.tiktok.com/player/v1/' + m[1];
+        }
     }
 
     return defaultValues[provider];
