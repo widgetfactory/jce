@@ -87,5 +87,6 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
         </div>
 	<?php endforeach;?>
 
-	<input type="hidden" name="<?php echo $name; ?>" value="" />
+	<?php // id is required by Joomla showon ?>
+	<input type="hidden" id="<?php echo $id; ?>_empty" name="<?php echo $name; ?>" value="" />
 </fieldset>
