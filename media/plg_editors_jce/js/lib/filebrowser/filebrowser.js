@@ -2204,10 +2204,18 @@
                             Wf.JSON.request('deleteItem', list, function (o) {
                                 if (o) {
                                     if (o.folders.length) {
-                                        // remove from tree
+                                        // remove from tree using the selected ids, the response returns resolved paths
                                         if (self._treeLoaded()) {
-                                            $.each(o.folders, function (i, item) {
-                                                $('#tree-body').trigger('tree:removenode', [item]);
+                                            $.each(list.split(','), function (i, item) {
+                                                var path = item.replace(/^[^\/:]+:\/*/, '');
+
+                                                var deleted = o.folders.some(function (folder) {
+                                                    return folder === path || folder.slice(-(path.length + 1)) === '/' + path;
+                                                });
+
+                                                if (deleted) {
+                                                    $('#tree-body').trigger('tree:removenode', [item]);
+                                                }
                                             });
                                         }
                                         self._trigger('onFolderDelete', null, o.folders);

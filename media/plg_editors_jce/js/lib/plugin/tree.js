@@ -16,10 +16,6 @@
 
 (function ($, Wf) {
 
-    function escapeRegex(s) {
-        return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-    
     var Tree = function (element, options) {
         this.element = element;
 
@@ -175,22 +171,33 @@
          *            The new title
          */
         renameNode: function (id, name) {
-            var parent = Wf.String.dirname(id);
+            // ids are full paths, so search the whole tree
+            var node = this._findNode(id);
 
-            var node = this._findNode(id, parent);
+            if (!node.length) {
+                return;
+            }
+
+            var title = Wf.String.basename(name).replace(/^[^\/:]+:/, '');
+
+            id = this._normalizeId(id);
+            name = this._normalizeId(name);
 
             // Rename the node
-            $(node).attr('data-id', name);
+            $(node).attr({'data-id': name, 'aria-label': title});
 
-            // Rename the span
-            $('a:first .uk-tree-text', node).text(Wf.String.basename(name));
+            // Rename the link and text
+            $('a:first', node).attr('title', title);
+            $('a:first .uk-tree-text', node).attr('title', title).text(title);
 
             // Rename each of the child nodes
-            $('li[data-id^="' + this._escape(encodeURI(id)) + '"]', node).each(function (n) {
+            $('li[data-id]', node).each(function (i, n) {
                 var nt = $(n).attr('data-id');
-                $(n).attr('data-id', nt.replace(id, name));
-            });
 
+                if (nt.indexOf(id + '/') === 0) {
+                    $(n).attr('data-id', name + nt.substring(id.length));
+                }
+            });
         },
         /**
          * Remove a node
@@ -199,9 +206,8 @@
          * The node title
          */
         removeNode: function (id) {
-            var parent = Wf.String.dirname(id);
-
-            var node = this._findNode(id, parent);
+            // ids are full paths, so search the whole tree
+            var node = this._findNode(id);
 
             var ul = $(node).parent('ul');
 
@@ -313,7 +319,7 @@
                         }
 
                         // create the node html
-                        var html = '<li data-id="' + self._escape(encodeURI(node.id)) + '" class="' + node['class'] + '" role="treeitem" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '" aria-label="' + title + '">';
+                        var html = '<li data-id="' + Wf.String.encode(node.id) + '" class="' + node['class'] + '" role="treeitem" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '" aria-label="' + title + '">';
 
                         html += '<div class="uk-tree-row">';
 
@@ -363,11 +369,14 @@
          * @return {Element} The parent node.
          */
         _findParent: function (el) {
+            var self = this;
+
             if (typeof el === 'string') {
-                // excape for regex
-                el = escapeRegex(el);
-                
-                return $('li[data-id="' + el + '"]:first', this.element);
+                el = this._normalizeId(el);
+
+                return $('li[data-id]', this.element).filter(function () {
+                    return self._normalizeId($(this).attr('data-id')) === el;
+                }).first();
             } else {
                 return $(el).parents('li:first');
             }
@@ -390,13 +399,23 @@
                 parent = this._findParent(parent);
             }
 
-            // remove leading or trailing slash
-            id = id.replace(/^\/|\/$/, '');
+            var self = this;
 
-            // excape for regex
-            id = escapeRegex(id);
+            id = this._normalizeId(id);
 
-            return $(parent).find('li[data-id="' + id + '"]:first');
+            return $(parent).find('li[data-id]').filter(function () {
+                return self._normalizeId($(this).attr('data-id')) === id;
+            }).first();
+        },
+        /**
+         * Normalize a node id
+         *
+         * @param {String}
+         *            The node id
+         * @return {String} The id without leading or trailing slashes, or a slash after a store prefix, eg: images:/stories
+         */
+        _normalizeId: function (id) {
+            return ('' + id).replace(/^\/+|\/+$/g, '').replace(/^([^\/:]+:)\/+/, '$1');
         },
         /**
          * Toggle the loader class on the node span element
@@ -495,17 +514,6 @@
             var parent = this._findParent(node);
             return this._trigger('nodeload', parent);
         },
-        /**
-         * Private function Escape a string
-         *
-         * @param {String}
-         *            The string
-         * @return {String} The escaped string
-         */
-        _escape: function (s) {
-            return s.replace(/'/g, '%27');
-        },
-
         /**
          * Scroll to a node
          *
