@@ -10586,7 +10586,7 @@ select:not([multiple]):not([size]) {
   background-position: 100% 50%;
 }
 .uk-form-striped.uk-form-row:nth-of-type(even) {
-  background: #f5f5f5;
+  background: rgba(128, 128, 128, 0.08);
 }
 .uk-panel-box {
   padding: 0.5rem;
@@ -12165,6 +12165,7 @@ div#previewblock {
   --wfe-focus: #86b7fe;
   background-color: var(--wfe-modal-bg);
   color: var(--wfe-color);
+  color-scheme: dark;
 }
 .uk-theme-dark ::-webkit-scrollbar {
   width: 8px;
@@ -12603,6 +12604,950 @@ div#previewblock {
 .uk-theme-dark #browser.view-mode-grid .png:not(.selected) .uk-thumbnail {
   background-color: transparent;
 }
-.uk-theme-dark .uk-form-striped.uk-form-row:nth-of-type(even) {
-  background: var(--wfe-bg-hover);
+.uk-theme-dark .mp4 .uk-icon,
+.uk-theme-dark .wmv .uk-icon,
+.uk-theme-dark .flv .uk-icon,
+.uk-theme-dark .mov .uk-icon,
+.uk-theme-dark .ogg .uk-icon,
+.uk-theme-dark .webm .uk-icon {
+  color: #8b97b4;
+}
+.uk-theme-dark .doc .uk-icon,
+.uk-theme-dark .docx .uk-icon {
+  color: #8492e6;
+}
+.uk-theme-dark .pdf .uk-icon {
+  color: #ff6262;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto {
+  --wfe-bg: #2B3035;
+  --wfe-bg-active: rgba(255, 255, 255, 0.2);
+  --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+  --wfe-border-color: rgba(255, 255, 255, 0.15);
+  --wfe-color: #dee2e6;
+  --wfe-color-muted: rgba(222, 226, 230, 0.6);
+  --wfe-modal-bg: #212529;
+  --wfe-focus: #86b7fe;
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+  color-scheme: dark;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto ::-webkit-scrollbar-track {
+  background-color: var(--wfe-modal-bg);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto ::-webkit-scrollbar-thumb {
+  background-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto h1,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto h2,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto h3,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto h4,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto h5,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto h6 {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto hr {
+  border-top-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto blockquote {
+  border-left-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto pre {
+  background: var(--wfe-bg);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto a,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-link {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto a:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-link:hover {
+  color: #aecbfa;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto input[type],
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto select,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto textarea,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-datalist-control {
+  background-color: var(--wfe-modal-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto input[type]:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto select:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto textarea:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-datalist-control:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto input[type]:active,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto select:active,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto textarea:active,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-datalist-control:active {
+  border-color: var(--wfe-focus);
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto input[type]:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto select:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto textarea:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-datalist-control:disabled {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto input[type] .uk-datalist-button:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto select .uk-datalist-button:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto textarea .uk-datalist-button:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-datalist-control .uk-datalist-button:disabled {
+  background-color: transparent;
+  color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto input[type] input:focus + .uk-datalist-button,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto select input:focus + .uk-datalist-button,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto textarea input:focus + .uk-datalist-button,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-datalist-control input:focus + .uk-datalist-button {
+  border-color: var(--wfe-focus);
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form legend:after {
+  border-bottom-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="radio"],
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="checkbox"] {
+  background-color: var(--wfe-modal-bg);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="radio"]:checked,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="checkbox"]:checked,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="radio"]:indeterminate,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="checkbox"]:indeterminate {
+  background-color: #337ab7;
+  border-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="radio"]:checked:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="checkbox"]:checked:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="radio"]:indeterminate:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="checkbox"]:indeterminate:disabled {
+  background-color: var(--wfe-bg-hover);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="radio"]:disabled,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form input[type="checkbox"]:disabled {
+  background-color: var(--wfe-bg-hover);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button {
+  background-color: var(--wfe-modal-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+  text-shadow: none;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button:focus {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button:active,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button.uk-active {
+  background-color: var(--wfe-bg-active);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button:disabled {
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button.uk-button-primary {
+  background-color: #337ab7;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button.uk-button-primary:hover {
+  background-color: #286090;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button-link {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-button-link:hover {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-panel-box {
+  background-color: var(--wfe-bg-hover);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-panel-box-secondary {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-panel-header .uk-panel-title {
+  border-bottom-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-panel-hover:hover {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-nav-side > li > a {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-nav-side > li > a:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-nav-side > li > a:focus {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-nav-side > li.uk-active > a {
+  background-color: var(--wfe-bg-active);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-nav-side .uk-nav-header {
+  color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-nav-side .uk-nav-divider {
+  border-top-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar {
+  background-color: var(--wfe-bg);
+  border-bottom-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar-nav > li > a {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar-nav > li > a:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar-nav > li > a:focus {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar-nav > li.uk-active > a {
+  background-color: var(--wfe-bg-active);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar-brand {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar .uk-navbar-content {
+  text-shadow: none;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar .uk-button {
+  background-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar .uk-button.action {
+  background-color: transparent;
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar .uk-button:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar .uk-button:focus {
+  background-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-navbar .uk-button:first-child {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-subnav > * > * {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-subnav > * > *:hover {
+  color: var(--wfe-focus);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-subnav > .uk-active > * {
+  color: var(--wfe-focus);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-subnav-pill > * > :hover {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-subnav-divider > :nth-child(n+2):before {
+  border-left-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table caption {
+  color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table th {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table thead th,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table tfoot td,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table tfoot th {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table tbody tr:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table tbody tr.uk-active {
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li > a,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li > button {
+  background-color: var(--wfe-modal-bg);
+  border-color: transparent;
+  color: var(--wfe-color);
+  text-shadow: none;
+  padding-bottom: 7px;
+  margin-bottom: 1px;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li > a:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li > button:hover,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li > a:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li > button:focus {
+  background-color: var(--wfe-modal-bg);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li.uk-active > a,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li.uk-active > button {
+  border-color: var(--wfe-border-color) var(--wfe-border-color) transparent;
+  padding-bottom: 8px;
+  margin-bottom: -1px;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab > li.uk-disabled > a {
+  color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tab-bottom {
+  border-top-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown-navbar {
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown li:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown-navbar li:focus {
+  background-color: var(--wfe-focus);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown li > a,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown-navbar li > a {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-dropdown-grid > [class*='uk-width-']:nth-child(n+2) {
+  border-left-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-dialog,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-header {
+  background-color: var(--wfe-modal-bg);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-header,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-footer {
+  border-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-dialog * {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-dialog .uk-close:focus,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-dialog .uk-close:hover {
+  color: var(--wfe-color);
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-footer {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-modal-bg);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-footer .uk-button-primary:hover {
+  background-color: #286090;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success) {
+  background-color: var(--wfe-modal-bg);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success):hover {
+  color: var(--wfe-color);
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-alert {
+  background: #1e3a5f;
+  color: #90cdf4;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-alert-success {
+  background: #1a3a1a;
+  color: #9be99b;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-alert-warning {
+  background: #3a2e00;
+  color: #fcc35e;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-alert-danger {
+  background: #3a1212;
+  color: #fc8181;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-placeholder {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-accordion-title {
+  background-color: var(--wfe-bg-hover);
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-comment * {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-pagination > li > a {
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+  text-shadow: none;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-text-primary {
+  color: var(--wfe-focus);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-text-muted {
+  color: var(--wfe-color-muted);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tree-active > .uk-tree-row {
+  background-color: var(--wfe-bg-active);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-tree-row:hover {
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form-icon > [class*="uk-icon-"] {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .uk-form-icon .uk-button {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .wf-colorpicker {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .wf-colorpicker #colorpicker_colorname {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .preview {
+  border-color: var(--wfe-border-color);
+  background-color: transparent;
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser {
+  background-color: var(--wfe-modal-bg);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser main > div {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser .uk-navbar,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser #tree-body,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser #info-body {
+  border-color: var(--wfe-border-color);
+  background-color: transparent;
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser .uk-tree-active > .uk-tree-row,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser .uk-tree-row:hover {
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser .item-list li {
+  border-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser .item-list li.selected {
+  color: var(--wfe-color);
+  background-color: var(--wfe-bg-hover);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser #browser-buttons {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser #browser-buttons .button {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .item-list li {
+  border-color: var(--wfe-border-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .item-list li.folder:not(.selected) {
+  background-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .item-list li .uk-item-checkbox {
+  background-color: var(--wfe-modal-bg);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .item-list li:after {
+  background-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .item-list.ui-sortable .file.selected:after {
+  color: var(--wfe-color);
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .gif:not(.selected) .uk-thumbnail,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto #browser.view-mode-grid .png:not(.selected) .uk-thumbnail {
+  background-color: transparent;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .mp4 .uk-icon,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .wmv .uk-icon,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .flv .uk-icon,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .mov .uk-icon,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .ogg .uk-icon,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .webm .uk-icon {
+  color: #8b97b4;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .doc .uk-icon,
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .docx .uk-icon {
+  color: #8492e6;
+}
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto .pdf .uk-icon {
+  color: #ff6262;
+}
+@media (prefers-color-scheme: dark) {
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto {
+    --wfe-bg: #2B3035;
+    --wfe-bg-active: rgba(255, 255, 255, 0.2);
+    --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+    --wfe-border-color: rgba(255, 255, 255, 0.15);
+    --wfe-color: #dee2e6;
+    --wfe-color-muted: rgba(222, 226, 230, 0.6);
+    --wfe-modal-bg: #212529;
+    --wfe-focus: #86b7fe;
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+    color-scheme: dark;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto ::-webkit-scrollbar-track {
+    background-color: var(--wfe-modal-bg);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto ::-webkit-scrollbar-thumb {
+    background-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto h1,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto h2,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto h3,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto h4,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto h5,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto h6 {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto hr {
+    border-top-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto blockquote {
+    border-left-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto pre {
+    background: var(--wfe-bg);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto a,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-link {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto a:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-link:hover {
+    color: #aecbfa;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto input[type],
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto select,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto textarea,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-datalist-control {
+    background-color: var(--wfe-modal-bg);
+    border-color: var(--wfe-border-color);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto input[type]:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto select:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto textarea:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-datalist-control:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto input[type]:active,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto select:active,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto textarea:active,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-datalist-control:active {
+    border-color: var(--wfe-focus);
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto input[type]:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto select:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto textarea:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-datalist-control:disabled {
+    border-color: var(--wfe-border-color);
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto input[type] .uk-datalist-button:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto select .uk-datalist-button:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto textarea .uk-datalist-button:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-datalist-control .uk-datalist-button:disabled {
+    background-color: transparent;
+    color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto input[type] input:focus + .uk-datalist-button,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto select input:focus + .uk-datalist-button,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto textarea input:focus + .uk-datalist-button,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-datalist-control input:focus + .uk-datalist-button {
+    border-color: var(--wfe-focus);
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form legend:after {
+    border-bottom-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="radio"],
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="checkbox"] {
+    background-color: var(--wfe-modal-bg);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="radio"]:checked,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="checkbox"]:checked,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="radio"]:indeterminate,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="checkbox"]:indeterminate {
+    background-color: #337ab7;
+    border-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="radio"]:checked:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="checkbox"]:checked:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="radio"]:indeterminate:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="checkbox"]:indeterminate:disabled {
+    background-color: var(--wfe-bg-hover);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="radio"]:disabled,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form input[type="checkbox"]:disabled {
+    background-color: var(--wfe-bg-hover);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button {
+    background-color: var(--wfe-modal-bg);
+    border-color: var(--wfe-border-color);
+    color: var(--wfe-color);
+    text-shadow: none;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button:focus {
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button:active,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button.uk-active {
+    background-color: var(--wfe-bg-active);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button:disabled {
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button.uk-button-primary {
+    background-color: #337ab7;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button.uk-button-primary:hover {
+    background-color: #286090;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button-link {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-button-link:hover {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-panel-box {
+    background-color: var(--wfe-bg-hover);
+    border-color: var(--wfe-border-color);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-panel-box-secondary {
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-panel-header .uk-panel-title {
+    border-bottom-color: var(--wfe-border-color);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-panel-hover:hover {
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-nav-side > li > a {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-nav-side > li > a:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-nav-side > li > a:focus {
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-nav-side > li.uk-active > a {
+    background-color: var(--wfe-bg-active);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-nav-side .uk-nav-header {
+    color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-nav-side .uk-nav-divider {
+    border-top-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar {
+    background-color: var(--wfe-bg);
+    border-bottom-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar-nav > li > a {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar-nav > li > a:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar-nav > li > a:focus {
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar-nav > li.uk-active > a {
+    background-color: var(--wfe-bg-active);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar-brand {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar .uk-navbar-content {
+    text-shadow: none;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar .uk-button {
+    background-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar .uk-button.action {
+    background-color: transparent;
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar .uk-button:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar .uk-button:focus {
+    background-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-navbar .uk-button:first-child {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-subnav > * > * {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-subnav > * > *:hover {
+    color: var(--wfe-focus);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-subnav > .uk-active > * {
+    color: var(--wfe-focus);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-subnav-pill > * > :hover {
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-subnav-divider > :nth-child(n+2):before {
+    border-left-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table caption {
+    color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table th {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table thead th,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table tfoot td,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table tfoot th {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table tbody tr:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table tbody tr.uk-active {
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li > a,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li > button {
+    background-color: var(--wfe-modal-bg);
+    border-color: transparent;
+    color: var(--wfe-color);
+    text-shadow: none;
+    padding-bottom: 7px;
+    margin-bottom: 1px;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li > a:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li > button:hover,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li > a:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li > button:focus {
+    background-color: var(--wfe-modal-bg);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li.uk-active > a,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li.uk-active > button {
+    border-color: var(--wfe-border-color) var(--wfe-border-color) transparent;
+    padding-bottom: 8px;
+    margin-bottom: -1px;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab > li.uk-disabled > a {
+    color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tab-bottom {
+    border-top-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown-navbar {
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown li:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown-navbar li:focus {
+    background-color: var(--wfe-focus);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown li > a,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown-navbar li > a {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-dropdown-grid > [class*='uk-width-']:nth-child(n+2) {
+    border-left-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-dialog,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-header {
+    background-color: var(--wfe-modal-bg);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-header,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-footer {
+    border-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-dialog * {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-dialog .uk-close:focus,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-dialog .uk-close:hover {
+    color: var(--wfe-color);
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-footer {
+    border-color: var(--wfe-border-color);
+    background-color: var(--wfe-modal-bg);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-footer .uk-button-primary:hover {
+    background-color: #286090;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success) {
+    background-color: var(--wfe-modal-bg);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success):hover {
+    color: var(--wfe-color);
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-alert {
+    background: #1e3a5f;
+    color: #90cdf4;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-alert-success {
+    background: #1a3a1a;
+    color: #9be99b;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-alert-warning {
+    background: #3a2e00;
+    color: #fcc35e;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-alert-danger {
+    background: #3a1212;
+    color: #fc8181;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-placeholder {
+    border-color: var(--wfe-border-color);
+    background-color: var(--wfe-bg-hover);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-accordion-title {
+    background-color: var(--wfe-bg-hover);
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-comment * {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-pagination > li > a {
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+    text-shadow: none;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-text-primary {
+    color: var(--wfe-focus);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-text-muted {
+    color: var(--wfe-color-muted);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tree-active > .uk-tree-row {
+    background-color: var(--wfe-bg-active);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-tree-row:hover {
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form-icon > [class*="uk-icon-"] {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .uk-form-icon .uk-button {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .wf-colorpicker {
+    border-color: var(--wfe-border-color);
+    background-color: var(--wfe-modal-bg);
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .wf-colorpicker #colorpicker_colorname {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .preview {
+    border-color: var(--wfe-border-color);
+    background-color: transparent;
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser {
+    background-color: var(--wfe-modal-bg);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser main > div {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser .uk-navbar,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser #tree-body,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser #info-body {
+    border-color: var(--wfe-border-color);
+    background-color: transparent;
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser .uk-tree-active > .uk-tree-row,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser .uk-tree-row:hover {
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser .item-list li {
+    border-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser .item-list li.selected {
+    color: var(--wfe-color);
+    background-color: var(--wfe-bg-hover);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser #browser-buttons {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser #browser-buttons .button {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .item-list li {
+    border-color: var(--wfe-border-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .item-list li.folder:not(.selected) {
+    background-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .item-list li .uk-item-checkbox {
+    background-color: var(--wfe-modal-bg);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .item-list li:after {
+    background-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .item-list.ui-sortable .file.selected:after {
+    color: var(--wfe-color);
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .gif:not(.selected) .uk-thumbnail,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto #browser.view-mode-grid .png:not(.selected) .uk-thumbnail {
+    background-color: transparent;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .mp4 .uk-icon,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .wmv .uk-icon,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .flv .uk-icon,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .mov .uk-icon,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .ogg .uk-icon,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .webm .uk-icon {
+    color: #8b97b4;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .doc .uk-icon,
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .docx .uk-icon {
+    color: #8492e6;
+  }
+  :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto .pdf .uk-icon {
+    color: #ff6262;
+  }
 }

@@ -297,6 +297,11 @@ class AbstractPlugin
             $theme = 'dark';
         }
 
+        // follow the page or OS color scheme
+        if ($editor_theme == 'modern.auto') {
+            $theme = 'auto';
+        }
+
         // create and register the document on the container
         $this->document = new Document(array(
             'version' => $version,

@@ -1,6 +1,6 @@
 // out: false
 
-.uk-theme-dark {
+.wfe-theme-dark() {
     // ---- Dark mode design tokens ----
     --wfe-bg: #2B3035;
     --wfe-bg-active: rgba(255, 255, 255, 0.2);
@@ -13,6 +13,9 @@
 
     background-color: var(--wfe-modal-bg);
     color: var(--wfe-color);
+
+    // dark scrollbars and native form controls
+    color-scheme: dark;
 
     ::-webkit-scrollbar {
         width: 8px;
@@ -607,9 +610,41 @@
         }
     }
 
-    .uk-form-striped {
-        &.uk-form-row:nth-of-type(even) {
-            background: var(--wfe-bg-hover);
+    // lighter file type icon colors for contrast on a dark background
+    .mp4,
+    .wmv,
+    .flv,
+    .mov,
+    .ogg,
+    .webm {
+        .uk-icon {
+            color: #8b97b4;
         }
+    }
+
+    .doc,
+    .docx {
+        .uk-icon {
+            color: #8492e6;
+        }
+    }
+
+    .pdf .uk-icon {
+        color: #ff6262;
+    }
+}
+
+.uk-theme-dark {
+    .wfe-theme-dark();
+}
+
+// follow the page color scheme, set from the parent window, then the OS color scheme
+:where(:root[data-bs-theme="dark"]) .uk-theme-auto {
+    .wfe-theme-dark();
+}
+
+@media (prefers-color-scheme: dark) {
+    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .uk-theme-auto {
+        .wfe-theme-dark();
     }
 }

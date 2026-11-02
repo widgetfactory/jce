@@ -1,11 +1,59 @@
 // out: ui.admin.css, sourcemap: false, compress: true
+@import "src/dark.less";
+
+// dark colors over the default skin preview styles in default/ui.admin.less
+.wfe-preview-dark() {
+    .mceToolbar .mceToolbarRow {
+        background-color: var(--wfe-bg);
+        border-color: var(--wfe-border-color);
+    }
+
+    .mceLayout {
+        background: var(--wfe-bg);
+
+        .mceToolbar {
+            background: var(--wfe-bg);
+        }
+
+        .mceStatusbar,
+        .mceIframeContainer {
+            border-color: var(--wfe-border-color);
+        }
+    }
+
+    .mceToolbarItem {
+        .mceListBox {
+            border-color: var(--wfe-border-color);
+
+            &:before {
+                background: var(--wfe-bg);
+                color: var(--wfe-color);
+            }
+        }
+
+        .mceListBox:after,
+        .mceSplitButton:after {
+            color: var(--wfe-color);
+            border-left-color: var(--wfe-border-color);
+            background: var(--wfe-bg-hover);
+        }
+    }
+}
 
 .jce-ui {
     @import url('ui.less');
 
     .editor-layout {
         @import url('ui.touch.less');
+    }
+
+    .editor-layout,
+    .editor-button-pool {
         @import url('ui.dark.less');
+
+        .mceModernSkinDark {
+            .wfe-preview-dark();
+        }
     }
 
     .nav-item {
@@ -285,5 +333,20 @@
                 color: var(--wfe-color);
             }
         }
+    }
+}
+
+// follow the page color scheme, then the OS color scheme, as ui.auto.less does
+:where(:root[data-bs-theme="dark"]) .jce-ui .editor-layout .mceModernSkinAuto,
+:where(:root[data-bs-theme="dark"]) .jce-ui .editor-button-pool .mceModernSkinAuto {
+    .wfe-skin-dark();
+    .wfe-preview-dark();
+}
+
+@media (prefers-color-scheme: dark) {
+    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .jce-ui .editor-layout .mceModernSkinAuto,
+    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .jce-ui .editor-button-pool .mceModernSkinAuto {
+        .wfe-skin-dark();
+        .wfe-preview-dark();
     }
 }

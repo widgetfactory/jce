@@ -282,5 +282,13 @@ html[dir="rtl"] {
         appearance: none;
         line-height: 1;
         color: inherit;
+
+        >svg {
+            fill: var(--btn-secondary-color, #fff);
+        }
+
+        &:hover>svg {
+            fill: var(--btn-secondary-color-hvr, var(--btn-secondary-color, #fff));
+        }
     }
 }

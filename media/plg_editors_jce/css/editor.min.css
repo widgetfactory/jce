@@ -375,6 +375,15 @@ joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
     border-color: rgba(0, 0, 0, 0.15);
   }
 }
+[data-bs-theme="dark"] .wf-editor-header .wf-editor-toggle {
+  color: var(--btn-secondary-color, #fff);
+}
+[data-bs-theme="dark"] .wf-editor-header .wf-editor-toggle > svg {
+  fill: var(--btn-secondary-color, #fff);
+}
+[data-bs-theme="dark"] .wf-editor-header .wf-editor-toggle:hover > svg {
+  fill: var(--btn-secondary-color-hvr, var(--btn-secondary-color, #fff));
+}
 /* hidden editor-xtd buttons in Joomla 5 */
 .xtd-button.btn.hidden {
   display: none;

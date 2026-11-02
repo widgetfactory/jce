@@ -1,0 +1,18 @@
+// out: ui.auto.css, sourcemap: false, compress: true
+@import "src/dark.less";
+
+// follow the page color scheme, eg: Joomla 5+ Atum or a Bootstrap 5.3 template; :where() keeps the specificity of ui.dark.css
+:where(:root[data-bs-theme="dark"]) .mceModernSkinAuto {
+    .wfe-skin-dark();
+}
+
+:where(:root[data-bs-theme="dark"]) body.admin .mceModernSkinAuto {
+    .wfe-skin-dark-admin();
+}
+
+// otherwise follow the OS color scheme, without admin template colors as these may not be dark
+@media (prefers-color-scheme: dark) {
+    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .mceModernSkinAuto {
+        .wfe-skin-dark();
+    }
+}

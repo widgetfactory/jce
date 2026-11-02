@@ -1131,6 +1131,12 @@ html[dir="rtl"] .jce-ui .form-horizontal .control-label {
   line-height: 1;
   color: inherit;
 }
+#editor_toggle .wf-editor-toggle > svg {
+  fill: var(--btn-secondary-color, #fff);
+}
+#editor_toggle .wf-editor-toggle:hover > svg {
+  fill: var(--btn-secondary-color-hvr, var(--btn-secondary-color, #fff));
+}
 .jce-ui .users-select {
   position: relative;
   margin: 10px 0;
