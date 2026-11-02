@@ -24,6 +24,18 @@ if ($caller) {
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<?php if ($theme == 'uk-jce-theme-auto') : ?>
+		<script>
+			// use the color scheme of the parent page, eg: Joomla Atum
+			try {
+				var scheme = window.parent.document.documentElement.getAttribute('data-bs-theme');
+
+				if (scheme) {
+					document.documentElement.setAttribute('data-bs-theme', scheme);
+				}
+			} catch (e) {}
+		</script>
+		<?php endif; ?>
 		<!-- [head] -->
 	</head>
 	<body lang="<?php echo $this->language; ?>" id="jce" class="uk-jce <?php echo $theme; ?> uk-form uk-form-horizontal" data-plugin="<?php echo $name; ?>">

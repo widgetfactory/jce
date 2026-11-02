@@ -202,6 +202,11 @@ class WFEditorPlugin extends CMSObject
             $theme = 'dark';
         }
 
+        // follow the page or OS color scheme
+        if ($editor_theme == 'modern.auto') {
+            $theme = 'auto';
+        }
+
         // create the document
         $document = WFDocument::getInstance(array(
             'version' => $version,

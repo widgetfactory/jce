@@ -55,6 +55,13 @@
 .mceModernSkin .mceButton .mceIcon {
   color: var(--wfe-color);
 }
+.mceModernSkin .mceButton .mceIcon.mceIconImage {
+  height: auto;
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 2px;
+  background-color: var(--wfe-color);
+}
 .mceModernSkin .mceButton:focus,
 .mceModernSkin .mceButton:hover {
   border-color: transparent;

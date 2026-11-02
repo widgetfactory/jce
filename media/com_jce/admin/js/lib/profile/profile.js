@@ -353,7 +353,7 @@
                 return $.trim(value.replace(/mce([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
             }).addClass('mceDefaultSkin ' + value);
 
-            $('#mce-theme').remove();
+            $('#mce-theme, #mce-theme-variant').remove();
 
             // skip the default theme as this is always loaded
             if (this.value === "default") {
@@ -363,6 +363,13 @@
             var stylesheet = this.value.replace(/\.\w+/, '');
 
             $('<link href="' + base_url + 'media/com_jce/editor/tinymce/themes/advanced/skins/' + stylesheet + '/ui.admin.css" rel="stylesheet" id="mce-theme" />').appendTo('head');
+
+            // load the variant stylesheet as the editor does, eg: ui_dark.css
+            var variant = this.value.split('.')[1];
+
+            if (variant && /^\w+$/.test(variant)) {
+                $('<link href="' + base_url + 'media/com_jce/editor/tinymce/themes/advanced/skins/' + stylesheet + '/ui_' + variant + '.css" rel="stylesheet" id="mce-theme-variant" />').appendTo('head');
+            }
         }).change();
 
         // Editor Path

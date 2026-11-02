@@ -34,14 +34,14 @@
 .nav-item .mceModernSkin .mceToolbarItem .mceButton,
 .mceModernSkin .mceToolbarItem .mceButton:hover,
 .mceModernSkin .mceToolbarItem.ui-sortable-helper .mceButton {
-  border-color: #ddd;
-  background-color: #eee;
+  border-color: var(--wfe-border-color, #ddd);
+  background-color: var(--wfe-bg-hover, #eee);
 }
 
 .mceModernSkin .mceToolbarItem.ui-sortable-helper .mceSplitButton:after,
 .mceModernSkin .mceToolbarItem .mceSplitButton:hover:after {
-  border-left-color: #ddd;
-  background-color: #eee;
+  border-left-color: var(--wfe-border-color, #ddd);
+  background-color: var(--wfe-bg-hover, #eee);
 }
 
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_forecolor,

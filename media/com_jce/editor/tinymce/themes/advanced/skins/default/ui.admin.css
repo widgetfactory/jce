@@ -6,7 +6,7 @@
 .mceDefaultSkin .mceLayout,
 .mceDefaultSkin .mceLayout .mceToolbar {
 	border: 0 none !important;
-	background: #fff;
+	background: var(--wfe-bg, #fff);
 }
 
 .mceDefaultSkin .mceToolbarItem div {
@@ -14,7 +14,7 @@
 }
 
 .mceDefaultSkin .mceLayout .mceStatusbar {
-	border: 1px solid #ddd;
+	border: 1px solid var(--wfe-border-color, #ddd);
 	border-top-width: 0;
 }
 
@@ -25,7 +25,7 @@
 	padding: 5px;
 	box-sizing: border-box;
 	white-space: pre-line;
-	border: 1px solid #ddd;
+	border: 1px solid var(--wfe-border-color, #ddd);
 	margin: 0;
 }
 
@@ -61,8 +61,8 @@
 	height: auto;
 	min-height: 38px;
 	position: relative;
-	background-color: #f5f5f5;
-	border: 1px solid #ddd;
+	background-color: var(--wfe-bg, #f5f5f5);
+	border: 1px solid var(--wfe-border-color, #ddd);
 	padding: 1px;
 	margin-bottom: 2px;
 	cursor: move;
@@ -102,14 +102,15 @@
 	font-size: 0;
 	max-width: 114px;
 	margin: 0;
-	border: 1px solid #ccc;
+	border: 1px solid var(--wfe-border-color, #ccc);
 }
 
 .mceEditor .mceToolbarItem .mceListBox:before {
 	content: attr(title);
 	display: inline-block;
 	width: 96px;
-	background: #fff;
+	background: var(--wfe-bg, #fff);
+	color: var(--wfe-color, inherit);
 	font-size: 14px;
 	line-height: 30px;
 	padding: 0 2px;
@@ -125,12 +126,12 @@
 	display: inline-block;
 	font-size: 9px;
 	line-height: 30px;
-	color: #444;
+	color: var(--wfe-color, #444);
 	width: 16px;
 	text-align: center;
-	border-left: 1px solid #ddd;
+	border-left: 1px solid var(--wfe-border-color, #ddd);
 	box-sizing: border-box;
-	background: #f5f5f5;
+	background: var(--wfe-bg-hover, #f5f5f5);
 	vertical-align: top;
 }
 
@@ -270,4 +271,5 @@
 
 .mceLayout .mceStatusbar .mcePathRow {
     background: inherit;
+	border: 0 none;
 }
