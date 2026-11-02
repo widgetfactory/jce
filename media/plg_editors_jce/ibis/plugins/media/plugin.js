@@ -184,7 +184,8 @@
         'instagram.com',
         'bandcamp.com',
         'calendly.com',
-        'tiktok.com'
+        'tiktok.com',
+        'platform.twitter.com'
     ];
 
     function extendSandboxExclusions(items) {
@@ -207,7 +208,8 @@
         'instagram': /instagram\.com\/(.+)/,
         'bandcamp': /bandcamp\.com\/(.+)/,
         'calendly': /calendly\.com\/(.+)/,
-        'tiktok': /tiktok\.com\/(.+)/
+        'tiktok': /tiktok\.com\/(.+)/,
+        'twitter': /\b(twitter|x)\.com\/.+\/status\/\d+/
     };
 
     // Media types supported by this plugin
@@ -400,6 +402,16 @@
                 'allow': "encrypted-media; fullscreen; picture-in-picture",
                 'sandbox': false,
                 'oembed': false
+            },
+            'twitter': {
+                'src': '',
+                'width': 550,
+                'height': 500,
+                'frameborder': 0,
+                'scrolling': 'no',
+                'allowtransparency': true,
+                'sandbox': false,
+                'oembed': false
             }
         };
 
@@ -475,14 +487,15 @@
             defaultValues[provider].src = value.replace(/twitch\.tv\//, 'player.twitch.tv/?channel=');
         }
 
-        if (provider === 'instagram') {
+        // already an embed url, eg: when editing an existing embed
+        if (provider === 'instagram' && value.indexOf('/embed') === -1) {
             value = value.replace(/\/\?.+$/gi, '');
             value = value.replace(/\/$/, '');
 
             defaultValues[provider].src = value + '/embed/captioned';
         }
 
-        if (provider === 'facebook') {
+        if (provider === 'facebook' && value.indexOf('facebook.com/plugins/') === -1) {
             var url = 'https://www.facebook.com/plugins/';
 
             if (value.indexOf('/videos/') !== -1) {
@@ -512,6 +525,14 @@
 
             if (m) {
                 defaultValues[provider].src = 'https://www.tiktok.com/player/v1/' + m[1];
+            }
+        }
+
+        if (provider === 'twitter') {
+            var m = /\/status\/(\d+)/.exec(value);
+
+            if (m) {
+                defaultValues[provider].src = 'https://platform.twitter.com/embed/Tweet.html?id=' + m[1];
             }
         }
 
