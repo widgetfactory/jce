@@ -115,6 +115,9 @@ final class Jce extends CMSPlugin implements SubscriberInterface
                 if ($id) {
                     $installer = new Installer();
 
+                    // the database must be set, only Installer::getInstance() does this
+                    $installer->setDatabase($db);
+
                     // try uninstall, if this fails, delete database entry
                     if (!$installer->uninstall('file', $id)) {
                         $query = $db->getQuery(true);
