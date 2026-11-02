@@ -9,8 +9,13 @@
   <copyright>@@copyright@@</copyright>
   <license>@@licence@@</license>
 	<description>PLG_EXTENSION_JCE_XML_DESCRIPTION</description>
+
+	<namespace path="src">Joomla\Plugin\Extension\Jce</namespace>
+
 	<files folder="plugins/extension/jce">
 		<filename plugin="jce">jce.php</filename>
+		<folder>services</folder>
+		<folder>src</folder>
 	</files>
 	<languages folder="administrator/language/en-GB">
       <language tag="en-GB">en-GB.plg_extension_jce.ini</language>
