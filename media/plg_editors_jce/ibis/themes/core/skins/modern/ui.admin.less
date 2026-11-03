@@ -48,7 +48,8 @@
     }
 
     .editor-layout,
-    .editor-button-pool {
+    .editor-button-pool,
+    .nav-tabs {
         @import url('ui.dark.less');
 
         .mceModernSkinDark {
@@ -338,14 +339,16 @@
 
 // follow the page color scheme, then the OS color scheme, as ui.auto.less does
 :where(:root[data-bs-theme="dark"]) .jce-ui .editor-layout .mceModernSkinAuto,
-:where(:root[data-bs-theme="dark"]) .jce-ui .editor-button-pool .mceModernSkinAuto {
+:where(:root[data-bs-theme="dark"]) .jce-ui .editor-button-pool .mceModernSkinAuto,
+:where(:root[data-bs-theme="dark"]) .jce-ui .nav-tabs .mceModernSkinAuto {
     .wfe-skin-dark();
     .wfe-preview-dark();
 }
 
 @media (prefers-color-scheme: dark) {
     :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .jce-ui .editor-layout .mceModernSkinAuto,
-    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .jce-ui .editor-button-pool .mceModernSkinAuto {
+    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .jce-ui .editor-button-pool .mceModernSkinAuto,
+    :where(:root:not([data-bs-theme="light"]):not([data-bs-theme="dark"])) .jce-ui .nav-tabs .mceModernSkinAuto {
         .wfe-skin-dark();
         .wfe-preview-dark();
     }
