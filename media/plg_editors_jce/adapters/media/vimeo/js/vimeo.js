@@ -209,7 +209,7 @@ WfMediaAdapter.add('vimeo', {
             // process default values
             var id = '', hash = '', matches = /vimeo\.com\/(?:\w+\/){0,3}((?:[0-9]+\b)(?:\/[a-z0-9]+)?)/.exec(src);
 
-            if (matches && $.type(matches) == 'array') {
+            if (matches && Array.isArray(matches)) {
                 var params = matches[1].split('/');
 
                 var id = params[0];

@@ -278,7 +278,7 @@ WfMediaAdapter.add('youtube', {
         } else {
             var s = /\/?(embed|live|v)?\/([\w-]+)\b/.exec(u.path);
 
-            if (s && $.type(s) === "array") {
+            if (s && Array.isArray(s)) {
                 id = s.pop();
             }
         }
