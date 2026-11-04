@@ -600,6 +600,11 @@ class pkg_jceInstallerScript
             $media . '/tinymce'
         );
 
+        // remove textpattern marked library, now bundled in plugin.js
+        $folders[] = array(
+            JPATH_SITE . '/media/plg_system_jcepro/editor/plugins/textpattern/js'
+        );
+
         // remove exported profile manifests
         $files[] = glob(JPATH_SITE . '/tmp/jce_editor_profile_*.xml') ?: array();
 
