@@ -373,6 +373,9 @@ class pkg_jceInstallerScript
         } catch (Throwable $e) {
         }
 
+        // rebuild the map before anything below can fail
+        $this->rebuildNamespaceMap();
+
         // reset opcache so stale bytecode doesn't require files removed by the upgrade
         if ($route === 'update') {
             $this->resetOpcache();
@@ -524,12 +527,47 @@ class pkg_jceInstallerScript
                 $db->execute();
             }
         }
+    }
 
-        // Rebuild the extension namespace map so autoloading picks up new classes immediately.
-        $app = Factory::getApplication();
+    // force a fresh autoload_psr4.php, eg: plg_extension_jce is only namespaced since 2.9.99.13 and plg_extension_namespacemap may be disabled
+    private function rebuildNamespaceMap()
+    {
+        $file = JPATH_CACHE . '/autoload_psr4.php';
 
-        if (method_exists($app, 'createExtensionNamespaceMap')) {
-            $app->createExtensionNamespaceMap();
+        if (!class_exists(\JNamespacePsr4Map::class)) {
+            \JLoader::register('JNamespacePsr4Map', JPATH_LIBRARIES . '/namespacemap.php');
+        }
+
+        try {
+            $map = new \JNamespacePsr4Map();
+
+            @clearstatcache(true, $file);
+
+            if (function_exists('opcache_invalidate')) {
+                @opcache_invalidate($file, true);
+            }
+
+            $map->create();
+
+            if (function_exists('opcache_invalidate')) {
+                @opcache_invalidate($file, true);
+            }
+
+            $map->load();
+        } catch (\Throwable $e) {
+            // delete the map so Joomla recreates it on the next request
+            if (function_exists('opcache_invalidate')) {
+                @opcache_invalidate($file, true);
+            }
+
+            @unlink($file);
+            @clearstatcache(true, $file);
+
+            $app = Factory::getApplication();
+
+            if (method_exists($app, 'createExtensionNamespaceMap')) {
+                $app->createExtensionNamespaceMap();
+            }
         }
     }
 
