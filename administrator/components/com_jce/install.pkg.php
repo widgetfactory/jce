@@ -684,6 +684,11 @@ class pkg_jceInstallerScript
             JPATH_SITE . '/plugins/system/jcepro/editor/libraries/classes/editor.php'
         );
 
+        // 2.9.99.13 - remove textpattern marked library, now bundled in plugin.js
+        $folders[] = array(
+            JPATH_SITE . '/media/plg_system_jcepro/editor/plugins/textpattern/js'
+        );
+
         // 2.9.70 - remove pro source plugin
         $files[] = array(
             $site . '/editor/plugins/source/config.php',
