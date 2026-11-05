@@ -689,6 +689,11 @@ class pkg_jceInstallerScript
             JPATH_SITE . '/media/plg_system_jcepro/editor/plugins/textpattern/js'
         );
 
+        // 2.9.99.14 - remove legacy jquery folder, moved to vendor in 2.8.0
+        $folders[] = array(
+            $site . '/editor/libraries/jquery'
+        );
+
         // 2.9.70 - remove pro source plugin
         $files[] = array(
             $site . '/editor/plugins/source/config.php',
