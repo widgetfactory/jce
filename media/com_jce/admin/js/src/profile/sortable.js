@@ -105,17 +105,23 @@ const Sortable = (selector, options) => {
             }
 
             // ignore mousedown on an invalid element
-            if (options.ignore && elm.matches(options.ignore)) {
-                return;
+            if (options.ignore) {
+                const ignored = evt.target.closest(options.ignore);
+
+                if (ignored && elm.contains(ignored)) {
+                    return;
+                }
             }
 
             // restrict to handle
             if (options.handle) {
-                if (!elm.closest(options.handle)) {
+                const handle = evt.target.closest(options.handle);
+
+                if (!handle || !elm.contains(handle)) {
                     return;
                 }
 
-                elm = getSortableParentElement(elm, container.children);
+                elm = getSortableParentElement(evt.target, container.children);
             }
 
             // invalid target
