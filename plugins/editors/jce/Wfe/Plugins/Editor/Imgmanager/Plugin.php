@@ -16,7 +16,7 @@ use Wfe\Utility\Utility;
 
 class Plugin extends \Wfe\Editor\Plugin\Manager\BaseManager
 {
-    public $_filetypes = 'jpg,jpeg,png,apng,gif,webp,avif';
+    protected $filetypes = 'jpg,jpeg,png,apng,gif,webp,avif';
 
     protected $name = 'imgmanager';
 
