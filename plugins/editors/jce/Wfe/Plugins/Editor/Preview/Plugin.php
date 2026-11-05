@@ -93,10 +93,10 @@ class Plugin extends \Wfe\Editor\Plugin\AbstractPlugin
         // load system plugins
         PluginHelper::importPlugin('system');
 
+        $page = 0;
+
         // allow this to be skipped as some plugins can cause FATAL errors.
         if ((bool) $this->getParam('process_content', 1)) {
-            $page = 0;
-
             // load content plugins
             PluginHelper::importPlugin('content');
 

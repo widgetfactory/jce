@@ -116,19 +116,7 @@
             // show preview
             DOM.show(preview);
 
-            var query = '',
-                args = {},
-                content = ed.getContent();
-
-            ibis.extend(args, {
-                'data': content,
-                'id': uid()
-            });
-
-            // create query
-            for (var k in args) {
-                query += '&' + k + '=' + encodeURIComponent(args[k]);
-            }
+            var content = ed.getContent();
 
             function update(text) {
                 var doc = iframe.contentWindow.document, css = [];
@@ -163,8 +151,11 @@
             // load preview data
             ibis.util.XHR.send({
                 url: s.site_url + 'index.php?option=com_jce&task=plugin.display&plugin=preview&' + ibis.query,
+                // data is uri encoded as the server rawurldecodes it; id is required for a response
                 data: JSON.stringify({
-                    'method': 'showPreview'
+                    'method': 'showPreview',
+                    'data': encodeURIComponent(content),
+                    'id': uid()
                 }),
                 content_type: 'application/json',
                 success: function (x) {
