@@ -1043,7 +1043,15 @@
         var cells = ed.dom.select('td.mceSelected,th.mceSelected', tableElm);
 
         if (!cells.length) {
-            cells.push(tdElm);
+            if (data.action === 'row') {
+                cells = Array.prototype.slice.call(tdElm.parentNode.cells);
+            } else if (data.action === 'table') {
+                each$3(tableElm.rows, function (tr) {
+                    cells = cells.concat(Array.prototype.slice.call(tr.cells));
+                });
+            } else {
+                cells.push(tdElm);
+            }
         }
 
         // Update all selected cells
@@ -1138,11 +1146,24 @@
         trElm = dom.getParent(ed.selection.getStart(), "tr");
         tableElm = dom.getParent(ed.selection.getStart(), "table");
 
-        var rows = [], selectedCells = dom.select('td.mceSelected,th.mceSelected', trElm);
+        var rows = [], selectedCells = dom.select('td.mceSelected,th.mceSelected', trElm), action = data.action || 'current';
 
-        // only the current row
         if (!selectedCells.length) {
-            rows.push(trElm);
+            if (action === 'current') {
+                rows.push(trElm);
+            } else {
+                // odd/even keep each row in its current section, as in 2.9
+                if (action !== 'all') {
+                    data.skip_parent = true;
+                }
+
+                // snapshot, as a rowtype change moves rows in the live collection
+                each$3(Array.prototype.slice.call(tableElm.rows), function (tr, i) {
+                    if (action === 'all' || (action === 'odd' && i % 2 === 0) || (action === 'even' && i % 2 !== 0)) {
+                        rows.push(tr);
+                    }
+                });
+            }
         } else {
             data.skip_parent = true;
 
@@ -1160,7 +1181,17 @@
         }
 
         each$3(rows, function (tr) {
-            updateRow(ed, tr, data);
+            var rowData = data;
+
+            // merge into existing styles on bulk updates, as updateCells does
+            if (rows.length > 1 && data.style) {
+                var existingStyle = dom.parseStyle(dom.getAttrib(tr, 'style'));
+                rowData = Object.assign({}, data, {
+                    style: dom.serializeStyle(Object.assign(existingStyle, dom.parseStyle(data.style)))
+                });
+            }
+
+            updateRow(ed, tr, rowData);
         });
 
         ed.addVisual();
@@ -1333,7 +1364,6 @@
      * https://www.gnu.org/licenses/gpl-2.0.html
      */
 
-
     ibis.DOM;
         var each$2 = ibis.each;
 
@@ -1435,7 +1465,7 @@
             label: ed.getLang('table.border', 'Border'),
             name: 'border',
             class: 'mceBorderBox',
-            value: ''
+            value: value || ''
         });
     }
 
@@ -1477,7 +1507,6 @@
      * Licensed under the GNU General Public License version 2 or later (GPL v2+):
      * https://www.gnu.org/licenses/gpl-2.0.html
      */
-
 
     var DOM$1 = ibis.DOM,
         Event$1 = ibis.dom.Event,
@@ -2017,6 +2046,7 @@
                     DOM$1.setHTML(this.id + '_insert', label);
 
                     actionCtrl.insertBefore(DOM$1.get(this.id + '_cancel'));
+                    actionCtrl.value('current');
                 },
                 buttons: [
                     {
@@ -2068,7 +2098,8 @@
                             var args = {
                                 style: ed.dom.serializeStyle(styleObj),
                                 rowtype: data.rowtype,
-                                action: data.action || 'current',
+                                // footer control, not collected by tabs.submit()
+                                action: actionCtrl.value() || 'current',
                                 class: data.classes
                             };
 
@@ -2276,7 +2307,8 @@
 
                     DOM$1.setHTML(this.id + '_insert', label);
 
-                     actionCtrl.insertBefore(DOM$1.get(this.id + '_cancel'));
+                    actionCtrl.insertBefore(DOM$1.get(this.id + '_cancel'));
+                    actionCtrl.value('current');
                 },
                 buttons: [
                     {
@@ -2347,7 +2379,8 @@
                             var args = {
                                 style: ed.dom.serializeStyle(styleObj),
                                 celltype: data.celltype,
-                                action: data.action || 'current',
+                                // footer control, not collected by tabs.submit()
+                                action: actionCtrl.value() || 'current',
                                 class: data.classes
                             };
 
@@ -2371,7 +2404,6 @@
      * Licensed under the GNU General Public License version 2 or later (GPL v2+):
      * https://www.gnu.org/licenses/gpl-2.0.html
      */
-
 
     var DOM = ibis.DOM,
         Event = ibis.dom.Event,

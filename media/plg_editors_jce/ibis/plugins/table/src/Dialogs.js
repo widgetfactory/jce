@@ -552,6 +552,7 @@ export function showRowDialog(ed, isBasicDialog) {
                 DOM.setHTML(this.id + '_insert', label);
 
                 actionCtrl.insertBefore(DOM.get(this.id + '_cancel'));
+                actionCtrl.value('current');
             },
             buttons: [
                 {
@@ -603,7 +604,8 @@ export function showRowDialog(ed, isBasicDialog) {
                         var args = {
                             style: ed.dom.serializeStyle(styleObj),
                             rowtype: data.rowtype,
-                            action: data.action || 'current',
+                            // footer control, not collected by tabs.submit()
+                            action: actionCtrl.value() || 'current',
                             class: data.classes
                         };
 
@@ -811,7 +813,8 @@ export function showCellDialog(ed, isBasicDialog) {
 
                 DOM.setHTML(this.id + '_insert', label);
 
-                 actionCtrl.insertBefore(DOM.get(this.id + '_cancel'));
+                actionCtrl.insertBefore(DOM.get(this.id + '_cancel'));
+                actionCtrl.value('current');
             },
             buttons: [
                 {
@@ -882,7 +885,8 @@ export function showCellDialog(ed, isBasicDialog) {
                         var args = {
                             style: ed.dom.serializeStyle(styleObj),
                             celltype: data.celltype,
-                            action: data.action || 'current',
+                            // footer control, not collected by tabs.submit()
+                            action: actionCtrl.value() || 'current',
                             class: data.classes
                         };
 

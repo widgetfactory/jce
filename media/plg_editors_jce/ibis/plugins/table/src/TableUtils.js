@@ -130,7 +130,15 @@ export function updateCells(ed, data) {
     var cells = ed.dom.select('td.mceSelected,th.mceSelected', tableElm);
 
     if (!cells.length) {
-        cells.push(tdElm);
+        if (data.action === 'row') {
+            cells = Array.prototype.slice.call(tdElm.parentNode.cells);
+        } else if (data.action === 'table') {
+            each(tableElm.rows, function (tr) {
+                cells = cells.concat(Array.prototype.slice.call(tr.cells));
+            });
+        } else {
+            cells.push(tdElm);
+        }
     }
 
     // Update all selected cells
@@ -225,11 +233,24 @@ export function updateRows(ed, data) {
     trElm = dom.getParent(ed.selection.getStart(), "tr");
     tableElm = dom.getParent(ed.selection.getStart(), "table");
 
-    var rows = [], selectedCells = dom.select('td.mceSelected,th.mceSelected', trElm);
+    var rows = [], selectedCells = dom.select('td.mceSelected,th.mceSelected', trElm), action = data.action || 'current';
 
-    // only the current row
     if (!selectedCells.length) {
-        rows.push(trElm);
+        if (action === 'current') {
+            rows.push(trElm);
+        } else {
+            // odd/even keep each row in its current section, as in 2.9
+            if (action !== 'all') {
+                data.skip_parent = true;
+            }
+
+            // snapshot, as a rowtype change moves rows in the live collection
+            each(Array.prototype.slice.call(tableElm.rows), function (tr, i) {
+                if (action === 'all' || (action === 'odd' && i % 2 === 0) || (action === 'even' && i % 2 !== 0)) {
+                    rows.push(tr);
+                }
+            });
+        }
     } else {
         data.skip_parent = true;
 
@@ -247,7 +268,17 @@ export function updateRows(ed, data) {
     }
 
     each(rows, function (tr) {
-        updateRow(ed, tr, data);
+        var rowData = data;
+
+        // merge into existing styles on bulk updates, as updateCells does
+        if (rows.length > 1 && data.style) {
+            var existingStyle = dom.parseStyle(dom.getAttrib(tr, 'style'));
+            rowData = Object.assign({}, data, {
+                style: dom.serializeStyle(Object.assign(existingStyle, dom.parseStyle(data.style)))
+            });
+        }
+
+        updateRow(ed, tr, rowData);
     });
 
     ed.addVisual();
