@@ -1637,7 +1637,13 @@
           return tu;
         }
 
-        output = self.toRelPath(self.path, uri.path);
+        // an empty path after the host is the root, eg: https://domain.tld#anchor
+        output = self.toRelPath(self.path, uri.path || '/');
+
+        // keep the directory so the query or anchor is not resolved against the current page
+        if (!output && (uri.query || uri.anchor)) {
+          output = './';
+        }
 
         // Add query
         if (uri.query) {
@@ -1854,6 +1860,9 @@
 
           if (self.path) {
             s += self.path;
+          } else if (noProtoHost) {
+            // keep the root when the host is removed
+            s += '/';
           }
 
           if (self.query) {
@@ -6585,6 +6594,13 @@
 
       // Caption can't have tables
       delete schema.caption.children.table;
+
+      // HTML5 allows a div to wrap dt/dd groups in a dl
+      if (type != "html4") {
+        schema.dl.children.div = {};
+        schema.div.children.dt = {};
+        schema.div.children.dd = {};
+      }
 
       // TODO: LI:s can only have value if parent is OL
 
