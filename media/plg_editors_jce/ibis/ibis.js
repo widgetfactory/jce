@@ -1637,7 +1637,13 @@
           return tu;
         }
 
-        output = self.toRelPath(self.path, uri.path);
+        // an empty path after the host is the root, eg: https://domain.tld#anchor
+        output = self.toRelPath(self.path, uri.path || '/');
+
+        // keep the directory so the query or anchor is not resolved against the current page
+        if (!output && (uri.query || uri.anchor)) {
+          output = './';
+        }
 
         // Add query
         if (uri.query) {
@@ -1854,6 +1860,9 @@
 
           if (self.path) {
             s += self.path;
+          } else if (noProtoHost) {
+            // keep the root when the host is removed
+            s += '/';
           }
 
           if (self.query) {
@@ -6585,6 +6594,13 @@
 
       // Caption can't have tables
       delete schema.caption.children.table;
+
+      // HTML5 allows a div to wrap dt/dd groups in a dl
+      if (type != "html4") {
+        schema.dl.children.div = {};
+        schema.div.children.dt = {};
+        schema.div.children.dd = {};
+      }
 
       // TODO: LI:s can only have value if parent is OL
 
@@ -11652,6 +11668,7 @@
    * DOMPurify v3.x (c) Cure53 — licensed under MPL-2.0 (compatible with GPL-2+).
    * See https://github.com/cure53/DOMPurify/blob/main/LICENSE
    */
+
 
   /**
    * Copyright (c) 2025 Ryan Demmer
@@ -17438,9 +17455,6 @@
       var parents = [];
 
       for (node = node.parentNode; node != rootNode; node = node.parentNode) {
-        if (predicate && predicate(node)) {
-          break;
-        }
 
         parents.push(node);
       }
@@ -20452,6 +20466,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   const internalHtmlMimeType = internalHtmlMime();
 
   var clipboardData = {
@@ -20496,11 +20511,11 @@
 
   var FakeClipboard = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    hasData: hasData,
+    clearData: clearData,
     getData: getData$1,
     getTimestamp: getTimestamp,
-    setData: setData,
-    clearData: clearData
+    hasData: hasData,
+    setData: setData
   });
 
   /**
@@ -20512,6 +20527,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var noop = function () { };
 
@@ -20732,7 +20748,7 @@
   }
 
   function processStylesheets(content, embed_stylesheet) {
-    var div = DOM.create('div', {}, content), styles = {}, css = '';
+    var div = DOM.create('div', {}, content), styles = {};
 
     styles = ibis.extend(styles, parseCSS(content));
 
@@ -20752,16 +20768,10 @@
         return true;
       }
       
-      if (!embed_stylesheet) {
+      {
         DOM.setStyles(DOM.select(selector, div), value.styles);
-      } else {
-        css += value.text;
       }
     });
-
-    if (css) {
-      div.prepend(DOM.create('style', { type: 'text/css' }, css));
-    }
 
     content = div.innerHTML;
 
@@ -20945,6 +20955,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$5 = ibis.each;
 
@@ -21317,6 +21328,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$4 = ibis.each,
       Schema = ibis.html.Schema,
@@ -22255,6 +22267,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var each$3 = ibis.each;
   var isIE$1 = ibis.isIE || ibis.isIE12;
 
@@ -22677,6 +22690,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var each$2 = ibis.each,
       VK = ibis.VK,
@@ -23366,6 +23380,7 @@
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
 
+
   var RangeUtils = ibis.dom.RangeUtils, Delay = ibis.util.Delay;
 
   var getCaretRangeFromEvent = function (editor, e) {
@@ -23746,6 +23761,7 @@
    * Licensed under the GNU General Public License version 2 or later (GPL v2+):
    * https://www.gnu.org/licenses/gpl-2.0.html
    */
+
 
   var Dispatcher = ibis.util.Dispatcher;
 
@@ -24396,7 +24412,7 @@
 
         timer = setTimeout(function () {
           callback.apply(this, args);
-        }, time || 0);
+        }, 0);
       };
 
       func.stop = function () {
@@ -44143,7 +44159,7 @@
             }
 
             // Never split block elements if the format is mixed
-            if (split && (!format.mixed || !isBlock(formatRoot))) {
+            if ((!format.mixed || !isBlock(formatRoot))) {
               container = dom.split(formatRoot, container);
             }
 
@@ -44158,7 +44174,7 @@
         }
 
         function splitToFormatRoot(container) {
-          return wrapAndSplit(findFormatRoot(container), container, container, true);
+          return wrapAndSplit(findFormatRoot(container), container, container);
         }
 
         function unwrap(start) {
@@ -48758,7 +48774,7 @@
   })();
 
   function split(str, delim) {
-      return (str || '').split(delim || ',');
+      return (str || '').split(',');
   }
 
   // list of HTML tags
@@ -53463,7 +53479,7 @@
       var count = 0;
 
       function uniqueId(prefix) {
-          return (prefix || 'blobid') + (count++);
+          return ('blobid') + (count++);
       }
 
       function isSupportedImage(value) {
