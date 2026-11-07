@@ -34,6 +34,11 @@ class Joomlart extends CMSPlugin implements SubscriberInterface
         // add base template.css file
         $files[] = 'templates/' . $template->name . '/css/template.css';
 
+        // add custom.css
+        if (is_file($path . '/css/custom.css')) {
+            $files[] = 'templates/' . $template->name . '/css/custom.css';
+        }
+
         $items = array();
             
         $list = glob(JPATH_SITE . '/media/t4/css/*.css');

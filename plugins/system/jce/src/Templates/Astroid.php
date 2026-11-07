@@ -20,25 +20,45 @@ class Astroid extends CMSPlugin implements SubscriberInterface
             'onWfGetTemplateStylesheets' => 'onWfGetTemplateStylesheets'
         ];
     }
-    
+
     public function onWfGetTemplateStylesheets(Event $event) : void
     {
         $files = $event->getArgument('files');
         $template = $event->getArgument('template');
-                   
-        $path = JPATH_SITE . '/templates/' . $template->name;
 
-        if (!is_dir($path . '/astroid')) {
+        // Joomla 4+ media folder first, then legacy template folder
+        foreach (array('media/templates/site/', 'templates/') as $base) {
+            $url = $base . $template->name;
+            $path = JPATH_SITE . '/' . $url;
+
+            if (!is_dir($path . '/astroid')) {
+                continue;
+            }
+
+            // add template css file (bootstrap)
+            if (is_file($path . '/css/template.css')) {
+                $files[] = $url . '/css/template.css';
+            }
+
+            $items = glob($path . '/css/compiled-*.css');
+
+            if (!empty($items)) {
+                // newest compiled file only
+                usort($items, function ($a, $b) {
+                    return filemtime($b) - filemtime($a);
+                });
+
+                $files[] = $url . '/css/' . basename($items[0]);
+            }
+
+            // add custom css file
+            if (is_file($path . '/css/custom.css')) {
+                $files[] = $url . '/css/custom.css';
+            }
+
+            $event->setArgument('files', $files);
+
             return;
         }
-            
-        $items = glob($path . '/css/compiled-*.css');
-
-        foreach($items as $item) {
-            // add compiled css file
-            $files[] = 'templates/' . $template->name . '/css/' . basename($item);
-        }
-
-        $event->setArgument('files', $files);
     }
 }

@@ -35,6 +35,9 @@ class Helix extends CMSPlugin implements SubscriberInterface
         // add bootstrap
         $files[] = 'templates/' . $template->name . '/css/bootstrap.min.css';
 
+        // add font-awesome
+        $files[] = 'templates/' . $template->name . '/css/font-awesome.min.css';
+
         // add base template.css file
         $files[] = 'templates/' . $template->name . '/css/template.css';
 
@@ -47,6 +50,11 @@ class Helix extends CMSPlugin implements SubscriberInterface
             if (isset($data->preset)) {
                 $files[] = 'templates/' . $template->name . '/css/presets/' . $data->preset . '.css';
             }
+        }
+
+        // add custom.css
+        if (is_file($path . '/css/custom.css')) {
+            $files[] = 'templates/' . $template->name . '/css/custom.css';
         }
 
         $event->setArgument('files', $files);
