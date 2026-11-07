@@ -14,12 +14,12 @@ class WfTemplateYootheme extends CMSPlugin
     {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
-        // not a yootheme template
-        if ($template->name != 'yootheme') {
-            // not a warp template
-            if (!is_dir($path . '/warp')) {
-                return false;
-            }
+        // yootheme pro, detected by name or by its package folders
+        $isYootheme = $template->name === 'yootheme' || is_dir($path . '/packages/theme-joomla') || is_dir($path . '/vendor/yootheme');
+
+        // not a yootheme / warp template
+        if (!is_dir($path . '/warp') && !$isYootheme) {
+            return false;
         }
 
         // legacy "warp" templates
@@ -57,8 +57,15 @@ class WfTemplateYootheme extends CMSPlugin
         }
 
         // youtheme pagebuilder
-        if ($template->name == 'yootheme') {
-            $files[] = 'templates/' . $template->name . '/css/theme.css';
+        if ($isYootheme) {
+            // compiled per-style stylesheet, eg: theme.16.css, falling back to theme.css
+            $file = 'css/theme.' . (int) ($template->id ?? 0) . '.css';
+
+            if (!is_file($path . '/' . $file)) {
+                $file = 'css/theme.css';
+            }
+
+            $files[] = 'templates/' . $template->name . '/' . $file;
 
             // add custom css file
             if (is_file($path . '/css/custom.css')) {
