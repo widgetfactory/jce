@@ -142,7 +142,7 @@ abstract class JcePluginsHelper
 
                         if ($xml->icon->attributes()) {
                             foreach ($xml->icon->attributes() as $key => $value) {
-                                $attribs->$key = $value;
+                                $attribs->$key = (string) $value;
                             }
                         }
 
