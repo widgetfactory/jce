@@ -19,6 +19,11 @@ use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Plugin\Fields\MediaJce\Extension\MediaJce;
 
+// register the namespace if the namespace map is out of date, eg: after an update
+if (!class_exists(MediaJce::class)) {
+    \JLoader::registerNamespace('Joomla\\Plugin\\Fields\\MediaJce', __DIR__ . '/../src');
+}
+
 return new class () implements ServiceProviderInterface {
     /**
      * Registers the service provider with a DI container.

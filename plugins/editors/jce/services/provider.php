@@ -19,6 +19,11 @@ use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Plugin\Editors\Jce\Extension\Jce;
 
+// register the namespace if the namespace map is out of date, eg: after an update
+if (!class_exists(Jce::class)) {
+    \JLoader::registerNamespace('Joomla\\Plugin\\Editors\\Jce', __DIR__ . '/../src');
+}
+
 return new class() implements ServiceProviderInterface
 {
     /**

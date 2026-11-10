@@ -22,6 +22,12 @@ use Joomla\DI\ServiceProviderInterface;
 
 use Joomla\Component\Jce\Administrator\Extension\Jce;
 
+// register the namespace if the namespace map is out of date, eg: after an update
+if (!class_exists(Jce::class)) {
+    \JLoader::registerNamespace('Joomla\\Component\\Jce\\Administrator', __DIR__ . '/../src');
+    \JLoader::registerNamespace('Joomla\\Component\\Jce\\Site', JPATH_SITE . '/components/com_jce/src');
+}
+
 /**
  * The jce service provider.
  *

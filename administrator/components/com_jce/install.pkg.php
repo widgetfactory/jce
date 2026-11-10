@@ -282,8 +282,8 @@ class pkg_jceInstallerScript
 
         $extension = new ExtensionTable($this->getDatabase());
 
-        // disable content, system and quickicon plugins. This is to prevent errors if the install fails and some core files are missing
-        foreach (array('system', 'quickicon') as $folder) {
+        // disable plugins so a failed install doesn't leave them loading missing files, re-enabled in install()
+        foreach (array('system', 'quickicon', 'extension', 'content') as $folder) {
             $plugin = $extension->find(array(
                 'type' => 'plugin',
                 'element' => 'jce',
@@ -291,7 +291,7 @@ class pkg_jceInstallerScript
             ));
 
             if ($plugin) {
-                $extension->publish(null, 0);
+                $extension->publish($plugin, 0);
             }
         }
 
@@ -303,7 +303,7 @@ class pkg_jceInstallerScript
         ));
 
         if ($plugin) {
-            $extension->publish(null, 0);
+            $extension->publish($plugin, 0);
         }
 
         // clean up fields in JCE Pro before install
@@ -501,8 +501,8 @@ class pkg_jceInstallerScript
                 }
             }
 
-            // enable content, system and quickicon plugins
-            foreach (array('content', 'system', 'quickicon') as $folder) {
+            // enable the plugins disabled in preflight
+            foreach (array('content', 'system', 'quickicon', 'extension') as $folder) {
                 $plugin = $extension->find(array(
                     'type' => 'plugin',
                     'element' => 'jce',
@@ -510,7 +510,7 @@ class pkg_jceInstallerScript
                 ));
 
                 if ($plugin) {
-                    $extension->publish(null, 1);
+                    $extension->publish($plugin, 1);
                 }
             }
 

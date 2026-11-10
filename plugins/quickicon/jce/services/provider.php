@@ -16,6 +16,11 @@ use Joomla\DI\ServiceProviderInterface;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Plugin\Quickicon\Jce\Extension\Jce;
 
+// register the namespace if the namespace map is out of date, eg: after an update
+if (!class_exists(Jce::class)) {
+    \JLoader::registerNamespace('Joomla\\Plugin\\Quickicon\\Jce', __DIR__ . '/../src');
+}
+
 return new class() implements ServiceProviderInterface
 {
     public function register(Container $container)
