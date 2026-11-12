@@ -431,6 +431,8 @@ class WFEditor
             'query' => array(
                 $token => 1,
                 'context' => $this->context,
+                // carried by every editor request, see components/com_jce/jce.php
+                'wf_lang' => $this->getLanguageTag(),
             ),
         );
 
@@ -566,7 +568,7 @@ class WFEditor
         // language - the endpoint requires a valid profile
         if (is_object($this->profile)) {
             // not "lang", which the Language Filter treats as its own
-            $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&wf_lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
+            $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&' . http_build_query((array) $settings['query']));
         }
 
         $this->getCustomConfig($settings);

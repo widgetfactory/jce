@@ -11,6 +11,9 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Language;
+use Joomla\CMS\Language\LanguageFactoryInterface;
+use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\MVC\Controller\BaseController;
 
 $app = Factory::getApplication();
@@ -38,6 +41,24 @@ require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 // write the normalised task back so the dispatch below resolves the controller that
 // was actually gated, not the raw mixed-case value
 $app->input->set('task', $task);
+
+// editor requests have no language prefix, so the Language Filter runs them in the default language
+$wfLang = $app->input->getCmd('wf_lang', '');
+
+if (preg_match('/^[a-z]{2,3}-[A-Z]{2}$/', $wfLang) && $wfLang !== $app->getLanguage()->getTag() && LanguageHelper::exists($wfLang, JPATH_SITE)) {
+    $debug = (bool) $app->get('debug_lang');
+
+    if (interface_exists(LanguageFactoryInterface::class)) {
+        $language = Factory::getContainer()->get(LanguageFactoryInterface::class)->createLanguage($wfLang, $debug);
+    } else {
+        $language = Language::getInstance($wfLang, $debug);
+    }
+
+    $app->loadLanguage($language);
+    Factory::$language = $language;
+
+    $language->load('com_jce', JPATH_BASE) || $language->load('com_jce', JPATH_COMPONENT);
+}
 
 // Dispatch using the frontend controller path only.
 // The controller stubs in controller/ load the admin classes, which carry

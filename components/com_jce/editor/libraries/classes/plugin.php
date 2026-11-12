@@ -295,7 +295,7 @@ class WFEditorPlugin extends CMSObject
         $query = array(
             'task' => 'plugin.loadlanguages', 
             // not "lang", which the Language Filter treats as its own
-            'wf_lang' => WFLanguage::getCode()
+            'wf_lang' => WFLanguage::getTag()
         );
 
         // ini language
