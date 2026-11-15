@@ -127,8 +127,8 @@
             var se = ed.selection,
                 n = se.getNode();
 
-            // remove empty Definition List
-            switch (cmd) {
+            // remove associated anchor
+            switch (cmd.toLowerCase()) {
                 case 'unlink':
                     if (isAnchor(n)) {
                         var id = n.id || n.name || '';

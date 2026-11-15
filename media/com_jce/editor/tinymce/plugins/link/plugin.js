@@ -446,7 +446,10 @@
                 ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
                     m.addSeparator();
                     m.add({ title: 'link.desc', icon: 'link', cmd: 'mceLink', ui: true });
-                    if ((e.nodeName == 'A' && !ed.dom.getAttrib(e, 'name'))) {
+
+                    var node = ed.dom.getParent(e, 'a');
+
+                    if (node) {
                         m.add({ title: 'advanced.unlink_desc', icon: 'unlink', cmd: 'UnLink' });
                     }
                 });
@@ -454,7 +457,7 @@
         });
 
         ed.onNodeChange.add(function (ed, cm, n, co) {
-            var link = ed.dom.getParent(n, 'a[href]'), anchor = link && ed.dom.hasClass(link, 'mce-item-anchor');
+            var link = ed.dom.getParent(n, 'a'), anchor = link && ed.dom.hasClass(link, 'mce-item-anchor');
 
             // set active if link
             cm.setActive('unlink', link);
@@ -539,7 +542,7 @@
 
                     var node = ed.dom.getParent(selection.getNode(), 'a[href]');
 
-                    if (isAnchor(node)) {
+                    if (node) {
                         selection.select(node);
                         value = node.getAttribute('href');
                         DOM.setAttrib(ed.id + '_link_unlink', 'disabled', null);
