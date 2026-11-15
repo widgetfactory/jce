@@ -266,11 +266,16 @@ var WfLightboxAdapter = {
         args = args || {};
 
         if (!this.isEnabled()) {
-            // If disabled and node has a lightbox, remove it
+            // If disabled, only strip a link that is actually a lightbox; a plain link must survive
             n = ed.dom.getParent(n, 'A');
 
             if (n) {
-                self.removeLightbox(n);
+                jQuery.each(this.items, function (name) {
+                    if (self.isLightbox(n, name)) {
+                        self.removeLightbox(n);
+                        return false;
+                    }
+                });
             }
 
             return;
