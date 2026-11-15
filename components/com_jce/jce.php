@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -15,8 +16,16 @@ use Joomla\CMS\Language\Language;
 use Joomla\CMS\Language\LanguageFactoryInterface;
 use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Component\ComponentHelper;
 
 $app = Factory::getApplication();
+
+// exit early for guests
+if (Factory::getUser()->guest) {
+    if (!ComponentHelper::getParams('com_jce')->get('allow_profile_guests', 0)) {
+        throw new \Exception('Restricted', 403);
+    }
+}
 
 // The task value should only ever be a string
 if (!is_string($app->input->get('task', '', 'raw'))) {
