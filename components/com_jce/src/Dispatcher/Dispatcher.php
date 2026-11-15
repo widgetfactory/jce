@@ -15,6 +15,7 @@ use Joomla\CMS\Dispatcher\ComponentDispatcher;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\LanguageFactoryInterface;
 use Joomla\CMS\Language\LanguageHelper;
+use Joomla\CMS\Component\ComponentHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -26,6 +27,13 @@ class Dispatcher extends ComponentDispatcher
 
     public function dispatch(): void
     {
+        // exit early for guests
+        if ($this->app->getIdentity()->guest) {
+            if (!ComponentHelper::getParams('com_jce')->get('allow_profile_guests', 0)) {
+                throw new NotAllowed('Access denied', 403);
+            }
+        }
+    
         $input = $this->app->getInput();
 
         // The array form of the task variable (?task[x]=1) is a legacy shape that
