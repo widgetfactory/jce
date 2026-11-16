@@ -18,6 +18,7 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\Database\ParameterType;
 use Joomla\Registry\Registry;
 
 use Wfe\Helper\ArrayHelper;
@@ -97,6 +98,76 @@ class ProfileModel extends AdminModel
     public function getTable($type = 'Profiles', $prefix = '', $config = [])
     {
         return parent::getTable($type, $prefix, $config);
+    }
+
+    /**
+     * Save the drag & drop order.
+     *
+     * @param   array  $pks    Profile ids
+     * @param   array  $order  Ordering values, matched to $pks by index
+     *
+     * @return  bool
+     */
+    public function saveorder($pks = [], $order = null)
+    {
+        if (!$this->canEditState(null)) {
+            $this->setError(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
+            return false;
+        }
+
+        // update the column directly: Table::reorder() renumbers by id where ROW_NUMBER() is emulated (J4 database package)
+        $db = $this->getDatabase();
+
+        $pks   = array_values(array_map('intval', (array) $pks));
+        $order = array_values(array_map('intval', (array) $order));
+
+        try {
+            foreach ($pks as $i => $pk) {
+                if ($pk && isset($order[$i])) {
+                    $this->updateOrdering($pk, $order[$i]);
+                }
+            }
+
+            // renumber 1..n to close gaps, ties resolved by id
+            $query = $db->getQuery(true)
+                ->select($db->quoteName(['id', 'ordering']))
+                ->from($db->quoteName('#__wf_profiles'))
+                ->order([$db->quoteName('ordering') . ' ASC', $db->quoteName('id') . ' ASC']);
+
+            foreach ($db->setQuery($query)->loadObjectList() as $i => $row) {
+                if ((int) $row->ordering !== $i + 1) {
+                    $this->updateOrdering((int) $row->id, $i + 1);
+                }
+            }
+        } catch (\RuntimeException $e) {
+            $this->setError($e->getMessage());
+            return false;
+        }
+
+        $this->cleanCache();
+
+        return true;
+    }
+
+    /**
+     * Set a single profile's ordering value.
+     *
+     * @param   int  $id        Profile id
+     * @param   int  $ordering  Ordering value
+     *
+     * @return  void
+     */
+    private function updateOrdering(int $id, int $ordering): void
+    {
+        $db    = $this->getDatabase();
+        $query = $db->getQuery(true)
+            ->update($db->quoteName('#__wf_profiles'))
+            ->set($db->quoteName('ordering') . ' = :ordering')
+            ->where($db->quoteName('id') . ' = :id')
+            ->bind(':ordering', $ordering, ParameterType::INTEGER)
+            ->bind(':id', $id, ParameterType::INTEGER);
+
+        $db->setQuery($query)->execute();
     }
 
     /**

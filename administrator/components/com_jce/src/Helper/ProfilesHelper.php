@@ -144,6 +144,10 @@ abstract class ProfilesHelper
 
         $filter = InputFilter::getInstance();
 
+        // identity can be null during install, eg: CLI
+        $userId = (int) ($app->getIdentity()->id ?? 0);
+        $now    = Factory::getDate()->toSql();
+
         // only these elements may be assigned to the table
         $allowedKeys = ['name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params'];
 
@@ -198,6 +202,11 @@ abstract class ProfilesHelper
             if (!isset($table->custom)) {
                 $table->custom = '';
             }
+
+            $table->created     = $now;
+            $table->created_by  = $userId;
+            $table->modified    = $now;
+            $table->modified_by = $userId;
 
             if (!$table->store()) {
                 $app->enqueueMessage($table->getError(), 'error');
