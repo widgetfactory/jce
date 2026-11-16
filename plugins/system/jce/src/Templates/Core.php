@@ -51,6 +51,11 @@ class Core extends CMSPlugin implements SubscriberInterface
             return;
         }
 
+        // cassiopeia and its child templates load fontawesome as a dependency
+        if (($template->name === 'cassiopeia' || ($template->parent ?? '') === 'cassiopeia') && is_file(JPATH_SITE . '/media/system/css/joomla-fontawesome.min.css')) {
+            $files[] = 'media/system/css/joomla-fontawesome.min.css';
+        }
+
         // parent template stylesheets, eg: child template of cassiopeia
         if (!empty($template->parent)) {
             foreach (array('template.css', 'user.css') as $name) {
