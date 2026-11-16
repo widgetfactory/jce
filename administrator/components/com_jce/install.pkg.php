@@ -526,6 +526,26 @@ class pkg_jceInstallerScript
                 $db->setQuery($query);
                 $db->execute();
             }
+
+            // add created/modified tracking columns missing from installs older than 2.9.99.10
+            if (strpos($db->getName(), 'mysql') !== false) {
+                $db->setQuery("DESCRIBE #__wf_profiles");
+                $existing = array_column($db->loadObjectList(), 'Field');
+
+                $cols = [
+                    'created'     => 'DATETIME NULL DEFAULT NULL',
+                    'created_by'  => 'INT UNSIGNED NOT NULL DEFAULT 0',
+                    'modified'    => 'DATETIME NULL DEFAULT NULL',
+                    'modified_by' => 'INT UNSIGNED NOT NULL DEFAULT 0',
+                ];
+
+                foreach ($cols as $col => $def) {
+                    if (!in_array($col, $existing, true)) {
+                        $db->setQuery("ALTER TABLE #__wf_profiles ADD COLUMN " . $db->quoteName($col) . " " . $def);
+                        $db->execute();
+                    }
+                }
+            }
         }
     }
 
