@@ -33,7 +33,7 @@ class Dispatcher extends ComponentDispatcher
                 throw new NotAllowed('Access denied', 403);
             }
         }
-    
+        
         $input = $this->app->getInput();
 
         // The array form of the task variable (?task[x]=1) is a legacy shape that
