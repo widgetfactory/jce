@@ -39,6 +39,11 @@ class WfTemplateCore extends CMSPlugin
             return false;
         }
 
+        // cassiopeia and its child templates load fontawesome as a dependency
+        if (($template->name === 'cassiopeia' || ($template->parent ?? '') === 'cassiopeia') && is_file(JPATH_SITE . '/media/system/css/joomla-fontawesome.min.css')) {
+            $files[] = 'media/system/css/joomla-fontawesome.min.css';
+        }
+
         if ($template->parent) {
             foreach (array('template.css', 'user.css') as $name) {
                 $file = $this->findFile($template->parent, $name);
