@@ -1048,6 +1048,11 @@ abstract class Utility
             return $isUTF8 ? $string : utf8_encode($string);
         }
 
+        // valid UTF-8 is returned as-is - mb_detect_encoding's heuristic (PHP 8.1+) misreads combining marks (NFD) as ISO-8859-1
+        if (mb_check_encoding($string, 'UTF-8')) {
+            return $string;
+        }
+
         // Try to detect the encoding
         $encoding = mb_detect_encoding($string, ['UTF-8', 'ISO-8859-1', 'Windows-1252', 'ASCII'], true);
 
