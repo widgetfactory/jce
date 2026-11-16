@@ -59,7 +59,7 @@ class JceModelProfiles extends ListModel
      * @note    Calling getState in this method will result in recursion.
      * @since   1.6
      */
-    protected function populateState($ordering = 'id', $direction = 'asc')
+    protected function populateState($ordering = 'ordering', $direction = 'asc')
     {
         // Load the filter state.
         $this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
@@ -163,6 +163,9 @@ class JceModelProfiles extends ListModel
                 '*'
             )
         );
+
+        // subquery, not a join, so the unqualified column names below stay unambiguous
+        $query->select('(SELECT ' . $db->quoteName('u.name') . ' FROM ' . $db->quoteName('#__users', 'u') . ' WHERE ' . $db->quoteName('u.id') . ' = ' . $db->quoteName('#__wf_profiles.checked_out') . ') AS ' . $db->quoteName('editor'));
 
         $query->from($db->quoteName('#__wf_profiles'));
 

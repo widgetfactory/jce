@@ -65,6 +65,15 @@ class JceControllerProfiles extends AdminController
         return parent::saveorder();
     }
 
+    public function saveOrderAjax()
+    {
+        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+
+        $this->assertAuthorised('jce.profiles');
+
+        return parent::saveOrderAjax();
+    }
+
     public function reorder()
     {
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));

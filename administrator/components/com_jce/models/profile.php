@@ -92,6 +92,68 @@ class JceModelProfile extends AdminModel
     }
 
     /**
+     * Save the drag & drop order.
+     *
+     * @param array $pks   Profile ids
+     * @param array $order Ordering values, matched to $pks by index
+     *
+     * @return bool
+     */
+    public function saveorder($pks = array(), $order = null)
+    {
+        if (!$this->canEditState(null)) {
+            $this->setError(Text::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
+            return false;
+        }
+
+        // update the column directly: Table::reorder() renumbers by id where ROW_NUMBER() is emulated (J3, older J4)
+        $db = $this->getDbo();
+
+        $pks = array_values(array_map('intval', (array) $pks));
+        $order = array_values(array_map('intval', (array) $order));
+
+        try {
+            foreach ($pks as $i => $pk) {
+                if (!$pk || !isset($order[$i])) {
+                    continue;
+                }
+
+                $query = $db->getQuery(true)
+                    ->update($db->quoteName('#__wf_profiles'))
+                    ->set($db->quoteName('ordering') . ' = ' . $order[$i])
+                    ->where($db->quoteName('id') . ' = ' . $pk);
+                $db->setQuery($query)->execute();
+            }
+
+            // renumber 1..n to close gaps, ties resolved by id
+            $query = $db->getQuery(true)
+                ->select($db->quoteName(array('id', 'ordering')))
+                ->from($db->quoteName('#__wf_profiles'))
+                ->order($db->quoteName('ordering') . ' ASC, ' . $db->quoteName('id') . ' ASC');
+            $rows = $db->setQuery($query)->loadObjectList();
+
+            foreach ($rows as $i => $row) {
+                if ((int) $row->ordering === $i + 1) {
+                    continue;
+                }
+
+                $query = $db->getQuery(true)
+                    ->update($db->quoteName('#__wf_profiles'))
+                    ->set($db->quoteName('ordering') . ' = ' . ($i + 1))
+                    ->where($db->quoteName('id') . ' = ' . (int) $row->id);
+                $db->setQuery($query)->execute();
+            }
+        } catch (\RuntimeException $e) {
+            $this->setError($e->getMessage());
+            return false;
+        }
+
+        $this->cleanCache();
+
+        return true;
+    }
+
+    /**
      * Returns a Table object, always creating it.
      *
      * @param string  $type   The table type to instantiate

@@ -11,7 +11,6 @@
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
@@ -22,6 +21,10 @@ HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 HTMLHelper::_('behavior.multiselect');
 
 $user = Factory::getUser();
+$userId = (int) $user->id;
+$canEdit = $user->authorise('core.edit', 'com_jce');
+$canEditState = $user->authorise('core.edit.state', 'com_jce');
+$canAdmin = $user->authorise('core.manage', 'com_checkin');
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn = $this->escape($this->state->get('list.direction'));
 
@@ -76,17 +79,15 @@ if ($saveOrder) {
                         </thead>
                         <tfoot>
                             <tr>
-                                <td colspan="8">
+                                <td colspan="6">
                                     <?php echo $this->pagination->getListFooter(); ?>
                                 </td>
                             </tr>
                         </tfoot>
                         <tbody>
                         <?php foreach ($this->items as $i => $item):
-    $ordering = ($listOrder == 'ordering');
-    $canEdit = $user->authorise('core.edit', 'com_jce');
-    $canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $user->get('id') || $item->checked_out == 0;
-    $canChange = $user->authorise('core.edit.state', 'com_jce') && $canCheckin;
+    $canCheckin = $canAdmin || (int) $item->checked_out === $userId || !$item->checked_out;
+    $canChange = $canEditState && $canCheckin;
     ?>
 	                            <tr class="row<?php echo $i % 2; ?>">
 	                                <td class="order nowrap center hidden-phone text-center d-none d-md-table-cell">
@@ -103,7 +104,7 @@ if ($saveOrder) {
                                         <span class="icon-menu" aria-hidden="true"></span>
                                     </span>
                                     <?php if ($canChange && $saveOrder): ?>
-                                        <input type="text" style="display:none" name="order[]" size="5" value="<?php echo $item->ordering; ?>" class="width-20 text-area-order">
+                                        <input type="text" style="display:none" name="order[]" size="5" value="<?php echo (int) $item->ordering; ?>" class="width-20 text-area-order">
                                     <?php endif;?>
                                 </td>
                                 <td class="center text-center">
@@ -114,14 +115,14 @@ if ($saveOrder) {
                                 </td>
                                 <td>
                                     <?php if ($item->checked_out): ?>
-                                        <?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->checked_out, $item->checked_out_time, 'profiles.', $canCheckin); ?>
+                                        <?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'profiles.', $canCheckin); ?>
                                     <?php endif;?>
                                     <?php if ($canEdit): ?>
                                         <?php $editIcon = $item->checked_out ? '' : '<span class="mr-2" aria-hidden="true"></span>';?>
-                                        <a class="hasTooltip" href="<?php echo Route::_('index.php?option=com_jce&task=profile.edit&id=' . (int) $item->id); ?>" title="<?php echo Text::_('JACTION_EDIT'); ?> <?php echo $this->escape(addslashes($item->name)); ?>">
-                                            <?php echo $editIcon; ?><?php echo $item->name; ?></a>
+                                        <a class="hasTooltip" href="<?php echo Route::_('index.php?option=com_jce&task=profile.edit&id=' . (int) $item->id); ?>" title="<?php echo Text::_('JACTION_EDIT'); ?> <?php echo $this->escape($item->name); ?>">
+                                            <?php echo $editIcon; ?><?php echo $this->escape($item->name); ?></a>
                                     <?php else: ?>
-                                            <?php echo $item->name; ?>
+                                            <?php echo $this->escape($item->name); ?>
                                     <?php endif;?>
                                 </td>
                                 <td class="nowrap hidden-phone d-none d-md-table-cell text-left">
@@ -140,6 +141,8 @@ if ($saveOrder) {
                 <input type="hidden" name="boxchecked" value="0" />
                 <?php echo HTMLHelper::_('form.token'); ?>
             </div>
+        <?php if (!empty($this->sidebar)): ?>
         </div>
+        <?php endif;?>
     </div>
 </form>
