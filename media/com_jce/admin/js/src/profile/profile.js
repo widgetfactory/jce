@@ -223,6 +223,15 @@ function init() {
             elm.classList.add('isdirty');
         });
 
+        // minicolors (Joomla color field) only fires jQuery change events, re-dispatch as native
+        if (window.jQuery) {
+            window.jQuery(form).on('change', '.minicolors', function (e) {
+                if (e.isTrigger) {
+                    this.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+        }
+
         Layout.init(form);
     }
 
