@@ -61,7 +61,7 @@ class MediaAdapter extends \Wfe\Adapter\AbstractAdapter
      */
     public function loadTemplate($name, $tpl = '')
     {
-        $path = WF_PLUGINS . '/Media/' . $name;
+        $path = WF_PLUGINS . '/Media/' . ucfirst($name);
 
         $output = '';
 
