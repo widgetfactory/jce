@@ -18284,6 +18284,10 @@
   					return false;
   				}
 
+  				function isLink(node) {
+  					return node && node.nodeName === 'A' && node.hasAttribute('href');
+  				}
+
   				function isPrevNode(node, name) {
   					return node.previousSibling && node.previousSibling.nodeName == name;
   				}
@@ -18371,6 +18375,13 @@
   								return;
   							}
   						}
+  					}
+
+  					// Leave a collapsed caret placed directly before or after a link alone, eg: a <a>b</a>|
+  					// This is a valid inline position, the same as in a block, and resolving it would move
+  					// the caret back inside the link when using the arrow keys to move out of it (see Quirks inlineBoundary)
+  					if (collapsed && (isLink(container.childNodes[offset - 1]) || isLink(container.childNodes[offset]))) {
+  						return;
   					}
 
   					// Resolve the index
