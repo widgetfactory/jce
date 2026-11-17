@@ -2036,6 +2036,13 @@ input.colour {
   right: inherit;
   bottom: inherit;
 }
+.uk-tooltip.uk-tooltip-passive {
+  pointer-events: none;
+}
+.uk-tooltip.uk-tooltip-passive .uk-icon-close,
+.uk-tooltip.uk-tooltip-passive a {
+  pointer-events: auto;
+}
 .uk-tooltip .uk-icon-close {
   position: absolute;
   right: 3px;

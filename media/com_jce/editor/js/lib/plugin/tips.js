@@ -65,7 +65,14 @@
             }
 
             $(element).on('click', function (e) {
-                e.preventDefault();
+                // let form controls (and labels for them) handle their own clicks
+                if ($(e.target).is(':input')) {
+                    return;
+                }
+
+                if (this.nodeName !== 'LABEL') {
+                    e.preventDefault();
+                }
 
                 if (options.trigger == 'click' && $(this).is(options.disabled)) {
                     return;
@@ -147,6 +154,9 @@
             if ($(element).hasClass('hasPopover')) {
                 $tips.addClass('uk-tooltip-popover');
             }
+
+            // text-only tips let clicks through to the controls underneath
+            $tips.toggleClass('uk-tooltip-passive', !options.content);
 
             // store element
             $tips.data('source', element);
