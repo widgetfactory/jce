@@ -324,6 +324,15 @@ input.colour {
     bottom: inherit;
     max-width: 24rem;
 
+    &.uk-tooltip-passive {
+        pointer-events: none;
+
+        .uk-icon-close,
+        a {
+            pointer-events: auto;
+        }
+    }
+
     .uk-icon-close {
         position: absolute;
         right: 3px;
